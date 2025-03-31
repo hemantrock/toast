@@ -1,0 +1,273 @@
+﻿$(document).ready(function () {
+    LoadReportGroup();
+    LoadDDLReportsMaster();
+    LoadDDLReportsPeriods();
+    LoadDDLReportsShift();
+    LoadDDLDownLoadType();
+
+    $('#formReports').bootstrapValidator({
+        excluded: ['disabled'],
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            ReportGroup: {
+                validators: {
+                    greaterThan: {
+                        value: 1,
+                        message: 'Select Group'
+                    }
+                }
+            },
+            Report: {
+                validators: {
+                    greaterThan: {
+                        value: 1,
+                        message: 'Select Report'
+                    }
+                }
+            },
+            Shift: {
+                validators: {
+                    greaterThan: {
+                        value: 1,
+                        message: 'Select Shift'
+                    }
+                }
+            },
+            FromDate: {
+                validators: {
+                    notEmpty: {
+                        message: 'Field is empty'
+                    },
+                }
+            },
+            ToDate: {
+                validators: {
+                    notEmpty: {
+                        message: 'Field is empty'
+                    },
+                }
+            },
+        },
+        errorPlacement: function (error, element) {
+            error.insertAfter('.form-group');
+        },
+        highlight: function (element) {
+            $(element).closest('.form-group').addClass('has-error');
+        },
+        unhighlight: function (element) {
+            $(element).closest('.form-group').removeClass('has-error');
+        },
+    });
+});
+
+function LoadReportGroup() {
+    $.ajax({
+        url: "/Reports/GetReportsGroup",
+        type: "GET",
+        datatype: "json",
+        cache: false,
+        success: function (result) {
+            $('#ddlReportGroup').html('');
+            var r = "<option value=0>Select Report Group</option>";
+            $('#ddlReportGroup').append(r);
+
+            $.each(result, function (i, val) {
+                r = "<option value=" + val.UniqueId + ">" + val.ReportGroupName + "</option>";
+                $('#ddlReportGroup').append(r);
+            });
+        }
+    });
+}
+
+function LoadDDLReportsMaster() {
+
+    var iSel = $('#ddlReportGroup option:selected').val();
+
+    if (iSel == null || iSel == '0' || iSel == 'undefined')
+    {
+        return false;
+    }
+
+    $.ajax({
+        url: "/Reports/GetReportsList?ReportGroupID="+iSel,
+        type: "GET",
+        datatype: "json",
+        cache: false,
+        success: function (result) {
+            $('#ddlReports').html('');
+            var r = "<option value=0>Select Report</option>";
+            $('#ddlReports').append(r);
+            $.each(result, function (i, val) {
+                r = "<option value=" + val.UniqueId + ">" + val.ReportTitle + "</option>";
+                $('#ddlReports').append(r);
+            });
+        }
+    });
+}
+
+function LoadDDLReportsPeriods() {
+    $.ajax({
+        url: "/Reports/GetReportPeriods",
+        type: "GET",
+        datatype: "json",
+        cache: false,
+        success: function (result) {
+            $('#ddlPeriod').html('');
+            var r = "<option value=0>Select Period</option>";
+            $('#ddlPeriod').append(r);
+            $.each(result, function (i, val) {
+                r = "<option value=" + val.UniqueId + ">" + val.PeriodName + "</option>";
+                $('#ddlPeriod').append(r);
+            });
+        }
+    });
+}
+
+function LoadDDLReportsShift() {
+    $.ajax({
+        url: "/Reports/GetReportShifts",
+        type: "GET",
+        datatype: "json",
+        cache: false,
+        success: function (result) {
+            $('#ddlShift').html('');
+            var r = "<option value=0 data-FromTime='' data-ToTime=''>Select Shift</option>";
+            $('#ddlShift').append(r);
+            $.each(result, function (i, val) {
+                r = "<option value=" + val.UniqueId + " data-FromTime='" + val.ShiftFromTime + "' data-ToTime='" + val.ShiftToTime + "'>" + val.ShiftName + "</option>";
+                $('#ddlShift').append(r);
+            });
+            InitializeDTPickers();
+        }
+    });
+}
+
+function LoadDDLDownLoadType() {
+
+    var r = "<option value=0>Select File Type</option>";
+    $('#ddlFileType').append(r);
+    r = "<option value='pdf'>PDF - Adobe PDF</option>";
+    $('#ddlFileType').append(r);
+    r = "<option value='xls'>XLS - MS Excel</option>";
+    $('#ddlFileType').append(r);
+    r = "<option value='doc'>DOC - MS Word</option>";
+    $('#ddlFileType').append(r);
+}
+
+function InitializeDTPickers()
+{
+    $('#dtpFrom').Datepicker({
+        format: "dd-M-yyyy",
+        pickTime: false,
+        autoclose: true
+    }).on('changeDate hide', function (ev) {
+        $('#dtpFrom').parent().removeClass('has-error').addClass('has-success');
+        $('#dtpFrom').parent().children("small").hide();
+        $('#dtpFrom').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+    });
+
+    $('#dtpTo').Datepicker({
+        format: "dd-M-yyyy",
+        pickTime: false,
+        autoclose: true
+    }).on('changeDate hide', function (ev) {
+        $('#dtpTo').parent().removeClass('has-error').addClass('has-success');
+        $('#dtpTo').parent().children("small").hide();
+        $('#dtpTo').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+    });
+
+    
+
+    var iSel = $('#ddlShift option:selected').val();
+
+    if (iSel != null && iSel != 0 && iSel != "")
+    {       
+        if (iSel != 4) {
+            $('#dtpFromTime').prop('disabled', true);
+            $('#dtpToTime').prop('disabled', true);
+            $('#dtpFromTime').val($('#ddlShift option:selected').attr('data-FromTime'));
+            $('#dtpToTime').val($('#ddlShift option:selected').attr('data-ToTime'));
+        }
+        else
+        {
+            $('#dtpFromTime').prop('disabled', false);
+            $('#dtpToTime').prop('disabled', false);
+            $('#dtpFromTime').val($('#ddlShift option:selected').attr('data-FromTime'));
+            $('#dtpToTime').val($('#ddlShift option:selected').attr('data-ToTime'));
+
+            $('#dtpFromTime').Datetimepicker({
+                format: "HH:mm",
+                pickDate: false,
+                autoclose: true
+            }).on('changeDate hide', function (ev) {
+                $('#dtpFromTime').parent().removeClass('has-error').addClass('has-success');
+                $('#dtpFromTime').parent().children("small").hide();
+                $('#dtpFromTime').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+            });
+
+            $('#dtpToTime').Datetimepicker({
+                format: "HH:mm",
+                pickDate: false,
+                autoclose: true
+            }).on('changeDate hide', function (ev) {
+                $('#dtpToTime').parent().removeClass('has-error').addClass('has-success');
+                $('#dtpToTime').parent().children("small").hide();
+                $('#dtpToTime').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+            });
+
+            $('#dtpFromTime').Datetimepicker('update');
+            $('#dtpToTime').Datetimepicker('update');
+        }
+    }
+}
+
+function ViewReports(src)
+{
+    $('#formReports').bootstrapValidator('validate');
+
+    if ($('.has-error').length > 0) {
+        return false;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "/Reports/DisplayPdfFile?ReportId=" + $('#ddlReports option:selected').val() + "&FromDate=" + $('#dtpFrom').val() + " " + $('#dtpFromTime').val() + "&ToDate=" + $('#dtpTo').val() + " " + $('#dtpToTime').val(),
+        UpdateTargetId: "dvContent",
+        cache: false,
+        success: function (result) {
+
+            if (result.blnStatus !=null && result.blnStatus == false) {
+                alertDismissable(result.strType, result.strMessage);
+                return false;
+            }
+
+            $("#reportData").html(result);
+            var innerHgt = $(window).innerHeight() - 152;
+            $('embed.report-content').css('height', innerHgt);
+        }
+    });
+}
+
+function DownloadReport(src) {
+    $(src).attr('href', '#');
+    $('#formReports').bootstrapValidator('validate');
+
+    if ($('.has-error').length > 0) {
+        return false;
+    }
+
+    console.log($('#ddlFileType').val());
+    if ($('#ddlFileType').val() == 0) {
+        alertDismissable("warning", 'Select Correct File Type for Download');
+        return false;
+    }
+    else {
+        $(src).attr('href', function () {
+            return "/Reports/DownloadReportFile?ReportId=" + $('#ddlReports option:selected').val() + "&FromDate=" + $('#dtpFrom').val() + " " + $('#dtpFromTime').val() + "&ToDate=" + $('#dtpTo').val() + " " + $('#dtpToTime').val() + "&FileType=" + $('#ddlFileType').val();
+        });
+    }
+}

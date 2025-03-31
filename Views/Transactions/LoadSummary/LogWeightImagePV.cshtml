@@ -1,0 +1,15 @@
+﻿@model string
+@{
+    ViewBag.Title = "Log Weight";
+    Layout = null;
+}
+
+<div class="row" id="dvImage">
+
+</div>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/LogWeightImage.js"></script>
+<script>
+    $(document).ready(function () {
+        TakeSnapshot('@Model');
+    });
+</script>

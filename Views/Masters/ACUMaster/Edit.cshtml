@@ -1,0 +1,93 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblACUMaster
+@{
+    ViewBag.Title = "Edit ACU";
+    Layout = null;
+    List<tblACUType> ddlTypes = ViewBag.ddlTypes;
+    string strACSMaster = (Model.ACSMasterID == null ? "" : Model.tblACSMaster.Description);
+    string strDataSource = (Model.DSID==null?"":Model.tblDataSourceMaster.DSName);
+}
+
+<h2 class="headingPage">
+    Edit Access Control Unit / Card Reader
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-6 col-sm-6" style="display:none;">
+                <input id="hdnIdKey" type="hidden" value="@Model.AcuID">
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>ACU Desc</label>
+                    <input id="txtACUDesc" autocomplete="off" name="ACUDesc" type="text" placeholder="ACU Desc" value="@Model.ACUDesc" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>ACU Type</label>
+                    <select class="form-control" id="ddlACUTypes" name="ACUTypes" disabled>
+                        <option value="0">Select ACU Type</option>
+                        @foreach (tblACUType typ in ddlTypes)
+                        {
+                            if (typ.ACUTypeID != Model.ACUTypeID)
+                            {
+                                <option value="@typ.ACUTypeID">@typ.ACUTypeDesc</option>
+                            }
+                            else
+                            {
+                                <option value="@typ.ACUTypeID" selected="selected">@typ.ACUTypeDesc</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>ACS Master</label>
+                    <input type="text" autocomplete="off" name="ACSMaster" id="txtACSMaster" placeholder="ACS Master" value="@strACSMaster" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 hide">
+                <div class="fields form-group">
+                    <label>ACS Terminal ID</label>
+                    <input id="txtACSTermID" autocomplete="off" name="ACSTermID" type="text" placeholder="ACS Terminal ID" value="@(Model.ACSTermID)" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 hide">
+                <div class="fields form-group">
+                    <label>Data Source</label>
+                    <input id="txtDataSource" autocomplete="off" name="DataSource" type="text" placeholder="Data Source" value="@(strDataSource)" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 hide">
+                <div class="fields form-group">
+                    <label>Slave ID</label>
+                    <input id="txtSlaveID" autocomplete="off" name="SlaveID" type="text" placeholder="Slave ID" value="@(Model.SlaveID)" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        @if (Model.Enabled == true)
+                        {
+                            <input id="chkEnabled" name="Enabled" type="checkbox" checked="checked" class="form-control">
+                        }
+                        else
+                        {
+                            <input id="chkEnabled" name="Enabled" type="checkbox" class="form-control">
+                        }
+                    </span>
+                    <input type="text" class="form-control" value="Enabled" disabled>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateACUMasters();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/ACUMaster/ACUMaster.js"></script>

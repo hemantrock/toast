@@ -1,0 +1,57 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTankDataArchive>
+@{
+    Layout = null;
+}
+@*<div class="col-lg-12">
+    <h3 class="grid-header">TANK DETAILS</h3>
+    <table id="tblTanks" class="table">
+        <thead>
+            <tr>
+                <th style="display:none;">TankId</th>
+                <th>POST</th>
+                <th>DATE TIME</th>
+                <th>TANK NAME</th>
+                <th>SAP TANK NO</th>
+                <th>PRODUCT NAME</th>
+                <th>LEVEL</th>
+                <th>DENSITY</th>
+                <th>TANK MODE</th>
+                <th>TEMP.</th>
+                <th>MATL.TEMP.</th>
+                <th>SEDIMENT WATER</th>
+                <th>FREE WATER</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblTankDataArchive itm in Model)
+            {
+                <tr>
+                    <td style="display:none;">@itm.TankID</td>
+                    <td><input type="checkbox" name="chkTank" id="@itm.TankID" data-datetime="@itm.DataTimeStamp.ToString("dd-MMM-yyyy HH:mm:ss")"></td>
+                    <td>@itm.DataTimeStamp.ToString("dd-MMM HH:mm")</td>
+                    <td>@itm.tblTank.TankName</td>
+                    <td>@itm.tblTank.SAPTankNo</td>
+                    <td>@itm.tblTank.tblProduct.ProductName</td>
+                    <td>@itm.ProductLevel</td>
+                    <td>@itm.DensityAmb</td>
+                    <td>@(itm.tblTanksMode != null ? itm.tblTanksMode.ModeDesc : "")</td>
+                    <td>@itm.TempAmb</td>
+                    <td>@itm.TempProduct</td>
+                    <td>@itm.BaseSedimentWater</td>
+                    <td>@itm.FreeWaterLevel</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>*@
+<div id="jqxgrid" class="jqx-tbl-container  jde-wrapper">
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="ManualPost_0408TankData();"><span class="glyphicon glyphicon-floppy-disk"></span>POST</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/TFMS/TankManualPost/0408/TankData.js"></script>

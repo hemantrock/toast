@@ -1,0 +1,59 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black; top: -7px;">Strainer - Diff. Pressure Transmitters</h3>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 25px;">
+        @for (int i = 0; i < Model.Count();)
+        {
+            int itake = 22;
+            <div class="col-lg-3">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" style="width: 30%">TagNo</th>
+                            <th class="text-center bg-color" style="width: 25%">PumpNo</th>
+                            <th class="text-center bg-color" style="width: 15%">Value</th>
+                            <th class="text-center bg-color" style="width: 20%">Hi-Set Point</th>
+                            <th class="text-center bg-color" style="width: 10%">Alrm</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if ((i/ itake) == 3) { itake = 23; }
+                            List<tblDeviceMaster> lstDevs = Model.Skip(i).Take(itake).ToList();
+                            foreach (tblDeviceMaster dev in lstDevs)
+                            {
+                                <tr>
+                                    <td>@dev.DeviceName</td>
+                                    <td>@(dev.PumpID == null ? "" : dev.tblPump.EquipmentName)</td>
+                                    <td class="@(dev.TagPrefix)_VALUE get-hover" onclick="OpenChartModal('@(dev.TagPrefix)_VALUE', '@dev.PageName'); cancelBubble(event);"></td>
+                                    <td>
+                                        <input type="number" step="0.01" min=0 readonly class="editable-input @(dev.TagPrefix)_MAX_SP" ondblclick="this.readOnly='';"
+                                               style="border: 0px;width: 72%;" value="@(dev.TagPrefix)_MAX_SP">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Strainer DPT SetPoint: @(dev.DeviceName)',this, '@(dev.TagPrefix)_MAX_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                    </td>
+                                    <td><span class="alert-cont-sm"><span class="@(dev.TagPrefix)_MAX_ALRM"></span></span></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+                                i = i + itake;
+                            }
+    </div>
+</div>
+<script>
+    opcPageName = "PTView.*";
+    InitConn(opcPageName, 0);
+    opc.server.readPageTags(opcPageName);
+</script>

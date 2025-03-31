@@ -1,0 +1,37 @@
+﻿@using TOAST.Shared;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Index";
+    string ProjPath = clsConfig.ProjPath;
+    string DefPath = "Views/Shared/";
+    if (System.IO.File.Exists(Server.MapPath("~/" + DefPath + ProjPath + "/_Layout.cshtml")))
+    {
+        DefPath = DefPath + ProjPath + "/";
+    }
+    Layout = "~/" + DefPath + "_Layout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        var user = '@Convert.ToString(Session[clsConstants.UserID])';
+        if (user != "" && user != "0") {
+            $.ajax({
+                url: "/Home/ValidatePasswordExpiry?UserID=" + user,
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                success: function (result) {
+                    if (result.blnStatus == false && result.strType=="danger")
+                    {
+                        alert(result.strMessage);
+                        ChangePassword(user);
+                    }
+                    else if (result.blnStatus == false && result.strType == "warning") {
+                        alertDismissable(result.strType,result.strMessage);
+                    }
+                }
+            });
+        }
+    });
+</script>

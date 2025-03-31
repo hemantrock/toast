@@ -1,0 +1,44 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">VRU Details</h3>
+    </div>
+</div>
+
+<div class="row m-t-20 esd-status-view-container">
+    <div class="col-lg-4">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr>
+                    <th class="text-left header-col">Signal Desc</th>
+                    <th class="text-center header-col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="75%" class="bold">VRU ESD Status</td>
+                    <td width="25%"><span class="alert-cont-md"><span class="VRU_ESD_STATUS"></span></span></td>
+                </tr>
+                <tr>
+                    <td width="75%" class="bold">MS Loading Status to VRU</td>
+                    <td width="25%"><span class="alert-cont-md"><span class="VRU_MS_LOADING"></span></span></td>
+                </tr>
+                <tr>
+                    <td width="75%" class="bold">VRU Stopped Status</td>
+                    <td width="25%"><span class="alert-cont-md"><span class="VRU_STOP_STATUS"></span></span></td>
+                </tr>
+                <tr>
+                    <td width="75%" class="bold">Plant ESD to VRU</td>
+                    <td width="25%"><span class="alert-cont-md"><span class="TAS_ESD_TO_VRU"></span></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    opcPageName = 'VRUView';
+    InitConn(opcPageName, 0);
+</script>

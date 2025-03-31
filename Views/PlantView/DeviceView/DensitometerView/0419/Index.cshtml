@@ -1,0 +1,126 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Densitometer View";
+    Layout = null;
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Densitometer</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing ">
+        <div class="tab-wrapper w-100">
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        @{
+                            <li class="active"><a href="#Header" data-toggle="tab">Header</a></li>
+                            <li><a href="#UGTank" data-toggle="tab">UG Tanks</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        @{
+                            <div class="tab-pane active" id="Header">
+                                <div class="densitometer-container col-lg-12 m-t-10">
+                                    @{
+                                        List<tblDeviceMaster> lstDevices = Model.Where(x => x.HeaderID != null).ToList();
+                                        foreach (tblDeviceMaster Device in lstDevices)
+                                        {
+                                            string DevPrefix = Device.TagPrefix;
+                                            string ProdName = (Device.tblTank != null ? Device.tblTank.tblProduct.ProdNameShort : (Device.tblHeadersMaster != null ? Device.tblHeadersMaster.tblProduct.ProdNameShort : ""));
+                                            <div class="device-box densitometer-wrapper" style="width: 270px;">
+                                                <div class="device-header">
+                                                    <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                                                    <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@ProdName</span>
+                                                </div>
+                                                <div class="device-block">
+                                                    <div class="device densitometer">
+                                                        <span class="maintainence-mode-icon @(DevPrefix + "_MAINT")"></span>
+                                                        <span class="action-icon remote-icon"></span>
+                                                        <span class="action-icon local-icon"></span>
+                                                        <span class="action-icon auto-icon"></span>
+                                                        <span class="action-icon manual-icon"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="device-detail">
+                                                    <table class="table-striped value-tbl w-100">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="tbl-lbl">Observed Density (Kg/m³)</td>
+                                                                <td class="tbl-val @(DevPrefix+"_VALUE")" colspan="2"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="UGTank">
+                                <div class="densitometer-container col-lg-12 m-t-10">
+                                    @{
+                                        lstDevices = Model.Where(x => x.TankID != null).ToList();
+                                        foreach (tblDeviceMaster Device in lstDevices)
+                                        {
+                                            string DevPrefix = Device.TagPrefix;
+                                            //string PriConn = "DENSPROBE_CONN01_S" + string.Format("{0:00}", Device.TypeSeqNo);
+                                            //string SecConn = "DENSPROBE_CONN02_S" + string.Format("{0:00}", Device.TypeSeqNo);
+                                            string PriConn = Device.TagPrefix + "_CONN01";
+                                            string SecConn = Device.TagPrefix + "_CONN02"; ;
+                                            string ProdName = (Device.tblTank != null ? Device.tblTank.tblProduct.ProdNameShort : (Device.tblHeadersMaster != null ? Device.tblHeadersMaster.tblProduct.ProdNameShort : ""));
+                                            <div class="device-box densitometer-wrapper">
+                                                <div class="device-header">
+                                                    <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                                                    <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@ProdName</span>
+                                                </div>
+                                                <div class="device-block">
+                                                    <div class="device densitometer">
+                                                        <span class="maintainence-mode-icon @(DevPrefix + "_MAINT")"></span>
+                                                        <span class="action-icon remote-icon"></span>
+                                                        <span class="action-icon local-icon"></span>
+                                                        <span class="action-icon auto-icon"></span>
+                                                        <span class="action-icon manual-icon"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="device-detail">
+                                                    <table class="table-striped value-tbl w-100">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="tbl-lbl">Observed Density</td>
+                                                                <td class="tbl-val @(DevPrefix.Replace("DM_","")+"_AMB_DENSITY")" colspan="2"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "HeaderView.*";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>

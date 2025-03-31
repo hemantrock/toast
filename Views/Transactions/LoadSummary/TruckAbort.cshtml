@@ -1,0 +1,68 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Truck Abort";
+    Layout = null;
+}
+<div class="col-lg-12 col-md-12 form-container">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input type="text" id="txtTruck" name="TruckNumber" maxlength="50" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Reason</label>
+                    <select id="ddlManualEntry" name="Reason" class="form-control"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Remarks</label>
+                    <input type="text" id="txtRemarks" autocomplete="off" name="Remarks" maxlength="50" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <table id="tblLoadDetails" class="table">
+        <thead>
+            <tr>
+                <th>CompNo</th>
+                <th>Bay</th>
+                <th>Preset</th>
+                <th>Filled</th>
+                <th>TopUp</th>
+                <th>Decanted</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblLoadDetail itm in Model.tblLoadDetails)
+            {
+                double DeliveredQty = (itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0);
+                double PreviousQty = (itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0);
+                <tr>
+                    <td>@itm.CompNo</td>
+                    <td>@itm.BayID</td>
+                    <td>@itm.PresetQty</td>
+                    <td>@(DeliveredQty + PreviousQty)</td>
+                    <td>@((itm.TopUpQty ?? 0))</td>
+                    <td>@((itm.DecantedQty ?? 0))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    Purpose = '@Model.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/TruckAbort.js"></script>

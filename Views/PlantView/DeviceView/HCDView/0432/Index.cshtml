@@ -1,0 +1,74 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Hydrocarbon Detectors View";
+    List<tblDeviceMaster> lstHCDs = Model.Where(x => x.DeviceID == 5).ToList();
+    int NoOfRows = 17;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">HCD View</h3>
+    </div>
+</div>
+
+<div class="security-system-container m-t-40">
+    <div class="row first">
+        @{
+            if (lstHCDs.Count() > 0)
+            {
+                decimal icols = Math.Ceiling((decimal)lstHCDs.Count() / NoOfRows);
+                decimal Width = Math.Min(6, Math.Round((decimal)(12 / icols)));
+                for (int j = 0; j < icols; j = j + 1)
+                {
+                <div class="col-lg-@Width">
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="10" style="font-size: 22px;">HYDROCARBON DETECTORS</th></tr>
+                            <tr>
+                                <th class="text-center" style="width: 12%">Tag</th>
+                                <th class="text-center" style="width: 36%">AREA</th>
+                                <th class="text-center  tooltips" title="Current Value" style="width: 10%">Value</th>
+                                <th class="text-center  tooltips" title="20% ALARM" style="width: 10%"> 20% Alarm</th>
+                                <th class="text-center  tooltips" title="60% ALARM" style="width: 10%"> 60% Alarm</th>
+                                <th class="text-center  tooltips" title="Maintenance Mode" style="width: 12%"> Maint Mode</th>
+                                <th class="text-center  tooltips" title="Channel Fault" style="width: 10%"> Ch. Fault</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = j * NoOfRows; i < ((j + 1) * NoOfRows); i = i + 1)
+                            {
+                                if(i>= lstHCDs.Count()) { break; }
+                            <tr>
+                                <td class="">@lstHCDs[i].DeviceName</td>
+                                <td class="">@lstHCDs[i].DeviceDesc</td>
+                                <td><span class="@(lstHCDs[i].TagPrefix + "_VALUE")" onclick="OpenChartModal('@(lstHCDs[i].TagPrefix + "_VALUE")', '@lstHCDs[i].PageName'); cancelBubble(event);"></span></td>
+                                <td><span class="@(lstHCDs[i].TagPrefix + "_ALRM_H")"></span></td>
+                                <td><span class="@(lstHCDs[i].TagPrefix + "_ALRM_HH")"></span></td>
+                                <td style="text-align: center;">
+                                    <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Device to Maint Mode','Gas Detector: @(lstHCDs[i].DeviceName)',this, '@(lstHCDs[i].TagPrefix + "_MAINT_MODE")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        <input id="toggle-maintainence-mode" class="on-off-btn @(lstHCDs[i].TagPrefix + "_MAINT_MODE")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                    </div>
+                                </td>
+                                <td><span class="@(lstHCDs[i].TagPrefix + "_CH_FAULT")"></span></td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                }
+            }
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = 'HCDView.*,GDView.*';
+        InitConn(opcPageName, 50);
+        createTooltip();
+        if (opcStartDone == true) {
+            setTimeout(function () { opc.server.readPageTags(opcPageName); }, 3000);
+        }
+    });
+</script>

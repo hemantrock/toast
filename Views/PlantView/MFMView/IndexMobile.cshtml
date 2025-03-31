@@ -1,0 +1,55 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadingPointMaster>
+@{
+    ViewBag.Title = "Plant View - MFM View";
+    Layout = null;
+}
+
+<div class="col-xs-12 mfm-container no-padding">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">MFM OVERVIEW</div>
+        <div class="panel-body">
+
+            <div class="search-container">
+                <input type="text" placeholder="Search MFM" />
+                <i class="fa fa-search"></i>
+            </div>
+
+            <table class="responsive">
+                <thead>
+                    <tr>
+                        <th>Bay</th>
+                        <th>Density</th>
+                        <th>Density Units</th>
+                        <th>Mass Flow</th>
+                        <th>Massflow Units</th>
+                        <th>Temperature</th>
+                        <th>Temp Unit</th>
+                        <th>Pulse Value</th>
+                        <th>MFM Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblLoadingPointMaster itm in Model)
+                    {
+                        string BayTag = "LP" + itm.BayID.ToString();
+                        <tr class="clickable">
+                            <td>@itm.BayID</td>
+                            <td class="MFM_DENSITY_@BayTag">&nbsp;</td>
+                            <td class="MFM_UNIT_DENSITY_@BayTag">&nbsp;</td>
+                            <td class="MFM_MASSFLOW_@BayTag">&nbsp;</td>
+                            <td class="MFM_UNIT_MASSFLOW_@BayTag">&nbsp;</td>
+                            <td class="MFM_TEMP_@BayTag">&nbsp;</td>
+                            <td class="MFM_UNIT_TEMP_@BayTag">&nbsp;</td>
+                            <td class="MFM_KFACT_@BayTag">&nbsp;</td>
+                            <td class="MFM_STATUS_@BayTag">&nbsp;</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/PlantView/MFMView/Index.js"></script>

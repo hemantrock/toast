@@ -1,0 +1,1 @@
+﻿function addAdditionalAttributes(){$$(".autocomplete-off").each(function(B){B.setAttribute("autocomplete","off");B.removeClassName("autocomplete-off")});$$(".target-blank").each(function(B){B.setAttribute("target","_blank");B.removeClassName("target-blank")})}document.observe("dom:loaded",addAdditionalAttributes);

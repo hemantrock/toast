@@ -1,0 +1,246 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblACUMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    List<tblTruckMaster> lstTTs = ViewBag.TTs;
+    List<tblCard> lstCards = ViewBag.lstCards;
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">RFID Truck Mapping</h3>
+    </div>
+</div>
+<div class="row m-t-20">
+    <div class="col-lg-6">
+        <h3 class="grid-header" style="color:black"></h3>
+        <table id="tblRFID" class="table">
+            <thead>
+                <tr>
+                    <th>RFID Reader</th>
+                    <th>EPC Code</th>
+                    <th>User Data</th>
+                    <th>Truck No</th>
+                    <th>Card No</th>
+                    <th>New Truck</th>
+                    <th class="text-center">Map RFID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblACUMaster itm in Model.Where(x=>(x.ACUTypeID==4 || x.ACUTypeID == 5 ) && (x.Enabled??true)))
+                {
+                <tr id="@itm.AcuID">
+                    <td>@itm.ACUDesc</td>
+                    <td class="@(itm.TagPrefix??"")">
+                        <input id="spnEPCNumber_@(itm.AcuID)" type="text" readonly class="editable-input @((itm.TagPrefix??"")+ "_RFID_EPC")" ondblclick="this.readOnly='';" style="border: 0px;width: 90%;" value="">
+                    </td>
+                    <td>
+                        <input id="spnUserData_@(itm.AcuID)" type="text" readonly class="editable-input @((itm.TagPrefix??"")+ "_RFID_USER_DATA")" ondblclick="this.readOnly='';" style="border: 0px;width: 90%;" value="">
+                    </td>
+                    <td class="@((itm.TagPrefix??"")+ "_TRUCK_NO")"></td>
+                    <td class="@((itm.TagPrefix??"")+ "_CARD")"></td>
+                    <td>
+                        <select id="rfidTruck_@itm.AcuID" class="js-basic-single" data-placeholder="Select TT to Map" data-allow-clear="true" data-width="95%">
+                            <option></option>
+                            @foreach (tblTruckMaster TTMast in lstTTs)
+                            {
+                                <option value="@TTMast.TruckID">@TTMast.TruckNumber</option>
+                            }
+                        </select>
+                    </td>
+                    <td class="text-center"><span onclick="MapRFIDTruck('@itm.AcuID')" class="glyphicon glyphicon-plus-sign clickable" data-id="@itm.AcuID"></span></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-4 hide">
+        <h3 class="grid-header" style="color:black"></h3>
+        <table id="tblCardReader" class="table">
+            <thead>
+                <tr>
+                    <th>Card Reader</th>
+                    <th>Pri.</th>
+                    <th>Sec.</th>
+                    <th>Card Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblACUMaster itm in Model.Where(x => (x.ACUTypeID < 4) && (x.LogicAction??"").ToUpper()== "BAYCARD"))
+                {
+                <tr id="@itm.AcuID">
+                    <td>@itm.ACUDesc</td>
+                    <td>
+                        <div class="circle-cont-xsm">
+                            <span class="@(itm.TagPrefix??"")_CONN01"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="circle-cont-xsm">
+                            <span class="@(itm.TagPrefix??"")_CONN02"></span>
+                        </div>
+                    </td>
+                    <td class="@((itm.TagPrefix??"")+ "_CARD")"></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row m-t-40">
+    <div class="col-lg-2" style="width: 11%;">
+        <select id="TruckMap" class="js-basic-single" data-placeholder="Select TT" data-allow-clear="true" data-width="95%">
+            <option></option>
+            @foreach (tblTruckMaster TTMast in lstTTs)
+            {
+                <option value="@TTMast.TruckID">@TTMast.TruckNumber</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-1">
+        <select id="CardMap" class="js-basic-single" data-placeholder="Select Card" data-allow-clear="true" data-width="95%">
+            <option></option>
+            @foreach (tblCard card in lstCards)
+            {
+                <option value="@card.UniqueID">@card.CardNumber</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-1 text-right">
+        <div class="fields form-group pull-right">
+            <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="MapCardTruck()" style="padding: 3px 6px;"><span class="glyphicon glyphicon-plus"></span>Map Truck Card</a>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        opcPageName = 'RFIDView';
+        InitConn(opcPageName, 0);
+        //opc.server.readPageTags(opcPageName);
+
+        $('.js-basic-single').each(function () {
+            $(this).select2();
+        });
+
+        $('#tblRFID').dataTable({
+            "iDisplayLength": iGblNoRows,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": false,
+            "bInfo": false,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "12%" },
+                    { sWidth: "24%" },
+                    { sWidth: "12%" },
+                    { sWidth: "13%" },
+                    { sWidth: "12%" },
+                    { sWidth: "18%" },
+                    { sWidth: "10%" },
+                ],
+            "bAutoWidth": false,
+        });
+        $('#tblCardReader').dataTable({
+            "iDisplayLength": iGblNoRows,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": false,
+            "bInfo": false,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "35%" },
+                    { sWidth: "15%" },
+                    { sWidth: "15%" },
+                    { sWidth: "35%" },
+                ],
+            "bAutoWidth": false,
+        });
+    });
+
+    function MapRFIDTruck(acuID) {
+        console.log('ACUID:' + acuID);
+        console.log('EPC Code:' + $('#spnEPCNumber_' + acuID).val());
+        console.log('TruckID:' + $('#rfidTruck_' + acuID).val());
+        console.log('TruckNum:' + $('#rfidTruck_' + acuID).select2('data')[0].text);
+        var EPCNum = $('#spnEPCNumber_' + acuID).val();
+        var UsrData = $('#spnUserData_' + acuID).val();
+        var TrkNum = $('#rfidTruck_' + acuID).select2('data')[0].text;
+
+        var activityName = "Map Truck with RFID";
+        var activityDetail = "Truck No: " + TrkNum;
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/ValidateRequiredTrnPwd?activityName=" + activityName,
+            cache: false,
+            success: function (result) {
+                if (result.blnStatus != 'undefined' && result.blnStatus == false) {
+                    MapRFIDTruckDo(acuID, EPCNum, UsrData);
+                }
+                else {
+                    ShowPasswordModalForReqTrn(activityName + " : Requires Transaction Password", function () { MapRFIDTruckDo(acuID, EPCNum, UsrData); }, activityName, activityDetail);
+                }
+            }
+        });
+    }
+    function MapRFIDTruckDo(acuID, EPCNum, UsrData) {
+        var TrkID = $('#rfidTruck_' + acuID).val();
+        $.ajax({
+            url: "/RFID/MapRFIDTruck",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ TruckID: TrkID, EPC_Code: EPCNum, User_Data: UsrData, AcuID: acuID }),
+            cache: false,
+            success: function (result) {
+                alertDismissable(result.strType, result.strMessage);
+                if (result.blnStatus == true) {
+                   
+                }
+            }
+        });
+    }
+
+    function MapCardTruck() {
+        var activityName = "Map Truck with Card";
+        var activityDetail = "Truck No: " + $('#CardMap').select2('data')[0].text + " Card No: " + $('#CardMap').select2('data')[0].text;
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/ValidateRequiredTrnPwd?activityName=" + activityName,
+            cache: false,
+            success: function (result) {
+                if (result.blnStatus != 'undefined' && result.blnStatus == false) {
+                    MapCardTruckDo();
+                }
+                else {
+                    ShowPasswordModalForReqTrn(activityName + " : Requires Transaction Password", function () { MapCardTruckDo(); }, activityName, activityDetail);
+                }
+            }
+        });
+    }
+    function MapCardTruckDo() {
+        var CardID = $('#CardMap').val();
+        var TruckID = $('#TruckMap').val();
+        $.ajax({
+            url: "/Cards/MapCardTruck",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ TruckID: TruckID, CardID: CardID }),
+            cache: false,
+            success: function (result) {
+                alertDismissable(result.strType, result.strMessage);
+                if (result.blnStatus == true) {
+
+                }
+            }
+        });
+    }
+</script>
+
+
+
+
+@*<script src="~/Scripts/PageJS/Masters/RFID/Index.js"></script>*@

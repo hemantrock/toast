@@ -1,0 +1,179 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<tblPump>
+@{
+    ViewBag.Title = "Plant View - Pumps View";
+    Layout = null;
+}
+
+
+<div class="pump-view-container">
+    <div class="heading-container tank-view col-xs-12 no-padding">
+        <div class="col-xs-4 no-padding">
+            <h1>PUMP VIEW : </h1>
+        </div>
+        <div class="col-xs-8 no-padding">
+            <div class="heading-right-container">
+                <select id='ddlPumpView' onchange="ChangePumpView()">
+                    @{
+                        int i = 0;
+                        foreach (tblPump pump in Model.Where(x => x.Category.ToUpper() == "PUMP").OrderBy(x=>x.EquipmentName).ToList())
+                        {
+                            <option data-id="@i" value="@pump.UniqueID">@pump.EquipmentName - @pump.tblProduct.ProdNameShort</option>
+                            i = i + 1;
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="slider-container">
+                @{
+                    foreach (tblPump pump in Model.Where(x => x.Category.ToUpper() == "PUMP").OrderBy(x => x.EquipmentName).ToList())
+                    {
+                        string pumpName = pump.UniqueID.ToString("0#");
+                        <div class="pump-wrapper">
+
+                            <div class="item-number">
+                                <div class="col-xs-6 no-padding">
+                                    <label>Pump:</label> <span>@pump.EquipmentName</span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <label>Product:</label> <span>@(pump.tblProduct == null ? "" : pump.tblProduct.ProdNameShort)</span>
+                                </div>
+                            </div>
+
+                            <div class="mySliderTabs">
+                                <ul>
+                                    <li><a href="#summary">Summary</a></li>
+                                    <li onclick="loadData('@pumpName')"><a href="#data">Data</a></li>
+                                    <li><a href="#action">Action</a></li>
+                                </ul>
+                                <div id="summary">
+                                    <div class="pump-view-pump">
+                                        <div class="pump-header RUN_IMG_@pumpName TRIP_IMG_@pumpName FAIL_IMG_@pumpName">
+                                            <span class="pump-view-icons remote-icon PUMP_LOCREM_@pumpName" onclick="OpenLocRemModal('@pump.EquipmentName', 'PUMP_LOCREM', 'PUMP_LOCREM_@pumpName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                            <span class="pump-view-icons local-icon PUMP_LOCREM_@pumpName" onclick="OpenLocRemModal('@pump.EquipmentName', 'PUMP_LOCREM', 'PUMP_LOCREM_@pumpName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+
+                                            <span class="pump-view-icons auto-icon PUMP_AUTOMAN_@pumpName" onclick="OpenAutoManModal('@pump.EquipmentName', 'PUMP_AUTOMAN', 'PUMP_AUTOMAN_@pumpName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                            <span class="pump-view-icons manual-icon PUMP_AUTOMAN_@pumpName" onclick="OpenAutoManModal('@pump.EquipmentName', 'PUMP_AUTOMAN', 'PUMP_AUTOMAN_@pumpName', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        </div>
+                                    </div>
+                                    <div class="pump-detail">
+                                        <table class="pump-detail-tbl table table-bordered table-striped dataTable">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="lbl">Run Hrs</td>
+                                                    <td class="val PUMP_RUN_HOURS_@pumpName"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="lbl">Service </td>
+                                                    <td class="val">@(pump.tblPumpService != null ? pump.tblPumpService.Service : "")</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                                <div id="data">
+                                    <table class="pump-data-tbl table table-bordered table-striped dataTable">
+                                        <tbody>
+                                            <tr>
+                                                <td class="lbl">Running Feedback </td>
+                                                <td class="val">
+                                                    <span class="circle-cont">
+                                                        <span class="PUMP_RUN_@pumpName"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="lbl">Trip Feedback </td>
+                                                <td class="val">
+                                                    <span class="circle-cont"><span class="PUMP_TRIP_@pumpName"></span></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="lbl">Fail Feedback </td>
+                                                <td class="val">
+                                                    <span class="circle-cont"><span class="PUMP_FAIL_@pumpName"></span></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="lbl">Head Pressure</td>
+                                                <td class="val"><span class="PT_PUMP_@pumpName"></span>Kg/cm²</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="lbl">Set Point <span class="unit-lbl"> (Kg/cm²)</span> </td>
+                                                <td class="val SP_PUMP_@pumpName"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="pump-data-tbl table table-bordered table-striped dataTable">
+                                        <tbody>
+                                            <tr>
+                                                <td class="lbl">Run Hours</td>
+                                                <td class="val">
+                                                    <span class="pump-timer PUMP_RUN_HOURS_@pumpName"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="lbl">Priority </td>
+                                                <td class="val PUMP_PRIORITY_@pumpName">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div id="action">
+                                    <div class="action-box">
+                                        <div class="action-btn-row">
+                                            <div class="col-xs-6">
+                                                <div class="action-btn">
+                                                    <a class="push-btn pump-start-btn PUMP_START_@pumpName" href="javascript:void(0);" onclick="SendDataToOPC(this, 'PUMP_START_@pumpName','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="action-btn">
+                                                    <a class="push-btn pump-stop-btn PUMP_STOP_@pumpName" href="javascript:void(0);" onclick="SendDataToOPC(this, 'PUMP_STOP_@pumpName','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/PlantView/PumpsView/Index.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // slider
+        if ($('.slider-container').length > 0) {
+            $('.slider-container').slick({
+                dots: true,
+                easing: 'linear',
+                mobileFirst: true,
+                speed: 300
+            });
+        }
+
+        if ($('.mySliderTabs').length > 0) {
+            var slider = $("div.mySliderTabs").sliderTabs({
+                autoplay: false,
+                mousewheel: false,
+                position: "top"
+            });
+        }
+    });
+</script>

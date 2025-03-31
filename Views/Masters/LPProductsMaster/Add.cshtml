@@ -1,0 +1,76 @@
+﻿@using TOAST.Data.Model; 
+@{
+    ViewBag.Title = "Add LP Product Master";
+    Layout = null;
+    List<tblLoadingPointMaster> lpList = ViewBag.lpList;
+    List<tblProduct> lstProd = ViewBag.ProdList;
+}
+
+<h2 class="headingPage">
+    Create a new LP Product Master
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>LP NO</label>
+                        <select class="form-control" id="ddlLPNo" name="LPNo">
+                            <option value="0" selected="selected">Please Select LP No</option>
+                            @foreach (tblLoadingPointMaster data in lpList)
+                            {
+                                <option value="@data.LoadingPointNo">LP:@data.LoadingPointNo.ToString("D2")   (Bay:@(data.tblBaysMaster.BayNum.ToString("00"))-Arm:@(((int)data.ArmNo).ToString("D2")))</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                
+
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PRODUCT</label>
+                        <select class="form-control" id="ddlProduct" name="Product">
+                            <option value="0" selected="selected">Please Select Product</option>
+                            @foreach (tblProduct prod in lstProd.OrderBy(x=>x.ProductCode))
+                            {
+                                <option value="@prod.ProductID">@(prod.ProductCode.PadRight(12) +"-"+ prod.ProductName)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Recipe No.</label>
+                        <input type="text" class="form-control" placeholder="Enter Recipe No (1-99)" id="txtRecipeNo" name="RecipeNo" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6 checkbox-field">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input id="chkEnable" name="Enable" type="checkbox" class="form-control">
+                        </span>
+                        <input type="text" class="form-control" value="PRODUCT ENABLED" disabled>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveLPProductsMaster();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/LPProductsMaster/LPProductsMaster.js"></script>
+@*<script>
+    $(document).ready(function () {
+        //LoadDDLProduct($('#ddlProduct'));
+    });
+</script>*@

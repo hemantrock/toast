@@ -1,0 +1,2161 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblNetwork>
+@{
+    ViewBag.Title = "Plant View - System Config View";
+    Layout = null;
+    tblNetwork Dev;
+    List<tblBatchController>
+        lstBCs = ViewBag.BCs;
+    List<tblDataSourceMaster>
+        lstDS = ViewBag.DataSources;
+    List<ConnectionTags>
+        TSPortData = ViewBag.ConnTags;
+    string PriConn = "ETH1_SW01_CONN";
+    string SecConn = "ETH2_SW02_CONN";
+    <style>
+                /*---------------------
+            global variable
+        -----------------------*/
+                #system-config-container {
+                    margin: 15px auto 0;
+                    min-height: 200px;
+                    width: 1310px;
+                    position: relative;
+                    right: 63px;
+                }
+
+                    #system-config-container .alert_true {
+                        height: 25px;
+                        width: 25px;
+                        left: -5px;
+                        top: -3px;
+                    }
+
+                    #system-config-container .alert_false {
+                        left: -1px;
+                        width: 18px;
+                        height: 18px;
+                        top: -2px;
+                    }
+
+                    #system-config-container .alert_bad {
+                        left: -2px;
+                        width: 18px;
+                        height: 18px;
+                        top: -2px;
+                    }
+
+                        #system-config-container .alert_bad:after {
+                            top: -4px;
+                        }
+
+                    #system-config-container .network-txt {
+                        position: absolute;
+                        right: 4px;
+                        bottom: 3px;
+                        font-size: 12px;
+                    }
+
+                    #system-config-container .system-arch-top {
+                        border-bottom: 2px solid #087b04;
+                        height: 111px;
+                        position: relative;
+                        width: 1310px;
+                    }
+
+                        #system-config-container .system-arch-top .screen-block {
+                            width: 145px;
+                            height: 111px;
+                            display: inline-block;
+                            position: relative;
+                            float: left;
+                        }
+
+                            #system-config-container .system-arch-top .screen-block h4 {
+                                font-size: 12px;
+                                left: 12px;
+                                font-weight: bold;
+                                position: relative;
+                                margin: 10px 0;
+                                top: -3px;
+                            }
+
+                            #system-config-container .system-arch-top .screen-block h5 {
+                                position: absolute;
+                                top: 10px;
+                                font-size: 12px;
+                                left: 13px;
+                            }
+
+                            #system-config-container .system-arch-top .screen-block .sc-left {
+                                width: 60px;
+                                float: left;
+                            }
+
+                                #system-config-container .system-arch-top .screen-block .sc-left .screen {
+                                    background-image: url('../../Images/system-config/screen.jpg');
+                                    background-repeat: no-repeat;
+                                    width: 40px;
+                                    height: 38px;
+                                    margin: auto;
+                                }
+
+                                #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-dark {
+                                    width: 2px;
+                                    height: 40px;
+                                    background-color: #087b04;
+                                    float: left;
+                                    left: 15px;
+                                    position: relative;
+                                }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-dark.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-dark.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-dark.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-light {
+                                    width: 2px;
+                                    height: 65px;
+                                    background-color: #b8d7b8;
+                                    float: right;
+                                    position: relative;
+                                    right: 16px;
+                                }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-light.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-light.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-left .screen-v-line-light.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                            #system-config-container .system-arch-top .screen-block .sc-right {
+                                width: 85px;
+                                float: left;
+                            }
+
+                                #system-config-container .system-arch-top .screen-block .sc-right ul {
+                                    list-style: none;
+                                    margin: 0;
+                                    padding: 0;
+                                    float: left;
+                                }
+
+                                    #system-config-container .system-arch-top .screen-block .sc-right ul li {
+                                        font-size: 12px;
+                                        color: #000;
+                                        text-align: right;
+                                        margin: 4px 0;
+                                        float: left;
+                                        position: relative;
+                                        padding-left: 19px;
+                                    }
+
+                            #system-config-container .system-arch-top .screen-block .screen-block-txt {
+                                position: absolute;
+                                left: 50px;
+                                bottom: 5px;
+                                font-size: 14px;
+                                font-weight: bold;
+                            }
+
+                                #system-config-container .system-arch-top .screen-block .screen-block-txt .circle-cont-xsm {
+                                    position: absolute;
+                                    right: -22px;
+                                }
+
+                                #system-config-container .system-arch-top .screen-block .screen-block-txt.tp {
+                                    bottom: 4px;
+                                }
+
+                                    #system-config-container .system-arch-top .screen-block .screen-block-txt.tp.lrc1 {
+                                        font-size: 11px;
+                                    }
+
+                                        #system-config-container .system-arch-top .screen-block .screen-block-txt.tp.lrc1 .circle-cont-xsm {
+                                            top: -1px;
+                                        }
+
+                                #system-config-container .system-arch-top .screen-block .screen-block-txt.mid {
+                                    bottom: -15px;
+                                    font-size: 13px;
+                                    font-weight: normal;
+                                }
+
+                                    #system-config-container .system-arch-top .screen-block .screen-block-txt.mid.lrc2 {
+                                        font-size: 11px;
+                                    }
+
+                                        #system-config-container .system-arch-top .screen-block .screen-block-txt.mid.lrc2 .circle-cont-xsm {
+                                            top: 0px;
+                                        }
+
+                                #system-config-container .system-arch-top .screen-block .screen-block-txt.bot {
+                                    bottom: -28px;
+                                    font-size: 13px;
+                                    font-weight: normal;
+                                }
+
+                                    #system-config-container .system-arch-top .screen-block .screen-block-txt.bot.lrc2 {
+                                        font-size: 11px;
+                                    }
+
+                                        #system-config-container .system-arch-top .screen-block .screen-block-txt.bot.lrc2 .circle-cont-xsm {
+                                            top: 0px;
+                                        }
+
+                        #system-config-container .system-arch-top .sys-printer {
+                            background-image: url('../../Images/printer.png');
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            background-size: contain;
+                            position: absolute;
+                            width: 56px;
+                            height: 56px;
+                            right: -43px;
+                            bottom: 32px;
+                        }
+
+                        #system-config-container .system-arch-top .printer-connector {
+                            position: absolute;
+                            bottom: -2px;
+                            height: 36px;
+                            width: 27px;
+                            right: 0;
+                            border-right: 2px solid #087b04;
+                            border-bottom: 2px solid #087b04;
+                        }
+
+                            #system-config-container .system-arch-top .printer-connector.swflt_true {
+                                border-right: 2px solid #ff0000;
+                                border-bottom: 2px solid #ff0000;
+                            }
+
+                            #system-config-container .system-arch-top .printer-connector.swflt_false {
+                                border-right: 2px solid #00ff00;
+                                border-bottom: 2px solid #00ff00;
+                            }
+
+                            #system-config-container .system-arch-top .printer-connector.swflt_bad {
+                                border-right: 2px solid #ccc;
+                                border-bottom: 2px solid #ccc;
+                            }
+
+                        #system-config-container .system-arch-top .printer-ipaddress {
+                            list-style: none;
+                            margin: 0;
+                            padding: 0;
+                            float: right;
+                            position: absolute;
+                            right: -120px;
+                            top: 28px;
+                        }
+
+                            #system-config-container .system-arch-top .printer-ipaddress li {
+                                font-size: 12px;
+                                color: #000;
+                                text-align: right;
+                                margin: 8px 0;
+                                position: relative;
+                                padding-left: 21px;
+                            }
+
+                        #system-config-container .system-arch-top.swflt_false {
+                            border-bottom: 2px solid #00ff00;
+                        }
+
+                        #system-config-container .system-arch-top.swflt_true {
+                            border-bottom: 2px solid #ff0000;
+                        }
+
+                        #system-config-container .system-arch-top.swflt_bad {
+                            border-bottom: 2px solid #ccc;
+                        }
+
+                    #system-config-container .system-arch-middle {
+                        border-top: 2px solid #b8d7b8;
+                        margin-top: 25px;
+                        min-height: 110px;
+                        position: relative;
+                        width: 1310px;
+                    }
+
+                        #system-config-container .system-arch-middle .mem-line-connector {
+                            display: block;
+                            height: 60px;
+                            position: absolute;
+                            width: 2px;
+                        }
+
+                        #system-config-container .system-arch-middle .sym-arh-m-left {
+                            width: 395px;
+                            height: 123px;
+                            float: left;
+                            position: relative;
+                        }
+
+                            #system-config-container .system-arch-middle .sym-arh-m-left .mem-line {
+                                background-color: #000;
+                                display: block;
+                                height: 18px;
+                                position: relative;
+                                top: 81px;
+                                width: 2px;
+                            }
+
+                            #system-config-container .system-arch-middle .sym-arh-m-left .sym-arh-m-left-join-line {
+                                background-color: #000;
+                                bottom: 23px;
+                                height: 2px;
+                                left: 19px;
+                                position: absolute;
+                                width: 350px;
+                            }
+
+                        #system-config-container .system-arch-middle .sym-arh-m-right {
+                            width: 830px;
+                            height: 135px;
+                            float: right;
+                        }
+
+                            #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l {
+                                display: inline-block;
+                                float: left;
+                                position: relative;
+                                width: 454px;
+                            }
+
+                                #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .sym-arh-l-join-line {
+                                    background-color: #000;
+                                    bottom: 7px;
+                                    height: 2px;
+                                    left: 24px;
+                                    position: absolute;
+                                    width: 279px;
+                                }
+
+                                #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s {
+                                    position: relative;
+                                    left: 145px;
+                                }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s h4 {
+                                        left: 54px;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .device-status {
+                                        left: -29px;
+                                        bottom: 8px;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.primary {
+                                        left: 40px;
+                                        height: 58px;
+                                        top: -27px;
+                                        background-color: #087b04;
+                                    }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.primary.status_false {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.primary.status_true {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.primary.swflt_true {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.primary.swflt_false {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.primary.swflt_bad {
+                                            background-color: #ccc;
+                                        }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.secondary {
+                                        left: 20px;
+                                        top: -1px;
+                                        height: 25px;
+                                        background-color: #b8d7b8;
+                                    }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.secondary.status_false {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.secondary.status_true {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.secondary.swflt_true {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.secondary.swflt_false {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-l .r-s .mem-line-connector.secondary.swflt_bad {
+                                            background-color: #ccc;
+                                        }
+
+                            #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r {
+                                display: inline-block;
+                                float: left;
+                                position: relative;
+                                width: 375px;
+                            }
+
+                                #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.primary {
+                                    left: 6px;
+                                    height: 58px;
+                                    top: -27px;
+                                    background-color: #087b04;
+                                }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.primary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.primary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.primary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.primary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.primary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.secondary {
+                                    left: 20px;
+                                    top: -1px;
+                                    height: 25px;
+                                    background-color: #b8d7b8;
+                                }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.secondary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.secondary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.secondary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.secondary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .slave-block .mem-line-connector.secondary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s {
+                                    position: relative;
+                                    left: 100px;
+                                }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .device-status {
+                                        left: -29px;
+                                        bottom: 8px;
+                                    }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.primary {
+                                        left: 29px;
+                                        height: 58px;
+                                        top: -27px;
+                                        background-color: #087b04;
+                                    }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.primary.status_false {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.primary.status_true {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.primary.swflt_true {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.primary.swflt_false {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.primary.swflt_bad {
+                                            background-color: #ccc;
+                                        }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.secondary {
+                                        left: 14px;
+                                        top: -1px;
+                                        height: 25px;
+                                        background-color: #b8d7b8;
+                                    }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.secondary.status_false {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.secondary.status_true {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.secondary.swflt_true {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.secondary.swflt_false {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s .mem-line-connector.secondary.swflt_bad {
+                                            background-color: #ccc;
+                                        }
+
+                                    #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .r_s h4 {
+                                        left: 45px;
+                                    }
+
+                                #system-config-container .system-arch-middle .sym-arh-m-right .sym-arh-r .sym-arh-r-join-line {
+                                    background-color: #000;
+                                    bottom: 7px;
+                                    height: 2px;
+                                    left: 24px;
+                                    position: absolute;
+                                    width: 234px;
+                                }
+
+                        #system-config-container .system-arch-middle .mem-block {
+                            height: 83px;
+                            width: 175px;
+                            background-image: url('../../Images/system-config/mem.jpg');
+                            background-repeat: no-repeat;
+                            background-size: contain;
+                            float: left;
+                            position: relative;
+                            cursor: pointer;
+                        }
+
+                            #system-config-container .system-arch-middle .mem-block.left {
+                                background-position: left bottom;
+                            }
+
+                                #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.primary {
+                                    left: 123px;
+                                    height: 87px;
+                                    top: -27px;
+                                    background-color: #087b04;
+                                }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.primary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.primary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.primary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.primary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.primary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.secondary {
+                                    left: 146px;
+                                    background-color: #b8d7b8;
+                                }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.secondary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.secondary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.secondary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.secondary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .mem-block.left .mem-line-connector.secondary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .mem-block.left .mem-line {
+                                    left: 19px;
+                                }
+
+                                #system-config-container .system-arch-middle .mem-block.left .ball-indicator {
+                                    top: auto !important;
+                                }
+
+                                #system-config-container .system-arch-middle .mem-block.left ul {
+                                    list-style: none;
+                                    margin: 0;
+                                    padding: 0;
+                                    float: left;
+                                    position: absolute;
+                                    left: -5px;
+                                    top: 4px;
+                                }
+
+                                    #system-config-container .system-arch-middle .mem-block.left ul li {
+                                        font-size: 12px;
+                                        color: #000;
+                                        text-align: right;
+                                        margin: 9px 0;
+                                        position: relative;
+                                        padding-left: 21px;
+                                    }
+
+                            #system-config-container .system-arch-middle .mem-block.right {
+                                background-position: right bottom;
+                                position: relative;
+                                left: 34px;
+                            }
+
+                                #system-config-container .system-arch-middle .mem-block.right ul {
+                                    list-style: none;
+                                    margin: 0;
+                                    padding: 0;
+                                    float: left;
+                                    position: absolute;
+                                    right: -7px;
+                                    top: 4px;
+                                }
+
+                                    #system-config-container .system-arch-middle .mem-block.right ul li {
+                                        font-size: 12px;
+                                        color: #000;
+                                        text-align: right;
+                                        margin: 9px 0;
+                                        position: relative;
+                                        padding-left: 21px;
+                                    }
+
+                                #system-config-container .system-arch-middle .mem-block.right .mem-line-connector {
+                                    height: 60px;
+                                }
+
+                                    #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.primary {
+                                        left: 64px;
+                                        height: 87px;
+                                        top: -27px;
+                                        background-color: #087b04;
+                                    }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.primary.status_false {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.primary.status_true {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.primary.swflt_true {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.primary.swflt_false {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.primary.swflt_bad {
+                                            background-color: #ccc;
+                                        }
+
+                                    #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.secondary {
+                                        left: 87px;
+                                        background-color: #b8d7b8;
+                                    }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.secondary.status_false {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.secondary.status_true {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.secondary.swflt_true {
+                                            background-color: #ff0000;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.secondary.swflt_false {
+                                            background-color: #00ff00;
+                                        }
+
+                                        #system-config-container .system-arch-middle .mem-block.right .mem-line-connector.secondary.swflt_bad {
+                                            background-color: #ccc;
+                                        }
+
+                                #system-config-container .system-arch-middle .mem-block.right .mem-line {
+                                    left: 158px;
+                                }
+
+                                #system-config-container .system-arch-middle .mem-block.right .ball-indicator {
+                                    top: auto !important;
+                                }
+
+                        #system-config-container .system-arch-middle .slave-block {
+                            width: 132px;
+                            height: 100px;
+                            float: left;
+                        }
+
+                            #system-config-container .system-arch-middle .slave-block h4 {
+                                font-size: 11px;
+                                left: 32px;
+                                font-weight: bold;
+                                position: relative;
+                                margin: 10px 0 2px;
+                            }
+
+                            #system-config-container .system-arch-middle .slave-block .sl-left {
+                                width: 50px;
+                                float: left;
+                            }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-left .slave {
+                                    background-image: url('../../Images/system-config/slave.jpg');
+                                    background-repeat: no-repeat;
+                                    width: 40px;
+                                    height: 50px;
+                                    margin: auto;
+                                    position: relative;
+                                }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .slave .slave-line {
+                                        background-color: #000;
+                                        display: block;
+                                        height: 24px;
+                                        left: 0;
+                                        margin: auto;
+                                        position: relative;
+                                        right: 0;
+                                        top: 43px;
+                                        width: 2px;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .slave.sftplc {
+                                        background-image: url('../../Images/plc/gesfty_cpu_sys.png');
+                                        background-size: 90% 85%;
+                                        height: 52px;
+                                    }
+
+                                        #system-config-container .system-arch-middle .slave-block .sl-left .slave.sftplc.left {
+                                            background-position: left top;
+                                        }
+
+                                        #system-config-container .system-arch-middle .slave-block .sl-left .slave.sftplc.right {
+                                            background-position: right top;
+                                        }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.primary {
+                                    left: 3px;
+                                    height: 52px;
+                                    top: -52px;
+                                    background-color: #087b04;
+                                }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.primary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.primary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.primary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.primary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.primary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.secondary {
+                                    left: 19px;
+                                    height: 25px;
+                                    top: -25px;
+                                    background-color: #b8d7b8;
+                                }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.secondary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.secondary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.secondary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.secondary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-left .mem-line-connector.secondary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                            #system-config-container .system-arch-middle .slave-block .sl-right {
+                                width: 82px;
+                                float: left;
+                            }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-right ul {
+                                    list-style: none;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right ul li {
+                                        font-size: 12px;
+                                        color: #000;
+                                        text-align: right;
+                                        margin: 8px 0;
+                                        position: relative;
+                                        padding-left: 22px;
+                                    }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.primary {
+                                    left: 84px;
+                                    height: 98px;
+                                    top: -27px;
+                                    background-color: #087b04;
+                                }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.primary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.primary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.primary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.primary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.primary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.secondary {
+                                    left: 109px;
+                                    background-color: #b8d7b8;
+                                }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.secondary.status_false {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.secondary.status_true {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.secondary.swflt_true {
+                                        background-color: #ff0000;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.secondary.swflt_false {
+                                        background-color: #00ff00;
+                                    }
+
+                                    #system-config-container .system-arch-middle .slave-block .sl-right .mem-line-connector.secondary.swflt_bad {
+                                        background-color: #ccc;
+                                    }
+
+                                #system-config-container .system-arch-middle .slave-block .sl-right.middle-b ul {
+                                    position: relative;
+                                    top: 35px;
+                                    left: 77px;
+                                }
+
+                            #system-config-container .system-arch-middle .slave-block .device-status {
+                                left: 31px;
+                                bottom: 8px;
+                            }
+
+                        #system-config-container .system-arch-middle .network-txt {
+                            top: -18px;
+                        }
+
+                        #system-config-container .system-arch-middle.status_false {
+                            border-top: 2px solid #ff0000;
+                        }
+
+                        #system-config-container .system-arch-middle.status_true {
+                            border-top: 2px solid #00ff00;
+                        }
+
+                        #system-config-container .system-arch-middle .printer-connector {
+                            position: absolute;
+                            height: 62px;
+                            width: 30px;
+                            right: -29px;
+                            border-right: 2px solid #b8d7b8;
+                            border-bottom: 2px solid #b8d7b8;
+                            top: -61.4px;
+                        }
+
+                            #system-config-container .system-arch-middle .printer-connector.swflt_true {
+                                border-right: 2px solid #ff0000;
+                                border-bottom: 2px solid #ff0000;
+                            }
+
+                            #system-config-container .system-arch-middle .printer-connector.swflt_false {
+                                border-right: 2px solid #00ff00;
+                                border-bottom: 2px solid #00ff00;
+                            }
+
+                            #system-config-container .system-arch-middle .printer-connector.swflt_bad {
+                                border-right: 2px solid #ccc;
+                                border-bottom: 2px solid #ccc;
+                            }
+
+                        #system-config-container .system-arch-middle.swflt_false {
+                            border-top: 2px solid #00ff00;
+                        }
+
+                        #system-config-container .system-arch-middle.swflt_true {
+                            border-top: 2px solid #ff0000;
+                        }
+
+                        #system-config-container .system-arch-middle.swflt_bad {
+                            border-top: 2px solid #ccc;
+                        }
+
+                    #system-config-container .system-arch-bottom {
+                        margin-top: 25px;
+                        min-height: 110px;
+                        position: relative;
+                    }
+
+                        #system-config-container .system-arch-bottom .fa {
+                            position: absolute;
+                            cursor: pointer;
+                            top: -41px;
+                            margin: 0 auto;
+                            left: 4px;
+                            right: 0;
+                            display: inline-block;
+                            text-align: center;
+                            z-index: 999;
+                        }
+
+                        #system-config-container .system-arch-bottom .system-arch-bottom-left {
+                            float: left;
+                            min-height: 135px;
+                            position: relative;
+                            width: 419px;
+                            left: -18px;
+                        }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .fa {
+                                top: -30px;
+                            }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .w-100 {
+                                position: relative;
+                                top: -6px;
+                            }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .detail-tbl thead th {
+                                background-color: #f5f5f5;
+                                border: 1px solid #ddd;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-left .detail-tbl thead th.top-head {
+                                    background-color: #6e6d6b;
+                                    color: #fff;
+                                }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .detail-tbl thead th.top-head .fa {
+                                        top: 4px;
+                                        right: 9px;
+                                        left: auto;
+                                    }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .detail-tbl tbody td {
+                                padding: 2px 5px;
+                                font-size: 12px;
+                                position: relative;
+                            }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .port-status table,
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .batch-controller-status table {
+                                width: 96px;
+                                margin: 0 5px;
+                                margin-bottom: 5px;
+                                float: left;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-left .port-status table thead th,
+                                #system-config-container .system-arch-bottom .system-arch-bottom-left .batch-controller-status table thead th {
+                                    font-size: 13px;
+                                    background-color: #ddd;
+                                }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-left .port-status table tbody td,
+                                #system-config-container .system-arch-bottom .system-arch-bottom-left .batch-controller-status table tbody td {
+                                    padding: 2px 5px;
+                                    font-size: 11px;
+                                    position: relative;
+                                    width: 25px;
+                                }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .port-status table tbody td .alert_false,
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .batch-controller-status table tbody td .alert_false {
+                                        right: 0;
+                                        top: 0;
+                                    }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .port-status table tbody td .alert_true,
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .batch-controller-status table tbody td .alert_true {
+                                        right: 0;
+                                        top: 0;
+                                    }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .port-status table tbody td .alert_bad,
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-left .batch-controller-status table tbody td .alert_bad {
+                                        right: 0;
+                                        top: 0;
+                                    }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-left .terminal-child-data-col {
+                                position: relative;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-left .terminal-child-data-col .fa {
+                                    position: absolute;
+                                    left: -137px;
+                                    right: auto;
+                                    top: 0;
+                                    bottom: 0;
+                                    margin: auto;
+                                    height: 12px;
+                                    font-size: 14px;
+                                }
+
+                        #system-config-container .system-arch-bottom .system-arch-bottom-middle {
+                            float: left;
+                            min-height: 135px;
+                            width: 370px;
+                            position: relative;
+                            left: 100px;
+                        }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-l {
+                                float: left;
+                                min-height: 135px;
+                                width: 250px;
+                                left: 44px;
+                                position: relative;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-l .fa {
+                                    left: -85px;
+                                }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-l .tree-box {
+                                    position: relative;
+                                    top: -26px;
+                                    left: -23px;
+                                }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-r {
+                                float: right;
+                                min-height: 135px;
+                                width: 240px;
+                                position: relative;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-r .fa {
+                                    left: -49px;
+                                }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-r .row-v-liner {
+                                    height: 90px;
+                                }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-middle .system-arch-b-m-r .tree-box {
+                                    position: relative;
+                                    top: -25px;
+                                    left: -38px;
+                                    right: 0;
+                                    height: auto;
+                                    float: right;
+                                }
+
+                        #system-config-container .system-arch-bottom .system-arch-bottom-right {
+                            float: right;
+                            min-height: 135px;
+                            width: 262px;
+                            position: relative;
+                            left: -69px;
+                        }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-right .tree-box {
+                                position: relative;
+                                top: -28px;
+                                height: 240px;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-right .tree-box .row-v-liner {
+                                    height: 215px;
+                                }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-right .fa {
+                                left: -54px;
+                            }
+
+                            #system-config-container .system-arch-bottom .system-arch-bottom-right .device-status {
+                                position: relative;
+                                left: -33px;
+                                top: -21px;
+                            }
+
+                                #system-config-container .system-arch-bottom .system-arch-bottom-right .device-status table {
+                                    width: 89%;
+                                    margin: auto;
+                                    float: right;
+                                    margin-bottom: 5px;
+                                }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-right .device-status table thead th {
+                                        text-align: center;
+                                        font-size: 12px;
+                                    }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-right .device-status table tbody th {
+                                        padding: 2px 5px;
+                                        font-size: 11px;
+                                    }
+
+                                    #system-config-container .system-arch-bottom .system-arch-bottom-right .device-status table tbody td {
+                                        padding: 2px 5px;
+                                        font-size: 11px;
+                                    }
+
+                    #system-config-container .system-arch-top .printer-connector {
+                        left: 3px;
+                        width: 2px;
+                        background-color: #087b04;
+                        position: relative;
+                        height: 33px;
+                        display: inline-block;
+                        top: 77px;
+                        border: 0px;
+                        bottom: auto;
+                    }
+    </style>
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">System Config View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="system-config-wrapper">
+        <div id="system-config-container">
+            <div class="system-arch-top @PriConn">
+                <div class="screen-block">
+                    <h4>LRCA</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceTag.ToUpper() == "LRC1").FirstOrDefault();
+                                <li>
+                                    <div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP
+                                </li>
+                                <li>
+                                    <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp device-status tooltips LRC1_ROLE" title="Current Role of LRC1"></span>
+                    <span class="screen-block-txt mid device-status tooltips LRC1_STATE" title="Synchronization Status of LRC1"></span>
+                    @*<span class="screen-block-txt bot device-status tooltips LRC1_WITNESS_NAME" title="Witness Machine Name connected to LRC1"></span>*@
+                </div>
+                <div class="screen-block">
+                    <h4>LRCB</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceTag.ToUpper() == "LRC2").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp device-status tooltips LRC2_ROLE" title="Current Role of LRC2"></span>
+                    <span class="screen-block-txt mid device-status tooltips LRC2_STATE" title="Synchronization Status of LRC2"></span>
+                    @*<span class="screen-block-txt bot device-status tooltips LRC2_WITNESS_NAME" title="Witness Machine Name connected to LRC2"></span>*@
+                </div>
+                <div class="screen-block">
+                    <h4>WITNESS-01</h4>
+                    @*<h5>Witness</h5>*@
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "Witness-1").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp lrc1 device-status tooltips" title="Witness Connectivity with LRC1">
+                        LRC1:
+                        <span class="circle-cont-xsm">
+                            <span class="LRC1_WIT_STATE status_connected"></span>
+                        </span>
+                    </span>
+                    <span class="screen-block-txt mid lrc2 device-status tooltips" title="Witness Connectivity with LRC2">
+                        LRC2:
+                        <span class="circle-cont-xsm">
+                            <span class="LRC2_WIT_STATE status_disconnected"></span>
+                        </span>
+                    </span>
+                </div>
+                <div class="screen-block">
+                    <h4>OIC-01</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "OIC-01").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>OIC-02</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "OIC-02").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>TM-PC</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "TM-PC").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>EWS-PC</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "EWS-PC").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>TTES</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "TTES").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>SECURITY</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "SECURITY").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <span class="network-txt">Primary Network</span>
+                <span class="sys-printer"></span>
+                <ul class="printer-ipaddress">
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "PRINTER-1").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                            @*
+                                <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>*@
+                        }
+                    }
+                </ul>
+                <span class="printer-connector @PriConn"></span>
+
+            </div>
+            <div class="system-arch-middle @SecConn">
+                <div class="sym-arh-m-left">
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <div class="mem-block left" title="Click to view Port-wise Details">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <span class="mem-line"></span>
+                                <div class="sl-right">
+                                    <ul>
+
+                                        <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                        <li><div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)" style="top:21px"></div>@Dev.SecondaryIP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <div class="mem-block right" title="Click to view Port-wise Details">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <span class="mem-line"></span>
+                                <div class="sl-right">
+                                    <ul>
+                                        <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                        <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)" style="top:21px"></div>@Dev.SecondaryIP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="sym-arh-m-left-join-line"></div>
+                </div>
+                <div class="sym-arh-m-right">
+                    <div class="sym-arh-l">
+                        <div class="slave-block">
+                            <h4>SFTPLC-A</h4>
+                            <div class="sl-left">
+                                <div class="slave sftplc left">
+                                    <span class="mem-line-connector primary @PriConn"></span>
+                                    <span class="mem-line-connector secondary @SecConn"></span>
+                                    <span class="slave-line"></span>
+                                </div>
+                            </div>
+                            <div class="sl-right middle-b">
+                                <ul class="">
+                                    @{ Dev = Model.Where(x => x.DeviceName == "Safety-PLC-01").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            @*
+                                                <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>*@
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status SFTYPLC_01_MASTER primary_true"></span>
+                        </div>
+
+                        <div class="slave-block r-s">
+                            <h4>SFTPLC-B</h4>
+                            <div class="sl-left">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <div class="slave sftplc right"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="hide sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "Safety-PLC-02").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div></li>
+                                            @*
+                                                <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>*@
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status SFTYPLC_02_MASTER primary_false"></span>
+                        </div>
+                        <div class="sym-arh-l-join-line"></div>
+                    </div>
+                    <div class="sym-arh-r">
+                        <div class="slave-block">
+                            <h4>TAS PLC-01</h4>
+                            <span class="mem-line-connector primary @PriConn"></span>
+                            <span class="mem-line-connector secondary @SecConn"></span>
+                            <div class="sl-left">
+                                <div class="slave"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "TAS PLC-01").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left  @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li> <div class="ball-indicator left  @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status PLC_01_PRIM"></span>
+                        </div>
+                        <div class="slave-block r_s">
+                            <span class="mem-line-connector primary @PriConn"></span>
+                            <span class="mem-line-connector secondary @SecConn"></span>
+                            <h4>TAS PLC-02</h4>
+                            <div class="sl-left">
+                                <div class="slave"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "TAS PLC-02").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left  @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li> <div class="ball-indicator left  @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status PLC_02_PRIM"></span>
+                        </div>
+                        <div class="sym-arh-r-join-line"></div>
+                    </div>
+                </div>
+                <span class="network-txt">Secondary Network</span>
+                <span class="printer-connector hide @SecConn"></span>
+            </div>
+            <div class="system-arch-bottom">
+                <div class="system-arch-bottom-left">
+
+                    <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                    <div class="w-100">
+                        <div class="col-lg-6">
+                            <table class="table-striped detail-tbl w-100 tbl-portwise-dtl tooltips" title="Click to view Port-wise Details">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center top-head">
+                                            TS-01
+                                            @*<i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i>*@
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Port#</th>
+                                        <th class="text-center">Device</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                                        List<int> lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                                        foreach (int port in lstPorts)
+                                        {
+                                            string DSName = "";
+                                            List<ConnectionTags>
+                                                ConnTags = TSPortData.Where(x => x.TSName == "TS-01" && x.PortNo == port).ToList();
+                                            if (ConnTags.Count() > 0)
+                                            { DSName = ConnTags.FirstOrDefault().DSName; }
+                                            <tr>
+                                                <td class="tbl-lbl" style="width: 41px;">@(port)</td>
+                                                <td class="tbl-val" style="width: 80px;"><span>@(DSName)</span></td>
+
+                                                @*<td class="tbl-val terminal-child-data-col hide">
+                                                        <i class="fa fa-plus-circle " aria-hidden="true"></i>
+                                                        <table class="table-striped detail-tbl ">
+                                                            <tbody>
+                                                                @{
+
+                                                                    for (int i = 0; i < ConnTags.Count(); i = i + 2)
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="tbl-lbl tooltips" title="@(ConnTags[i].DeviceName)">@(ConnTags[i].DeviceName.Replace("MFM-", "").Replace("DM-", "").Replace("BG-CR-", ""))</td>
+                                                                            <td class="tbl-val">
+                                                                                <div class="circle-cont-xsm">
+                                                                                    <span class="@(ConnTags[i].ConnTag)"></span>
+                                                                                </div>
+                                                                            </td>
+                                                                            @if (i + 1 < ConnTags.Count())
+                                                                            {
+                                                                                <td class="tbl-lbl tooltips" title="@(ConnTags[i+1].DeviceName)">@(ConnTags[i + 1].DeviceName.Replace("MFM-", "").Replace("DM-", "").Replace("BG-CR-", ""))</td>
+                                                                                <td class="tbl-val">
+                                                                                    <div class="circle-cont-xsm">
+                                                                                        <span class="@(ConnTags[i+1].ConnTag)"></span>
+                                                                                    </div>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </td>*@
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="col-lg-6">
+
+                            <table class="table-striped detail-tbl w-100 tbl-portwise-dtl tooltips" title="Click to view Port-wise Details">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center top-head">
+                                            TS-02
+                                            @*<i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i>*@
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Port#</th>
+                                        <th class="text-center">Device</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                                        lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                                        foreach (int port in lstPorts)
+                                        {
+                                            string DSName = "";
+                                            List<ConnectionTags>
+                                                ConnTags = TSPortData.Where(x => x.TSName == "TS-02" && x.PortNo == port).ToList();
+                                            if (ConnTags.Count() > 0)
+                                            { DSName = ConnTags.FirstOrDefault().DSName; }
+                                            <tr>
+                                                <td class="tbl-lbl" style="width: 30px;">@(port)</td>
+                                                <td class="tbl-val" style="width: 50px;"><span>@(DSName)</span></td>
+                                                @*<td class="tbl-val terminal-child-data-col hide">
+                                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+
+                                                        <table class="table-striped detail-tbl">
+                                                            <tbody>
+                                                                @{
+
+                                                                    for (int i = 0; i < ConnTags.Count(); i = i + 2)
+                                                                    {
+                                                                        <tr>
+                                                                            <td class="tbl-lbl tooltips" title="@(ConnTags[i].DeviceName)">@(ConnTags[i].DeviceName.Replace("MFM-", "").Replace("DM-", "").Replace("BG-CR-", ""))</td>
+                                                                            <td class="tbl-val">
+                                                                                <div class="circle-cont-xsm">
+                                                                                    <span class="@(ConnTags[i].ConnTag)"></span>
+                                                                                </div>
+                                                                            </td>
+                                                                            @if (i + 1 < ConnTags.Count())
+                                                                            {
+                                                                                <td class="tbl-lbl tooltips" title="@(ConnTags[i+1].DeviceName)">@(ConnTags[i + 1].DeviceName.Replace("MFM-", "").Replace("DM-", "").Replace("BG-CR-", ""))</td>
+                                                                                <td class="tbl-val">
+                                                                                    <div class="circle-cont-xsm">
+                                                                                        <span class="@(ConnTags[i+1].ConnTag)"></span>
+                                                                                    </div>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </td>*@
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="system-arch-bottom-middle">
+                    <div class="system-arch-b-m-l">
+                        <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                        <div class="tree-box">
+                            <div class="tree-box-row">
+                                <div class="box-left">
+                                    <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                        Fire Pump
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                                <div class="row-v-liner"></div>
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenROSOVViewHMI);">
+                                        ROSOV
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tree-box-row push-up">
+                                <div class="box-left">
+                                    <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                        <span>Jockey Pump</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenAOPView);">
+                                        <span>Vibrating Fork</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tree-box-row push-up t-minus60">
+                                <div class="box-left">
+                                    <div class="tree-box-cont get-hover" onclick="GoToView(OpenESDViewHMI);">
+                                        <span>ESD Push Button</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenRadarRelays);">
+                                        <span>SIL Radar Gauge</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tree-box-row push-up t-minus85">
+                                <div class="box-left">
+                                    <div class="tree-box-cont get-hover" onclick="GoToView(OpenPressureTransmitters);">
+                                        <span>SIL Hydrant PT</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenSirenView);">
+                                        <span>Wailing Siren</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tree-box-row push-up t-minus106">
+                                <div class="box-left">
+                                    <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                        <span>HCD</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenSecurityView);">
+                                        <span>Smoke Detectors</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tree-box-row push-up t-minus128">
+                                <div class="box-left">
+                                    <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                        <span>Hooters</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenDBBVViewHMI);">
+                                        <span>DBBV</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="system-arch-b-m-r hide">
+
+
+                    </div>
+                </div>
+                <div class="system-arch-bottom-right">
+                    <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                    <div class="tree-box">
+                        <div class="tree-box-row">
+                            <div class="box-left">
+                                <div class="tree-box-cont get-hover" onclick="GoToView(OpenBGViewHMI);">
+                                    Barrier Gate
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                            <div class="row-v-liner"></div>
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenPressureTransmitters);">
+                                    Header Line PT
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-box-row push-up">
+                            <div class="box-left">
+                                <div class="tree-box-cont get-hover" onclick="GoToView(OpenTOBVViewHMI);">
+                                    TOBV
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(function () { OpenUPSViewHMI('Process') });">
+                                    UPS
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-box-row push-up t-minus50">
+                            <div class="box-left">
+                                <div class="tree-box-cont get-hover" onclick="GoToView(OpenPumpsViewHMI);">
+                                    TTL Pumps
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenDykeValveView);">
+                                    Dyke Valves
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-box-row push-up t-minus68">
+                            <div class="box-left">
+                                <div class="tree-box-cont get-hover" onclick="GoToView(OpenPumpsViewHMI);">
+                                    TWL Pumps
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenVFDViewHMI);">
+                                    VFD
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="device-status">
+                        <table class="table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="3" class="text-center" style="background-color: antiquewhite;">CIU Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th width="45%">CIU-01</th>
+                                    <td class="TFMS_PRIMARY_ACTIVE ciu-01"></td>
+                                    <td class="tbl-val w-20">
+                                        <div class="circle-cont-xsm">
+                                            <span class="CIU01_HEALTHY"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>CIU-02</th>
+                                    <td class="TFMS_PRIMARY_ACTIVE ciu-02"></td>
+                                    <td class="tbl-val w-20">
+                                        <div class="circle-cont-xsm">
+                                            <span class="CIU02_HEALTHY"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-center" style="background-color: antiquewhite;">WDM Status</th>
+                                </tr>
+                                <tr>
+                                    <th>WDM-01</th>
+                                    <td class="WDM_PHYSICAL_ID wdm-01"></td>
+                                    <td class="tbl-val w-20">
+                                        <div class="circle-cont-xsm">
+                                            <span class="WDM_CONN01_S01"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>WDM-02</th>
+                                    <td class="WDM_PHYSICAL_ID wdm-02"></td>
+                                    <td class="tbl-val w-20">
+                                        <div class="circle-cont-xsm">
+                                            <span class="WDM_CONN02_S01"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>WDM Sync Status</th>
+                                    <td colspan="2" class="WDM_SYNC_STATE wdm-sync-state"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mem-block-tbl" id="detTS01">
+    <h1>TS Details</h1><i class="fa fa-window-close" aria-hidden="true"></i>
+    <div class="mem-block-tbl-cont">
+        <div class="col-lg-6 ts-01">
+
+            <table class="table-striped detail-tbl w-100">
+                <thead>
+                    <tr>
+                        <th colspan="3" class="text-center top-head">TS-01 <i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i></th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Port#</th>
+                        <th class="text-center" colspan="2">Device</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                        lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                        foreach (int port in lstPorts)
+                        {
+                            string DSName = "";
+                            List<ConnectionTags>
+                                ConnTags = TSPortData.Where(x => x.TSName == "TS-01" && x.PortNo == port).ToList();
+                            if (ConnTags.Count() > 0)
+                            { DSName = ConnTags.FirstOrDefault().DSName; }
+                            <tr>
+                                <td class="tbl-lbl" style="width: 42px;">@(port)</td>
+                                <td class="tbl-val" style="width: 95px;"><span>@(DSName)</span></td>
+                                <td class="tbl-val terminal-child-data-col">
+
+                                    <i class="fa fa-minus-circle " aria-hidden="true"></i>
+                                    <table class="table-striped detail-tbl ">
+                                        <tbody>
+                                            @{
+
+                                                for (int i = 0; i < ConnTags.Count(); i = i + 2)
+                                                {
+                                                    <tr>
+                                                        <td class="tbl-lbl tooltips" title="@(ConnTags[i].DeviceName)">@(ConnTags[i].DeviceName)</td>
+                                                        <td class="tbl-val">
+                                                            <div class="circle-cont-xsm">
+                                                                <span class="@(ConnTags[i].ConnTag)"></span>
+                                                            </div>
+                                                        </td>
+                                                        @if (i + 1 < ConnTags.Count())
+                                                        {
+                                                            <td class="tbl-lbl tooltips" title="@(ConnTags[i+1].DeviceName)">@(ConnTags[i + 1].DeviceName)</td>
+                                                            <td class="tbl-val">
+                                                                <div class="circle-cont-xsm">
+                                                                    <span class="@(ConnTags[i+1].ConnTag)"></span>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+
+                                </td>
+
+                            </tr>
+                                                }
+                    }
+                </tbody>
+            </table>
+
+
+
+        </div>
+        <div class="col-lg-6 ts-02">
+
+            <table class="table-striped detail-tbl w-100">
+                <thead>
+                    <tr>
+                        <th colspan="3" class="text-center top-head">TS-02 <i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i></th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Port#</th>
+                        <th class="text-center" colspan="2">Device</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                        lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                        foreach (int port in lstPorts)
+                        {
+                            string DSName = "";
+                            List<ConnectionTags>
+                                ConnTags = TSPortData.Where(x => x.TSName == "TS-02" && x.PortNo == port).ToList();
+                            if (ConnTags.Count() > 0)
+                            { DSName = ConnTags.FirstOrDefault().DSName; }
+                            <tr>
+                                <td class="tbl-lbl" style="width: 42px;">@(port)</td>
+                                <td class="tbl-val" style="width: 95px;"><span>@(DSName)</span></td>
+                                <td class="tbl-val terminal-child-data-col">
+                                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
+
+                                    <table class="table-striped detail-tbl">
+                                        <tbody>
+                                            @{
+
+                                                for (int i = 0; i < ConnTags.Count(); i = i + 2)
+                                                {
+                                                    <tr>
+                                                        <td class="tbl-lbl tooltips" title="@(ConnTags[i].DeviceName)">@(ConnTags[i].DeviceName)</td>
+                                                        <td class="tbl-val">
+                                                            <div class="circle-cont-xsm">
+                                                                <span class="@(ConnTags[i].ConnTag)"></span>
+                                                            </div>
+                                                        </td>
+                                                        @if (i + 1 < ConnTags.Count())
+                                                        {
+                                                            <td class="tbl-lbl tooltips" title="@(ConnTags[i+1].DeviceName)">@(ConnTags[i + 1].DeviceName)</td>
+                                                            <td class="tbl-val">
+                                                                <div class="circle-cont-xsm">
+                                                                    <span class="@(ConnTags[i+1].ConnTag)"></span>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                            </tr>
+                                                }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<div class="mem-block-tbl" id="detTS02">
+    <h1>TS-02</h1><i class="fa fa-window-close" aria-hidden="true"></i>
+</div>
+
+
+<script src="~/Scripts/PageJS/PlantView/SystemConfigView/Index.js"></script>
+
+<script type="text/javascript">
+
+    $('.mem-block-tbl').draggable();
+
+    $(".tree-box-toggle-icon").click(function () {
+        if ($(this).hasClass('fa-plus-circle')) {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        } else {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        }
+        $(this).next().slideToggle();
+    });
+
+    $(".terminal-child-data-col .fa").click(function () {
+        var ele = $(this);
+        if ($(this).hasClass('fa-plus-circle')) {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        } else {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        }
+        $(this).siblings().slideToggle();
+        $(this).parents().find('.ts-server-toggle-icon').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        
+
+        //var chTbl = $(this).parents('.detail-tbl').find('.terminal-child-data-col table');
+
+        //    if (chTbl.is(':visible')) {
+        //        ele.parents().find('.ts-server-toggle-icon').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        //    }
+
+    });
+
+
+    $(".ts-server-toggle-icon").click(function () {
+        var ele = $(this);
+        //showHideContent($(this));
+        // $(this).toggleClass('fa-minus-circle');
+        // 
+        if ($(this).hasClass('fa-minus-circle')) {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        } else {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        }
+
+
+        var tsTbl = $(this).closest('table').find('tbody');
+        var childTblIcon = tsTbl.find('.terminal-child-data-col .fa');
+        var childTbl = tsTbl.find('.terminal-child-data-col .detail-tbl');
+
+        if (childTblIcon.hasClass('fa-minus-circle')) {
+            childTblIcon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            childTbl.hide();
+        } else {
+            childTblIcon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            childTbl.show();
+        }
+
+
+        //tsTbl.slideToggle();
+    });
+
+    $(".tbl-portwise-dtl").click(function () {
+        showhideMemBlockTbl(this);
+    });
+
+    $(".mem-block").click(function () {
+        showhideMemBlockTbl(this);
+    });
+
+    $(".mem-block-tbl .fa-window-close").click(function () {
+        $(this).parent().slideUp();
+    });
+
+    function showhideMemBlockTbl(ele) {
+        if (!$(".mem-block-tbl").is(":visible")) {
+            $('#detTS01').slideToggle();
+            if ($(ele).hasClass('left')) {
+                //$(".mem-block-tbl h1").text('TS-01');
+                // $('#detTS01').slideToggle();
+            } else {
+                //$(".mem-block-tbl h1").text('TS-02');
+                //$('#detTS02').slideToggle();
+            }
+        }
+        else {
+            $('#detTS01').slideToggle();
+        }
+    }
+</script>

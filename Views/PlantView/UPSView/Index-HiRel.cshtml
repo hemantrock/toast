@@ -1,0 +1,552 @@
+﻿@using TOAST.Data.Model;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - UPS View";
+    Layout = null;
+    tblDeviceMaster oUPS01 = (Model.Where(x => x.DeviceName.Contains("01")).FirstOrDefault() ?? new tblDeviceMaster());
+    tblDeviceMaster oUPS02 = (Model.Where(x => x.DeviceName.Contains("02")).FirstOrDefault() ?? new tblDeviceMaster());
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Process UPS View</h3>
+
+    </div>
+</div>
+<div class="row ups-status-container">
+    <div class="col-lg-12 m-t-40">
+        <div class="col-lg-2 no-padd-right">
+            <div class="ups-bg left Hitachi single">
+                <table class="detail-tbl">
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS01.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS01.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ups-bg right Hitachi single">
+                <table class="detail-tbl">
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS02.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS02.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <br />
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="3">STATUS</th></tr>
+                    <tr>
+                        <th class="text-center" style="width: 60%">Parameter</th>
+                        <th class="text-center tooltips" style="width: 20%">UPS-01</th>
+                        <th class="text-center tooltips" style="width: 20%">UPS-02</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tooltips" title="Rectifier Started">Rectifier Started</td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS01+"_RECT_STARTED")"></span></span></td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS02+"_RECT_STARTED")"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Inverter Started">Inverter Started</td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS01+"_INV_STARTED")"></span></span></td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS02+"_INV_STARTED")"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Bypass (ALT) is Present">Bypass (ALT) is Present</td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS01+"_ALT_BYPASS")"></span></span></td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS02+"_ALT_BYPASS")"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Static Switch is on INV Supply">Static Sw.on Inv. Supply</td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS01+"_STATIC_SW_INV")"></span></span></td>
+                        <td><span class="circle-cont-sm"><span class="@(oUPS02+"_STATIC_SW_INV")"></span></span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-lg-10">
+            <div class="col-lg-12">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="9">ALERTS</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 26%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 4%">UPS-02</th>
+
+                            <th class="text-center" style="width: 25%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 4%">UPS-02</th>
+
+                            <th class="text-center" style="width: 24%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 5%">UPS-02</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Main Voltage higher than Reference">Mains Volt. High</td>
+                            <td><span class="@(oUPS01+"_MAINS_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_MAINS_VOLT_HIGH")"></span></td>
+                            <td class="tooltips" title="Main Voltage Lower than Reference">Mains Volt. Low</td>
+                            <td><span class="@(oUPS01+"_MAINS_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_MAINS_VOLT_LOW")"></span></td>
+                            <td class="tooltips" title="Main Frequency Out of Tolerance">Main Freq Out of Tolerance</td>
+                            <td><span class="@(oUPS01+"_MAINS_FREQ_OUT_TOL")"></span></td>
+                            <td><span class="@(oUPS02+"_MAINS_FREQ_OUT_TOL")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Rectifier Voltage Higher than Reference">Rectifier Volt. High</td>
+                            <td><span class="@(oUPS01+"_RECT_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_RECT_VOLT_HIGH")"></span></td>
+                            <td class="tooltips" title="Mains Fail">Mains Fail</td>
+                            <td><span class="@(oUPS01+"_MAINS_FAIL")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_MAINS_FAIL")"></span></td>
+                            <td class="tooltips" title="Rectifier Temperature High">Rectifier Temp. High</td>
+                            <td><span class="@(oUPS01+"_RECT_TEMP_HIGH")"></span></td>
+                            <td><span class="@(oUPS02+"_RECT_TEMP_HIGH")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Rectifier tripped due to Saturation">Rectifier Trip Saturation</td>
+                            <td><span class="@(oUPS01+"_RECT_TRIP_SAT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_RECT_TRIP_SAT")"></span></td>
+                            <td class="tooltips" title="Precharge Feedback Failed">Precharge Fdbk Fail</td>
+                            <td><span class="@(oUPS01+"_PRECHARGE_FB")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_PRECHARGE_FB")"></span></td>
+                            <td class="tooltips" title="Phase Sequence is Reversed">Ph. Seq. Reversed</td>
+                            <td><span class="@(oUPS01+"_INP_PH_SEQ_REV")"></span></td>
+                            <td><span class="@(oUPS02+"_INP_PH_SEQ_REV")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Rectifier Input is not in Sync">Rectifier Inp. not Sync</td>
+                            <td><span class="@(oUPS01+"_RECT_INP_NOT_SYNC")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_RECT_INP_NOT_SYNC")"></span></td>
+                            <td class="tooltips" title="Rectifier Trip Due to Main's Low">Rectifier Trip Main Low</td>
+                            <td><span class="@(oUPS01+"_RECT_TRIP_MAINS_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_RECT_TRIP_MAINS_LOW")"></span></td>
+                            <td class="tooltips" title="Rectifier Trip Due to Main's High">Rectifier Trip Main High</td>
+                            <td><span class="@(oUPS01+"_RECT_TRIP_MAINS_HIGH")"></span></td>
+                            <td><span class="@(oUPS02+"_RECT_TRIP_MAINS_HIGH")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="CAN Communication with another UPS is Fail">CAN Comm. another UPS Fail</td>
+                            <td><span class="@(oUPS01+"_CAN_COMM_FAIL")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_CAN_COMM_FAIL")"></span></td>
+                            <td class="tooltips" title="Rectifier trip due to its magnetic temperature is above limit ">Rect. Trip Magnetic Temp Over Limit</td>
+                            <td><span class="@(oUPS01+"_RECT_TRIP_MAG_TEMP_OVRLMT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_RECT_TRIP_MAG_TEMP_OVRLMT")"></span></td>
+                            <td class="tooltips" title="Inverter trip due to its magnetic temperature is above limit ">Inverter. Trip Magnetic Temp Over Limit</td>
+                            <td><span class="@(oUPS01+"_INV_TRIP_MAG_TEMP_OVRLMT")"></span></td>
+                            <td><span class="@(oUPS02+"_INV_TRIP_MAG_TEMP_OVRLMT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Manual transfer Done">Manual transfer Done</td>
+                            <td><span class="@(oUPS01+"_MANUAL_TRNSFR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_MANUAL_TRNSFR")"></span></td>
+                            <td class="tooltips" title="Battery Disconnected due to low voltage">Low Battery Trip</td>
+                            <td><span class="@(oUPS01+"_BATTERY_LOW_TRIP")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_BATTERY_LOW_TRIP")"></span></td>
+                            <td class="tooltips" title="Inverter trip due to saturation">Inverter trip (Saturation)</td>
+                            <td><span class="@(oUPS01+"_INV_TRIP_SAT")"></span></td>
+                            <td><span class="@(oUPS02+"_INV_TRIP_SAT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Static Switch is Trip.">Inverter Static Switch Trip.</td>
+                            <td><span class="@(oUPS01+"_INV_TRIP_STATIC_SW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_TRIP_STATIC_SW")"></span></td>
+                            <td class="tooltips" title="Load is on Bypass">Load is on Bypass</td>
+                            <td><span class="@(oUPS01+"_LOAD_ON_BYPASS")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_LOAD_ON_BYPASS")"></span></td>
+                            <td class="tooltips" title="Inverter Voltage is Low">Inverter Voltage Low</td>
+                            <td><span class="@(oUPS01+"_INV_VOLT_LOW")"></span></td>
+                            <td><span class="@(oUPS02+"_INV_VOLT_LOW")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage is High">Inverter Voltage High</td>
+                            <td><span class="@(oUPS01+"_INV_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_VOLT_HIGH")"></span></td>
+                            <td class="tooltips" title="Alternate Voltage is Low">Alternate Voltage Low</td>
+                            <td><span class="@(oUPS01+"_ALT_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_ALT_VOLT_LOW")"></span></td>
+                            <td class="tooltips" title="Alternate Voltage is High">Alternate Voltage High</td>
+                            <td><span class="@(oUPS01+"_ALT_VOLT_HIGH")"></span></td>
+                            <td><span class="@(oUPS02+"_ALT_VOLT_HIGH")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Output Voltage is Low">Output Voltage Low</td>
+                            <td><span class="@(oUPS01+"_OUT_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_VOLT_LOW")"></span></td>
+                            <td class="tooltips" title="Inverter is tripped">Inverter tripped</td>
+                            <td><span class="@(oUPS01+"_INV_TRIP")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_TRIP")"></span></td>
+                            <td class="tooltips" title="Alternate Source frequency out of Tolerance">Alt. Src freq. over Tolerance</td>
+                            <td><span class="@(oUPS01+"_ALT_FREQ_OUT_TOL")"></span></td>
+                            <td><span class="@(oUPS02+"_ALT_FREQ_OUT_TOL")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter & Alternate Source are out of sync">Inv. & Alt Src out of sync</td>
+                            <td><span class="@(oUPS01+"_INV_ALT_NOT_SYNC")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_ALT_NOT_SYNC")"></span></td>
+                            <td class="tooltips" title="UPS is Overloaded">Overloaded</td>
+                            <td><span class="@(oUPS01+"_OVERLOAD")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OVERLOAD")"></span></td>
+                            <td class="tooltips" title="Tripped due to Overload">Overload & Tripped</td>
+                            <td><span class="@(oUPS01+"_TRIP_OVERLOAD")"></span></td>
+                            <td><span class="@(oUPS02+"_TRIP_OVERLOAD")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Output Current Out of Limit">Output Curr. Out Limit</td>
+                            <td><span class="@(oUPS01+"_OUT_CURR_OUT_LIMIT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_CURR_OUT_LIMIT")"></span></td>
+                            <td class="tooltips" title="Inverter Over Temperature">Inv. Over Temp.</td>
+                            <td><span class="@(oUPS01+"_INV_OVER_TEMP")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_OVER_TEMP")"></span></td>
+                            <td class="tooltips" title="Static Switch of Inverter failed">Static Sw. Inv. failed</td>
+                            <td><span class="@(oUPS01+"_INV_STATIC_SW_FAIL")"></span></td>
+                            <td><span class="@(oUPS02+"_INV_STATIC_SW_FAIL")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Static Switch of Alternate failed">Static Sw. Alt. failed</td>
+                            <td><span class="@(oUPS01+"_ALT_STATIC_SW_FAIL")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_ALT_STATIC_SW_FAIL")"></span></td>
+                            <td class="tooltips" title="Battery Voltage Low">Battery Voltage Low</td>
+                            <td><span class="@(oUPS01+"_BATTERY_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_BATTERY_VOLT_LOW")"></span></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr></tr>
+                        <tr></tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="col-lg-12">
+                <table class="table-striped app-tbl" style="margin-top: 5px;">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="12">DATA</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 17%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 4%">UPS-02</th>
+
+                            <th class="text-center" style="width: 17%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 4%">UPS-02</th>
+
+                            <th class="text-center" style="width: 17%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 4%">UPS-02</th>
+
+                            <th class="text-center" style="width: 17%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 4%">UPS-02</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Input Voltage RY">Input Volt RY</td>
+                            <td><span class="@(oUPS01+"_INP_VOLT_RY")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INP_VOLT_RY")"></span></td>
+                            <td class="tooltips" title="Input Current RY">Input Curr. RY</td>
+                            <td><span class="@(oUPS01+"_INP_CURR_RY")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INP_CURR_RY")"></span></td>
+                            <td class="tooltips" title="Input Voltage YB">Input Volt YB</td>
+                            <td><span class="@(oUPS01+"_INP_VOLT_YB")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INP_VOLT_YB")"></span></td>
+                            <td class="tooltips" title="Input Current YB">Input Curr. YB</td>
+                            <td><span class="@(oUPS01+"_INP_CURR_YB")"></span></td>
+                            <td><span class="@(oUPS02+"_INP_CURR_YB")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Input Voltage BR">Input Volt. BR</td>
+                            <td><span class="@(oUPS01+"_INP_VOLT_BR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INP_VOLT_BR")"></span></td>
+                            <td class="tooltips" title="Input Current BR">Input Curr. BR</td>
+                            <td><span class="@(oUPS01+"_INP_CURR_BR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INP_CURR_BR")"></span></td>
+                            <td class="tooltips" title="Input Mains Frequency">Input Hz</td>
+                            <td><span class="@(oUPS01+"_INP_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INP_FREQ")"></span></td>
+                            <td class="tooltips" title="Output Voltage 1 Ph Phase-Neutral">Output Volt. 1Ph</td>
+                            <td><span class="@(oUPS01+"_OUT_VOLT_PN")"></span></td>
+                            <td><span class="@(oUPS02+"_OUT_VOLT_PN")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Output Current 1 Ph Phase-Neutral">Output Curr. 1Ph</td>
+                            <td><span class="@(oUPS01+"_OUT_CURR_PN")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_CURR_PN")"></span></td>
+                            <td class="tooltips" title="Output Frequency">Output Hz</td>
+                            <td><span class="@(oUPS01+"_OUT_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_FREQ")"></span></td>
+                            <td class="tooltips" title="Bypass Voltage">Bypass Voltage</td>
+                            <td><span class="@(oUPS01+"_BYPASS_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_BYPASS_VOLT")"></span></td>
+                            <td class="tooltips" title="Bypass Current">Bypass Current</td>
+                            <td><span class="@(oUPS01+"_BYPASS_CURR")"></span></td>
+                            <td><span class="@(oUPS02+"_BYPASS_CURR")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Bypass Frequency">Bypass Hz</td>
+                            <td><span class="@(oUPS01+"_BYPASS_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_BYPASS_FREQ")"></span></td>
+                            <td class="tooltips" title="Inverter Voltage">Inverter Voltage</td>
+                            <td><span class="@(oUPS01+"_INV_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_VOLT")"></span></td>
+                            <td class="tooltips" title="Inverter Current">Inverter Current</td>
+                            <td><span class="@(oUPS01+"_INV_CURR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_INV_CURR")"></span></td>
+                            <td class="tooltips" title="Inverter Frequency">Inverter Hz</td>
+                            <td><span class="@(oUPS01+"_INV_FREQ")"></span></td>
+                            <td><span class="@(oUPS02+"_INV_FREQ")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="UPS Output Power (In KVA)">UPS Out Pow KVA</td>
+                            <td><span class="@(oUPS01+"_OUT_POW_KVA")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_POW_KVA")"></span></td>
+                            <td class="tooltips" title="UPS Output Power (In KW)">UPS Out Pow KW</td>
+                            <td><span class="@(oUPS01+"_OUT_POW_KW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_POW_KW")"></span></td>
+                            <td class="tooltips" title="UPS Output Power Factor">UPS Out Pow Factor</td>
+                            <td><span class="@(oUPS01+"_OUT_POWFACTOR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_OUT_POWFACTOR")"></span></td>
+                            <td class="tooltips" title="Total Output Power (In KVA)">Total Out Pow KVA</td>
+                            <td><span class="@(oUPS01+"_TOT_POW_KVA")"></span></td>
+                            <td><span class="@(oUPS02+"_TOT_POW_KVA")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Total Output Power (In KW)">Total Out Pow KW</td>
+                            <td><span class="@(oUPS01+"_TOT_POW_KW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_TOT_POW_KW")"></span></td>
+                            <td class="tooltips" title="Total Output Power Factor">Total Out Pow Factor</td>
+                            <td><span class="@(oUPS01+"_TOT_POWFACTOR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_TOT_POWFACTOR")"></span></td>
+                            <td class="tooltips" title="Rectifier Voltage">Rectifier Voltage</td>
+                            <td><span class="@(oUPS01+"_RECT_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_RECT_VOLT")"></span></td>
+                            <td class="tooltips" title="Battery Voltage">Battery Voltage</td>
+                            <td><span class="@(oUPS01+"_BATTERY_VOLT")"></span></td>
+                            <td><span class="@(oUPS02+"_BATTERY_VOLT")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="Battery Current" title="DBatteryVoltage">Battery Current</td>
+                            <td><span class="@(oUPS01+"_BATTERY_CURR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_BATTERY_CURR")"></span></td>
+                            <td class="tooltips" title="Battery Status ">Battery Status</td>
+                            <td><span class="@(oUPS01+"_BATTERY_STATUS")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02+"_BATTERY_STATUS")"></span></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td class="td-b-right">&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@*<div class="row ups-status-container" style="">
+        <ul class="my-toggle">
+            <li>
+                <a class="view">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="toggle-title">Data</h3>
+                        </div>
+                    </div>
+                </a>
+                <div class="detail">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="toggle-wrapper">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a class="view">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="toggle-title">Alerts</h3>
+                        </div>
+                    </div>
+                </a>
+                <div class="detail">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="toggle-wrapper">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a class="view">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="toggle-title">Status</h3>
+                        </div>
+                    </div>
+                </a>
+                <div class="detail">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="toggle-wrapper">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>*@
+
+
+
+@*<div class="row">
+        <div class="col-lg-12 content-top-spacing">
+            <div class="col-lg-4">
+                <table class="ups-tbl">
+                    <thead>
+                        <tr>
+                            <th colspan="2">UPS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 20%; text-align:center;"><span class="UPS_LOAD_ON_BYPASS alert_bad"></span></td>
+                            <td style="width: 80%;">LOAD ON BYPASS</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <table class="ups-tbl">
+                    <thead>
+                        <tr>
+                            <th colspan="2">UPS-01</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_1_BTRY_LOW_PRE_ALARM alert_bad"></span></td>
+                            <td style="width: 80%;">BATTERY LOW PRE-ALARM</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_1_INVERTER_FAULT alert_bad"></span></td>
+                            <td>BATTERY INVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_1_CONVERTER_FAULT alert_bad"></span></td>
+                            <td>BATTERY CONVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_1_RECTIFIER_FAIL alert_bad"></span></td>
+                            <td>BATTERY RECTIFIER FAIL</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_1_FAIL alert_bad"></span></td>
+                            <td>UPS FAIL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <table class="ups-tbl">
+                    <thead>
+                        <tr>
+                            <th colspan="2">UPS-02</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_2_BTRY_LOW_PRE_ALARM alert_bad"></span></td>
+                            <td style="width: 80%;">BATTERY LOW PRE-ALARM</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_2_INVERTER_FAULT alert_bad"></span></td>
+                            <td>BATTERY INVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_2_CONVERTER_FAULT alert_bad"></span></td>
+                            <td>BATTERY CONVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_2_RECTIFIER_FAIL alert_bad"></span></td>
+                            <td>BATTERY RECTIFIER FAIL</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;text-align:center;"><span class="UPS_2_FAIL alert_bad"></span></td>
+                            <td>UPS FAIL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>*@
+<script src="~/Scripts/PageJS/PlantView/UPSView/Index.js"></script>
+@*<script>
+        $(function () {
+            $(".view").on("click", function () {
+                $(this).next().slideToggle(250);
+                $fexpand = $(this).find(">:first-child");
+                if ($(this).hasClass('opened')) {
+                    $(this).removeClass('opened');
+                } else {
+                    $(this).addClass('opened');
+                };
+            });
+        });
+    </script>*@

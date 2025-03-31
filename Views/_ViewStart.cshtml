@@ -1,0 +1,16 @@
+﻿@{
+    //string ProjPath = clsConfig.ProjPath;
+    if (Convert.ToBoolean(Session[TOAST.Shared.clsConstants.IsMobile]))
+    {
+        Layout = "~/Views/Shared/_LayoutMobile.cshtml";
+    }
+    else {
+        //string DefPath = "Views/Shared/";
+        //if (System.IO.File.Exists(Server.MapPath("~/" + DefPath + ProjPath + "/_Layout.cshtml")))
+        //{
+        //    DefPath = DefPath + ProjPath + "/";
+        //}
+        //Layout = "~/" + DefPath + "_Layout.cshtml";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}

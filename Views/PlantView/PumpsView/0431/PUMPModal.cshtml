@@ -1,0 +1,322 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblPump
+@{
+    ViewBag.Title = "Plant View - Pump View";
+    Layout = null;
+    string PumpName = Model.EquipmentName;
+    List<tblPump> SameGrpPumps = ViewBag.SameGrpPumps;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    tblPump pump = Model;
+    string servicecls = Model.tblPumpService.TagPrefix.ToLower();
+    string PmpTagPrefix = Model.TagPrefix;
+    tblDeviceMaster PT01 = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.Contains("Hi Discharge")).FirstOrDefault();
+    tblDeviceMaster PT02 = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.Contains("Lo Lo Suction")).FirstOrDefault();
+    tblDeviceMaster DPT01 = pump.tblDeviceMasters.Where(x => x.DeviceID == 23 && x.DeviceDesc.Contains("Hi Across Suction & P")).FirstOrDefault();
+    tblDeviceMaster DPT02 = pump.tblDeviceMasters.Where(x => x.DeviceID == 23 && x.DeviceDesc.Contains("Hi Across Suc & Disch HDR")).FirstOrDefault();
+    tblDeviceMaster SealPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.Contains("Seal Press")).FirstOrDefault();
+    tblDeviceMaster SealLT = pump.tblDeviceMasters.Where(x => x.DeviceID == 36 && x.DeviceDesc.Contains("Seal Level")).FirstOrDefault();
+    tblDeviceMaster PTCoolant = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.Contains("Coolant Press")).FirstOrDefault();
+    List<tblPumpService> PumpsServices = ViewBag.PumpsServices;
+    List<tblPumpPriority> ddlPumpPriorities = ViewBag.PumpPriorities;
+    string PumpPages = Model.PageName + "," + String.Join(",", pump.tblDeviceMasters.Select(x => x.PageName));
+}
+<style>
+    .pump-househeader-popup .pump-househeader-info-container .detail-tbl-lbl {
+        width: 50%;
+    }
+</style>
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 580px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@Model.EquipmentName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@Model.tblProduct.ProductName</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                @{
+                    string strSameGrpPumpsPrtyTags = String.Join(",", SameGrpPumps.Select(x => (x.TagPrefix + "_PRIORITY_DDL")).ToList());
+                }
+                <input type="hidden" id="SameGrpPumpsPrtyTags" value="@(strSameGrpPumpsPrtyTags)" />
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row">
+                        <a class="push-btn-02 pump-start-btn @(PmpTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_START")', 'GENERIC' , '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )" data-opcvalue="">START</a>
+                        <a class="push-btn-02 pump-stop-btn @(PmpTagPrefix+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_STOP")', 'GENERIC' , '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump @(pump.tblPumpService.TagPrefix.ToLower())-device" style="padding: 0px 0px;">
+                                @*<span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PmpTagPrefix+"_LOCREM")" onclick="OpenLocRemModal('@pump.EquipmentName', 'PUMP_LOCREM', '@(PmpTagPrefix+"_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' ); cancelBubble(event);"></span>
+                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PmpTagPrefix+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @pump.EquipmentName', '@(PmpTagPrefix+"_AUTOMAN")', '@(PmpTagPrefix+"_LOCREM")' , 'TAG_AUTOMAN' ,'@pump.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' ); cancelBubble(event);"></span>*@
+                                <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@pump.UniqueID,'@(pump.PageName)')" class="tooltips @pump.tblPumpService.TagPrefix.ToLower() @(PmpTagPrefix+"_RUN_IMG") @(PmpTagPrefix+"_TRIP_IMG") @(PmpTagPrefix+"_FAIL_IMG")" style="position: relative;left:10px;top:2px;margin: auto;">
+                                    <span class="maintainence-mode-icon @(PmpTagPrefix+"_MAINT")"></span>
+                                </div>
+                                <span class="sine-wave tooltips @(PmpTagPrefix+"_ON_VFD")" title="Pump on VFD"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+                            <table class="detail-tbl table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Run Fdbk</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_RUN_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl"><span class="">Trip Fdbk</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_TRIP_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Seal Pres Hi</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(SealPT==null?"": SealPT.TagPrefix+"_ALRM_H")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl"><span class="">Seal Lvl Low</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(SealLT==null?"": SealLT.TagPrefix+"_ALRM_L")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">HLA Status</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val MSV_HLA_STATUS"></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl"><span class="">ESD Status</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_ESD_HEALTHY")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    @if (PT01 != null || PT02 != null || DPT02 != null || DPT02 != null)
+                    {
+                        <div class="col-lg-14 pump-view-detail-container">
+                            <table class="table-striped app-tbl">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="background-color: #aca89f;color: #fff;font-size: 17px;" colspan="6">Pump Pressure Transmitters</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center bg-color" style="width: 15%">Device</th>
+                                        <th class="text-center bg-color" style="width: 35%">Desc</th>
+                                        <th class="text-center bg-color" style="width: 10%">Value</th>
+                                        <th class="text-center bg-color" style="width: 15%">Set Point</th>
+                                        <th class="text-center bg-color" style="width: 10%">Alrm</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        if (PT01 != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (PT01.TagPrefix + "_VALUE") || (x.TagName == PT01.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == PT01.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == PT01.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@PT01.DeviceName</td>
+                                                <td>@PT01.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@PT01.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal??-999) max="@(MaxSPTag.MaxVal??9999)" readonly class="editable-input @(PT01.TagPrefix)_SP_H" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(PT01.TagPrefix)_SP_H">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Max SetPoint: @(pump.EquipmentName)',this, '@(PT01.TagPrefix)_SP_H', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(PT01.TagPrefix)_ALRM_H"></span></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@PT01.DeviceName</td>
+                                                <td>@PT01.DeviceDesc.Replace("Hi Discharge","Lo Discharge")</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@PT01.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(PT01.TagPrefix)_SP_L" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(PT01.TagPrefix)_SP_L">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(PT01.TagPrefix)_SP_L', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(PT01.TagPrefix)_ALRM_L"></span></span></td>
+                                            </tr>
+                                        }
+
+                                        @*if (PT02 != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (PT02.TagPrefix + "_VALUE") || (x.TagName == PT02.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == PT02.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == PT02.TagPrefix + "_SP_LL").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@PT02.DeviceName</td>
+                                                <td>@PT02.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@PT02.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(PT02.TagPrefix)_SP_LL" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(PT02.TagPrefix)_SP_LL">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(PT02.TagPrefix)_SP_LL', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(PT02.TagPrefix)_ALRM_LL"></span></span></td>
+                                            </tr>
+                                        }*@
+                                        if (DPT01 != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (DPT01.TagPrefix + "_VALUE") || (x.TagName == DPT01.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == DPT01.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == DPT01.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@DPT01.DeviceName</td>
+                                                <td>@DPT01.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@DPT01.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(DPT01.TagPrefix)_SP_H" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(DPT01.TagPrefix)_SP_H">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(DPT01.TagPrefix)_SP_H', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(DPT01.TagPrefix)_ALRM_H"></span></span></td>
+                                            </tr>
+                                        }
+                                        @*if (DPT02 != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (DPT02.TagPrefix + "_VALUE") || (x.TagName == DPT02.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == DPT02.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == DPT02.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@DPT02.DeviceName</td>
+                                                <td>@DPT02.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@DPT02.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(DPT02.TagPrefix)_SP_H" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(DPT02.TagPrefix)_SP_H">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(DPT02.TagPrefix)_SP_H', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(DPT02.TagPrefix)_ALRM_H"></span></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>@DPT02.DeviceName</td>
+                                                <td>@DPT02.DeviceDesc.Replace("Hi","Lo")</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@DPT02.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(DPT02.TagPrefix)_SP_L" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(DPT02.TagPrefix)_SP_L">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(DPT02.TagPrefix)_SP_L', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(DPT02.TagPrefix)_ALRM_L"></span></span></td>
+                                            </tr>
+                                        }*@
+                                        if (PTCoolant != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (PTCoolant.TagPrefix + "_VALUE") || (x.TagName == PTCoolant.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == PTCoolant.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == PTCoolant.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@PTCoolant.DeviceName</td>
+                                                <td>@PTCoolant.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@PTCoolant.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    @if (!String.IsNullOrWhiteSpace(MinSPTag.TagName))
+                                                    {
+                                                        <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(PTCoolant.TagPrefix)_SP_L" ondblclick="this.readOnly='';"
+                                                               style="border: 0px;width: 72%;" value="@(PTCoolant.TagPrefix)_SP_L">
+                                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(PTCoolant.TagPrefix)_SP_L', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                    }
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(PTCoolant.TagPrefix)_ALRM_L"></span></span></td>
+                                            </tr>
+                                        }
+                                        if (SealPT != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (SealPT.TagPrefix + "_VALUE") || (x.TagName == SealPT.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == SealPT.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == SealPT.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@SealPT.DeviceName</td>
+                                                <td>@SealPT.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@SealPT.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(SealPT.TagPrefix)_SP_H" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(SealPT.TagPrefix)_SP_H">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Max SetPoint: @(pump.EquipmentName)',this, '@(SealPT.TagPrefix)_SP_H', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(SealPT.TagPrefix)_ALRM_H"></span></span></td>
+                                            </tr>
+                                        }
+
+                                        if (SealLT != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (SealLT.TagPrefix + "_VALUE") || (x.TagName == SealLT.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == SealLT.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == SealLT.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>@SealLT.DeviceName</td>
+                                                <td>@SealLT.DeviceDesc</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@SealLT.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(SealLT.TagPrefix)_SP_L" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(SealLT.TagPrefix)_SP_L">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Max SetPoint: @(pump.EquipmentName)',this, '@(SealLT.TagPrefix)_SP_L', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(SealLT.TagPrefix)_ALRM_L"></span></span></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    <div class="col-lg-12 no-padd pump-run-hr-block hide">
+                        <div class="pump-timer-block">
+
+                            <div class="col-lg-5 no-padd-left">
+                                <label>Run Hours: &nbsp;</label>
+                                <span class="pump-timer @(PmpTagPrefix + "_RUN_HRS")">
+                                    <span class="@(PmpTagPrefix + "_RUN_HRS_HH")"></span>:<span class="@(PmpTagPrefix + "_RUN_HRS_MM")"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <a class="push-btn pump-timer-reset-btn" href="javascript:void(0);" onclick="PumpRunHrsReset('@PumpName',this, '@(PmpTagPrefix + "_RESET_RUN_HRS")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')">Reset</a>
+                            </div>
+                            <div class="col-lg-5 no-padd-left">
+                                <hr class="devider vertical" />
+                                <select id="ddlService" class="form-control" disabled>
+                                    @foreach (tblPumpService data in (PumpsServices ?? Enumerable.Empty<tblPumpService>()))
+                                    {
+                                        if (data.Service.ToUpper() == Model.tblPumpService.Service.ToUpper())
+                                        {
+                                            <option value="@data.UniqueID" selected>@data.Service</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@data.UniqueID">@data.Service</option>
+                                        }
+                                    }
+                                </select>
+                                <a class="push-btn set hide" href="javascript:void(0);" onclick="SetPumpService('@Model.UniqueID','@Session[clsConstants.UserID]')" data-opcvalue="">SET</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+    opc.server.getPageData('@PumpPages', 0);
+    opcPageName = opcPageName + ',' + '@PumpPages';
+    opc.server.getPageData(PumpPageName, 0);
+</script>
+
+

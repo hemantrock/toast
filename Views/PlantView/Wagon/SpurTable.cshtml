@@ -1,0 +1,76 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblWLoadRakeDetail>
+@{
+    List<tblWLoadRakeDetail> lstRakes = Model;
+    List<tblClusterMaster> lstClust = ViewBag.SpurClusters;
+    string sPurNo = ((int)ViewBag.SpurNo).ToString("D2");
+}
+
+@foreach (tblClusterMaster oClust in lstClust)
+{
+    <div class="col-lg-4">
+        <p class="tank-badge get-hover" style="bottom:-10px" onclick="cancelBubble(event); OpenClusterBCU('@sPurNo', '@oClust.ClusterName');" >@oClust.ClusterName</p>
+        <div class="row row-no-gutters" style="min-height: 117px;">
+            @{
+                List<byte> lstClustBCUs = oClust.tblWagonBCUMasters.Select(x => x.UniqueID).ToList();
+                List<tblWLoadRakeDetail> lstClustWag = lstRakes.Where(x => lstClustBCUs.Contains(x.tblLoadSpotMaster.BCU_ID ?? 0)).ToList();
+                for (int iLS = 1; iLS <= (oClust.NoOfWagons); iLS++)
+                {
+                    tblWLoadRakeDetail wag = lstClustWag.Where(x => x.tblLoadSpotMaster.LoadSpotNo == iLS).FirstOrDefault();
+                    double Delivered = 0; string ColorCode = ""; string sFillClass = ""; string sWagonSeqNo = ""; string sHideWag = "hide";
+                    string sLoadSpot = ((int)iLS).ToString("00"); string strLSPrefix = ""; double FillPer = 0; string sFlowRate = "";
+                    double dPresetQty = 0; string sProdName = ""; double dPrevQty = 0; string sFlowRateTag = ""; string sPreset = "";
+                    if (wag != null)
+                    {
+                        tblWagonBCUArmBatch wBcuBatch = wag.tblLoadSpotMaster.tblWagonBCUArmBatch;
+                        tblWagonBCUMaster wBcu = wBcuBatch.tblWagonBCUMaster;
+                        Delivered = Math.Round((wag.DeliveredQtyGrs ?? 0) + (wag.PrevQtyGrs ?? 0) + (wag.TopUpQty ?? 0) - (wag.DecantedQty ?? 0), 0); sHideWag = "";
+                        ColorCode = wag.tblProduct.ProductColor; sWagonSeqNo = ((int)wag.WagonSeqNo).ToString("00");
+                        sLoadSpot = ((int)wag.tblLoadSpotMaster.LoadSpotNo).ToString("00"); sProdName = wag.tblProduct.ProdNameShort;
+                        strLSPrefix = wBcu.TagPrefix + "_LS" + sLoadSpot; dPresetQty = ((wag.PresetQty??1)==0?1: (wag.PresetQty ?? 1));
+                        sFlowRate = (wag.ERPChamberNo ?? 0).ToString(); sPreset = (wag.WagonStatusID != 1914 ? wag.PresetQty.ToString() :"SICK");
+                        FillPer = Math.Round((Delivered * 100 / dPresetQty), 0); dPrevQty = (wag.PrevQtyGrs ?? 0);
+                        if ((wag.LoadStatusID ?? 4) != 4) { sFillClass = (strLSPrefix + "_QTY_CN01"); }
+                        if (wBcuBatch.LoadSpotID == wag.LoadSpotID) { sFlowRateTag = wBcu.TagPrefix + "_FLOWRATE_CN01"; }
+                    }
+                    <div class="col-lg-4">
+                        <div class="relative-tank wagon-tank @sHideWag">
+                            <p class="tank-position"><span>LoadSpot-@(sLoadSpot)</span><span style="left: 33px;position: relative;">WagonNo:@(sWagonSeqNo)</span></p>
+                            <div class="bay-truck-fill-container">
+                                <div class="truck-fill-wrapper" id="truckFillWrapper"></div>
+                                <div class="bay-truck-fill" style="height:@(FillPer)%;background-color:@ColorCode;"></div>
+                                <table class="bay-truck-fill-tbl">
+                                    <tbody>
+                                        <tr>
+                                            <td><span>PRESET</span></td>
+                                            <td><span class="PRESET_@strLSPrefix">@sPreset</span></td>
+                                            <td><span class="percentage" data-id="@strLSPrefix">@(FillPer)%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>FILLED</span></td>
+                                            <td title="Total Qty"><span class="EFF_QTY_@(strLSPrefix)">@Delivered</span></td>
+                                            <td><span>@sProdName</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span>FLOWRATE</span></td>
+                                            <td><span class="@(sFlowRateTag)">@(sFlowRate)</span></td>
+                                            <td><span>LPM</span></td>
+                                        </tr>
+                                        <tr class="hide">
+                                            <td class="FILL_QTY_@(strLSPrefix) @sFillClass">@(Delivered)</td>
+                                            <td class="PREV_QTY_@(strLSPrefix)">@dPrevQty)</td>
+                                            <td><span></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <img src="~/Images/amt-tank-wagon.svg" alt="Tank Wagon" />
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}

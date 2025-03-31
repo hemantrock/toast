@@ -1,0 +1,69 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - DBBVView";
+    Layout = null;
+    string MOVPages = String.Join(",", Model.Select(x => x.PageName));
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">DBBV View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 content-top-spacing dbbv-container dbbv-lg">
+        <div class="dbbv-tbl-container">
+            @{
+                foreach (tblTank tank in Model.Where(x => x.TankID != null).Select(x => x.tblTank).Distinct().ToList())
+                {
+                    List<tblMOVMaster> lstMoVs = Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderBy(x => x.MOVLine).ToList();
+                    string TkPrefix = tank.TagPrefix + "_";
+                    <div class="col-lg-@lstMoVs.Count() dbbv-block">
+                        <input type="hidden" id="hdnTankAutoMan_@tank.TankName" class="@(TkPrefix+"AUTOMAN")" />
+                        <table class="dbbv-detail-tbl">
+                            <thead>
+                                <tr>
+                                    <th colspan="@lstMoVs.Count()" class="text-center">
+                                        <span class="view-header">
+                                            <span style="background-color:@tank.tblProduct.ProductColor; color: #fff; text-shadow: 0px 1px 1px #000;">@tank.TankName</span>
+                                            <span style="background-color:@tank.tblProduct.ProductColor; color: #fff; text-shadow: 0px 1px 1px #000;">@tank.tblProduct.ProdNameShort</span>
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @foreach (tblMOVMaster mov in lstMoVs)
+                                    {
+                                        string MoVPrefix = mov.TagPrefix + "_";
+                                    <td>
+                                    <div class="dbbv-name"><span>@mov.tblMOVLine.Line</span> </div>
+                                    <div class="dbbv-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@(mov.PageName)')">
+                                        <div title="No Feedback" data-tooltip-attr="DBBV*" class="tooltips dbbv-valve @(MoVPrefix+"GEN_ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")" >
+                                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                            @*<span class="mov-valve-fill">
+                                                <span class="fill-value percentage @(MoVPrefix+"_FILL")" data-id="@(MoVPrefix+"PER_OPN")"></span>
+                                            </span>
+                                            <span class="percentage-fill-val"><span class="per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%</span>*@
+                                        </div>
+                                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon up @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon  @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, 'hdnTankAutoMan_@tank.TankName', '@mov.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode DBBV'); cancelBubble(event);"></span>
+                                        <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                    </div>
+                                </td>
+                                }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    opcPageName = '@MOVPages'+",DBBVView.*";
+</script>
+<script src="~/Scripts/PageJS/PlantView/DBBVView/Index.js"></script>

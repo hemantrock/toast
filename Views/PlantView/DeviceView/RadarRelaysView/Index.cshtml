@@ -1,0 +1,62 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Radar Relays View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Secondary Radar Relays</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="radar-relay-container col-lg-12 m-t-40">
+        @{
+            foreach (tblDeviceMaster Device in Model)
+            {
+                //string DevName = Device.tblDeviceType.DevicePrefix + string.Format("{0:00}", Device.TypeSeqNo);
+                string DevName = Device.TagPrefix;
+
+                <div class="device-box radar-relay-wrapper">
+                    <div class="device-header">
+                        <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                        <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.tblTank.tblProduct.ProdNameShort</span>
+                    </div>
+                    <div class="device-block">
+                        <div class="device radar-relay @(DevName+"_STATUS")">
+                            <span class="maintainence-mode-icon @(DevName + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl">Status</td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="@(DevName+"_STATUS")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/PageJS/PlantView/DeviceView/RadarRelaysView/Index.js"></script>

@@ -1,0 +1,43 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblLogActivity>
+@{
+    Layout = null;
+}
+<div>
+    <input type="hidden" id="hdnType" value="@ViewBag.Title" />
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">@ViewBag.Title</div>
+    <div class="panel-body">
+        <div class="search-container">
+            <input type="text" placeholder="Search @ViewBag.Title" id="txtSearchTable" />
+            <i class="fa fa-search"></i>
+        </div>
+        <div class="alarm-event-wrapper">
+            <table id="tblAlarms" class="responsive">
+                <thead>
+                    <tr>
+                        <th>Log Time</th>
+                        <th>Log Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 0;
+                        foreach (tblLogActivity itm in Model.ToList())
+                        {
+                            i = i + 1;
+                            <tr id="logTr_@itm.LogID" class="alarmSeverity_@itm.tblEventMaster.Severity">
+                                <td>@itm.LogTime.Value.ToString("dd-MMM HH:mm:ss")</td>
+                                <td>@itm.EventLogDesc</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/AlarmsAndEvents/Alarms/Index.js"></script>

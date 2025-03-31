@@ -1,0 +1,127 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    PlantViewBL plantViewBL = new PlantViewBL(1);
+    List<tblDeviceMaster> lstDevices = plantViewBL.GetDeviceDetails(new List<int>() { 32 });
+    ViewBag.Title = "Plant View - Air Compressor View";
+    Layout = null;
+    List<tblTagMaster> DeviceTags = new TagsBL(1).GetDeviceTagsFromPrefix(new List<string>() { "AirComp" });
+    string stropcPages = String.Join(",", lstDevices.Select(x => x.PageName).Distinct());
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">@string.Join(", ", lstDevices.Select(x => x.tblDeviceType.DeviceTypeDesc).Distinct()) View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="device-container col-lg-12 m-t-40">
+        @{
+            foreach (tblDeviceMaster Device in lstDevices)
+            {
+                string DevName = Device.TagPrefix;
+                string DeviceType = Device.tblDeviceType.DeviceName.ToLower().Replace(" ", "-");
+                string ProdNameShort = "";
+                string strUOM = "Status "; string strTag = Device.TagPrefix + "_STATUS";
+                tblTagMaster DevValTag = DeviceTags.Where(x => x.TagName == Device.TagPrefix + "_VALUE").FirstOrDefault();
+                if (DevValTag != null && DevValTag.UnitId != null) { strUOM = "Value (" + DevValTag.tblUOMMaster.UOM + ")"; strTag = Device.TagPrefix + "_VALUE"; }
+                if (Device.HeaderID != null) { ProdNameShort = Device.tblHeadersMaster.tblProduct.ProdNameShort; }
+                else if (Device.TankID != null) { ProdNameShort = Device.tblTank.tblProduct.ProdNameShort; }
+                tblTagMaster PressValueTag = (DeviceTags.Where(x => x.TagName == (Device.TagPrefix + "_PT_DISC_VALUE") || (x.TagName == Device.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                <div class="device-box @DeviceType-wrapper" style="width: 315px; min-height: 430px;">
+                    <div class="device-header">
+                        <span class="h-col h-full" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                    </div>
+                    <div class="device-block">
+                        <div class="device @DeviceType @(Device.TagPrefix +"_RUN_IMG") @(Device.TagPrefix +"_TRIP_IMG") @(Device.TagPrefix +"_FAIL_IMG")" onclick="OpenDeviceModal('@Device.UniqueID','@Device.PageName')">
+                            <span class="maintainence-mode-icon @(DevName + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td colspan="1" class="tbl-lbl">Description</td>
+                                    <td colspan="3" class="tbl-val">@Device.DeviceDesc</td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl"><span class="">Run Fdbk</span></td>
+                                    <td class="tbl-val">
+                                        <span class="circle-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_RUN_FB")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="tbl-lbl"><span class="">Trip Fdbk</span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_TRIP_FB")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl"><span class="">Suc. Press Lo</span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_SUC_PRESS_LO")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="tbl-lbl"><span class="">Disc Press Hi</span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_DISC_PRESS_HI")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl"><span class="">Lube Press Lo</span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_LUBE_PRESS_LO")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="tbl-lbl"><span class="">Water Press Lo</span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_WATER_PRESS_LO")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl"><span class="">Drum Level Hi</span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"_DRUM_LEVEL_HI")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="tbl-lbl"><span class=""></span></td>
+                                    <td class="tbl-val">
+                                        <span class="alert-cont-md">
+                                            <span class="pump-househeader-info-val @(Device.TagPrefix+"")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@stropcPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

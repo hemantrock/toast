@@ -1,0 +1,92 @@
+﻿@using TOAST.Data.Model;
+@model List <tblDataSourceMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+
+}
+
+
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddDataSource()">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW DATA SOURCE
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">DATA SOURCE MASTERS</h3>
+        <table id="tblDataSource" class="table">
+            <thead>
+                <tr>
+                    <th>DS NAME</th>
+                    <th>PROCESS NAME</th>
+                    <th>CONN TYPE</th>
+                    <th>PRIMARY</th>
+                    <th>SECONDARY</th>
+                    <th>DELETE</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblDataSourceMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord('@itm.DataSourceID');">
+                        <td>@itm.DSName</td>
+                        <td>@(itm.ProcessID==null?"":itm.tblProcess.ProcessName)</td>
+                        <td>@(itm.ConnTypeID == 0 ? "" : itm.tblConnTypeMaster.ConnTypeName)</td>
+                        <td>
+                            @{
+                                if (itm.tblConnTypeMaster==null)
+                                {
+                                    @(string.Empty);
+                                }
+                                if (itm.tblConnTypeMaster.ConnTypeName.Contains("OPC"))
+                                {
+                                    @(itm.OPCPrimaryHostName + " :" + itm.OPCProgId.ToString());
+                                }
+                                else if (itm.tblConnTypeMaster.ConnTypeName.Contains("TCP"))
+                                {
+                                    @(itm.TCPPrimaryIPAddress + " :" + itm.TCPPrimaryIPPort.ToString());
+                                }
+                                else if (itm.tblConnTypeMaster.ConnTypeName.Contains("RTU"))
+                                {
+                                    @(itm.RTUPrimarySerialPort);
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{
+                                if (itm.tblConnTypeMaster == null)
+                                {
+                                    @(string.Empty);
+                                }
+                                if (itm.tblConnTypeMaster.ConnTypeName.Contains("OPC"))
+                                {
+                                    @(itm.OPCBackupHostName + " :" + itm.OPCProgId.ToString());
+                                }
+                                else if (itm.tblConnTypeMaster.ConnTypeName.Contains("TCP"))
+                                {
+                                    @(itm.TCPBackupIPAddress + " :" + itm.TCPBackupIPPort.ToString());
+                                }
+                                else if (itm.tblConnTypeMaster.ConnTypeName.Contains("RTU"))
+                                {
+                                    @(itm.RTUBackupSerialPort);
+                                }
+                            }
+                        </td>
+                        <td class="text-center clickable">
+                            <span id="spanDelete_@itm.DataSourceID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.DataSourceID"></span>
+                            <span id="delete" class="glyphicon glyphicon-remove clickable" onclick="DeleteTags('@itm.TagName')"></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>	
+
+<script src="~/Scripts/PageJS/Masters/DataSource/Index.js"></script>

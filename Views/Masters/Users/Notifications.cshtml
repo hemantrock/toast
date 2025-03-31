@@ -1,0 +1,52 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblUserNotificationMap>
+@{
+    ViewBag.Title = "Notifications Config";
+    Layout = null;
+    int UserID = (Model.FirstOrDefault() != null ? Model.FirstOrDefault().UserID : 0);
+}
+@if (UserID > 0)
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-header" style="color:black">Config Notifications - @(Model.FirstOrDefault() != null ? Model.FirstOrDefault().tblUser.UserName : "")</h3>
+            <table id="tblNotifications" class="table">
+                <thead>
+                    <tr>
+                        <th style="display:none;">Id</th>
+                        <th>Select</th>
+                        <th>Event Name</th>
+                        <th>Type</th>
+                        <th>Severity</th>
+                        <th>Event Desc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblUserNotificationMap itm in Model)
+                    {
+                        <tr data-id="@itm.EventId">
+                            <td style="display:none;">@itm.tblEventMaster.EventID</td>
+                            <td>
+                                @{
+                                    string clsCheck = (itm.IsSubscribed == true ? "checked" : "");
+                                }
+                                <input type="checkbox" @clsCheck id="chk_@itm.EventId" name="chkNotification" />
+                            </td>
+                            <td>@itm.EventId</td>
+                            <td>@itm.tblEventMaster.tblEventTypeMaster.EventTypeDesc</td>
+                            <td>@itm.tblEventMaster.tblEventSeverityMaster.SeverityDesc</td>
+                            <td>@itm.tblEventMaster.EventDesc</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row button-bar">
+        <div class="col-lg-12">
+            <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveNotifications('@UserID');"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+            <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+        </div>
+    </div>
+    <script src="~/Scripts/PageJS/Masters/Users/Notifications.js"></script>
+}

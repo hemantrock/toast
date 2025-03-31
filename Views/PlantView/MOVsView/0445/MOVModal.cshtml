@@ -1,0 +1,148 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblMOVMaster
+@{
+    ViewBag.Title = "Plant View - MOV Details View";
+    Layout = null;
+    bool ShowConn = ViewBag.ShowMOVConn;
+    string MoVPrefix = (Model.TagPrefix + "_");
+    string TkPrefix = (Model.tblTank == null ? "" : Model.tblTank.TagPrefix + "_");
+    string tkname = (Model.tblTank == null ? (Model.Custom ?? Model.MovName) : Model.tblTank.TankName);
+}
+<div class="modal-dialog mov-modal" style="width: 480px;">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header">
+            <div class="mov-valve-popup-tank-name"><h3 class="modal-title" id="">@(Model.tblTank == null ? Model.Custom : Model.tblTank.TankName)</h3></div>
+            <div class="mov-valve-popup-receipt-name"><h3 class="modal-title" id="">@(Model.tblMOVLine == null ? Model.tblHeadersMaster.tblProduct.ProdNameShort : Model.tblMOVLine.Line)</h3></div>
+            <div class="mov-valve-popup-title" style="border-right: 0;">
+                <h3 class="modal-title" id="myMOVModalLabel">@(tkname == Model.MovName ? "" : Model.MovName)</h3>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <input type="hidden" id="hdnTankAutoMan_@(Model.tblTank==null? "" :Model.tblTank.TankName)" class="@(Model.tblTank==null? "" :Model.tblTank.TagPrefix)_AUTOMAN" />
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn @(MoVPrefix+"OPN_CMD")" href="javascript:void(0);" onclick="ValidateManualExecute('@(Model.TagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Open Command to MOV: @(Model.MovName)',this, '@(Model.TagPrefix)_OPN_CMD', '', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>
+                    <a class="push-btn-02 close-mov-btn @(MoVPrefix+"CLS_CMD")" href="javascript:void(0);" onclick="ValidateManualExecute('@(Model.TagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Close Command to MOV: @(Model.MovName)',this, '@(Model.TagPrefix)_CLS_CMD', '', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>
+                </div>
+                <div class="mov-valve-info-container">
+                    <div class="col-lg-6">
+                        <div title="No Feedback" data-tooltip-attr="MOV*" class="tooltips mov-valve @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG") @(MoVPrefix+"ALRM_IMG")">
+                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                            <span class="mov-valve-fill hide">
+                                <span class="fill-front"></span>
+                                <span class="fill-value percentage @(MoVPrefix+ "FILL")" data-id="@(MoVPrefix+ "PER_OPN")"></span>
+                            </span>
+                        </div>
+                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix+"AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode MOV', 'Device: @Model.MovName', '@(Model.TagPrefix + "_AUTOMAN")', '@(Model.TagPrefix + "_LOCREM")', 'TAG_AUTOMAN' , '@Model.PageName', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                        @*<span class="percentage-open-lbl">Open: <span class="percentage-open-val"><span class="percentage-value per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%&nbsp;&nbsp;-&nbsp;&nbsp;Torque: <span class="torque-value torque_mov @(MoVPrefix+"TORQUE")"></span>%</span></span>*@
+                    </div>
+                    <div class="col-lg-6 no-padd">
+                        <div class="mov-valve-info-wrapper">
+                            <table class="@(!ShowConn?"hide":"") detail-tbl table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Open</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(MoVPrefix+"OPN_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Close</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(MoVPrefix+"CLS_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" colspan="2"><span class="">Fail to Open</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(MoVPrefix+"F2OPN")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 35px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(MoVPrefix+"RESET_F2OPN") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; top:-3px; width: 25px; height: 25px;" title="Reset Fail to Open"
+                                               onclick="SetProcessValue('Reset Pump Fail to Start', 'Reset DBBV Fail to Open: @Model.MovName', this, '@(MoVPrefix+"RESET_F2OPN")','GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" colspan="2"><span class="">Fail to Close</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(MoVPrefix+"F2CLS")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 35px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(MoVPrefix+"RESET_F2CLS") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; top:-3px; width: 25px; height: 25px;" title="Reset Fail to Close"
+                                               onclick="SetProcessValue('Reset Pump Fail to Stop', 'Reset DBBV Fail to Close: @Model.MovName', this, '@(MoVPrefix+"RESET_F2CLS")','GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td  colspan="2" class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Maint. Mode</span>
+                                        </td>
+                                        <td colspan="2" class="detail-tbl-val">
+                                            <div class="toggle-wrapper" onclick="SetProcessValue('Set DBBV Maintainence Mode','Set DBBV @(Model.MovName) to Maint Mode', this, '@(MoVPrefix+"MAINT_MODE")','TOGGLE','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')">
+                                                <input id="toggle-maintainence-mode" class="on-off-btn @(MoVPrefix+"MAINT_MODE")" checked type="checkbox" data-width="80">
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="set-to-open" style="display:none">
+                            <label>% to open</label>
+                            <input id="txtOpenPercent1" type="text" placeholder="XX.X" min="0" max="100" class="@(MoVPrefix+"SET_PER_OPN")" />
+                            <a class="push-btn" href="javascript:void(0);" onclick="ValidateOpenPercent(this,'@(Model.MovName)', '@(MoVPrefix+"SET_PER_OPN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">SET</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mov-view-detail-container">
+                    <table class="detail-tbl table-striped">
+                        <tbody>
+                            <tr>
+                                <td class="detail-tbl-lbl tooltips" title="Green whenever the actuator position is changing due to the motor running or if the output drive is moving">Actuator Moving</td>
+                                <td class="detail-tbl-val"><span title="Green whenever the actuator position is changing due to the motor running or if the output drive is moving" class="tooltips circle-cont-md"><span class="@(MoVPrefix+"ACT_MOVING")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips">Percentage Open</td>
+                                <td class="detail-tbl-val">
+                                    <span><span class="tooltips @(MoVPrefix+"PER_OPN")"></span>&nbsp;%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="detail-tbl-lbl tooltips">ESD Command</td>
+                                <td class="detail-tbl-val">
+                                    <span class="circle-cont">
+                                        <span class="tooltips @(MoVPrefix+"ESD_CMD")"></span>
+                                    </span>
+                                </td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips">Communication Fail</td>
+                                <td class="detail-tbl-val"><span class="tooltips @(MoVPrefix+"COMM_FAIL")"></span></td>
+                            </tr>
+                            <tr>
+                                <td class="detail-tbl-lbl tooltips" title="Red if the temperature of the motor windings rises above the thermostat trip value.">Thermostat tripped</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green if the temperature of the motor windings rises above the thermostat trip value."><span class="@(MoVPrefix+"THERM_TRIPPED")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Red when actuator remote control is not available. Monitor Relay status is a composite signal for several alarms, Local/ Local Stop selection">Monitor Relay</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green when actuator remote control is not available. Monitor Relay status is a composite signal for several alarms, Local/ Local Stop selection"><span class="@(MoVPrefix+"MONITOR_RELAY")"></span></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

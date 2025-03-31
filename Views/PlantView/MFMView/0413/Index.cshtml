@@ -1,0 +1,23 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblMeterMaster>
+@{
+    ViewBag.Title = "Plant View - MFM View";
+    Layout = null;
+}
+<div id="jqxgrid" class="jqx-tbl-container mfm-dataview-cont">
+</div>
+
+<script>
+    var DensityUnit = '@clsConfig.DensityUnit';
+    var FlowRateUnit = '@clsConfig.FlowRateUnit';
+    var TotalizerUnit = '@clsConfig.TotalizerUnit';
+</script>
+@if (clsConfig.IsWeightBased)
+{
+    <script src="~/Scripts/PageJS/PlantView/MFMView/0413/MFMWeight.js"></script>
+}
+else
+{
+    <script src="~/Scripts/PageJS/PlantView/MFMView/Index.js"></script>
+}

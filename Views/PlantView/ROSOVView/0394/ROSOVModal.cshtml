@@ -1,0 +1,136 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblMOVMaster
+@{
+    ViewBag.Title = "Plant View - MOV Details View";
+    Layout = null;
+    string MoVPrefix = (Model.TagPrefix + "_");
+    string TkPrefix = (Model.TankID==null?"" : Model.tblTank.TagPrefix + "_");
+    var ROSOVDetails=(Model.tblTank == null ? Model.Custom : Model.tblTank.TankName);
+}
+<div class="modal-dialog rosov-modal" style="width: 480px;">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header">
+            <div class="mov-valve-popup-tank-name"><h3 class="modal-title" id="">@(Model.tblTank==null? Model.Custom :Model.tblTank.TankName)</h3></div>
+            <div class="mov-valve-popup-receipt-name"><h3 class="modal-title" id="">@(Model.tblMOVLine == null ? Model.tblTank.tblProduct.ProdNameShort : Model.tblMOVLine.Line)</h3></div>
+            <div class="mov-valve-popup-title" style="border-right: 0;">
+                <h3 class="modal-title" id="myMOVModalLabel">@Model.MovName</h3>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <input type="hidden" id="hdnTankAutoMan_@(Model.tblTank==null? "" :Model.tblTank.TankName)" class="@(TkPrefix+"AUTOMAN")" />
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 hide open-mov-btn @(MoVPrefix+"OPN_CMD")" href="javascript:void(0);" onclick="ValidateOpenClose('@ROSOVDetails', this, '@(MoVPrefix+"OPN_CMD")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>
+                    <a class="push-btn-02  close-mov-btn @(MoVPrefix+"CLS_CMD")" href="javascript:void(0);" onclick="ValidateOpenClose('@ROSOVDetails', this, '@(MoVPrefix+"CLS_CMD")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>
+                </div>
+                <div class="rosov-valve-info-container">
+                    <div class="col-lg-6">
+                        <div title="No Feedback" data-tooltip-attr="ROSOV*" class="tooltips rosov-valve @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")  @(MoVPrefix+"GEN_ALRM_IMG")">
+                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                        </div>
+                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon  @(MoVPrefix+"LOCREM")"></span>
+                        <span class="mov-valve-icons stop-icon @(MoVPrefix+"STOP_SELECT")"></span>
+                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon  @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, '@(Model.tblTank == null ? "" : "hdnTankAutoMan_"+Model.tblTank.TankName)', '@Model.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode ROSOV'); cancelBubble(event);"></span>
+                        <span class="percentage-open-lbl" style="display:none">Open: <span class="percentage-open-val"><span class="percentage-value per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%&nbsp;&nbsp;-&nbsp;&nbsp;Torque: <span class="torque-value torque_mov @(MoVPrefix+"TORQUE")"></span>%</span></span>
+                    </div>
+                    <div class="col-lg-6 no-padd">
+                        <div class="mov-valve-info-wrapper">
+
+                            <table class="detail-tbl">
+                                <tbody>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl"><span class="">Open Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(MoVPrefix+"OPN_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(MoVPrefix+"FORCE_OPN_FB") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: auto; width: 25px; height: 25px;" title="Force Open Feedback"
+                                               onclick="SetProcessValue('Force Open/ Close FB ROSOV', 'Force Open Feedback of Valve @Model.MovName', this, '@(MoVPrefix+"FORCE_OPN_FB")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"><i class="fa fas fa-thumbtack" style="vertical-align: text-top;" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Close Feedback</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(MoVPrefix+"CLS_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(MoVPrefix+"FORCE_CLS_FB") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: auto; width: 25px; height: 25px;" title="Force Close Feedback"
+                                               onclick="SetProcessValue('Force Open/ Close FB ROSOV', 'Force Close Feedback of Valve @Model.MovName', this, '@(MoVPrefix+"FORCE_CLS_FB")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <i class="fa fas fa-thumbtack" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                       </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Maintainence Mode</span>
+                                        </td>
+                                        <td class="detail-tbl-val" colspan="2">
+                                            <div class="toggle-wrapper" onclick="MaintainenceMode('@(ROSOVDetails)',this, '@(MoVPrefix+"MAINT_MODE")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]',event)">
+                                                <input id="toggle-maintainence-mode" class="on-off-btn @(MoVPrefix+"MAINT_MODE")" checked type="checkbox">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>    
+
+
+
+
+                        </div>
+                        <div class="set-to-open" style="display:none">
+                            <label>% to open</label>
+                            <input id="txtOpenPercent" type="text" placeholder="XX.X" min="0" max="100" class="@(MoVPrefix+"SET_PER_OPN")" />
+                            <a class="push-btn" href="javascript:void(0);" onclick="ValidateOpenPercent(this, '@(MoVPrefix+"SET_PER_OPN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">SET</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mov-view-detail-container">
+                    <table class="detail-tbl">
+                        <tbody>
+                            <tr class="odd">
+                                <td class="detail-tbl-lbl tooltips" title="Green when ESD command is sent to ROSOV">ESD Command to ROSOV</td>
+                                <td class="detail-tbl-val">
+                                    <span class="circle-cont">
+                                        <span title="Green when ESD command is sent to ROSOV" class="tooltips @(MoVPrefix+"ESD_CMD")"></span>
+                                    </span>
+
+                                </td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Green when Local LPBS Close Push Button is pressed">LPBS Close Pressed</td>
+                                <td class="detail-tbl-val">
+                                    <span class="circle-cont">
+                                        <span class="tooltips @(MoVPrefix+"PBS_CLS_STS") " title="Green when Local LPBS Close Push Button is pressed"></span>
+                                    </span>
+                                    
+                                </td>
+                            </tr>
+                            <tr class="even" style="display:none">
+                                <td class="detail-tbl-lbl tooltips" title="Green when ESD command is sent to ROSOV">ESD Command to DBBV</td>
+                                <td class="detail-tbl-val">
+                                    <span class="circle-cont">
+                                        <span title="Green when ESD command is sent to ROSOV" class="tooltips @(MoVPrefix+"ESD_CMD")"></span>
+                                    </span>
+                                    
+                                </td>
+                                <td class="detail-tbl-lbl padd-l-15"></td>
+                                <td class="detail-tbl-val padd-l-15"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

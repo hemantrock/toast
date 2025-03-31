@@ -1,0 +1,160 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - Pump View";
+    Layout = null;
+    string DeviceName = ViewBag.Name;
+    string DeviceTagPrefix = ViewBag.TagPrefix;
+    string DevPageName = ViewBag.DevPageName;
+    string DevDesc = ViewBag.DevDesc;
+}
+<style>
+    .feedback-row a {
+        margin: 0 15px !important;
+    }
+</style>
+<div class="modal-dialog mov-modal" style="width: 650px;">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header" id='MOVModalLabel'>
+            <div><h3 class='modal-title'>@DeviceName</h3></div>
+            <div style='border:0px;'><h3 class='modal-title'>@DevDesc</h3></div>
+            <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn  @(DeviceTagPrefix+"_OPN_CMD")"  href="javascript:void(0);" onclick="ValidateManualExecute('@(DeviceTagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Open Command to EHOV: @(DeviceName)', this, '@(DeviceTagPrefix)_OPN_CMD', '', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>
+                    <a class="push-btn-02 close-mov-btn @(DeviceTagPrefix+"_CLS_CMD")"  href="javascript:void(0);" onclick="ValidateManualExecute('@(DeviceTagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Close Command to EHOV: @(DeviceName)',this, '@(DeviceTagPrefix)_CLS_CMD', '', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>
+                    <a class="push-btn-02 close-mov-btn @(DeviceTagPrefix+"_STOP_CMD")" href="javascript:void(0);" onclick="ValidateManualExecute('@(DeviceTagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Stop Command to EHOV: @(DeviceName)', this, '@(DeviceTagPrefix)_STOP_CMD', '', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+		    <a class="push-btn-02 close-mov-btn @(DeviceTagPrefix+"_PST_CMD")"  href="javascript:void(0);" onclick="ValidateManualExecute('@(DeviceTagPrefix)_AUTOMAN','Open/Close Command to MOV','Set PST Command to EHOV: @(DeviceName)',  this, '@(DeviceTagPrefix)_PST_CMD', '', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">PST</a>
+                </div>
+                <div class="mov-valve-info-container" style="margin: 0 15px 0 -10px;">
+                    <div class="col-lg-3">
+                        <div title="No Feedback" data-tooltip-attr="MOV*" class="tooltips mov-valve @(DeviceTagPrefix+"_OPN_IMG") @(DeviceTagPrefix+"_CLS_IMG") @(DeviceTagPrefix+"_ALRM_IMG")">
+                            <span class="maintainence-mode-icon @(DeviceTagPrefix+ "_MAINT_MODE")"></span>
+                            <span class="mov-valve-fill">
+                                <span class="fill-front"></span>
+                                <span class="fill-value percentage @(DeviceTagPrefix+ "_FILL")" data-id="@(DeviceTagPrefix+ "_PER_OPN")"></span>
+                            </span>
+                        </div>
+                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(DeviceTagPrefix+"_LOCREM") @(DeviceTagPrefix+"_REMOTE_SELECT") "></span>
+                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(DeviceTagPrefix+"_LOCREM") @(DeviceTagPrefix+"_LOCAL_SELECT") "></span>
+                    </div>
+
+                    <div class="col-lg-9" style="right: -15px;">
+                        <div class="mov-valve-info-wrapper">
+                            <table class="detail-tbl">
+                                <tbody>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl" style="width:30%"><span class="">Open Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(DeviceTagPrefix+"_OPN_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(DeviceTagPrefix+"_FORCE_OPN_FB") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: auto; width: 25px; height: 25px;" title="Force Open Feedback"
+                                               onclick="SetProcessValue('Force Open/ Close FB of Valve', 'Force Open Feedback of Valve @DeviceName', this, '@(DeviceTagPrefix+"FORCE_OPN_FB")','GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <i class="fa fas fa-thumbtack" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Valve Fault Alarm</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(DeviceTagPrefix+"_FLT_ALARM")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Close Feedback</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(DeviceTagPrefix+"_CLS_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(DeviceTagPrefix+"_FORCE_CLS_FB") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: auto; width: 25px; height: 25px;" title="Force Close Feedback"
+                                               onclick="SetProcessValue('Force Open/ Close FB of Valve', 'Force Close Feedback of Valve @DeviceName', this, '@(DeviceTagPrefix+"_FORCE_CLS_FB")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"><i class="fa fas fa-thumbtack" style="vertical-align: text-top;" aria-hidden="true"></i></a>
+                                        </td>
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">80% Open Feedback</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(DeviceTagPrefix+"_80P_OPN_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl"><span class="">Fail to Open</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(DeviceTagPrefix+"_F2OPN")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(DeviceTagPrefix+"_RESET_F2OPN") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: 7px; top:-3px; width: 25px; height: 25px;" title="Reset Fail to Open"
+                                               onclick="SetProcessValue('Reset Valve Fail to Open', 'Reset Valve Fail to Open: @DeviceName', this, '@(DeviceTagPrefix+"_RESET_F2OPN")','GENERIC', '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Hydraulic Oil Level Alarm</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(DeviceTagPrefix+"_OIL_LVL_ALARM")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl"><span class="">Fail to close</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(DeviceTagPrefix+"_F2CLS")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(DeviceTagPrefix+"_RESET_F2CLS") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: 7px; top:-3px; width: 25px; height: 25px;" title="Reset Fail to Close"
+                                               onclick="SetProcessValue('Reset Valve Fail to Close', 'Reset Valve Fail to Close: @DeviceName', this, '@(DeviceTagPrefix+"_RESET_F2CLS")','GENERIC', '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Permissive Available</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(DeviceTagPrefix+"_PERM_BIT")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        
+
+                                    </tr>
+                                    <tr class="odd">
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="set-to-open" style="display:none">
+                            <label>% to open</label>
+                            <input id="txtOpenPercent1" type="text" placeholder="XX.X" min="0" max="100" class="@(DeviceTagPrefix+"_SET_PER_OPN")" />
+                            <a class="push-btn" href="javascript:void(0);" onclick="ValidateOpenPercent(this,'@(DeviceName)', '@(DeviceTagPrefix+"_SET_PER_OPN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">SET</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

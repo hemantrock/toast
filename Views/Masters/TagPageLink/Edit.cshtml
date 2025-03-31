@@ -1,0 +1,73 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTagPageLink
+@{
+    ViewBag.Title = "Edit Tag Master";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Tag Page Link
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmTags" role="form" class="form-fields">
+            <input id="hdnIdKey" type="hidden" value="@Model.TagName|@Model.PageName|@Model.ControlName">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TAG NAME</label>
+                        <select class="form-control" id="ddlTagName" name="TageName"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>PAGE NAME</label>
+                        <select class="form-control" id="ddlPageName" name="PageName"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>CONTROL NAME</label>
+                        <input id="txtControlName" name="ControlName" type="text" placeholder="Control Name" class="form-control" value="@Model.ControlName">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>CLASS NAME</label>
+                        <input id="txtClassName" name="ClassName" type="text" placeholder="Class Name" class="form-control" value="@Model.ClassName">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>CONTROL TYPE</label>
+                        <select class="form-control" id="ddlControlType" name="ControlType">
+                            <option value="1">String</option>
+                            <option value="2">Class</option>
+                            <option value="3">Div height</option>
+                            <option value="4">Dropdown</option>
+                            <option value="5">Radio</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTagPageLink();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/TagPageLink/TagPageLink.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadDDLTags($('#ddlTagName'), '@Model.TagName');
+        LoadDDLPageNames($('#ddlPageName'), '@Model.PageName');
+        SelectDDL('ddlControlType', '@Model.ControlType');
+    });
+</script>

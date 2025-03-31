@@ -1,0 +1,67 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblCustomer
+@{
+    ViewBag.Title = "Edit Customer";
+    Layout = null;
+
+    List<tblCustomerCategory> customerCatgList = ViewBag.customerCatgList;
+}
+
+<h2 class="headingPage">
+    Edit Customer
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <input id="hdnUniqueID" type="hidden" value="@Model.UniqueID">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Customer Code</label>
+                        <input id="txtCustomerCode" name="CustomerCode" type="text" placeholder="Customer Code (Numeric)" class="form-control" value="@Model.CustomerCode" disabled>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Customer Name</label>
+                        <input id="txtCustomer" name="Customer" type="text" placeholder="Customer Name (3-45 Characters)" class="form-control" value="@Model.CustomerDesc">
+                    </div>
+                </div>
+                @*<div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Lock / Seal</label>
+                        <input id="txtLockSeal" name="LockSeal" type="text" placeholder="LockSeal" class="form-control" value="@Model.Lock_Seal">
+                    </div>
+                </div>*@
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Customer Category</label>
+                        <select class="form-control" id="ddlCustomerCategory" name="CustomerCategory">
+                            <option value="" selected>Select Customer Category</option>
+                            @foreach (tblCustomerCategory custCatg in customerCatgList)
+                            {
+                                if (custCatg.UniqueID == Model.CategoryID)
+                                {
+                                    <option value="@custCatg.UniqueID" selected>@custCatg.CategoryName</option>
+                                }
+                                else
+                                {
+                                    <option value="@custCatg.UniqueID">@custCatg.CategoryName</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateCustomer();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Customer/Customer.js"></script>

@@ -1,0 +1,92 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadDetail>
+@{
+    Layout = null;
+    tblLoadDetail obj = Model.Take<tblLoadDetail>(1).SingleOrDefault();
+}
+
+<div class="col-lg-12">
+    <h3 class="grid-header">Load Details</h3>
+    <table id="tblTruckDetails" class="table">
+        <thead>
+            <tr>
+                <th style="display:none;">Gantry</th>
+                <th>Bay</th>
+                <th>LP</th>
+                <th>Comp</th>
+                <th>Product</th>
+                <th>Customer</th>
+                <th>Preset (@(obj.tblProduct.tblUOMMaster.UOM))</th>
+                <th>Filled (@(obj.tblProduct.tblUOMMaster.UOM))</th>
+                @if (obj.tblProduct.tblUOMMaster.UOM.ToUpper() == "LTR")
+                {
+                    <th>BaseProduct</th>
+                    <th>Additive1</th>
+                    <th>Additive2</th>
+                    <th>Blending</th>
+                }
+                else
+                {
+                    <th>Tare Wgt (Kg)</th>
+                    <th>Gross Wgt (Kg)</th>
+                    <th>Net Wgt (Kg)</th>
+                    <th style="display:none;"></th>
+                }
+                <th>TopUpQty</th>
+                <th>DecantQty</th>
+                <th>Eff.Qty</th>
+                <th>Comp.Status</th>
+                <th>Destination</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblLoadDetail itm in Model)
+            {
+                <tr>
+                    <td style="display:none;"></td>
+                    <td>@(itm.BayID == null || itm.BayID.Value == 0 ? "" : itm.BayID.Value.ToString("00"))</td>
+                    <td>@itm.LoadingPointNo</td>
+                    <td>@itm.CompNo</td>
+                    <td>@itm.tblProduct.ProductName</td>
+                    <td>@itm.tblCustomer.CustomerDesc</td>
+                    <td>@itm.PresetQty</td>
+                    <td>@((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty??0))</td>
+                    @if (obj.tblProduct.tblUOMMaster.UOM.ToUpper() == "LTR")
+                    {
+                        <td>@((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0))</td>
+                        <td>@(Math.Round(itm.AdditiveQty1 ?? 0,3) + Math.Round(itm.PrevAdditiveQty1 ?? 0,3))</td>
+                        <td>@((itm.AdditiveQty2 ?? 0) + (itm.PrevAdditiveQty2 ?? 0))</td>
+                        <td>@((itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty ?? 0))</td>
+                    }
+                    else
+                    {
+                        <td>@itm.tblLoadMaster.WeightBeforeLoading</td>
+                        <td>@itm.tblLoadMaster.WeightAfterLoading</td>
+                        <td>
+                            @{
+                        if ((itm.tblLoadMaster.WeightAfterLoading??0) - (itm.tblLoadMaster.WeightBeforeLoading??0) > 0)
+                        {
+                            @((itm.tblLoadMaster.WeightAfterLoading??0) - (itm.tblLoadMaster.WeightBeforeLoading??0));
+                        }
+                        else
+                        {
+                            @(0);
+                        }
+                            }
+                        </td>
+                        <td style="display:none;"></td>
+                    }
+                    <td>@(itm.TopUpQty ??0)</td>
+                    <td>@(itm.DecantedQty ??0)</td>
+                    <td>@((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty ??0 ) + (itm.TopUpQty ?? 0) - (itm.DecantedQty ?? 0))</td>
+                    <td>@itm.tblLoadStatu.LoadStatusDesc</td>
+                    <td>@Convert.ToString(itm.tblDestination==null?string.Empty:itm.tblDestination.DestinationDesc)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    Purpose = '@Model.FirstOrDefault().tblLoadMaster.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/TruckDetails_Index.js"></script>

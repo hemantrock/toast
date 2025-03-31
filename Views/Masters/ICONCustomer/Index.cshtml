@@ -1,0 +1,38 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblICONCustomer>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddICONCustomer();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW CUSTOMER GROUP
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black" >Customer Masters</h3>
+        <table id="tblICONCustomer" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Status</th>
+                    <th>GROUP NAME</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblICONCustomer itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.Id);">
+                        <td style="display:none;">@itm.Id</td>
+                        <td>@itm.GroupName</td>
+                       <td class="text-center"><span id="spanDelete_@itm.Id" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.Id"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/ICONCustomer/Index.js"></script>

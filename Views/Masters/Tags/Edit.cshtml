@@ -1,0 +1,261 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTagMaster
+@{
+    ViewBag.Title = "Edit Tag Master";
+    Layout = null;
+    var ddl = ViewBag.dropdown;
+
+    List<tblDropdownValue> ddlist = ddl.DropDownValues;
+    List<tblDropdownValue> ddlRegType = ddlist.Where(x => x.ddlType.ToUpper() == "MBUSREGTYPE").ToList();
+
+}
+
+<h2 class="headingPage">
+    Edit Tag
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmTag" role="form" class="form-fields">
+            <input id="hdnIdKey" type="hidden" value="@Model.TagName">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Tag Name</label>
+                        <input id="txtTagName" name="TagName" type="text" placeholder="Tag Name" class="form-control" value="@Model.TagName" readonly>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Tag Description</label>
+                        <input id="txtTagDesc" name="TagDesc" type="text" placeholder="Tag Desc" class="form-control" value="@Model.TagDescription ">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Tag Description Short</label>
+                        <input id="txtTagDescShort" name="TagDescShort" type="text" placeholder="Tag Desc Short" class="form-control" value="@Model.TagDescShort ">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Data Source</label>
+                        <select class="form-control" id="ddlDataSource" name="DataSource" disabled="disabled">
+                            <option value="" ConnType="0">Select Data Source</option>
+                            @foreach (tblDataSourceMaster DataSrc in ddl.DS)
+                            {
+                                if (Model.DSId != DataSrc.DataSourceID)
+                                {
+                                    <option value="@DataSrc.DataSourceID" ConnType="@DataSrc.ConnTypeID">@DataSrc.DSName</option>
+                                }
+                                else
+                                {
+                                    <option value="@DataSrc.DataSourceID" ConnType="@DataSrc.ConnTypeID" selected="selected">@DataSrc.DSName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Data Type</label>
+                        <select class="form-control" id="ddlDataType" name="DataType" disabled="disabled">
+                            <option value="0">Please select a data type </option>
+                            @foreach (tblDataTypeMaster datatype in ddl.DataType)
+                            {
+                                if (Model.tblDataTypeMaster.DataTypeId != datatype.DataTypeId)
+                                {
+                                    <option value="@datatype.DataTypeId">@datatype.DataType</option>
+                                }
+                                else
+                                {
+                                    <option value="@datatype.DataTypeId" selected="selected">@datatype.DataType</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 decimalShow">
+                    <div class="fields form-group">
+                        <label>Min Value</label>
+                        <input id="txtMinVal" name="MinVal" type="text" placeholder="MinVal" class="form-control" value="@Model.MinVal">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 decimalShow">
+                    <div class="fields form-group">
+                        <label>Max Value</label>
+                        <input id="txtMaxVal" name="MaxVal" type="text" placeholder="MaxVal" class="form-control" value="@Model.MaxVal">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 decimalShow">
+                    <div class="fields form-group">
+                        <label>Unit</label>
+                        <select class="form-control" id="ddlUOM" name="UOM">
+                            <option value="0" selected>Please select a unit </option>
+                            @foreach (tblUOMMaster data in ddl.UOM)
+                            {
+                                if (Model.tblUOMMaster != null && Model.tblUOMMaster.UniqueID != data.UniqueID)
+                                {
+                                    <option value="@data.UniqueID">@data.UOM</option>
+                                }
+                                else if (Model.tblUOMMaster != null && Model.tblUOMMaster.UniqueID == data.UniqueID)
+                                {
+                                    <option value="@Model.tblUOMMaster.UniqueID" selected="selected">@Model.tblUOMMaster.UOM</option>
+                                }
+                                else
+                                {
+                                    <option value="@data.UniqueID">@data.UOM</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 decimalShow">
+                    <div class="fields form-group">
+                        <label>Scaling</label>
+                        <input id="txtScaling" name="Scaling" type="text" placeholder="Scaling" class="form-control" value="@Model.Scaling">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 decimalShow">
+                    <div class="fields form-group">
+                        <label>Round Digits</label>
+                        <input id="txtRoundDigits" name="RoundDigits" type="text" placeholder="Round Digits" class="form-control" value="@Model.RoundDigits">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Device Type</label>
+                        <input id="txtDeviceType" name="DeviceType" type="text" placeholder="Device Type" data-id="" class="form-control" value="@Model.DeviceType">
+                    </div>
+                </div>
+
+                @*OPC Field*@
+                <div class="col-lg-2 col-md-2 col-sm-2 OPCField">
+                    <div class="fields form-group">
+                        <label>OPC Tag Name</label>
+                        <input id="txtOPCTagName" name="OPCTagName" type="text" placeholder="OPC Tag Name" class="form-control" value="@(Model.tblOPCDAMaster==null?"": Model.tblOPCDAMaster.OPCTagName)" />
+
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 OPCField">
+                    <div class="fields form-group">
+                        <label>Tag Group</label>
+                        <input id="txtTagGroup" name="TagGroup" type="text" placeholder="Tag Group" class="form-control" value="@(Model.tblOPCDAMaster==null?"": Model.tblOPCDAMaster.TagGroup)" />
+                    </div>
+                </div>
+
+                @*RTU Field*@
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Slave Id</label>
+                        <input id="txtSlaveIdRTU" name="SlaveIdRTU" type="text" placeholder="Slave Id" class="form-control" value="@(Model.tblModbusRTUMaster == null ? "" :Convert.ToString(Model.tblModbusRTUMaster.SlaveId))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Register Type</label>
+                        <select class="form-control" id="ddlRegTypeRTU" name="RegTypeRTU">
+                            <option disabled value="0">Select Register Type</option>
+                            
+                            @foreach (tblDropdownValue data in ddlRegType)
+                            {
+                                if (Model.RTUId != null && Model.tblModbusRTUMaster.RegType.ToString() != data.ddlValues)
+                                {
+                                    <option value="@data.ddlValues">@data.ddlValues</option>
+                                }
+                                else
+                                {
+                                    <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Start Register</label>
+                        <input id="txtStartRegisterRTU" name="StartRegisterRTU" type="text" placeholder="Start Register" class="form-control" value="@(Model.tblModbusRTUMaster == null ? "" :Convert.ToString(Model.tblModbusRTUMaster.StartRegister))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>No Of Bytes</label>
+                        <input id="txtNoOfBytesRTU" name="NoOfBytesRTU" type="text" placeholder="No Of Bytes" class="form-control" value="@(Model.tblModbusRTUMaster == null ? "" :Convert.ToString(Model.tblModbusRTUMaster.NoOfBytes))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 BoolData RTUField BoolDataRTUField">
+                    <div class="fields form-group">
+                        <label>Segment No</label>
+                        <input id="txtSegmentNoRTU" name="SegmentNoRTU" type="text" placeholder="Segment no incase of Bool" class="form-control" value="@(Model.tblModbusRTUMaster == null ? "" :Convert.ToString(Model.tblModbusRTUMaster.SegmentNo))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 BoolData RTUField BoolDataRTUField">
+                    <div class="fields form-group">
+                        <label>Write Coil Register</label>
+                        <input id="txtWriteCoilRegisterRTU" name="WriteCoilRegisterRTU" type="text" placeholder="Write Coil Register incase of Bool" class="form-control" value="@(Model.tblModbusRTUMaster == null ? "" :Convert.ToString(Model.tblModbusRTUMaster.WriteCoilAddr))">
+                    </div>
+                </div>
+
+                @*TCP Field*@
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Slave Id</label>
+                        <input id="txtSlaveIdTCP" name="SlaveIdTCP" type="text" placeholder="Slave Id" class="form-control" value="@(Model.tblModbusTCPMaster == null ? "" :Convert.ToString(Model.tblModbusTCPMaster.SlaveId))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Register Type</label>
+                        <select class="form-control" id="ddlRegTypeTCP" name="RegTypeTCP">
+                            <option disabled value="0">Select Register Type</option>
+                            @foreach (tblDropdownValue data in ddlRegType)
+                            {
+                                if (Model.TCPId != null && Model.tblModbusTCPMaster.RegType.ToString() != data.ddlValues)
+                                {
+                                    <option value="@data.ddlValues">@data.ddlValues</option>
+                                }
+                                else
+                                {
+                                    <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Start Register</label>
+                        <input id="txtStartRegisterTCP" name="StartRegisterTCP" type="text" placeholder="Start Register" class="form-control" value="@(Model.tblModbusTCPMaster == null ? "" :Convert.ToString(Model.tblModbusTCPMaster.StartRegister))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>No Of Bytes</label>
+                        <input id="txtNoOfBytesTCP" name="NoOfBytesTCP" type="text" placeholder="No Of Bytes" class="form-control" value="@(Model.tblModbusTCPMaster == null ? "" :Convert.ToString(Model.tblModbusTCPMaster.NoOfBytes))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 BoolData TCPField BoolDataTCPField">
+                    <div class="fields form-group">
+                        <label>Segment No</label>
+                        <input id="txtSegmentNoTCP" name="SegmentNoTCP" type="text" placeholder="Segment no incase of Bool" class="form-control" value="@(Model.tblModbusTCPMaster == null ? "" :Convert.ToString(Model.tblModbusTCPMaster.SegmentNo))">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 BoolData TCPField BoolDataTCPField">
+                    <div class="fields form-group">
+                        <label>Write Coil Register</label>
+                        <input id="txtWriteCoilRegisterTCP" name="WriteCoilRegisterTCP" type="text" placeholder="Write Coil Register incase of Bool" class="form-control" value="@(Model.tblModbusTCPMaster == null ? "" :Convert.ToString(Model.tblModbusTCPMaster.WriteCoilAddr))">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTagsData();"><span class="glyphicon glyphicon-floppy-disk"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/Tag/Tags.js"></script>

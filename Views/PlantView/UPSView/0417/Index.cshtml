@@ -1,0 +1,242 @@
+﻿@using TOAST.Data.Model;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - UPS View";
+    Layout = null;
+    tblDeviceMaster oUPS01 = Model.Where(x => x.DeviceName == "UPS-01").FirstOrDefault();
+    tblDeviceMaster oUPS02 = Model.Where(x => x.DeviceName == "UPS-02").FirstOrDefault();
+    if (oUPS01 == null) { oUPS01 = new tblDeviceMaster(); }
+    if (oUPS02 == null) { oUPS02 = new tblDeviceMaster(); }
+}
+<style>
+    .ups-status-container .ups-bg {
+        margin-bottom: 10px;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Process UPS View</h3>
+    </div>
+</div>
+<div class="row ups-status-container">
+    <div class="col-lg-12 m-t-40">
+        <div class="col-lg-2 no-padd-right">
+            <div class="ups-bg left emerson single">
+                <table class="detail-tbl hide">
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS01.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS01.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ups-bg right emerson single">
+                <table class="detail-tbl hide">
+                    <tbody>
+                        <tr>
+
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS02.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="@(oUPS02.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="3">STATUS</th></tr>
+                    <tr>
+                        <th class="text-center" style="width: 60%">Parameter</th>
+                        <th class="text-center tooltips" style="width: 20%">UPS-01</th>
+                        <th class="text-center tooltips" style="width: 20%">UPS-02</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tooltips" title="UPS Mains OK">UPS Mains OK</td>
+                        <td><span class="circle-cont-sm"><span class="UPS01_MAINS_OK"></span></span></td>
+                        <td><span class="circle-cont-sm"><span class="UPS02_MAINS_OK"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="UPS Self Test Pass">UPS Test Pass</td>
+                        <td><span class="circle-cont-sm"><span class="UPS01_TEST_PASS"></span></span></td>
+                        <td><span class="circle-cont-sm"><span class="UPS02_TEST_PASS"></span></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-3">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="9">ALERTS</th></tr>
+                    <tr>
+                        <th class="text-center" style="width: 60%">Parameter</th>
+                        <th class="text-center tooltips" style="width: 20%">UPS-01</th>
+                        <th class="text-center tooltips td-b-right" style="width: 20%">UPS-02</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tooltips" title="Rectifier Voltage Higher than Reference">Rectifier Volt. High</td>
+                        <td><span class="UPS01_RECT_VOLT_HIGH"></span></td>
+                        <td class="td-b-right"><span class="UPS02_RECT_VOLT_HIGH"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Mains Fail">Mains Fail</td>
+                        <td><span class="UPS01_MAINS_FAIL"></span></td>
+                        <td class="td-b-right"><span class="UPS02_MAINS_FAIL"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Load is on Bypass">Load is on Bypass</td>
+                        <td><span class="UPS01_LOAD_ON_BYPASS"></span></td>
+                        <td class="td-b-right"><span class="UPS02_LOAD_ON_BYPASS"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Output Voltage is Low">Output Voltage Low</td>
+                        <td><span class="UPS01_OUT_VOLT_LOW"></span></td>
+                        <td class="td-b-right"><span class="UPS02_OUT_VOLT_LOW"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Output Voltage is High">Output Voltage High</td>
+                        <td><span class="UPS01_OUT_VOLT_HIGH"></span></td>
+                        <td class="td-b-right"><span class="UPS02_OUT_VOLT_HIGH"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="UPS is Overloaded">Overloaded</td>
+                        <td><span class="UPS01_OVERLOAD"></span></td>
+                        <td class="td-b-right"><span class="UPS02_OVERLOAD"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Battery Voltage Low">Battery Voltage Low</td>
+                        <td><span class="UPS01_BATTERY_VOLT_LOW"></span></td>
+                        <td class="td-b-right"><span class="UPS02_BATTERY_VOLT_LOW"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Rectifier Failed: DC Voltage low">Rectifier Failed</td>
+                        <td><span class="UPS01_RECT_FAIL"></span></td>
+                        <td class="td-b-right"><span class="UPS02_RECT_FAIL"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="UPS Temperature High">UPS Temperature High</td>
+                        <td><span class="UPS01_TEMP_HIGH"></span></td>
+                        <td class="td-b-right"><span class="UPS02_TEMP_HIGH"></span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tooltips" title="Self Test Fail">UPS Self Test Fail</td>
+                        <td><span class="UPS01_TEST_FAIL"></span></td>
+                        <td class="td-b-right"><span class="UPS02_TEST_FAIL"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Output Short Circuit">Output Short Circuit</td>
+                        <td><span class="UPS01_OUT_SHORT_CIRCUIT"></span></td>
+                        <td class="td-b-right"><span class="UPS02_OUT_SHORT_CIRCUIT"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Input Abnormal">Input Abnormal</td>
+                        <td><span class="UPS01_INPUT_ABNORMAL"></span></td>
+                        <td class="td-b-right"><span class="UPS02_INPUT_ABNORMAL"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-3">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="12">DATA</th></tr>
+                    <tr>
+                        <th class="text-center" style="width: 50%">Parameter</th>
+                        <th class="text-center tooltips" style="width: 25%">UPS-01</th>
+                        <th class="text-center tooltips td-b-right" style="width: 25%">UPS-02</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tooltips" title="Input Voltage RY">Input Volt RY</td>
+                        <td><span class="UPS01_INP_VOLT_RY"></span></td>
+                        <td class="td-b-right"><span class="UPS02_INP_VOLT_RY"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Output Voltage 1 Ph Phase-Neutral">Output Volt. 1Ph</td>
+                        <td><span class="UPS01_OUT_VOLT_PN"></span></td>
+                        <td class="td-b-right"><span class="UPS02_OUT_VOLT_PN"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Inverter Frequency">Inverter Hz</td>
+                        <td><span class="UPS01_INV_FREQ"></span></td>
+                        <td class="td-b-right"><span class="UPS02_INV_FREQ"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Rectifier Voltage">Rectifier Voltage</td>
+                        <td><span class="UPS01_RECT_VOLT"></span></td>
+                        <td class="td-b-right"><span class="UPS02_RECT_VOLT"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Battery Voltage">Battery Voltage</td>
+                        <td><span class="UPS01_BATTERY_VOLT"></span></td>
+                        <td class="td-b-right"><span class="UPS02_BATTERY_VOLT"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="Battery Current" title="DBatteryVoltage">Battery Current</td>
+                        <td><span class="UPS01_BATTERY_CURR"></span></td>
+                        <td class="td-b-right"><span class="UPS02_BATTERY_CURR"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="Last Self Test Date">Last Self Test</td>
+                        <td><span class="UPS01_SELF_CHECK_DAY"></span>-<span class="UPS01_SELF_CHECK_MONTH"></span>-<span class="UPS01_SELF_CHECK_YEAR"></span></td>
+                        <td class="td-b-right"><span class="UPS02_SELF_CHECK_DAY"></span>-<span class="UPS02_SELF_CHECK_MONTH"></span>-<span class="UPS02_SELF_CHECK_YEAR"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="UPS Output Load%">UPS Output Load%</td>
+                        <td><span class="UPS01_OUT_LOAD_PERCENT"></span></td>
+                        <td class="td-b-right"><span class="UPS02_OUT_LOAD_PERCENT"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="tooltips" title="UPS Temperature">UPS Temperature</td>
+                        <td><span class="UPS01_UPS_TEMP"></span></td>
+                        <td class="td-b-right"><span class="UPS02_UPS_TEMP"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="Battery Time" title="Battery Time">Battery Time</td>
+                        <td><span class="UPS01_BATTERY_TIME"></span></td>
+                        <td class="td-b-right"><span class="UPS02_BATTERY_TIME"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6 hide">
+            <div class="row text-center" style="background-color: #6e6d6b;color: #fff;font-size: 17px; margin-bottom:5px">UPS-01 SLD</div>
+            <div class="row text-center" style="background-color: #6e6d6b;color: #fff;font-size: 17px; margin-bottom:5px">UPS-02 SLD</div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/UPSView/Index.js"></script>

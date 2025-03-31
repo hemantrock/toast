@@ -1,0 +1,1338 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    Layout = null;
+    List<tblPlantLocation> PlantLocs = ViewBag.PlantLocs;
+    List<int> lstiLocs = Model.Select(x => (x.tblPlantLocation.MasterLocID ?? x.tblPlantLocation.LocationID)).Distinct().ToList();
+    List<tblPlantLocation> lstLocs = PlantLocs.Where(x => lstiLocs.Contains(x.LocationID)).Distinct().ToList();
+    List<tblDeviceMaster> lstFAP = Model.Where(x => x.DeviceID == 15).ToList();
+    List<tblDeviceMaster> lstSensors = Model.Except(lstFAP).ToList();
+    List<tblTagMaster> FAPTags = ViewBag.FAPTags;
+    string proj = clsConfig.ProjPath;
+    List<int> CeilingDevs = new List<int>() { 12,13};
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Fire Alarm</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12" style="margin-top: 60px;">
+
+        <div class="fire-alarm-container">
+            <div class="alarm-box">
+                <div class="fab-box"></div>
+                <!-- Doing Fire Alarm Panel First -->
+                <div class="fire-alarm-devices-box  fap_1">
+                    <span class="fire-alarm-device p-0419 fap"></span>
+                    <span class="fire-alarm-header">
+                        FAP-01
+                    </span>
+                </div>
+                <!-- Doing Detectors and Beacons Now -->
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_TLF01_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-04-TLF01
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Gantry</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_TLF01_NORMAL_STS"></span>
+                                    <span class="MCP_TLF01_BYPASS_STS"></span>
+                                    <span class="MCP_TLF01_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_TLF01_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_TLF01_DEV_MISSING_STS"></span>
+                                    <span class="MCP_TLF01_FAULT_STS"></span>
+                                    <span class="MCP_TLF01_PRE_ALARM_STS"></span>
+                                    <span class="MCP_TLF01_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_TLF02_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-05-TLF02
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Gantry</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_TLF02_NORMAL_STS"></span>
+                                    <span class="MCP_TLF02_BYPASS_STS"></span>
+                                    <span class="MCP_TLF02_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_TLF02_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_TLF02_DEV_MISSING_STS"></span>
+                                    <span class="MCP_TLF02_FAULT_STS"></span>
+                                    <span class="MCP_TLF02_PRE_ALARM_STS"></span>
+                                    <span class="MCP_TLF02_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_PH_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-03-PH
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Pump House</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_PH_NORMAL_STS"></span>
+                                    <span class="MCP_PH_BYPASS_STS"></span>
+                                    <span class="MCP_PH_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_PH_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_PH_DEV_MISSING_STS"></span>
+                                    <span class="MCP_PH_FAULT_STS"></span>
+                                    <span class="MCP_PH_PRE_ALARM_STS"></span>
+                                    <span class="MCP_PH_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_MSTF01_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-01-MS-TF01
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Tank Farm</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_MSTF01_NORMAL_STS"></span>
+                                    <span class="MCP_MSTF01_BYPASS_STS"></span>
+                                    <span class="MCP_MSTF01_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_MSTF01_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_MSTF01_DEV_MISSING_STS"></span>
+                                    <span class="MCP_MSTF01_FAULT_STS"></span>
+                                    <span class="MCP_MSTF01_PRE_ALARM_STS"></span>
+                                    <span class="MCP_MSTF01_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_MSTF02_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-02-MS-TF02
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Tank Farm</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_MSTF02_NORMAL_STS"></span>
+                                    <span class="MCP_MSTF02_BYPASS_STS"></span>
+                                    <span class="MCP_MSTF02_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_MSTF02_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_MSTF02_DEV_MISSING_STS"></span>
+                                    <span class="MCP_MSTF02_FAULT_STS"></span>
+                                    <span class="MCP_MSTF02_PRE_ALARM_STS"></span>
+                                    <span class="MCP_MSTF02_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_HSDTF_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-06-HSD-TF
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Tank Farm</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_HSDTF_NORMAL_STS"></span>
+                                    <span class="MCP_HSDTF_BYPASS_STS"></span>
+                                    <span class="MCP_HSDTF_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_HSDTF_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_HSDTF_DEV_MISSING_STS"></span>
+                                    <span class="MCP_HSDTF_FAULT_STS"></span>
+                                    <span class="MCP_HSDTF_PRE_ALARM_STS"></span>
+                                    <span class="MCP_HSDTF_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_SKOTF_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-07-SKO-TF
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Tank Farm</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_SKOTF_NORMAL_STS"></span>
+                                    <span class="MCP_SKOTF_BYPASS_STS"></span>
+                                    <span class="MCP_SKOTF_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_SKOTF_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_SKOTF_DEV_MISSING_STS"></span>
+                                    <span class="MCP_SKOTF_FAULT_STS"></span>
+                                    <span class="MCP_SKOTF_PRE_ALARM_STS"></span>
+                                    <span class="MCP_SKOTF_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 sd SD01_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-01
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD01_NORMAL_STS"></span>
+                                    <span class="SD01_BYPASS_STS"></span>
+                                    <span class="SD01_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD01_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD01_DEV_MISSING_STS"></span>
+                                    <span class="SD01_FAULT_STS"></span>
+                                    <span class="SD01_PRE_ALARM_STS"></span>
+                                    <span class="SD01_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 sd SD02_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-02
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD02_NORMAL_STS"></span>
+                                    <span class="SD02_BYPASS_STS"></span>
+                                    <span class="SD02_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD02_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD02_DEV_MISSING_STS"></span>
+                                    <span class="SD02_FAULT_STS"></span>
+                                    <span class="SD02_PRE_ALARM_STS"></span>
+                                    <span class="SD02_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:-70px">
+                    <span class="fire-alarm-device p-0419 sd SD03_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-03
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD03_NORMAL_STS"></span>
+                                    <span class="SD03_BYPASS_STS"></span>
+                                    <span class="SD03_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD03_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD03_DEV_MISSING_STS"></span>
+                                    <span class="SD03_FAULT_STS"></span>
+                                    <span class="SD03_PRE_ALARM_STS"></span>
+                                    <span class="SD03_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD04_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-04
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD04_NORMAL_STS"></span>
+                                    <span class="SD04_BYPASS_STS"></span>
+                                    <span class="SD04_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD04_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD04_DEV_MISSING_STS"></span>
+                                    <span class="SD04_FAULT_STS"></span>
+                                    <span class="SD04_PRE_ALARM_STS"></span>
+                                    <span class="SD04_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD05_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-05
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD05_NORMAL_STS"></span>
+                                    <span class="SD05_BYPASS_STS"></span>
+                                    <span class="SD05_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD05_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD05_DEV_MISSING_STS"></span>
+                                    <span class="SD05_FAULT_STS"></span>
+                                    <span class="SD05_PRE_ALARM_STS"></span>
+                                    <span class="SD05_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD06_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-06
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD06_NORMAL_STS"></span>
+                                    <span class="SD06_BYPASS_STS"></span>
+                                    <span class="SD06_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD06_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD06_DEV_MISSING_STS"></span>
+                                    <span class="SD06_FAULT_STS"></span>
+                                    <span class="SD06_PRE_ALARM_STS"></span>
+                                    <span class="SD06_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD07_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-07
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD07_NORMAL_STS"></span>
+                                    <span class="SD07_BYPASS_STS"></span>
+                                    <span class="SD07_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD07_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD07_DEV_MISSING_STS"></span>
+                                    <span class="SD07_FAULT_STS"></span>
+                                    <span class="SD07_PRE_ALARM_STS"></span>
+                                    <span class="SD07_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD08_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-08
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD08_NORMAL_STS"></span>
+                                    <span class="SD08_BYPASS_STS"></span>
+                                    <span class="SD08_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD08_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD08_DEV_MISSING_STS"></span>
+                                    <span class="SD08_FAULT_STS"></span>
+                                    <span class="SD08_PRE_ALARM_STS"></span>
+                                    <span class="SD08_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD09_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-09
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD09_NORMAL_STS"></span>
+                                    <span class="SD09_BYPASS_STS"></span>
+                                    <span class="SD09_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD09_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD09_DEV_MISSING_STS"></span>
+                                    <span class="SD09_FAULT_STS"></span>
+                                    <span class="SD09_PRE_ALARM_STS"></span>
+                                    <span class="SD09_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD10_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-10
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD10_NORMAL_STS"></span>
+                                    <span class="SD10_BYPASS_STS"></span>
+                                    <span class="SD10_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD10_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD10_DEV_MISSING_STS"></span>
+                                    <span class="SD10_FAULT_STS"></span>
+                                    <span class="SD10_PRE_ALARM_STS"></span>
+                                    <span class="SD10_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD11_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-11
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD11_NORMAL_STS"></span>
+                                    <span class="SD11_BYPASS_STS"></span>
+                                    <span class="SD11_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD11_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD11_DEV_MISSING_STS"></span>
+                                    <span class="SD11_FAULT_STS"></span>
+                                    <span class="SD11_PRE_ALARM_STS"></span>
+                                    <span class="SD11_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD12_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-12
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD12_NORMAL_STS"></span>
+                                    <span class="SD12_BYPASS_STS"></span>
+                                    <span class="SD12_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD12_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD12_DEV_MISSING_STS"></span>
+                                    <span class="SD12_FAULT_STS"></span>
+                                    <span class="SD12_PRE_ALARM_STS"></span>
+                                    <span class="SD12_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:100px">
+                    <span class="fire-alarm-device p-0419 sd SD13_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-13
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD13_NORMAL_STS"></span>
+                                    <span class="SD13_BYPASS_STS"></span>
+                                    <span class="SD13_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD13_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD13_DEV_MISSING_STS"></span>
+                                    <span class="SD13_FAULT_STS"></span>
+                                    <span class="SD13_PRE_ALARM_STS"></span>
+                                    <span class="SD13_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alarm-box">
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD14_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-14
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD14_NORMAL_STS"></span>
+                                    <span class="SD14_BYPASS_STS"></span>
+                                    <span class="SD14_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD14_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD14_DEV_MISSING_STS"></span>
+                                    <span class="SD14_FAULT_STS"></span>
+                                    <span class="SD14_PRE_ALARM_STS"></span>
+                                    <span class="SD14_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD15_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-15
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD15_NORMAL_STS"></span>
+                                    <span class="SD15_BYPASS_STS"></span>
+                                    <span class="SD15_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD15_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD15_DEV_MISSING_STS"></span>
+                                    <span class="SD15_FAULT_STS"></span>
+                                    <span class="SD15_PRE_ALARM_STS"></span>
+                                    <span class="SD15_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD16_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-16
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD16_NORMAL_STS"></span>
+                                    <span class="SD16_BYPASS_STS"></span>
+                                    <span class="SD16_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD16_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD16_DEV_MISSING_STS"></span>
+                                    <span class="SD16_FAULT_STS"></span>
+                                    <span class="SD16_PRE_ALARM_STS"></span>
+                                    <span class="SD16_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD17_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-17
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD17_NORMAL_STS"></span>
+                                    <span class="SD17_BYPASS_STS"></span>
+                                    <span class="SD17_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD17_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD17_DEV_MISSING_STS"></span>
+                                    <span class="SD17_FAULT_STS"></span>
+                                    <span class="SD17_PRE_ALARM_STS"></span>
+                                    <span class="SD17_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD18_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-18
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD18_NORMAL_STS"></span>
+                                    <span class="SD18_BYPASS_STS"></span>
+                                    <span class="SD18_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD18_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD18_DEV_MISSING_STS"></span>
+                                    <span class="SD18_FAULT_STS"></span>
+                                    <span class="SD18_PRE_ALARM_STS"></span>
+                                    <span class="SD18_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD19_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-19
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD19_NORMAL_STS"></span>
+                                    <span class="SD19_BYPASS_STS"></span>
+                                    <span class="SD19_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD19_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD19_DEV_MISSING_STS"></span>
+                                    <span class="SD19_FAULT_STS"></span>
+                                    <span class="SD19_PRE_ALARM_STS"></span>
+                                    <span class="SD19_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  sd" style="top:210px">
+                    <span class="fire-alarm-device p-0419 sd SD20_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        SD-20
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Smoke Detectors</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Control Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="SD20_NORMAL_STS"></span>
+                                    <span class="SD20_BYPASS_STS"></span>
+                                    <span class="SD20_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="SD20_DUAL_ADDRESS_STS"></span>
+                                    <span class="SD20_DEV_MISSING_STS"></span>
+                                    <span class="SD20_FAULT_STS"></span>
+                                    <span class="SD20_PRE_ALARM_STS"></span>
+                                    <span class="SD20_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:210px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_ADMBLG_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-08-ADMBLG
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>Admin Building</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_ADMBLG_NORMAL_STS"></span>
+                                    <span class="MCP_ADMBLG_BYPASS_STS"></span>
+                                    <span class="MCP_ADMBLG_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_ADMBLG_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_ADMBLG_DEV_MISSING_STS"></span>
+                                    <span class="MCP_ADMBLG_FAULT_STS"></span>
+                                    <span class="MCP_ADMBLG_PRE_ALARM_STS"></span>
+                                    <span class="MCP_ADMBLG_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="fire-alarm-devices-box  mcp" style="top:210px">
+                    <span class="fire-alarm-device p-0419 mcp MCP_09_ALARM alert_bad"></span>
+                    <span class="fire-alarm-header">
+                        MCP-09
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    </span>
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="padd-l-15">Type</td>
+                                <td>Manual Call Point</td>
+                            </tr>
+                            <tr>
+                                <td class="padd-l-15">Location</td>
+                                <td>MCC Room</td>
+                            </tr>
+
+                            <tr>
+                                <td class="padd-l-15">Remarks</td>
+                                <td class="fire-detector">
+                                    <span class="MCP_09_NORMAL_STS"></span>
+                                    <span class="MCP_09_BYPASS_STS"></span>
+                                    <span class="MCP_09_DEV_TYPE_FAULT_STS"></span>
+                                    <span class="MCP_09_DUAL_ADDRESS_STS"></span>
+                                    <span class="MCP_09_DEV_MISSING_STS"></span>
+                                    <span class="MCP_09_FAULT_STS"></span>
+                                    <span class="MCP_09_PRE_ALARM_STS"></span>
+                                    <span class="MCP_09_FIRE_STS"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="alarm-box right-b">
+                <div class="vertical-line"></div>
+            </div>
+        </div>
+
+
+
+
+        @{
+            <div class="col-lg-12" style="margin-bottom: 50px; display: none;">
+                <div class="fire-alarm-container">
+                    <div class="alarm-box">
+                        <div class="fab-box"></div>
+                        @{
+                            List<tblDeviceMaster> Devs = Model.OrderBy(x => x.tblPlantLocation.SeqNo ?? 100).ThenBy(x => x.TypeSeqNo).ToList();
+                            <!-- Doing Fire Alarm Panel First -->
+                            tblDeviceMaster FAP = Devs.Where(x => x.DeviceID == 15).FirstOrDefault();
+                            <div class="fire-alarm-devices-box  @(FAP.tblDeviceType.DevicePrefix.ToLower())_1">
+                                <span class="fire-alarm-device p-@proj @FAP.tblDeviceType.DevicePrefix.ToLower()"></span>
+                                <span class="fire-alarm-header">
+                                    @(FAP.DeviceName)
+                                </span>
+                            </div>
+
+                            <!-- Doing Detectors and Beacons Now -->
+                            List<tblDeviceMaster> Dets = Devs.Where(x => x.DeviceID != 15).ToList();
+                            int Max = Dets.Count(); int SeqNo = 0;
+                            for (SeqNo = 0; SeqNo < Max; SeqNo++)
+                            {
+                                int Top = -70 + (int)(SeqNo / 10) * 170;
+                                string SubLoc = "";
+                                if (CeilingDevs.Contains(Dets[SeqNo].DeviceID??0)) { SubLoc = "-Ceiling"; }
+                                tblPlantLocation MastLoc = lstLocs.Where(x => x.LocationID == Dets[SeqNo].tblPlantLocation.MasterLocID).FirstOrDefault();
+                                if (MastLoc != null) { SubLoc = MastLoc.LocationDesc + "-" + Dets[SeqNo].tblPlantLocation.LocationDesc; }
+                                else { SubLoc = Dets[SeqNo].tblPlantLocation.LocationDesc + SubLoc; }
+                                <div class="fire-alarm-devices-box  @Dets[SeqNo].tblDeviceType.DevicePrefix.ToLower()" style="top:@(Top)px">
+                                    <span class="fire-alarm-device p-@proj @Dets[SeqNo].tblDeviceType.DevicePrefix.ToLower() @(Dets[SeqNo].TagPrefix)_ALARM"></span>
+                                    <span class="fire-alarm-header">
+                                        @(Dets[SeqNo].DeviceName)
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    </span>
+                                    <table class="detail-tbl">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="padd-l-15">Type</td>
+                                                <td>@(Dets[SeqNo].tblDeviceType.DeviceTypeDesc)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="padd-l-15">Location</td>
+                                                <td>@(SubLoc)</td>
+                                            </tr>
+                                            @*<tr>
+                                                <td class="padd-l-15">Status</td>
+                                                <td class="fire-detector">
+                                                    <span class="p-@proj alert alert-fas">
+                                                        <span class="@(Dets[SeqNo].TagPrefix)_NORMAL_STS @(Dets[SeqNo].TagPrefix)_FAULT_STS @(Dets[SeqNo].TagPrefix)_FIRE_STS @(Dets[SeqNo].TagPrefix)_PRE_ALARM_STS @(Dets[SeqNo].TagPrefix)_DEV_MISSING_STS @(Dets[SeqNo].TagPrefix)_DUAL_ADDRESS_STS @(Dets[SeqNo].TagPrefix)_DEV_TYPE_FAULT_STS @(Dets[SeqNo].TagPrefix)_BYPASS_STS"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>*@
+                                            <tr>
+                                                <td class="padd-l-15">Remarks</td>
+                                                <td class="fire-detector">
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_NORMAL_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_BYPASS_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_DEV_TYPE_FAULT_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_DUAL_ADDRESS_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_DEV_MISSING_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_FAULT_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_PRE_ALARM_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_FIRE_STS"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 hide">
+                <div class="fire-alarm-container alaram-panel" style="margin-top:80px">
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr><th class="fire-alarm-header" colspan="6"><span>Fire Alarm Panel</span></th></tr>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                List<tblTagMaster> UsedTags = FAPTags.Where(x => x.TagDescription.ToUpper().Contains("LOOP") == false).ToList();
+                                int seq = 0; int max = UsedTags.Count();
+                                for (int i = 0; i < max; i = i + 3)
+                                {
+                                    <tr>
+                                        <td class="padd-l-15">@UsedTags[i].TagDescription</td>
+                                        <td>
+                                            <span class="alert-cont-sm circle-cont-sm">
+                                                <span class="@(UsedTags[i].TagName)"></span>
+                                            </span>
+                                        </td>
+                                        @if (i + 1 < max)
+                                        {
+                                            <td class="padd-l-15">@UsedTags[i + 1].TagDescription</td>
+                                            <td>
+                                                <span class="alert-cont-sm circle-cont-sm">
+                                                    <span class="@(UsedTags[i+1].TagName)"></span>
+                                                </span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="padd-l-15"></td>
+                                            <td></td>
+                                        }
+                                        @if (i + 2 < max)
+                                        {
+                                            <td class="padd-l-15">@UsedTags[i + 2].TagDescription</td>
+                                            <td>
+                                                <span class="alert-cont-sm circle-cont-sm">
+                                                    <span class="@(UsedTags[i+2].TagName)"></span>
+                                                </span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="padd-l-15"></td>
+                                            <td>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/FireAlarmView/Index.js"></script>
+
+<script>
+    $(".fire-alarm-header .fa").click(function () {
+        var ele = $(this);
+        if ($(this).hasClass('fa-plus-circle')) {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        } else {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        }
+        var tsTbl = $(this).parent().next();
+        tsTbl.slideToggle("fast");
+    });
+</script>

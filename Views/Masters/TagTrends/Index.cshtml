@@ -1,0 +1,49 @@
+﻿@using TOAST.Data.Model;
+@model List<tblTagTrendMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddTagTrend()">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW TAG TREND
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">TAG TREND DETAILS</h3>
+        <table id="tblTagTrend" class="table">
+            <thead>
+                <tr>
+                    <th>TAG NAME</th>
+                    <th>TREND NAME</th>
+                    <th>SCAN TIME (secs)</th>
+                    <th>DURATION</th>
+                    <th>COLOR</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTagTrendMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord('@itm.TagName','@itm.TrendName');">
+                        <td>@itm.TagName</td>
+                        <td>@itm.TrendName</td>
+                        <td>@itm.ScanTime</td>
+                        <td>@itm.tblDurationMaster.DurationName</td>
+                        <td><div style="background-color:#@itm.Color; width:100%;">&nbsp;</div></td>
+                        <td class="text-center">
+                            <span id="spanDelete_@itm.TagName" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TagName" data-trendname="@itm.TrendName"></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>	
+
+<script src="~/Scripts/PageJS/Masters/TagTrends/Index.js"></script>

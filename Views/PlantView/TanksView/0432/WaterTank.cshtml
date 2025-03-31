@@ -1,0 +1,269 @@
+﻿@using TOAST.Shared;
+@using TOAST.Business;
+@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTank
+@{
+    ViewBag.Title = "Plant View - Tank View";
+    Layout = null;
+    tblTank tank = Model;
+    List<tblTank> SameGrpTanks = ViewBag.SameGrpTanks;
+    List<tblMOVMaster> tankMOVs = tank.tblMOVMasters.ToList();
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    string TkPrefix = tank.TagPrefix;
+    bool ShowSafetyRadarDataLevel = ViewBag.ShowSafetyRadarLevel;
+    bool isWater = (tank.tblProduct.ProductName.ToUpper().Contains("WATER")) ? true : false;
+    string CustName = clsConfig.CustomerName;
+    bool ShowInterlockNotes = (CustName == "HPCL");
+
+    string strLevelUOM = "";
+    tblTagMaster LevelTag = DeviceTags.Where(x => x.TagName == TkPrefix + "_LEVEL").FirstOrDefault();
+    if (LevelTag != null && LevelTag.UnitId != null && LevelTag.tblUOMMaster != null) { strLevelUOM = LevelTag.tblUOMMaster.UOM; }
+
+
+    string strVolumelUOM = "";
+    tblTagMaster TOVTag = DeviceTags.Where(x => x.TagName == TkPrefix + "_TOV").FirstOrDefault();
+    if (TOVTag != null && TOVTag.UnitId != null && TOVTag.tblUOMMaster != null) { strVolumelUOM = TOVTag.tblUOMMaster.UOM; }
+
+
+    string strFlowRatelUOM = "";
+    tblTagMaster FlowRateTag = DeviceTags.Where(x => x.TagName == TkPrefix + "_FLOW_RATE").FirstOrDefault();
+    if (FlowRateTag != null && FlowRateTag.UnitId != null && FlowRateTag.tblUOMMaster != null) { strFlowRatelUOM = FlowRateTag.tblUOMMaster.UOM; }
+}
+<style>
+    .tank-modal .oil-tank-container .alert_true {
+        width: 25px;
+        height: 25px;
+    }
+
+    .tank-modal .tank-block .tank-lbl-wrapper .oil-tank-lbl .alert_true {
+        right: 12px;
+    }
+
+    .tank-modal .oil-tank-container .tank-lbl-wrapper .oil-tank-lbl span {
+        position: absolute;
+        top: 0;
+        right: 15px;
+    }
+
+    .tank-modal .oil-tank-container .alert_false,
+    .tank-modal .oil-tank-container .alert_bad {
+        width: 18px;
+        height: 18px;
+    }
+</style>
+<div class="modal-dialog tank-modal" style="width: 800px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myTANKVIEWModalLabel">@(tank.TankName) | @tank.tblProduct.ProdNameShort</h3>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            @{
+                string SameProdTanksTags = String.Join(",", SameGrpTanks.Select(x => (x.TagPrefix + "_MODE_DDL")).ToList());
+                if (SameProdTanksTags != "")
+                {
+                    <input type="hidden" id="SameGrpTankModeTags" value="@(SameProdTanksTags)" />
+                }
+            }
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-5">
+                        <div class="box-panel tank-level-detail-container">
+                            <div class="tank-level-detail-heading">Tank Details</div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Tank Name</div>
+                                <div class="tank-level-detail-val">@(tank.TankName)</div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Product Name</div>
+                                <div class="tank-level-detail-val">@tank.tblProduct.ProdNameShort</div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Dip Ref. Height (@strLevelUOM)</div>
+                                <div class="tank-level-detail-val">@tank.DipReferenceHeight</div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Tank Type</div>
+                                <div class="tank-level-detail-val">@tank.tblTankType.TankType</div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Safe Filling Height (@strLevelUOM)</div>
+                                <div class="tank-level-detail-val @(TkPrefix)_SP_HHH">@tank.SafeFillingCapacity</div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Capacity (KL)</div>
+                                <div class="tank-level-detail-val">@tank.MaxVolume</div>
+                            </div>
+                        </div>
+                        <div class="box-panel tank-level-detail-container">
+                            <div class="tank-level-detail-heading">Measured Values</div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Level (@strLevelUOM)</div>
+                                <div class="tank-level-detail-val get-hover @(TkPrefix)_LEVEL" onclick="OpenChartModal('@(TkPrefix+"_LEVEL")')"></div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Total Observed Volume(@strVolumelUOM)</div>
+                                <div class="tank-level-detail-val @(TkPrefix)_TOV"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="oil-tank-product-row">
+                            @*<div class="oil-tank-product-lbl">Tank Name</div>
+                                <div class="oil-tank-product-val">@(tank.TankName)</div>
+                                <div class="oil-tank-product-lbl">Product Name</div>
+                                <div class="oil-tank-product-val">@tank.tblProduct.ProdNameShort</div>*@
+                        </div>
+                        <div class="oil-tank-container">
+                            <div class="tank-block @tank.tblTankType.TankType">
+                                <span class="maintainence-mode-icon @(TkPrefix)_MAINT"></span>
+                                <span class="stair">
+                                    <span class="app-logo @CustName"></span>
+                                </span>
+                                <span class="@(TkPrefix + "_LEVEL")" style="display: none;"></span>
+                                <span class="oil-tank-fill-container @(TkPrefix)_OIL_TANK_FILL">
+                                    @{
+                                        if (tank.DefloatLevel > 0)
+                                        {
+                                            <span class="level-line-cont tooltips" title="Level ('@(tank.DefloatLevel) @(strLevelUOM)') below which Tank will Defloat">
+                                                <span class="level-line"></span>
+                                                <span class="level-value"></span>
+                                            </span>
+                                        }
+                                    }
+                                    <span class="oil-tank-base"></span>
+                                    <span class="oil-tank-fill" style="background-color:@tank.tblProduct.ProductColor; height: 3%"></span>
+                                </span>
+                                <span class="tank-lbl-wrapper">
+                                    <span class="oil-tank-lbl  cir-red-h" style="top:38px">
+                                        <label>H</label>
+                                        <span class="@(TkPrefix)_H @(TkPrefix)_ALRM_H"></span>
+                                    </span>
+
+                                    <span class="oil-tank-lbl cir-red-ll">
+                                        <label>L</label>
+                                        <span class="@(TkPrefix)_L @(TkPrefix)_ALRM_L"></span>
+                                    </span>
+                                </span>
+                                <span class="@(TkPrefix)_FLW_RATE level-rate-icon"></span>
+                            </div>
+
+                            <span class="thermometer-block">
+                                <span class="thermometer-lbl"></span>
+                                <span class="thermometer-fill-percentage tooltips" title="Tank % filled"><span class="@(TkPrefix)_PER_LVL"></span> %</span>
+                                <span class="thermometer-fill-prod-level get-hover tooltips" title="Process Radar Product Level" onclick="OpenChartModal('@(TkPrefix+"_LEVEL")', '@(tank.PageName)'); cancelBubble(event);"><span class="@(TkPrefix)_LEVEL"></span> @strLevelUOM</span>
+                            </span>
+                        </div>
+                        @{
+                            <div class="box-panel tank-level-detail-container-right">
+                                <div class="col-lg-6 no-padd">
+                                    <div class="tank-level-detail-row">
+                                        <div class="tank-level-detail-alrm">HH(@strLevelUOM)</div>
+                                        <div class="tank-level-detail-val-alrm">
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(TkPrefix)_SP_HH" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;" value="@(TkPrefix)_SP_HH">
+                                            <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_SP_HH','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="tank-level-detail-row">
+                                        <div class="tank-level-detail-alrm">LL (@strLevelUOM)</div>
+                                        <div class="tank-level-detail-val-alrm">
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(TkPrefix)_SP_LL" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;" value="@(TkPrefix)_SP_LL">
+                                            <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_SP_LL','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 no-padd">
+                                    <div class="tank-level-detail-row">
+                                        <div class="tank-level-detail-alrm">H (@strLevelUOM)</div>
+                                        <div class="tank-level-detail-val-alrm">
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(TkPrefix)_SP_H" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;" value="@(TkPrefix)_SP_H">
+                                            <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_SP_H','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                    <div class="tank-level-detail-row">
+                                        <div class="tank-level-detail-alrm">L (@strLevelUOM)</div>
+                                        <div class="tank-level-detail-val-alrm">
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(TkPrefix)_SP_L" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;" value="@(TkPrefix)_SP_L">
+                                            <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_SP_L','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="row" style="margin-top: 18px;">
+                            <div class="col-lg-12">
+                                <div class="tblTankModal_wrapper">
+                                    <table class="table table-responsive table-striped" id="tblTankModal">
+                                        <thead>
+                                            <tr>
+                                                @{
+                                                    foreach (string line in tankMOVs.Where(x => x.tblMOVLine != null).Select(x => x.tblMOVLine.Line).Distinct())
+                                                    {
+                                                        <th colspan="@(tankMOVs.Where(x=>x.tblMOVLine!=null && x.tblMOVLine.Line==line).Count())">@line</th>
+                                                    }
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                @{
+                                                    foreach (string line in tankMOVs.Where(x => x.tblMOVLine != null).Select(x => x.tblMOVLine.Line).Distinct())
+                                                    {
+                                                        foreach (string type in tankMOVs.Select(x => x.tblMOVType.MOVLoc).Distinct())
+                                                        {
+                                                            tblMOVMaster mov = tankMOVs.Where(x => x.tblMOVType != null && x.tblMOVLine != null).Where(y => y.tblMOVType.MOVLoc == type && y.tblMOVLine.Line == line).FirstOrDefault();
+                                                            if (mov != null)
+                                                            {
+                                                                string Mov_Name = "MOV_" + mov.UniqueID.ToString("0#");
+                                                                string mType = mov.tblMOVType.MOVType.ToLower();
+                                                                string MoVPrefix = (mov.TagPrefix + "_");
+                                                                string movpage = mov.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:00}", mov.MovTypeSeqNo);
+                                                                <td class="mov-valve-tank-popup">
+                                                                    <div class="mov-lbl"><span>@mov.tblMOVType.MOVLoc</span></div>
+                                                                    @*<div class="mov-lbl mov-lbl-left"><span>@mov.tblMOVType.MOVLoc</span></div>*@
+                                                                    <div class="@(mType)-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@movpage')">
+                                                                        <div class="@(mType)-valve">
+                                                                            <span class="maintainence-mode-icon @(MoVPrefix+"_MAINT")"></span>
+                                                                            <span class="mov-valve-fill">
+                                                                                <span class="fill-value percentage @(MoVPrefix+"_FILL")" data-id="@(MoVPrefix+"PER_OPN")"></span>
+                                                                            </span>
+                                                                            <span title="No Feedback" data-tooltip-attr="@(mType)*" class="tooltips @(mType)-valve @(MoVPrefix+"COMM_FAIL_IMG") @(MoVPrefix+"GEN_ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")"></span>
+                                                                            <span class="percentage-fill-val hide"><span class="per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%</span>
+                                                                            <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                                                            <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix+"AUTOMAN")"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mov-lbl"><span>@(mov == null ? "" : mov.MovName)</span></div>
+                                                                </td>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                    </div>
+                    <div class="col-lg-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

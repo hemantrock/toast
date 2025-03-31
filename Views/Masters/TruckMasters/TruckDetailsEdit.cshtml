@@ -1,0 +1,37 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTruckDetail>
+@{
+    Layout = null;
+}
+<div class="col-lg-6">
+    <table id="tblTruckDetailsEdit" class="table">
+        <thead>
+            <tr>
+                <th style="display:none;">Id</th>
+                <th>COMPARTMENT No.</th>
+                <th>CAPACITY</th>
+                @*<th>PRODUCT</th>*@
+                @*<th class="text-center" style="display:none;">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblTruckDetail itm in Model)
+            {
+                <tr class="clickable" id="row_@itm.CompNo">
+                    <td style="display:none;">@itm.TruckID</td>
+                    <td><input id="txtCompartmentNo_@itm.CompNo" name="compartmentno" readonly type="text" placeholder="Compartment No" class="form-control" value="@itm.CompNo" required></td>
+                    <td><input id="txtCapacity_@itm.CompNo" name="capacity" type="text" placeholder="Capacity" class="form-control" value="@itm.Capacity" required></td>
+                    @*<td><select id="ddlProduct_@itm.CompNo" name="ddlProduct" class="form-control"></select></td>*@
+                    @*<td>@Convert.ToString(itm.tblProduct == null? "": itm.tblProduct.ProductDescription)</td>*@
+                    <td class="text-center" style="display:none;"><span id="spanDelete_@itm.TruckID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TruckID"></span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/PageJS/Masters/TruckMasters/TruckDetails.js"></script>
+<script>
+
+</script>
+
+        

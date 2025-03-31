@@ -1,0 +1,357 @@
+﻿@using TOAST.Shared;
+@using TOAST.Business;
+@using TOAST.Data.Model;
+
+@{
+    Layout = null;
+
+    int BayNo = ViewBag.BayID;
+    string BayId = "B" + BayNo.ToString("D2");
+    string visibility = "visibility: hidden;";
+    double PresetQtySum = 0, filledQtySum = 0;
+    List<tblLoadDetail> loadDetailData = ViewBag.loadDetailData;
+    List<tblBatchController> BayBCs = ViewBag.BatchControllerData;
+    List<tblLoadingPointMaster> loadingPointMaster = ViewBag.loadingPointMaster;
+    tblLoadMaster mast = ((loadDetailData == null) ? null : loadDetailData.FirstOrDefault().tblLoadMaster);
+    List<tblBatchSetup> Batches = ((mast == null) ? null : mast.tblBatchSetups.ToList());
+    tblBatchSetup Arm1Batch = (Batches == null ? null : (Batches.Where(x => x.tblLoadingPointMaster.ArmNo == 1).FirstOrDefault()));
+    tblBatchSetup Arm2Batch = (Batches == null ? null : (Batches.Where(x => x.tblLoadingPointMaster.ArmNo == 2).FirstOrDefault()));
+    bool ViewSteps = Convert.ToBoolean(ViewBag.StepDetail);
+    string Prodcolor = "#808080";
+    string showPrevQty = "none";
+    string showBlendQty = "none";
+    double CompWidth = 0, total = 0, width = 0;
+    string FAN_No = (mast == null ? "" : mast.FANSlipNo);
+    if (loadDetailData != null)
+    {
+        if (loadDetailData.Count() > 0 && loadDetailData.Any(x => (x.PrevBaseQty ?? 0) > 0))
+        { showPrevQty = "block"; }
+        if (loadDetailData != null && loadDetailData.Count() > 0 && mast.tblLoadDetailComponents.Where(x => x.ComponentID > 1).Count() > 0)
+        { showBlendQty = "block"; }
+        visibility = "";
+        int NoOfComps = loadDetailData.Count();
+        foreach (tblLoadDetail loadDetail in loadDetailData)
+        {
+            total += Convert.ToDouble(loadDetail.PresetQty);
+        }
+        width = (99 - NoOfComps) / (total == 0 ? (99 - NoOfComps) : total);
+    }
+    bool? PiggingActive = false;
+    string ProjNo = clsConfig.ProjPath;
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Comp</th>
+            <th>Arm</th>
+            <th>Product</th>
+            <th>Preset</th>
+            <th style="display:none;">EffPreset</th>
+            <th style="display:@showPrevQty;;">Prev</th>
+            <th style="display:none;">BaseDBVal</th>
+            <th>Base</th>
+            <th style="display:none;">Add</th>
+            <th style="display:none;">BlendDBVal</th>
+            <th style="display:@showBlendQty;">Blend</th>
+            <th>Filled</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (tblLoadDetail itm in loadDetailData ?? Enumerable.Empty<tblLoadDetail>())
+        {
+            tblLoadingPointMaster LPMast = itm.tblLoadingPointMaster;
+            double PrevQty = ((itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0));
+            double Filled = ((itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0));
+            double PiggingQty = 0;
+            if ((LPMast.ToDoFlushing ?? false) && ((LPMast.FlushingQty ?? 0) > 0) && itm.LoadStatus != 1 && itm.LoadStatus != 4)
+            {
+                PiggingActive = new BCFuncsBL(1, "TOAST").IsPigFlushMode(itm);
+                if (PiggingActive??false)
+                {
+                    PiggingQty = (itm.PresetQty ?? 0) - ((itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0));
+                    //PiggingActive = true;
+                }
+                if (PiggingActive == null) { itm.SamplingQty = -(LPMast.FlushingQty ?? 0); }
+            }
+            string ChBaySuffix = "CH" + @itm.CompNo.ToString("D2") + "_B" + string.Format("{0:00}", Convert.ToInt32(itm.BayID));
+            string BayArmSuffix = "B" + string.Format("{0:00}", Convert.ToInt32(itm.BayID)) + "_A" + string.Format("{0:00}", Convert.ToInt32(itm.tblLoadingPointMaster.ArmNo));
+            <tr class="load-status_@itm.LoadStatus">
+                <td style="display:none;">
+                    @if (itm.LoadStatus == 2)
+                    {
+                        <input type="hidden" class="active_CURR_CHAMBER_@BayArmSuffix" value="@itm.CompNo" />
+                    }
+                </td>
+                <td class="text-center">@itm.CompNo</td>
+                <td class="text-center">@itm.tblLoadingPointMaster.ArmNo</td>
+                <td>@itm.tblProduct.ProdNameShort</td>
+                <td class="PresetQty_@ChBaySuffix">@(itm.PresetQty + (itm.SamplingQty ?? 0))</td>
+                <td style="display:none;" class="Eff_PresetQty_@ChBaySuffix">@((PiggingActive??false) ? PiggingQty : ((itm.PresetQty ?? 0) + (itm.SamplingQty ?? 0) - (LPMast.FlushingQty ?? 0) - PrevQty))</td>
+                <td style="display:@showPrevQty;" class="QTY_ACC_PREV_@ChBaySuffix">@PrevQty</td>
+                <td style="display:none;" class="DB_QTY_CN01_@ChBaySuffix">@((itm.BaseProdQtyGrs ?? 0))</td>
+                <td class="QTY_CN01_@ChBaySuffix">@((itm.BaseProdQtyGrs ?? 0))</td>
+                <td style="display:none;" class="QTY_ADD_@ChBaySuffix">@((itm.AdditiveQty1 ?? 0) + (itm.AdditiveQty2 ?? 0) + (itm.AdditiveQty3 ?? 0))</td>
+                <td style="display:none;" class="DB_QTY_CN02_@ChBaySuffix">@((itm.EthBlendingQtyGrs ?? 0))</td>
+                <td style="display:@showBlendQty;" class="QTY_CN02_@ChBaySuffix">@((itm.EthBlendingQtyGrs ?? 0))</td>
+                <td style="display:none;" class="QTY_ACC_PREV_@ChBaySuffix">@PrevQty</td>
+                <td class="EFF_QTY_ACC_@ChBaySuffix">@(Filled)</td>
+                <td>@((itm.LoadStatus == null || itm.tblLoadStatu == null) ? "?" : itm.tblLoadStatu.LoadStatusDesc)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<input type="hidden" id="PresetQtySum" value="@PresetQtySum" />
+<input type="hidden" id="filledQtySum" value="@filledQtySum" />
+<div id="truckChamber" style="visibility:hidden;">
+    <div>
+        <div id="bayTruck" class="bay-truck  @CustName @Application pull-right" style="@visibility">
+            <div class="bay-truck-fill-container">
+                @if (loadDetailData != null)
+                {
+                    <div class="bay-truck-info">
+                        @foreach (tblLoadDetail loadDetail in loadDetailData)
+                        {
+                            CompWidth = Convert.ToDouble(width * loadDetail.PresetQty) + 1;
+                            string ChBaySuffix = "CH" + loadDetail.CompNo.ToString("D2") + "_B" + string.Format("{0:00}", loadDetail.BayID);
+                            double PreviousQty = ((loadDetail.PrevBaseQty ?? 0) + (loadDetail.PrevBlendQty ?? 0));
+                            double Filled = ((loadDetail.BaseProdQtyGrs ?? 0) + (loadDetail.EthBlendingQtyGrs ?? 0));
+
+                            <div class="box" style="width:@CompWidth%;" id="chamber_@loadDetail.CompNo">
+                                <div class="fill fill_@ChBaySuffix" style="background-color: @loadDetail.tblProduct.ProductColor ; height:@(((PreviousQty+Filled) / loadDetail.PresetQty) * 100)%;"></div>
+                                <div class="hsd-ltr text-center"><strong>@loadDetail.tblProduct.ProdNameShort</strong></div>
+                                <div class="hsd-ltr text-center"><strong class="EFF_QTY_ACC_@ChBaySuffix" id="EFF_QTY_ACC_@ChBaySuffix">@(Filled)</strong></div>
+                                <div class="hsd-ltr text-center"><strong>@(loadDetail.PresetQty)</strong></div>
+                                <div class="hsd-ltr text-center"><strong><span class="percentage" data-id="@ChBaySuffix"></span></strong></div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="truck-fill-wrapper" id="truckFillWrapper"></div>
+                    <div class="bay-truck-fill" style="height:0%; background-color:@Prodcolor;"></div>
+
+                    <table class="bay-truck-fill-tbl">
+                        <tr>
+                            <td><span class="PRODUCT_NAME"></span></td>
+                            <td><span class="percentage" data-id=""></span></td>
+                        </tr>
+                    </table>
+                }
+            </div>
+            <div class="er ER_@BayId">
+                <span class="earth-baseline one"></span>
+                <span class="earth-baseline two"></span>
+                <span class="earth-baseline three"></span>
+            </div>
+        </div>
+        <table class="detail-tbl" style="width:95%">
+            <tbody>
+                <tr>
+                    <td class="bay-lbl" style="width:14%"><span class="">TRUCK NO.</span></td>
+                    <td class="bay-val" style="width:20%"><span id="TRUCK_NO_@BayId">@(loadDetailData != null ? mast.tblTruckMaster.TruckNumber : string.Empty)</span></td>
+                    <td class="bay-lbl" style="width:14%"><span class="">FAN NO.</span></td>
+                    <td class="bay-val" style="width:20%"><span id="FAN_NO_@BayId">@(loadDetailData != null ? FAN_No : string.Empty)</span></td>
+                    <td class="bay-lbl" style="width:15%"><span class="">CARD NO.</span></td>
+                    <td class="bay-val" style="width:17%">
+                        <input id="spnCardNumber" type="number" min=1 readonly class="editable-input CARD_NO_@BayId" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('CARD_NO_@BayId','GLYPH_@BayId')" onfocus="updateGlyphButton('CARD_NO_@BayId','GLYPH_@BayId')"
+                               style="border: 0px;width: 75%;" value="@(loadDetailData != null ? mast.tblCard.CardNumber.ToString() : string.Empty)">
+                        <span class="glyphicon glyphicon-upload hide" id="@("GLYPH_"+BayId)" onclick="SetBayCardNo('Force Card No on Bay','Force Bay Card No at @BayId','CARD_NO_@BayId','@BayNo','@Session[clsConstants.UserID]')" aria-hidden="true"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="batchControllerBox" style="display:none;">
+    @if (BayBCs.Count() == 1)
+    {
+        string BCSuffix = BayBCs.FirstOrDefault().TagPrefix;
+        string strLOCREMTag = BayBCs.FirstOrDefault().TagPrefix + "_LOCREM";
+        if (ProjNo == "" || ProjNo == "0394") { strLOCREMTag = "LOCREM_" + BCSuffix; }
+        <div class="col-lg-5 col-sm-5 col-md-5 batch-controller-box">
+            <div class="bay-cont">
+                <div class="batch-cont-row">
+                    <div class="arm-col-left">
+                        <label>Primary Connection</label>
+                        <div class="val">
+                            <span class="circle-cont">
+                                <span class="@(BayBCs.FirstOrDefault().TagPrefix+"_CONN01")"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="arm-col-right">
+                        <label>Secondary Connection</label>
+                        <div class="val">
+                            <span class="circle-cont">
+                                <span class="@(BayBCs.FirstOrDefault().TagPrefix+"_CONN02")"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="batch-controller-bg M_@BayBCs.FirstOrDefault().BCMakes.Value.ToString("D2") Q_@BayBCs.Count().ToString("D2")">
+
+
+                    @foreach (tblLoadingPointMaster Arm in loadingPointMaster)
+                    {
+                        string ArmNo = string.Format("{0:00 }", Arm.ArmNo);
+                        string BayArmSuffix = "B" + string.Format("{0:00}", Arm.BayID) + "_A" + string.Format("{0:00}", Arm.ArmNo);
+                        double Preset = 0; double FillQty = 0; double Remaining = 0;
+                        string ChBaySuffix = "";
+                        double PiggingQty = 0;
+                        if (loadDetailData != null)
+                        {
+                            tblLoadDetail det = loadDetailData.Where(x => x.tblLoadingPointMaster.ArmNo == Arm.ArmNo && ((x.LoadStatus ?? 0) != 1 && (x.LoadStatus ?? 0) != 4)).OrderByDescending(x => x.LoadingStartTime ?? (new DateTime(9999, 12, 31))).FirstOrDefault();
+                            if (det != null)
+                            {
+                                Preset = (det.PresetQty ?? 0) + (det.SamplingQty ?? 0) - (det.PrevBaseQty ?? 0) - (det.PrevBlendQty ?? 0);
+                                if ((Arm.ToDoFlushing ?? false) && ((Arm.FlushingQty ?? 0) > 0))
+                                {
+                                    double BalanceQty = (det.PresetQty ?? 0) - ((det.PrevBaseQty ?? 0) + (det.PrevBlendQty ?? 0));
+                                    if (PiggingActive??false)
+                                    {
+                                        PiggingQty = BalanceQty;
+                                    }
+                                    else if(PiggingActive==null)
+                                    {
+                                        Preset = BalanceQty - (Arm.FlushingQty??0);
+                                    }
+                                }
+                                FillQty = ((det.BaseProdQtyGrs ?? 0) + (det.EthBlendingQtyGrs ?? 0));
+                                Remaining = (Preset - FillQty);
+                                ChBaySuffix = "CH" + det.CompNo.ToString("D2") + "_B" + string.Format("{0:00}", det.BayID);
+                            }
+                        }
+                        <div class="prod-detail prod_@ArmNo">
+                            <div class="prod-heading">Arm @ArmNo</div>
+                            <div class="col-lg-7">
+                                <div class="batch-cont-detail BC_MSG_@BayArmSuffix"></div>
+                            </div>
+                            <div class="col-lg-5 no-padd">
+                                <div class="col-lg-12 odd-row bc-fill-status">Preset: <span class="float-r">@((PiggingActive??false) ? PiggingQty : Preset)</span></div>
+                                <div class="col-lg-12 even-row bc-fill-status">Filled: <span class="float-r QTY_ACC_@ChBaySuffix">@FillQty</span></div>
+                                <div class="col-lg-12 odd-row bc-fill-status">Rem: <span class="float-r QTY_REM_@ChBaySuffix">@Remaining</span></div>
+                            </div>
+
+                        </div>
+                        if (ViewSteps)
+                        { <div class="batch-cont-temp-text batch-cont-temp-text_@ArmNo LP_ACTION_@BayArmSuffix"></div>}
+                        else
+                        {<div class="batch-cont-temp-text batch-cont-temp-text_@ArmNo LP_ACTION"></div> }
+                    }
+                </div>
+                <div class="bay-head text-center">
+                    @BayBCs.FirstOrDefault().BCName
+                    <div class="batch-cont-action-icon">
+                        <span title="" data-tooltip-attr="LOCREM" class="tooltips batch-cont-icons control-icon @(strLOCREMTag)" onclick="OpenBayLOCREMModal('@BCSuffix', 'BAY_LOCREM', '@(strLOCREMTag)', '@BayBCs.FirstOrDefault().BCNo' , '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);" data-opcvalue="False"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        foreach (tblBatchController BC in BayBCs)
+        {
+            string BCSuff = BC.TagPrefix;
+            string strLOCREMTag = BC.TagPrefix + "_LOCREM";
+            if (ProjNo == "" || ProjNo == "0394") { strLOCREMTag = "LOCREM_" + BC.TagPrefix; }
+            byte iArmNo = (BC.tblLoadingPointMasters.FirstOrDefault().ArmNo ?? 0);
+            string ArmNo = string.Format("{0:00 }", iArmNo);
+            string BayArmSuffix = "B" + string.Format("{0:00}", BC.tblLoadingPointMasters.FirstOrDefault().BayID) + "_A" + string.Format("{0:00}", ArmNo), ChBaySuffix = "";
+            double Preset = 0; double FillQty = 0; double Remaining = 0;
+            double PiggingQty = 0;
+            if (loadDetailData != null)
+            {
+                tblLoadDetail det = loadDetailData.Where(x => x.tblLoadingPointMaster.ArmNo == iArmNo && ((x.LoadStatus ?? 0) != 1 && (x.LoadStatus ?? 0) != 4)).OrderByDescending(x => x.LoadingStartTime ?? (new DateTime(9999, 12, 31))).FirstOrDefault();
+                if (det != null)
+                {
+                    tblLoadingPointMaster Arm = det.tblLoadingPointMaster;
+                    Preset = (det.PresetQty ?? 0) + (det.SamplingQty ?? 0) - (det.PrevBaseQty ?? 0) - (det.PrevBlendQty ?? 0);
+                    if ((Arm.ToDoFlushing ?? false) && ((Arm.FlushingQty ?? 0) > 0))
+                    {
+                        double BalanceQty = (det.PresetQty ?? 0) + (det.SamplingQty ?? 0) - ((det.PrevBaseQty ?? 0) + (det.PrevBlendQty ?? 0));
+                        if (PiggingActive??false)
+                        {
+                            PiggingQty = BalanceQty;
+                        }
+                        else if (PiggingActive == null)
+                        {
+                            Preset = BalanceQty - (Arm.FlushingQty ?? 0);
+                        }
+                    }
+                    FillQty = ((det.BaseProdQtyGrs ?? 0) + (det.EthBlendingQtyGrs ?? 0));
+                    Remaining = (Preset - FillQty);
+                    ChBaySuffix = "CH" + det.CompNo.ToString("D2") + "_B" + string.Format("{0:00}", det.BayID);
+                }
+            }
+            <div class="batch-controller-box box-small">
+                <div class="bay-cont">
+                    <div class="batch-cont-row">
+                        <div class="arm-col-left">
+                            <label>Primary</label>
+                            <div class="val">
+                                <span class="circle-cont">
+                                    <span class="@(BC.TagPrefix+"_CONN01")"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="arm-col-right">
+                            <label>Secondary</label>
+                            <div class="val">
+                                <span class="circle-cont">
+                                    <span class="@(BC.TagPrefix+"_CONN02")"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="batch-controller-bg M_@BC.BCMakes.Value.ToString("D2")  Q_@BayBCs.Count().ToString("D2")">
+                        <div class="prod-detail">
+                            <div class="col-lg-12 no-padd">
+                                <div class="batch-cont-detail BC_MSG_@BayArmSuffix">?</div>
+                            </div>
+                        </div>
+                        <div class="prod-detail align-bottom">
+                            <div class="col-lg-12 no-padd">
+                                <div class="col-lg-12 padd-l-10 no-padd-right odd-row">Preset: <span class="float-r">@((PiggingActive??false) ? PiggingQty : Preset)</span></div>
+                                <div class="col-lg-12 padd-l-10 no-padd-right even-row">Filled: <span class="float-r QTY_ACC_@ChBaySuffix">@FillQty</span></div>
+                                <div class="col-lg-12 padd-l-10 no-padd-right odd-row">Rem: <span class="float-r QTY_REM_@ChBaySuffix">@Remaining</span></div>
+                            </div>
+                        </div>
+                        @if (ViewSteps)
+                        { <div class="batch-cont-temp-text batch-cont-temp-text_@ArmNo LP_ACTION_@BayArmSuffix"></div>}
+                        else
+                        {<div class="batch-cont-temp-text batch-cont-temp-text_@ArmNo LP_ACTION"></div> }
+
+                    </div>
+                    <div class="bay-head text-center">
+                        @BC.BCName
+                        <div class="batch-cont-action-icon">
+                            <span title="" data-tooltip-attr="LOCREM" class="tooltips batch-cont-icons control-icon @(strLOCREMTag)" onclick="OpenBayLOCREMModal('@BCSuff', 'BAY_LOCREM', '@(strLOCREMTag)', '@BayBCs.FirstOrDefault().BCNo' , '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);" data-opcvalue="False"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#dvTruckDetails").html($('#truckChamber div:first-child').html());
+        $("#dvbatchControllerBox").html($('#batchControllerBox').html());
+        $('#truckChamber').remove();
+        $('#chamber_to_go_1_1').val(@(Arm1Batch==null?0:Arm1Batch.CompNo));
+        $('#chamber_to_go_2_1').val(@(Arm2Batch==null?0: Arm2Batch.CompNo));
+    });
+
+</script>

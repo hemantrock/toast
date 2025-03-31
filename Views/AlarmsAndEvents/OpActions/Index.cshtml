@@ -1,0 +1,68 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblLogActivity>
+@{
+    Layout = null;
+}
+<div>
+    <input type="hidden" id="hdnType" value="@ViewBag.Title" />
+</div>
+@if (Model.Count > 0 )
+{
+    <div class="row">
+        <div class="col-lg-12 text-right">
+            <a class="btn btn-primary" role="button" id="AckAll">
+                <span class="glyphicon glyphicon-check"></span>Acknowledge Selected
+            </a>
+            <a class="btn btn-primary" role="button" id="btnRefresh" onclick="RefreshPage()">
+                <span class="glyphicon glyphicon-refresh"></span>Refresh
+            </a>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">@ViewBag.Title List</h3>
+        <table id="tblOpActions" class="table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="chkAll" onclick="SelectAll(this.checked)"></th>
+                    <th>LogID</th>
+                    <th>Log Time</th>
+                    <th>Log Description</th>
+                    <th>Operator</th>
+                    <th>Application</th>
+                    <th>Severity</th>
+                    <th>Ack</th>                    
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 0;
+                    foreach (tblLogActivity itm in Model)
+                    {
+                        i = i + 1;
+                        <tr id="logTr_@itm.LogID" class="alarmSeverity_@itm.tblEventMaster.Severity">
+                            <td><input type="checkbox" name="chkRow" id="@itm.UniqueID"></td>
+                            <td>@itm.LogID</td>
+                            <td>@itm.LogTime.Value.ToString("dd-MMM-yy hh:mm:ss tt")</td>
+                            <td>@itm.EventLogDesc</td>
+                            <td>@itm.LoginID</td>
+                            <td>@itm.Application</td>
+                            <td>@itm.tblEventMaster.Severity</td>
+                            <td class="text-center">
+                                <span id="spanAck_@itm.LogID" class="glyphicon glyphicon-check clickable spanAck" data-id="@itm.LogID"></span>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*<div id="jqxgrid" class="jqx-tbl-container">
+</div>*@
+
+<script src="~/Scripts/PageJS/AlarmsAndEvents/OpActions/Index.js"></script>

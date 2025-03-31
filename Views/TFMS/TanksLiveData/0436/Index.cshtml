@@ -1,0 +1,346 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Tanks Live Data View";
+    bool ShowSafetyRadarLevel = ViewBag.ShowSafetyRadarLevel;
+    string jsPath = ViewBag.jsPath;
+    List<tblTank> lstTankData = ViewBag.lstTankData;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    List<string> lstPages = DeviceTags.SelectMany(x => x.tblTagPageLinks.Select(y => y.PageName)).Distinct().ToList();
+}
+<div id="ShowSafetyRadarLevel" style="display:none">@ShowSafetyRadarLevel</div>
+<div id="AllTables" class="hide">
+    @{
+        foreach (tblTank tnk in lstTankData)
+        {
+            if (tnk.tblTankInventoryConfig == null) { tnk.tblTankInventoryConfig = new tblTankInventoryConfig(); }
+            <div id="@(tnk.TagPrefix)_BasicData" style="margin: 5px;">
+                <div style="float: left; width: 55%;">
+                    <table class="table-striped app-tbl jqx-app-tbl">
+                        <tbody>
+                            <tr>
+                                <td class="bold">Tank Name</td>
+                                <td>@(tnk.TankName)</td>
+                                <td class="bold">ERP TankNo</td>
+                                <td>@(tnk.SAPTankNo)</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Product Name</td>
+                                <td>@(tnk.tblProduct.ProductName)</td>
+                                <td class="bold">Tank Type</td>
+                                <td>@(tnk.tblTankType.TankType)</td>
+                            </tr>
+
+                            <tr>
+                                <td class="bold">Dip Reference Height (@clsConfig.TFMSLevelUnit) </td>
+                                <td>@(tnk.DipReferenceHeight)</td>
+                                <td class="bold">Nominal Dia (Mtrs)</td>
+                                <td>@(tnk.NominalDia)</td>
+                            </tr>
+
+                            <tr>
+                                <td class="bold">Max Volume</td>
+                                <td>@(tnk.tblTankInventoryConfig.MaxVolumeM3 == null ? (tnk.MaxVolume??0) : tnk.tblTankInventoryConfig.MaxVolumeM3) KL</td>
+                                <td class="bold">Max Level (mm)</td>
+                                <td>@(tnk.tblTankInventoryConfig.MaxLevelmm == null ? 0 : tnk.tblTankInventoryConfig.MaxLevelmm)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="@(tnk.TagPrefix)_Products" style="margin: 5px;">
+                <div style="float: left; width: 80%;">
+                    <table class="table-striped app-tbl jqx-app-tbl">
+                        <tbody>
+                            <tr>
+                                @{
+                                    string strLevelUOM = ""; string strSPHHHUnit = ""; string strGOVUnit = "";
+                                    tblTagMaster LevelTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_LEVEL").FirstOrDefault() ?? new tblTagMaster());
+                                    if (LevelTag != null && LevelTag.UnitId != null && LevelTag.tblUOMMaster != null) { strLevelUOM = LevelTag.tblUOMMaster.UOM; }
+                                    tblTagMaster SP_HHH_Tag = (DeviceTags.Where(x => (x.TagName == tnk.TagPrefix + "_LVL_HHH") || (x.TagName == tnk.TagPrefix + "_SP_HHH")).FirstOrDefault() ?? new tblTagMaster());
+                                    if (SP_HHH_Tag != null && SP_HHH_Tag.UnitId != null && SP_HHH_Tag.tblUOMMaster != null) { strSPHHHUnit = SP_HHH_Tag.tblUOMMaster.UOM; }
+                                    tblTagMaster GOVTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_GOV").FirstOrDefault() ?? new tblTagMaster());
+                                    if (GOVTag != null && GOVTag.UnitId != null && GOVTag.tblUOMMaster != null) { strGOVUnit = GOVTag.tblUOMMaster.UOM; }
+                                    tblTagMaster PmpVolTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_PUMP_VOL").FirstOrDefault() ?? new tblTagMaster());
+                                }
+                                <td class="bold">Process Radar Level </td>
+                                <td><span class="@(tnk.TagPrefix)_LEVEL"></span> @strLevelUOM</td>
+                                <td class="bold">Safe Filling Height (@clsConfig.TFMSLevelUnit) </td>
+                                <td><span data-sfl="@(tnk.tblTankInventoryConfig.MaxLevelmm)" class="@(tnk.TagPrefix)_LVL_HHH"> </span> @(strSPHHHUnit)</td>
+                                <td class="bold">Gross Obs. Vol. </td>
+                                <td><span class="@(tnk.TagPrefix)_GOV"></span> @(strGOVUnit)</td>
+                                <td class="bold">Pumpable Vol. </td>
+                                <td><span class="@(tnk.TagPrefix)_PUMP_VOL"></span> @(PmpVolTag.UnitId == null ? "" : PmpVolTag.tblUOMMaster.UOM)</td>
+                            </tr>
+                            <tr>
+                                @{
+                                    string strGSVUnit = ""; string ProdPressP1UOM = "";
+                                    tblTagMaster GSVTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_GSV").FirstOrDefault() ?? new tblTagMaster());
+                                    if (GSVTag != null && GSVTag.UnitId != null && GSVTag.tblUOMMaster != null) { strGSVUnit = GSVTag.tblUOMMaster.UOM; }
+                                    tblTagMaster ProdPressP1Tag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_PRESSURE").FirstOrDefault() ?? new tblTagMaster()); ;
+                                    if (ProdPressP1Tag != null && ProdPressP1Tag.UnitId != null && ProdPressP1Tag.tblUOMMaster != null) { ProdPressP1UOM = ProdPressP1Tag.tblUOMMaster.UOM; }
+                                }
+                                <td class="bold">% Filled</td>
+                                <td><span class="@(tnk.TagPrefix)_PER_LVL"> </span> %</td>
+                                <td class="bold">Level Rate </td>
+                                <td><span class="@(tnk.TagPrefix)_LEVEL_RATE"></span> m/hr</td>
+                                <td class="bold">Gross Standard Vol. </td>
+                                <td><span class="@(tnk.TagPrefix)_GSV"></span> @(strGSVUnit)</td>
+                                <td class="bold">Pressure</td>
+                                <td><span class="@(ProdPressP1Tag.TagName)"> </span> @(ProdPressP1UOM)</td>
+                            </tr>
+                            <tr>
+                                @{
+                                    string strFlowRateUOM = ""; string strTOVUnit = ""; string strNSVUnit = "";
+                                    tblTagMaster FlowRateTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_FLOW_RATE").FirstOrDefault() ?? new tblTagMaster());
+                                    if (FlowRateTag != null && FlowRateTag.UnitId != null && FlowRateTag.tblUOMMaster != null) { strFlowRateUOM = FlowRateTag.tblUOMMaster.UOM; }
+                                    tblTagMaster TOVTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_TOV").FirstOrDefault() ?? new tblTagMaster());
+                                    if (TOVTag != null && TOVTag.UnitId != null && TOVTag.tblUOMMaster != null) { strTOVUnit = TOVTag.tblUOMMaster.UOM; }
+                                    tblTagMaster NSVTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_NSV").FirstOrDefault() ?? new tblTagMaster());
+                                    if (NSVTag != null && NSVTag.UnitId != null && NSVTag.tblUOMMaster != null) { strNSVUnit = NSVTag.tblUOMMaster.UOM; }
+                                }
+                                <td class="bold">Flow Rate </td>
+                                <td><span class="@(FlowRateTag.TagName)"></span> @(strFlowRateUOM)</td>
+                                <td class="bold">Total Obs Vol (TOV) </td>
+                                <td><span class="@(TOVTag.TagName)"></span> @(strTOVUnit)</td>
+                                <td class="bold">Net Standard Vol. </td>
+                                <td><span class="@(NSVTag.TagName)"></span> @(strNSVUnit)</td>
+                                <td class="bold"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                @{
+                                    string strPumpVolUOM = ""; string strUllLvlUnit = ""; string strUllVolUnit = "";
+                                    tblTagMaster PumpVolTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_PUMP_VOL").FirstOrDefault() ?? new tblTagMaster());
+                                    if (PumpVolTag != null && PumpVolTag.UnitId != null && PumpVolTag.tblUOMMaster != null) { strPumpVolUOM = PumpVolTag.tblUOMMaster.UOM; }
+                                    tblTagMaster UllageLevelTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_ULLAGE_LVL" || x.TagName == tnk.TagPrefix + "_ULLAGE").FirstOrDefault() ?? new tblTagMaster());
+                                    if (UllageLevelTag != null && UllageLevelTag.UnitId != null && UllageLevelTag.tblUOMMaster != null) { strUllLvlUnit = UllageLevelTag.tblUOMMaster.UOM; }
+                                    tblTagMaster UllageVolumeTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_ULLAGE_VOL").FirstOrDefault() ?? new tblTagMaster());
+                                    if (UllageVolumeTag != null && UllageVolumeTag.UnitId != null && UllageVolumeTag.tblUOMMaster != null) { strUllVolUnit = UllageVolumeTag.tblUOMMaster.UOM; }
+                                }
+                                <td class="bold">Pump Vol </td>
+                                <td><span class="@(PumpVolTag.TagName)"></span> @(strPumpVolUOM)</td>
+                                <td class="bold">Ullage Level </td>
+                                <td><span class="@(UllageLevelTag.TagName)"></span> @(strUllLvlUnit)</td>
+                                <td class="bold">Ullage Volume </td>
+                                <td><span class="@(UllageVolumeTag.TagName)"></span> @(strUllVolUnit)</td>
+                                <td class="bold"></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="@(tnk.TagPrefix)_Density" style="margin: 5px;">
+                <div style="float: left; width: 30%;">
+                    <table id="@(tnk.TagPrefix)_Density" class="table-striped app-tbl jqx-app-tbl">
+                        @{
+                            string strObsDensityUOM = ""; string strStdDensityUOM = ""; string strAvgTempUnit = "";
+                            tblTagMaster ObsDensTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_AMB_DENSITY" || x.TagName == tnk.DensityTagPrefix + "_AMB_DENSITY").OrderByDescending(x => (x.TCPId ?? 0)).FirstOrDefault() ?? new tblTagMaster());
+                            if (ObsDensTag != null && ObsDensTag.UnitId != null && ObsDensTag.tblUOMMaster != null) { strObsDensityUOM = ObsDensTag.tblUOMMaster.UOM; }
+                            tblTagMaster StdDensTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_STD_DENSITY" || x.TagName == tnk.DensityTagPrefix + "_STD_DENSITY").OrderByDescending(x => (x.TCPId ?? 0)).FirstOrDefault() ?? new tblTagMaster());
+                            if (StdDensTag != null && StdDensTag.UnitId != null && StdDensTag.tblUOMMaster != null) { strStdDensityUOM = StdDensTag.tblUOMMaster.UOM; }
+                            tblTagMaster ObsTempTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_OBS_TEMP").FirstOrDefault() ?? new tblTagMaster());
+                            if (ObsTempTag != null && ObsTempTag.UnitId != null && ObsTempTag.tblUOMMaster != null) { strAvgTempUnit = ObsTempTag.tblUOMMaster.UOM; }
+                        }
+                        <tbody>
+                            @{
+                                if (tnk.tblDeviceMasters.Where(x => x.DeviceID == 2).Count() > 1)
+                                {
+                                    List<tblDeviceMaster> DensityProbes = tnk.tblDeviceMasters.Where(x => x.DeviceID == 2).OrderByDescending(x => x.TagPrefix).ToList();
+                                    <tr>
+                                        @for (int i = 0; i < DensityProbes.Count(); i++)
+                                        {
+                                            string Pos = "";
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("TOP")) { Pos = "Top"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("MID")) { Pos = "Middle"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("BOT")) { Pos = "Bottom"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("AV")) { Pos = "Average"; }
+                                            ObsDensTag = (DeviceTags.Where(x => x.TagName == DensityProbes[i].TagPrefix + "_AMB_DENSITY").OrderByDescending(x => (x.TCPId ?? 0)).FirstOrDefault() ?? new tblTagMaster());
+                                            <td class="bold">Obs. Density - @Pos</td>
+                                            <td><span class="@(ObsDensTag.TagName)"></span> @(ObsDensTag.UnitId == null ? "" : ObsDensTag.tblUOMMaster.UOM)</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        @for (int i = 0; i < DensityProbes.Count(); i++)
+                                        {
+                                            string Pos = "";
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("TOP")) { Pos = "Top"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("MID")) { Pos = "Middle"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("BOT")) { Pos = "Bottom"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("AV")) { Pos = "Average"; }
+                                            StdDensTag = (DeviceTags.Where(x => x.TagName == DensityProbes[i].TagPrefix + "_STD_DENSITY").OrderByDescending(x => (x.TCPId ?? 0)).FirstOrDefault() ?? new tblTagMaster());
+                                            <td class="bold">Std Density - @Pos</td>
+                                            <td><span class="@(StdDensTag.TagName)"></span> @(StdDensTag.UnitId == null ? "" : StdDensTag.tblUOMMaster.UOM)</td>
+
+                                        }
+                                    </tr>
+                                    <tr>
+                                        @for (int i = 0; i < DensityProbes.Count(); i++)
+                                        {
+                                            string Pos = "";
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("TOP")) { Pos = "Top"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("MID")) { Pos = "Middle"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("BOT")) { Pos = "Bottom"; }
+                                            if (DensityProbes[i].DeviceDesc.ToUpper().Contains("AV")) { Pos = "Average"; }
+                                            ObsTempTag = (DeviceTags.Where(x => x.TagName == DensityProbes[i].TagPrefix + "_OBS_TEMP").OrderByDescending(x => (x.TCPId ?? 0)).FirstOrDefault() ?? new tblTagMaster());
+                                            <td class="bold">Probe Temp. - @Pos</td>
+                                            <td><span class="@(ObsTempTag.TagName)"></span> @(ObsTempTag.UnitId == null ? "" : ObsTempTag.tblUOMMaster.UOM)</td>
+                                        }
+                                    </tr>
+                                }
+                                else
+                                {
+                                    string Prefix = "";
+                                    tblDeviceMaster DensityProbes = tnk.tblDeviceMasters.Where(x => x.DeviceID == 2).OrderByDescending(x => x.TagPrefix).FirstOrDefault();
+                                    if (DensityProbes == null) { Prefix = tnk.DensityTagPrefix; }
+                                    else { Prefix = DensityProbes.TagPrefix; }
+                                    <tr>
+                                        <td class="bold">Density Ambient</td>
+                                        <td><span class="@(Prefix)_AMB_DENSITY @(ObsDensTag.TagName)"></span> @(strObsDensityUOM)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bold">Density Standard </td>
+                                        <td><span class="@(Prefix)_STD_DENSITY @(StdDensTag.TagName)"></span> @(strStdDensityUOM)</td>
+                                    </tr>
+                                    <tr class="bold">
+                                        <td class="bold">Observed Temp</td>
+                                        <td><span class="@(Prefix)_OBS_TEMP"></span> °C</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="@(tnk.TagPrefix)_Water" style="margin: 5px;">
+                <div style="float: left; width: 30%;">
+                    <table id="@(tnk.TagPrefix)_Water" class="table-striped app-tbl jqx-app-tbl">
+                        <tbody>
+                            @{
+                                string strWaterLevelUOM = ""; string strWaterVolumeUOM = "";
+                                tblTagMaster WaterLevelTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_WATER_LVL").FirstOrDefault() ?? new tblTagMaster());
+                                if (WaterLevelTag != null && WaterLevelTag.UnitId != null && WaterLevelTag.tblUOMMaster != null) { strWaterLevelUOM = WaterLevelTag.tblUOMMaster.UOM; }
+                                tblTagMaster WaterVolumeTag = (DeviceTags.Where(x => x.TagName == tnk.TagPrefix + "_WATER_VOL").FirstOrDefault() ?? new tblTagMaster());
+                                if (WaterVolumeTag != null && WaterVolumeTag.UnitId != null && WaterVolumeTag.tblUOMMaster != null) { strWaterVolumeUOM = WaterVolumeTag.tblUOMMaster.UOM; }
+                            }
+                            <tr>
+                                <td class="bold">Water Level</td>
+                                <td><span class="@(WaterLevelTag.TagName)"></span> @(strWaterLevelUOM)</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Water Volume</td>
+                                <td><span class="@(WaterVolumeTag.TagName)"></span> @(strWaterVolumeUOM)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="@(tnk.TagPrefix)_Temperature" style="margin: 5px;">
+                <div style="float: left; width: 100%;">
+                    <table id="@(tnk.TagPrefix)_Temperature" class="table-striped app-tbl jqx-app-tbl">
+                        <tbody>
+                            <tr>
+                                <td class="bold">No Of RTD</td>
+                                <td>@tnk.NoOfTempEle</td>
+                                <td class="bold">Temp04</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_04"></span> °C</td>
+                                <td class="bold">Temp09</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_09"></span> °C</td>
+                                <td class="bold">Temp14</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_14"> </span> °C</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Temp Avg</td>
+                                <td><span class="@(tnk.TagPrefix)_AVG_TEMP"></span> °C</td>
+                                <td class="bold">Temp05</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_05"></span> °C</td>
+                                <td class="bold">Temp10</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_10"></span> °C</td>
+                                <td class="bold">Temp15</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_15"> </span> °C</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Temp01</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_01"></span> °C</td>
+                                <td class="bold">Temp06</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_06"></span> °C</td>
+                                <td class="bold">Temp11</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_11"> </span> °C</td>
+                                <td class="bold"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Temp02</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_02"></span> °C</td>
+                                <td class="bold">Temp07</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_07"></span> °C</td>
+                                <td class="bold">Temp12</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_12"> </span> °C</td>
+                                <td class="bold"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Temp03</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_03"></span> °C</td>
+                                <td class="bold">Temp08</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_08"></span> °C</td>
+                                <td class="bold">Temp13</td>
+                                <td><span class="@(tnk.TagPrefix)_TEMP_13"> </span> °C</td>
+                                <td class="bold"></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="@(tnk.TagPrefix)_Alarms" style="margin: 5px;">
+                <div style="float: left; width: 60%;">
+                    <table id="@(tnk.TagPrefix)_Alarms" class="table-striped app-tbl jqx-app-tbl">
+                        <tbody>
+                            @{
+                                string strSPHHUnit = "";
+                                tblTagMaster SP_HH_Tag = (DeviceTags.Where(x => (x.TagName == tnk.TagPrefix + "_LVL_HH") || (x.TagName == tnk.TagPrefix + "_SP_HH")).FirstOrDefault() ?? new tblTagMaster());
+                                if (SP_HH_Tag != null && SP_HH_Tag.UnitId != null && SP_HH_Tag.tblUOMMaster != null) { strSPHHUnit = SP_HH_Tag.tblUOMMaster.UOM; }
+                            }
+                            <tr>
+                                <td class="bold">H Level</td>
+                                <td><span class="@(tnk.TagPrefix)_LVL_H @(tnk.TagPrefix)_SP_H">  </span> @(strSPHHUnit)</td>
+                                <td class="bold">L Level</td>
+                                <td><span class="@(tnk.TagPrefix)_LVL_L @(tnk.TagPrefix)_SP_L">  </span> @(strSPHHUnit)</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">HH Level</td>
+                                <td><span class="@(tnk.TagPrefix)_LVL_HH @(tnk.TagPrefix)_SP_HH">  </span> @(strSPHHUnit)</td>
+                                <td class="bold">LL Level</td>
+                                <td><span class="@(tnk.TagPrefix)_LVL_LL @(tnk.TagPrefix)_SP_LL">  </span> @(strSPHHUnit)</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">HHH Level</td>
+                                <td><span class="chdnHeight @(tnk.TagPrefix)_LVL_HHH @(tnk.TagPrefix)_SP_HHH">  </span> @(strSPHHUnit)</td>
+                                <td class="bold">Op HI Level</td>
+                                <td><span class="@(tnk.TagPrefix)_LVL_OP_HI @(tnk.TagPrefix)_SP_OP_HI">  </span> @(strSPHHUnit)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="row">
+    <div class="col-lg-9 col-md-9 col-sm-12">
+        <div id="jqxgridTkLiveData" class="jqx-tbl-container">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6" style="margin-left: -10px">
+        <div id="jqxTkSummary" class="jqx-tbl-container">
+        </div>
+    </div>
+</div>
+@*<script src="~/Scripts/PageJS/TFMS/TankLiveData/Index.js"></script>*@
+<script>
+    opcPageName = 'TankLiveData,TankView_MS,TankView_HSD,TankView_Water,@(String.Join(",",lstPages))';
+    var path = "../Scripts/PageJS/TFMS/TankLiveData/" + '@(jsPath)' + "/Index.js";
+    $.getScript(path);
+</script>

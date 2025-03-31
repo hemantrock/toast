@@ -1,0 +1,114 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Manual Post DEnsity & Temp";
+    Layout = null;
+    List<tblTank> lstTanks = ViewBag.lstTanks;
+    List<tblBaseDensityTemp> AutoBaseline = ViewBag.AutoBaseline;
+    List<tblBaseDensityTemp> ManualBaseline = ViewBag.ManualBaseline;
+}
+<div class="modal-dialog" style="width:1400px">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myModalLabel">Manual Post Invoice</h3>
+        </div>
+        <div class="modal-body" id="myModalBody">
+            <div class="col-lg-12 col-md-12 form-container">
+                <input type="hidden" id="lblTolerance" name="Tolerance" value="" class="form-control" disabled />
+                <form id="FormBU" role="form" class="form-fields">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="fields form-group">
+                                <label>Truck Number</label>
+                                <input type="text" id="txtTruck" name="TruckNumber" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="fields form-group">
+                                <label>Load Number</label>
+                                <input type="text" id="txtShipmentNo" name="ShipmentNo" value="@Model.ShipmentNo" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table id="tblManualPostLoad" class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">Comp</th>
+                                        <th>Bay</th>
+                                        <th>Arm</th>
+                                        <th>Product</th>
+                                        <th style="text-align:center">Prod Density<br />Std (kg/m³)</th>
+                                        <th style="text-align:center">ABL Density<br />Std (kg/m³)</th>
+                                        <th style="text-align:center">MBL Density<br />Std (kg/m³)</th>
+                                        <th style="text-align:center">Manual Density<br />Std (kg/m³)</th>
+                                        <th style="text-align:center">Prod Temp<br />(ºC)</th>
+                                        <th style="text-align:center">ABL Temp<br />(ºC)</th>
+                                        <th style="text-align:center">MBL Temp<br />(ºC)</th>
+                                        <th style="text-align:center">Manual Temp<br />(ºC)</th>
+                                        <th style="text-align:center">Tank</th>
+                                        <th style="display:none">UOM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (tblLoadDetail ld in Model.tblLoadDetails)
+                                        {
+                                            tblBaseDensityTemp ABL = AutoBaseline.Where(x => x.ProductID == ld.ProductID).FirstOrDefault();
+                                            tblBaseDensityTemp MBL = ManualBaseline.Where(x => x.ProductID == ld.ProductID).FirstOrDefault();
+                                            int BaseProdID = (ld.tblProduct.tblProductComponents.Where(x => x.ComponentNo == 1).FirstOrDefault().BaseProductID??0);
+
+                                            <tr id="@ld.CompNo">
+                                                <td>@ld.CompNo</td>
+                                                <td>@ld.tblBaysMaster.BayNum</td>
+                                                <td>@ld.tblLoadingPointMaster.ArmNo</td>
+                                                <td>@ld.tblProduct.ProductName</td>
+                                                <td title="@((ld.LoadingEndTime??System.DateTime.Now).ToString("dd-MMM HH:mm:ss"))">@ld.DensityAvgAt15</td>
+                                                <td title="@((ABL.BaselineDT??System.DateTime.Now).ToString("dd-MMM HH:mm:ss"))">@ABL.Density</td>
+                                                <td title="@((MBL.BaselineDT??System.DateTime.Now).ToString("dd-MMM HH:mm:ss"))">@MBL.Density</td>
+                                                <td>
+                                                    <input name="ManDens" type="number" step="any" placeholder="@ld.DensityAvgAt15" id="txtManDens_@(ld.CompNo)" style="width:85px" />
+                                                </td>
+                                                <td title="@((ld.LoadingEndTime??System.DateTime.Now).ToString("dd-MMM HH:mm:ss"))">@ld.TempAvg</td>
+                                                <td title="@((ABL.BaselineDT??System.DateTime.Now).ToString("dd-MMM HH:mm:ss"))">@ABL.Temp</td>
+                                                <td title="@((MBL.BaselineDT??System.DateTime.Now).ToString("dd-MMM HH:mm:ss"))">@MBL.Temp</td>
+                                                <td>
+                                                    <input name="ManTemp" type="number" step="any" min="-10" max="60" placeholder="@ld.TempAvg" id="txtManTemp_@(ld.CompNo)" style="width:85px" />
+                                                </td>
+                                                <td>
+                                                    <select name="TankNo" id="ddlTankNo_@(ld.CompNo)" data-id="@ld.TankID" class="form-control">
+                                                        <option value="0" @((ld.TankID ?? 0) == 0 ? "selected" : "")>Tank No</option>
+                                                        @{
+                                                            foreach (tblTank tnk in lstTanks.Where(x => x.ProductID == (ld.ProductID ?? 0) || x.ProductID == BaseProdID).Distinct())
+                                                            {
+                                                                <option value="@tnk.UniqueID" @(tnk.UniqueID == (ld.TankID ?? 0) ? "selected" : "")>@tnk.TankName (@tnk.tblProduct.ProdNameShort)</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td style="display:none" id="txtUOM_@ld.CompNo">@ld.tblProduct.UomID</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                            <input type="hidden" id="loadID" value="@Model.LoadID" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="saveButton" role="button" type="button" class="btn btn-primary" href="#" onclick="SaveManualJDEPost('@Model.LoadID');"><span class="glyphicon glyphicon-floppy-saved"></span>POST DATA</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>Cancel</button>
+        </div>
+    </div>
+    <script>
+    Purpose = '@Model.PurposeID';
+    </script>
+    <script src="~/Scripts/PageJS/Transactions/LoadSummary/JDEManualPost.js"></script>

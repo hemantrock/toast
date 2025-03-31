@@ -1,0 +1,237 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblLoadDetail>
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+<html>
+<head>
+    <title>PRINT FAN</title>
+    <script src="~/Scripts/js/jquery/jquery.min.js"></script>
+
+    <style>
+        html, body {
+            overflow-x: hidden;
+        }
+
+        .print-Uan {
+            width: 850px;
+            margin: 0 auto;
+        }
+
+            .print-Uan .print-lbl {
+                width: 15%;
+                font-weight: 700;
+                font-family: Calibri;
+            }
+
+            .print-Uan .print-val {
+                width: 33%;
+                font-family: Calibri;
+            }
+
+            .print-Uan .print-spc {
+                width: 10%;
+            }
+
+        .print-UAN-dataTbl table tr th {
+            font-family: Calibri;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 0 6px;
+            background-color: #7b97af;
+            color: #fff;
+        }
+
+        .print-UAN-dataTbl table tr td {
+            padding: 3px;
+            text-align: center;
+            font-family: Calibri;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .welcome-container {
+            text-align: center;
+            font-family: Calibri;
+        }
+
+            .welcome-container .welcome-msg {
+                width: 90%;
+            }
+
+            .welcome-container .place {
+                text-align: center;
+                font-family: Calibri;
+                margin-top: 5px;
+                display: inline-block;
+            }
+
+        .description {
+            text-align: center;
+            font-family: Calibri;
+            font-weight: 400;
+        }
+
+        .duplicate {
+            font-family: Calibri;
+            width: 200px;
+            text-align: center;
+            margin: 0 auto;
+            color: red;
+            font-size: 16px;
+        }
+    </style>
+    <style type="text/css" media="print">
+        .glyphicon-UAN {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="welcome-container">
+        <img alt="(Loading)" src="~/Images/IOCL.png" style="float:left">
+        <div class="welcome-msg">
+            IOCL Bitumen Terminal <br>
+            <span class="place">Panipat Marketing Complex</span>
+        </div>
+    </h1>
+
+    <h3 class="description col-lg-offset-2 col-lg-8 text-center">
+        UAN/Decanting Report <br />
+        @{
+            if ((Model.FirstOrDefault().FanPrinted ?? false) == true)
+            {
+                <span class="duplicate">Duplicate Copy</span>
+            }
+        }
+    </h3>
+
+    <div class="print-Uan">
+        <table class="table" style="align:center;width:100%">
+
+            <tr>
+                <td class="print-lbl">ShipmentNo:</td>
+                <td class="print-val">@Model.FirstOrDefault().tblLoadMaster.ShipmentNo</td>
+                <td class="print-spc"></td>
+                <td class="print-lbl">Schedule Date:</td>
+                <td class="print-val">@Model.FirstOrDefault().tblLoadMaster.Date</td>
+            </tr>
+            <tr>
+                <td class="print-lbl">TAS Load No:</td>
+                <td class="print-val">@Model.FirstOrDefault().LoadID</td>
+                <td class="print-spc"></td>
+                <td class="print-lbl">User ID:</td>
+                <td class="print-val">@Model.FirstOrDefault().tblLoadMaster.UserID</td>
+            </tr>
+
+            <tr>
+                <td class="print-lbl">Print Date:</td>
+                <td class="print-val">@DateTime.Now</td>
+                <td class="print-spc"></td>
+                <td class="print-lbl">Truck Number:</td>
+                <td class="print-val">@Model.FirstOrDefault().tblLoadMaster.tblTruckMaster.TruckNumber</td>
+            </tr>
+
+            <tr>
+                <td class="print-lbl">Created From:</td>
+                <td class="print-val">LRC</td>
+                <td class="print-spc"></td>
+                <td class="print-lbl">Contractor:</td>
+                <td class="print-val">@Model.FirstOrDefault().tblLoadMaster.tblTransporter.TransporterDesc</td>
+            </tr>
+
+            <tr>
+                <td class="print-lbl">Card Number:</td>
+                <td class="print-val">@Model.FirstOrDefault().tblLoadMaster.tblCard.CardNumber</td>
+                <td class="print-spc"></td>
+                <td class="print-lbl">Assigned Date:</td>
+                <td class="print-val">@DateTime.Now</td>
+            </tr>
+
+            <tr>
+                <td class="print-lbl">UAN Number:</td>
+                <td class="print-val">@Model.FirstOrDefault().UANSlipNo</td>
+                <td class="print-spc"></td>
+                <td class="print-lbl">FAN Issued By:</td>
+                <td class="print-val">@Convert.ToString(Session[clsConstants.UserName])</td>
+            </tr>
+        </table>
+
+    </div>
+    <br>
+
+    <
+    <div class="row print-UAN-dataTbl">
+        <div class="col-lg-12">
+
+            <table class="table" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse" align="center">
+                <thead>
+                    <tr>
+                        <th>Comp No.</th>
+                        <th>Bay No.</th>
+                        <th>Product Code</th>
+                        <th>Product Desc</th>
+                        <th>Decanted Qty</th>
+                        <th>Destination</th>
+                        <th>Customer Code</th>
+                        <th>Customer Name</th>
+                        <th>Lock No</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblLoadDetail itm in Model)
+                    {
+                        <tr>
+                            <td>@itm.CompNo</td>
+                            <td>@itm.BayID</td>
+                            <td>@itm.tblProduct.ProductCode</td>
+                            <td>@itm.tblProduct.ProductDescription</td>
+                            <td>@itm.ActualPreset</td>
+                            <td>@itm.tblDestination.DestinationDesc</td>
+                            <td>@itm.CustomerID</td>
+                            <td>@itm.tblCustomer.CustomerDesc</td>
+                            <td>@itm.SealNo</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div><br>
+        <div class="col-lg-2 text-right">
+            <a id="btnPrint" role="button" class="btn btn-primary" href="javascript:window.print()">
+                <span class="glyphicon-print"></span>Print
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var beforePrint = function () {
+        document.getElementById('btnPrint').style.visibility = "hidden";
+    };
+    var afterPrint = function () {
+        document.getElementById('btnPrint').style.visibility = "visible";
+        $.ajax({
+            type: "GET",
+            url: "/LoadSummary/UpdateUANPrinted?LoadID=" + @Model.FirstOrDefault().LoadID + "&blnPrint=" + true,
+            cache: false,
+            success: function (result) {
+            }
+        });
+    };
+
+    if (window.matchMedia) {
+        var mediaQueryList = window.matchMedia('print');
+        mediaQueryList.addListener(function (mql) {
+            if (mql.matches) {
+                beforePrint();
+            } else {
+                afterPrint();
+            }
+        });
+    };
+    window.onbeforeprint = beforePrint;
+    window.onafterprint = afterPrint;
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/PrintUAN.js"></script>

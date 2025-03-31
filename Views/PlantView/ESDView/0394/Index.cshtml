@@ -1,0 +1,362 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - ESD Status View";
+}
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">ESD Status View</h3>
+
+    </div>
+</div>
+
+<div class="row m-t-40 esd-status-view-container">
+    <div class="col-lg-8">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr><th class="text-center header-main" colspan="8">EMERGENCY SHUTDOWN</th></tr>
+                <tr>
+                    <th class="text-left header-col">#</th>
+                    <th class="text-left header-col">ESD Push Button Location</th>
+                    <th class="header-col text-center">Maint Mode</th>
+                    <th class="text-center header-col">Status</th>
+                    <th class="text-left header-col">#</th>
+                    <th class="text-left header-col">ESD Push Button Location</th>
+                    <th class="header-col text-center">Maint Mode</th>
+                    <th class="text-center header-col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">01</td>
+                    <td width="25%" class="bold">Admin Block-01</td>
+                    <td width="10%" style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Admin Building',this, 'ESD_ADMN_BLDG_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_ADMN_BLDG_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td width="10%"><span class="alert-cont-md"><span class="ESD_ADMN_BLDG"><span class="alert-maint-mode ESD_ADMN_BLDG_MAINT"></span></span></span></td>
+
+                    <td width="5%" class="bold" style="text-align: center;">08</td>
+                    <td class="bold">Admin Building-02</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Admin Building - 02',this, 'ESD_ADMN_02_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_ADMN_02_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_ADMN_02">
+                                <span class="alert-maint-mode ESD_ADMN_02_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">02</td>
+                    <td class="bold">Security Cabin ESD</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Security Cabin',this, 'ESD_SECURITY_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_SECURITY_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_SECURITY">
+                                <span class="alert-maint-mode ESD_SECURITY_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                    <td width="5%" class="bold" style="text-align: center;">09</td>
+                    <td class="bold">Near Tank-04</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Near Tank-04',this, 'ESD_TK04_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_TK04_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_TK04">
+                                <span class="alert-maint-mode ESD_TK04_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">03</td>
+                    <td class="bold">ESD near Tank 14</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Near Tank 14',this, 'ESD_TK14_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_TK14_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td width="10%">
+                        <span class="alert-cont-md">
+                            <span class="ESD_TK14">
+                                <span class="alert-maint-mode ESD_TK14_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+
+                    <td width="5%" class="bold" style="text-align: center;">10</td>
+                    <td class="bold">Near Tank-06</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Near Tank-06',this, 'ESD_TK06_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_TK06_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_TK06">
+                                <span class="alert-maint-mode ESD_TK06_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">04</td>
+                    <td class="bold">Near TLF/TWD Pump House ESD</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: TLF/TWD Pump House 01',this, 'ESD_PH_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_PH_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td><span class="alert-cont-md"><span class="ESD_PH"></span></span></td>
+
+                    <td width="5%" class="bold" style="text-align: center;">11</td>
+                    <td class="bold">Near Tank-02</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Near Tank-02',this, 'ESD_TK02_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_TK02_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_TK02">
+                                <span class="alert-maint-mode ESD_TK02_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">05</td>
+                    <td class="bold">Near TLF/TWD Pump House-02</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: TLF/TWD Pump House 02',this, 'ESD_PH02_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_PH02_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td><span class="alert-cont-md"><span class="ESD_PH02"></span></span></td>
+
+                    <td width="5%" class="bold" style="text-align: center;">12</td>
+                    <td class="bold">ESD at MCC Room</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: MCC Room',this, 'ESD_MCC_ROOM_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_MCC_ROOM_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_MCC_ROOM">
+                                <span class="alert-maint-mode ESD_MCC_ROOM_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">06</td>
+                    <td width="25%" class="bold">ESD Gantry Bay 04</td>
+                    <td width="10%" style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Gantry Near Bay 04',this, 'ESD_GANTRY_BAY04_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_GANTRY_BAY04_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td width="10%">
+                        <span class="alert-cont-md">
+                            <span class="ESD_GANTRY_BAY04">
+                                <span class="alert-maint-mode ESD_GANTRY_BAY04_MAINT"></span>
+                            </span>
+                        </span>
+                    </td>
+                    
+                    <td width="5%" class="bold" style="text-align: center;">13</td>
+                    <td class="bold">ESD TWD Siding</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: At TWD Siding',this, 'ESD_TWD_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_TWD_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_TWD">
+                                <span class="alert-maint-mode ESD_TWD_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;">07</td>
+                    <td class="bold">ESD Gantry Bay 5&6</td>
+                    <td style="text-align: center;">
+                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button: Gantry Bay 5&6',this, 'ESD_GANTRY_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                            <input id="toggle-maintainence-mode" class="on-off-btn ESD_GANTRY_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="alert-cont-md">
+                            <span class="ESD_GANTRY">
+                                <span class="alert-maint-mode ESD_GANTRY_MAINT">
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                    <td width="5%" class="bold" style="text-align: center;"></td>
+                    <td class="bold"></td>
+                    <td style="text-align: center;"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td width="5%" class="bold" style="text-align: center;"></td>
+                    <td class="bold tooltips" title="Click to view Radar Relay Status" onclick="OpenRadarRelays()"><a href="javascript: void(0)">ESD Radar Relay</a></td>
+                    <td></td>
+                    <td><span class="alert-cont-md"><span class="ESD_RDR_RELAY"></span></span></td>
+                    <td width="5%" class="bold" style="text-align: center;"></td>
+                    <td class="bold tooltips" title="Click to view VFT Switch Status" onclick="OpenAOPView()"><a href="javascript: void(0)">ESD - Vibrating Fork</a></td>
+                    <td></td>
+                    <td><span class="alert-cont-md"><span class="ESD_VFS"></span></span></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-4">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr><th class="text-center header-main" colspan="2">Summary</th></tr>
+                <tr>
+                    <th class="text-left header-col">ESD Push Button Location</th>
+                    <th class="text-center header-col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bold">No of ESD PBs</td>
+                    <td><span class="alert-cont-md" style="font-weight: bolder;font-size: large;"><span>13</span></span></td>
+                </tr>
+                <tr>
+                    <td class="bold">Soft ESD from OIC  - 1 No.</td>
+                    <td><span class="alert-cont-md"><span class="SOFT_ESD"></span></span></td>
+                </tr>
+                <tr>
+                    <td class="bold">Central ESD</td>
+                    <td><span class="alert-cont-md"><span class="PROCESS_ESD"></span></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row m-t-20">
+    <div class="col-lg-6 col-sm-6">
+        <div class="esd-timer-block esd-mockdrill-block">
+            <div class="timer-lbl">ESD Active:</div>
+            <div class="timer-val" style="min-width: 70px;">
+                <span class="alert-cont-md">
+                    <span class="PROCESS_ESD"></span>
+                </span>
+            </div>
+            <div class="hide timer-lbl">Mock Drill:</div>
+            <div class="hide timer-val" style="min-width: 70px;">
+                <span class="alert-cont-md">
+                    <span class="IS_MOCK_DRILL_ESD"></span>
+                </span>
+            </div>
+            <div class="timer-lbl">Power ESD:</div>
+            <div class="timer-val" style="min-width: 70px;">
+                <span class="alert-cont-md">
+                    <span class="ESD_RELAY_PCC_PANEL"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-sm-6 text-right esd-timer-wrapper">
+        <div class="esd-timer-block">
+            <div class="timer-lbl">Time Lapsed (Sec):</div>
+            <div class="timer-val ESD_POW_TIME_REM" style="min-width: 85px;">?</div>
+
+
+            <div class="timer-lbl">Set Time (msec):</div>
+            <div class="timer-val" style="padding-left: 16px; padding-top: 13px;">
+                <span class="ESD_TIMER?">120 sec</span>
+                @*<input type="number" min=0 readonly class="editable-input ESD_TIMER" ondblclick="this.readOnly='';"
+                    style="border: 0px; width: 70%" value="ESD_TIMER">*@
+                <span style="display:none" class="glyphicon glyphicon-upload cursor-point" onclick="SetProcessValue('Update ESD Timer', 'Update ESD Timer from TOAST', this, 'ESD_TIMER', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                @*<input type="text" class="form-control ESD_TIME_ENTRY" placeholder="SS" id="txtESDTimeEntry">
+                    <div class="ack-alarm">
+                        <a class="push-btn" href="javascript:void(0);" onclick="SetProcessValue('Update ESD Timer', 'Update ESD Timer from TOAST', this, 'ESD_TIMER', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">Set Time</a>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row m-t-20">
+    <div class="col-lg-8 text-left esd-action-btn">
+        <div class="esd-timer-block esd-mockdrill-block">
+            <div class="timer-lbl"><span class="glyphicon glyphicon-bookmark">  </span>Test</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: 01',this, 'SIREN01_MOCK_DRILL', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_MOCK_DRILL" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+            </div>
+            <div class="timer-lbl"><span class="glyphicon glyphicon-warning-sign"></span>Fire</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Emergency Mode','Siren: 01',this, 'SIREN01_EMERGENCY', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_EMERGENCY" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+            </div>
+            <div class="timer-lbl"><span class="glyphicon glyphicon-flash"></span>Disaster</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: 01',this, 'SIREN01_DISASTER', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_DISASTER" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+            </div>
+            <div class="timer-lbl"><span class="glyphicon glyphicon-refresh"></span>All Clear</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to All Clear Mode','Siren: 01',this, 'SIREN01_RESET', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_RESET" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+                @*<a href="javascript:void(0)" class="push-btn-01 SIREN01_RESET" tooltips center-align" onclick="SetProcessValue('Reset ESD','Reset ESD from TOAST',this, 'ESD_RESET', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">Reset</a>*@
+            </div>
+        </div>
+
+
+        @*<a role="button" class="btn btn-primary" href="#" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: Siren01',this, 'SIREN01_MOCK_DRILL', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-bookmark">  </span>Mock Drill
+            </a>
+            <a role="button" class="btn btn-primary" href="#" onclick="cancelBubble(event);SetProcessValue('Set Siren to Emergency Mode','Siren: Siren01',this, 'SIREN01_EMERGENCY', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-warning-sign"></span>Emergency
+            </a>
+            <a role="button" class="btn btn-primary" href="#" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: Siren01',this, 'SIREN01_DISASTER', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-flash">  </span>Disaster
+            </a>
+            <a role="button" class="btn btn-primary" href="#" onclick="SetProcessValue('Reset ESD','Reset ESD from TOAST',this, 'ESD_RESET', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-refresh">  </span>System Reset
+            </a>*@
+    </div>
+    <div class="col-lg-4 text-right esd-link">
+        <a href="#" onclick="OpenESDCauseEffectViewHMI()">View ESD Cause &amp; Effect <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/ESDView/Index.js"></script>

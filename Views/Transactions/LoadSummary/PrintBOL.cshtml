@@ -1,0 +1,292 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblLoadDetail>
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    SharedBL obj = new SharedBL(Convert.ToInt32(Session[clsConstants.UserID]));
+    //string LocCode = obj.GetConfigValue("LocationCode");
+    //string LocName = obj.GetConfigValue("LocationName");
+    string LocCode = ViewBag.LocCode;
+    string LocName = ViewBag.LocName;
+}
+<html>
+<head>
+    <title>PRINT FAN</title>
+    <script src="~/Scripts/js/jquery/jquery.min.js"></script>
+
+    <style>
+        .welcome-container {
+            text-align: center;
+            font-family: Calibri;
+        }
+
+            .welcome-container .welcome-msg {
+                width: 90%;
+            }
+
+            .welcome-container .place {
+                text-align: center;
+                font-family: Calibri;
+                margin-top: 5px;
+                display: inline-block;
+            }
+
+        .description {
+            text-align: center;
+            font-family: Calibri;
+            font-weight: 400;
+        }
+
+        .duplicate {
+            font-family: Calibri;
+            width: 200px;
+            text-align: center;
+            margin: 0 auto;
+            color: red;
+            font-size: 16px;
+        }
+
+        .print-fan-dataTbl table tr th {
+            font-family: Calibri;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 0 6px;
+            background-color: #7b97af;
+            color: #fff;
+        }
+
+        .print-fan-dataTbl table tr td {
+            padding: 3px;
+            text-align: center;
+            font-family: Calibri;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .bol-print-fan {
+            width: 950px;
+            margin: 0 auto;
+        }
+
+            .bol-print-fan .bol-print-lbl {
+                font-family: Calibri;
+                font-weight: 700;
+                font-size: 14px;
+            }
+
+            .bol-print-fan .bol-print-lbl {
+                font-family: Calibri;
+                font-weight: 700;
+                font-size: 14px;
+            }
+
+            .bol-print-fan .bol-print-val {
+                font-family: Calibri;
+                font-size: 14px;
+            }
+
+            .bol-print-fan .bol-print-lbl-1 {
+                width: 12%;
+            }
+
+            .bol-print-fan .bol-print-val-1 {
+                width: 15%;
+            }
+
+            .bol-print-fan .bol-print-spc-1 {
+                width: 10%;
+            }
+
+            .bol-print-fan .bol-print-lbl-2 {
+                width: 12%;
+            }
+
+            .bol-print-fan .bol-print-val-2 {
+                width: 15%;
+            }
+
+            .bol-print-fan .bol-print-spc-2 {
+                width: 5%;
+            }
+
+            .bol-print-fan .bol-print-lbl-3 {
+                width: 11%;
+            }
+
+            .bol-print-fan .bol-print-val-3 {
+                width: 20%;
+            }
+    </style>
+
+    <style type="text/css" media="print">
+        .glyphicon-print {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="welcome-container">
+        <img alt="(Loading)" src="~/Images/IOCL.png" style="float:left">
+        <div class="welcome-msg">
+            IOCL Bitumen Terminal <br>
+            <span class="place">Panipat Marketing Complex</span>
+        </div>
+    </h1>
+
+    <h3 class="description col-lg-offset-2 col-lg-8 text-center">
+        BILL OF LOADING / FILLING REPORT
+    </h3>
+    <div class="bol-print-fan">
+        <table class="table" align="center" width="100%" border="0">
+            <tr>
+                <td class="bol-print-lbl bol-print-lbl-1">Location Code:</td>
+                <td class="bol-print-val bol-print-val-1">@LocCode</td>
+                <td class="bol-print-spc-1"></td>
+                <td class="bol-print-lbl bol-print-lbl-2">Location:</td>
+                <td class="bol-print-val bol-print-val-2">@LocName</td>
+                <td class="bol-print-spc-2"></td>
+                <td class="bol-print-lbl bol-print-lbl-3">FAN No:</td>
+                <td class="bol-print-val bol-print-val-3">@Model.FirstOrDefault().FanSlipNo</td>
+            </tr>
+
+            <tr>
+                <td class="bol-print-lbl bol-print-lbl-1">Transporter Code:</td>
+                <td class="bol-print-val bol-print-val-1">@Model.FirstOrDefault().tblLoadMaster.tblTransporter.TransporterCode</td>
+                <td class="bol-print-spc-1"></td>
+                <td class="bol-print-lbl bol-print-lbl-2">Transporter:</td>
+                <td class="bol-print-val bol-print-val-2">@Model.FirstOrDefault().tblLoadMaster.tblTransporter.TransporterDesc</td>
+                <td class="bol-print-spc-2"></td>
+                <td class="bol-print-lbl bol-print-lbl-3">Card ID:</td>
+                <td class="bol-print-val bol-print-val-3">@Model.FirstOrDefault().tblLoadMaster.tblCard.CardNumber</td>
+            </tr>
+
+            <tr>
+                <td class="bol-print-lbl bol-print-lbl-1">Customer Code:</td>
+                <td class="bol-print-val bol-print-val-1">@Model.FirstOrDefault().tblCustomer.CustomerCode</td>
+                <td class="bol-print-spc-1"></td>
+                <td class="bol-print-lbl bol-print-lbl-2">Truck No:</td>
+                <td class="bol-print-val bol-print-val-2">@Model.FirstOrDefault().tblLoadMaster.tblTruckMaster.TruckNumber</td>
+                <td class="bol-print-spc-2"></td>
+                <td class="bol-print-lbl bol-print-lbl-3">Customer:</td>
+                <td class="bol-print-val bol-print-val-3">@Model.FirstOrDefault().tblCustomer.CustomerDesc</td>
+            </tr>
+
+            <tr>
+                <td class="bol-print-lbl bol-print-lbl-1">Destination Code:</td>
+                <td class="bol-print-val bol-print-val-1">@Model.FirstOrDefault().tblDestination.DestinationCode</td>
+                <td class="bol-print-spc-1"></td>
+                <td class="bol-print-lbl bol-print-lbl-2">Destination:</td>
+                <td class="bol-print-val bol-print-val-2">@Model.FirstOrDefault().tblDestination.DestinationDesc</td>
+                <td class="bol-print-spc-2"></td>
+                <td class="bol-print-lbl bol-print-lbl-3">Oil Company:</td>
+                <td class="bol-print-val bol-print-val-3">Indian Oil Corporation Limited</td>
+            </tr>
+
+            <tr>
+                <td class="bol-print-lbl bol-print-lbl-1">Card Issue Time:</td>
+                <td class="bol-print-val bol-print-val-1">@Model.FirstOrDefault().tblLoadMaster.CardReAuthorizeTime</td>
+                <td class="bol-print-spc-1"></td>
+                <td class="bol-print-lbl bol-print-lbl-2">Entry Gate Time:</td>
+                <td class="bol-print-val bol-print-val-2">@Model.FirstOrDefault().tblLoadMaster.EntryGateTime</td>
+                <td class="bol-print-spc-2"></td>
+                <td class="bol-print-lbl bol-print-lbl-3">BOL Print Time:</td>
+                <td class="bol-print-val bol-print-val-3">@System.DateTime.Now</td>
+            </tr>
+
+            <tr>
+                <td class="bol-print-lbl bol-print-lbl-1">Date:</td>
+                <td class="bol-print-val bol-print-val-1">@Model.FirstOrDefault().tblLoadMaster.RegDate</td>
+                <td class="bol-print-spc-1"></td>
+                <td class="bol-print-lbl bol-print-lbl-2">Time:</td>
+                <td class="bol-print-val bol-print-val-2">@Model.FirstOrDefault().LoadingEndTime</td>
+                <td class="bol-print-spc-2"></td>
+                <td class="bol-print-lbl bol-print-lbl-3"></td>
+                <td class="bol-print-val bol-print-val-3"></td>
+            </tr>
+        </table>
+    </div>
+
+    <br />
+
+    <div class="row print-fan-dataTbl">
+        <div class="col-lg-12">
+            <table width="90%" class="table" border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse" align="center">
+                <thead>
+                    <tr>
+                        <th>Comp No.</th>
+                        <th>BayId</th>
+                        <th>Product Name</th>
+                        <th>Product Qty</th>
+                        <th>Qty Filled</th>
+                        <th>Density</th>
+                        <th>Temperature</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblLoadDetail itm in Model)
+                    {
+                        <tr>
+                            <td>@itm.CompNo</td>
+                            <td>@itm.BayID</td>
+                            <td>@itm.tblProduct.ProductName</td>
+                            <td>@(itm.PresetQty == null ? "" : itm.PresetQty.ToString())</td>
+                            <td>@((itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0))</td>
+                            <td>@(itm.DensityAvg == null ? "" : itm.DensityAvg.ToString())</td>
+                            <td>@(itm.TempAvg == null ? "" : itm.TempAvg.ToString())</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div><br>
+     
+           @*<div class="bol-print-fan">
+                <table class="table" align="center" width="100%" border="0">
+                    <tr>
+                        <td class="bol-print-lbl bol-print-lbl-1">Bay Officer:</td>
+                        <td class="bol-print-val bol-print-val-1">Signature</td>
+                        <td class="bol-print-spc-2"></td>
+                        <td class="bol-print-lbl bol-print-lbl-3">Authority:</td>
+                        <td class="bol-print-lbl bol-print-lbl-3">Signature</td>
+                    </tr>
+                </table>
+            </div>*@
+
+        <div class="col-lg-2 text-right">
+            <a id="btnPrint" role="button" class="btn btn-primary" href="javascript:window.print()">
+                <span class="glyphicon-print"></span>Print
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var beforePrint = function () {
+        document.getElementById('btnPrint').style.visibility = "hidden";
+    };
+    var afterPrint = function () {
+        document.getElementById('btnPrint').style.visibility = "visible";
+        $.ajax({
+            type: "GET",
+            url: "/LoadSummary/UpdateBOLPrinted?LoadID=" + @Model.FirstOrDefault().LoadID + "&blnPrint=" + true,
+            cache: false,
+            success: function (result) {
+            }
+        });
+    };
+
+    if (window.matchMedia) {
+        var mediaQueryList = window.matchMedia('print');
+        mediaQueryList.addListener(function (mql) {
+            if (mql.matches) {
+                beforePrint();
+            } else {
+                afterPrint();
+            }
+        });
+    };
+    window.onbeforeprint = beforePrint;
+    window.onafterprint = afterPrint;
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/PrintUAN.js"></script>

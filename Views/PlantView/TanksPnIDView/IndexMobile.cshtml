@@ -1,0 +1,333 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Data.ViewModels;
+@model List<TanksModal>
+@{
+    ViewBag.Title = "Plant View - Tanks View";
+    Layout = null;
+}
+
+<div class="tank-view-wrapper">
+    <div class="heading-container tank-view col-xs-12 no-padding">
+        <div class="col-xs-4 no-padding">
+            <h1>TANK VIEW</h1>
+        </div>
+        <div class="col-xs-8 no-padding">
+            <div class="heading-right-container">
+                <label>GO : </label>
+                <select id='ddlTankView' onchange="ChangeTankView()">
+                    @{
+                        int i = 0;
+                        foreach (TanksModal itmTank in Model)
+                        {
+                            <option value="@itmTank.tank.UniqueID" data-id="@i">
+                                @itmTank.tank.TankName - @itmTank.tank.tblProduct.ProdNameShort
+                            </option>
+                            i = i + 1;
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="slider-container">
+                @{
+                    foreach (TanksModal itmTank in Model)
+                    {
+                        <div class="tank-container">
+                            <div class="item-number">
+                                <div class="col-xs-6 no-padding">
+                                    <label>Tank Name:</label> <span>@itmTank.tank.TankName</span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <label>Product:</label> <span>@itmTank.tank.tblProduct.ProdNameShort</span>
+                                </div>
+                            </div>
+                            <div class="mySliderTabs">
+                                <ul>
+                                    <li><a href="#summary">Summary</a></li>
+                                    <li><a href="#data">Data</a></li>
+                                    <li><a href="#mov">MOV</a></li>
+                                    <li><a href="#action">Action</a></li>
+                                </ul>
+                                <div id="summary">
+                                    <div class="tank-block">
+                                        <div class="tank-wrapper">
+                                            <div class="tank-bg ui-btn-right">
+                                                <span class="stair">
+                                                    <span class="indian-oil-logo"></span>
+                                                </span>
+                                                <div class="oil-tank-fill-container @(itmTank.tank.TankName)_OIL_TANK_FILL">
+                                                    <span class=" oil-tank-base">
+                                                    </span>
+                                                    <div class="oil-tank-fill  @(itmTank.tank.TankName)_FILL_PERCENT_LEVEL" style="background-color:@itmTank.tank.tblProduct.ProductColor; height: 15%"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="thermometer-block">
+                                                <span class="thermometer-lbl"></span>
+                                                <span class="thermometer-fill-percentage"><span class="@(itmTank.tank.TankName)_PERCENTAGE_LEVEL" data-id="@(itmTank.tank.TankName)"></span> %</span>
+                                                <span class="thermometer-fill-prod-level get-hover" title="Please click to view trend" onclick="OpenChartModal('@(itmTank.tank.TankName)_PRODUCT_LEVEL', 'TanksOverview'); cancelBubble(event);"><span class="@(itmTank.tank.TankName)_PRODUCT_LEVEL"></span> M</span>
+                                                <span class="thermometer-fill-degree get-hover" title="Please click to view trend" onclick="OpenChartModal('@(itmTank.tank.TankName)_PRODUCT_TEMPERATURE', 'TanksOverview'); cancelBubble(event);"><span class="@(itmTank.tank.TankName)_PRODUCT_TEMPERATURE"></span> ℃</span>
+                                                <span class="observed-density"><span class="@(itmTank.tank.TankName)_OBSERVED_DENSITY"></span> kg/m³</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tank-detail">
+                                        <table class="tank-mode-detail-tbl table table-bordered table-striped dataTable">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="lbl">Total Vol.(m3)</td>
+                                                    <td class="val @(itmTank.tank.TankName)_TOTAL_OBSERVED_VOLUME"><span></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="lbl">Product Mass (kg)</td>
+                                                    <td class="val @(itmTank.tank.TankName)_PRODUCT_MASS"><span></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="lbl">Flow Rate(m3/hr)</td>
+                                                    <td class="val @(itmTank.tank.TankName)_VOLUME_FLOW_RATE"><span></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="lbl">Tank Mode</td>
+                                                    <td class="val TANKMODEID_@(itmTank.tank.TankName)" style="display: inline;">
+                                                        <div class="tank_mode_cls TANKMODECLS_@(itmTank.tank.TankName)" style="display: inline;">&nbsp;</div>
+                                                        <span class="tank_mode_lbl">&nbsp;</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div id="data">
+                                    <div class="toggle-menu-container">
+                                        <div class="menu-item">
+                                            Tank Parameters  <i class="fa fa-plus-circle"></i>
+                                        </div>
+                                        <div class="menu-content">
+                                            <table class="tank-parameter-tbl table table-bordered table-striped dataTable">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="lbl bold">Dip Ref. Height (cm)</td>
+                                                        <td class="val">@itmTank.tank.DipReferenceHeight</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Tank Dia(m)</td>
+                                                        <td class="val">@itmTank.tank.NominalDia</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Tank Type</td>
+                                                        <td class="val">@itmTank.tank.tblTankType.TankType</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Safe Fill Height (m)</td>
+                                                        <td class="val">@(itmTank.TankLevel_HH != null ? itmTank.TankLevel_HH.CompareValue : "")</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Capacity (KL)</td>
+                                                        <td class="val">@itmTank.tank.MaxVolume</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="menu-item">
+                                            Measured Values  <i class="fa fa-plus-circle"></i>
+                                        </div>
+                                        <div class="menu-content">
+                                            <table class="measured-value-tbl table table-bordered table-striped dataTable">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="lbl bold">Level (M)</td>
+                                                        <td class="val @(itmTank.tank.TankName)_PRODUCT_LEVEL"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Temperature (&deg;C)</td>
+                                                        <td class="val @(itmTank.tank.TankName)_PRODUCT_TEMPERATURE"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Density (kg/m3)</td>
+                                                        <td class="val @(itmTank.tank.TankName)_OBSERVED_DENSITY"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Total Observed Volume (KL)</td>
+                                                        <td class="val @(itmTank.tank.TankName)_TOTAL_OBSERVED_VOLUME"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Product Mass (kg)</td>
+                                                        <td class="val @(itmTank.tank.TankName)_PRODUCT_MASS"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Volume Flow Rate (m3/hr)</td>
+                                                        <td class="val @(itmTank.tank.TankName)_VOLUME_FLOW_RATE"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Gauge Status</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="circle @(itmTank.tank.TankName)_GAUGE_STATUS"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="menu-item">
+                                            Tank Alarm  <i class="fa fa-plus-circle"></i>
+                                        </div>
+                                        <div class="menu-content">
+                                            <table class="tank-alarm-tbl table table-bordered table-striped dataTable">
+                                                <tbody>
+                                                    @if (itmTank.TankLevel_HHH != null && itmTank.TankLevel_HHH.CompareValue != "")
+                                                    {
+                                                        <tr>
+                                                            <td class="lbl">HHH (M)</td>
+                                                            <td class="val text-center">@(itmTank.TankLevel_HHH != null ? itmTank.TankLevel_HHH.CompareValue : "")</td>
+                                                            <td class="val">
+                                                                <span class="circle-cont">
+                                                                    <span class="HHH_@itmTank.tank.TankName"></span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    @if (itmTank.TankLevel_HH != null && itmTank.TankLevel_HH.CompareValue != "")
+                                                    {
+                                                        <tr>
+                                                            <td class="lbl">HH (M)</td>
+                                                            <td class="val">@(itmTank.TankLevel_HH != null ? itmTank.TankLevel_HH.CompareValue : "")</td>
+                                                            <td class="val">
+                                                                <span class="circle-cont">
+                                                                    <span class="HH_@itmTank.tank.TankName"></span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    @if (itmTank.TankLevel_H != null && itmTank.TankLevel_H.CompareValue != "")
+                                                    {
+                                                        <tr>
+                                                            <td class="lbl">H (M)</td>
+                                                            <td class="val">@(itmTank.TankLevel_H != null ? itmTank.TankLevel_H.CompareValue : "")</td>
+                                                            <td class="val">
+                                                                <span class="circle-cont">
+                                                                    <span class="H_@itmTank.tank.TankName"></span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    @if (itmTank.TankLevel_L != null && itmTank.TankLevel_L.CompareValue != "")
+                                                    {
+                                                        <tr>
+                                                            <td class="lbl">L (M)</td>
+                                                            <td class="val">@(itmTank.TankLevel_L != null ? itmTank.TankLevel_L.CompareValue : "")</td>
+                                                            <td class="val">
+                                                                <span class="circle-cont">
+                                                                    <span class="L_@itmTank.tank.TankName"></span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    @if (itmTank.TankLevel_LL != null && itmTank.TankLevel_LL.CompareValue != "")
+                                                    {
+                                                        <tr>
+                                                            <td class="lbl">LL (M)</td>
+                                                            <td class="val">@(itmTank.TankLevel_LL != null ? itmTank.TankLevel_LL.CompareValue : "")</td>
+                                                            <td class="val">
+                                                                <span class="circle-cont">
+                                                                    <span class="LL_@itmTank.tank.TankName"></span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    @if (itmTank.TankLevel_LLL != null && itmTank.TankLevel_LLL.CompareValue != "")
+                                                    {
+                                                        <tr>
+                                                            <td class="lbl">LLL (M)</td>
+                                                            <td class="val">@(itmTank.TankLevel_LLL != null ? itmTank.TankLevel_LLL.CompareValue : "")</td>
+                                                            <td class="val">
+                                                                <span class="circle-cont">
+                                                                    <span class="LLL_@itmTank.tank.TankName"></span>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="mov">
+                                    <div class="toggle-menu-container">
+
+                                        @foreach (string line in itmTank.tank.tblMOVMasters.Select(x => x.tblMOVLine.Line).Distinct())
+                                        {
+                                            <div class="menu-item">
+                                                @line  <i class="fa fa-plus-circle"></i>
+                                            </div>
+                                            <div class="menu-content">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr>
+                                                            @foreach (string type in itmTank.tank.tblMOVMasters.Select(x => x.tblMOVType.MOVLoc).Distinct())
+                                                            {
+                                                                tblMOVMaster mov = itmTank.tank.tblMOVMasters.Where(y => y.tblMOVType.MOVLoc == type && y.tblMOVLine.Line == line).FirstOrDefault();
+                                                                if (mov != null)
+                                                                {
+                                                                    string Mov_Name = "MOV_" + mov.UniqueID.ToString("0#");
+                                                                    <td>
+                                                                        <div class="mov-valve-info-container">
+                                                                            <div class="mov-lbl"><span>@mov.tblMOVType.MOVLoc</span></div>
+                                                                            <div class="mov-valve">
+                                                                                <span class="mov-valve-icons local-indicator locrem_mov_false LOCREM_@Mov_Name"></span>
+                                                                                <span class="mov-valve-icons remote-indicator REMOTE_IMG_@Mov_Name"></span>
+                                                                                <span class="mov-valve-icons stop-indicator STOP_IMG_@Mov_Name"></span>
+                                                                                <span class="mov-valve-icons auto-indicator automan_mov_false AUTOMAN_@Mov_Name"></span>
+                                                                                <span class="mov-valve-icons manual-indicator automan_mov_true AUTOMAN_@Mov_Name"></span>
+                                                                            </div>
+                                                                            <div class="mov-lbl"><span>@(mov == null ? "" : mov.MovName)</span></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div id="action">
+                                    Action
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/PlantView/TanksView/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        if ($('.slider-container').length > 0) {
+            $('.slider-container').slick({
+                dots: true,
+                easing: 'linear',
+                mobileFirst: true,
+                speed: 300
+            });
+        }
+        if ($('.mySliderTabs').length > 0) {
+            var slider = $("div.mySliderTabs").sliderTabs({
+                autoplay: false,
+                mousewheel: false,
+                position: "top"
+            });
+        }
+    });
+</script>

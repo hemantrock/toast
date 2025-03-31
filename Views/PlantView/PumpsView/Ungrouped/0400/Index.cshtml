@@ -1,0 +1,189 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblPump>
+@{
+    ViewBag.Title = "Plant View - Pumps View";
+    Layout = null;
+    int MaxLen = Model.Where(x=>x.ProductID!=null).Select(x => x.tblProduct.ProdNameShort.Length).Max();
+    string TwoRowHeader = "";
+    if (MaxLen > 10) { TwoRowHeader = "two-row-header"; }
+    List<tblPump> lstpmp;
+    if (clsConfig.UnGroupedPumpsOrdering.ToUpper()== "Product-Wise".ToUpper()) {lstpmp = Model.Where(x => x.tblProduct != null).OrderBy(x => x.ProductID).ToList(); }
+    else if(clsConfig.UnGroupedPumpsOrdering.ToUpper() == "Service-Wise".ToUpper()) { lstpmp = Model.Where(x => x.ServiceID != null).OrderBy(x => x.ServiceID).ToList(); }
+    else { lstpmp = Model.Where(x => x.tblProduct != null).ToList(); }
+}
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">Pumps View</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 m-t-40">
+            <div class="row">
+                <div class="tab-container pump-view-tab-container">
+                    @{
+                        foreach (tblPump pump in lstpmp)
+                        {
+                            string pumpName = pump.TagPrefix;
+                            <div class="col-lg-2 col-md-3 pump-view-wrapper">
+                                <span class="pump-view-header @TwoRowHeader">
+                                    <span style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000;">@pump.EquipmentName</span>
+                                    <span style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000;">@pump.tblProduct.ProdNameShort</span>
+                                </span>
+                                <div class="pump-view-pump">
+                                    <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(pumpName+"_LOCREM")" onclick="OpenLocRemModal('@pump.EquipmentName', 'PUMP_LOCREM', '@(pumpName+"_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@pump.UniqueID,'@("PumpsView"+pump.UniqueID.ToString("0#"))')" class="tooltips pump-header @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG") ">
+                                        <span class="maintainence-mode-icon @(pumpName+"_MAINT")"></span>
+                                    </div>
+                                    <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(pumpName+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @pump.EquipmentName', '@(pumpName+"_AUTOMAN")', '@(pumpName+"_LOCREM")', 'TAG_AUTOMAN','@pump.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    <span class="percentage-fill-val get-hover" title="Please click to view trend" onclick="OpenChartModal('@(pumpName+"_PT")', '@("PumpsView"+string.Format("{0:00}", pump.UniqueID))'); cancelBubble(event);">
+                                        <span class="pt-pump-val @(pumpName+"_PT")"></span><br />Kg/cm²
+                                    </span>
+                                    <span class="sine-wave tooltips @(pumpName+"_ON_VFD")" title="Pump on VFD"></span>
+                                </div>
+
+                                <table class="pump-view-detail-tbl table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td class="pump-view-detail-tbl-lbl">Run Hrs</td>
+                                            <td class="pump-view-detail-tbl-val @(pumpName + "_RUN_HRS")">
+                                                <span class="@(pumpName + "_RUN_HRS_HH")"></span>:<span class="@(pumpName + "_RUN_HRS_MM")"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pump-view-detail-tbl-lbl">Service <span style="display: none" aria-hidden="true" onclick="OpenServiceModal('@pump.UniqueID','@(pump.EquipmentName)',@(pump.tblPumpService.UniqueID),'','@Session[clsConstants.UserID]')" class="glyphicon glyphicon-pencil"></span></td>
+                                            <td class="pump-view-detail-tbl-val">@(pump.tblPumpService != null ? pump.tblPumpService.Service : "")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="SetPointModal" tabindex="-1" role="dialog" aria-labelledby="SetPointModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Set Point</h3>
+            </div>
+            <div class="modal-body">
+                <p>Cutoff Pressure at which pump will be stopped</p>
+                <div class="col-lg-12">
+                    <form role="form" class="form-inline">
+                        <div class="form-group">
+                            <label for="txtSetPoint">New Set Point:</label>
+                            <input type="text" id="txtSetPoint" value="" class="form-control" />
+                            <span class="unit-lbl"> (Kg/cm²)</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PriorityModal" tabindex="-1" role="dialog" aria-labelledby="PriorityModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Set Priority</h3>
+            </div>
+            <div class="modal-body">
+                <p>Priority of the pump in case of sequencing on Non Run Hour basis</p>
+                <div class="col-lg-12">
+                    <form role="form" class="form-inline">
+                        <div class="form-group">
+                            <label for="txtSetPoint">New Priority:</label>
+                            <input type="text" id="txtPriority" value="" class="form-control" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnPriorityOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="LOCREMModal" tabindex="-1" role="dialog" aria-labelledby="ModeChangeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog mode-control-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="LocRemLabel">Change Mode</h3>
+            </div>
+            <div class="modal-body">
+                <div id="dvChangeMode" class="automanual-popup">
+                    <span id="hdnLOCREMMode" data-opcvalue="" class="" style="display:none;"></span>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Current Mode</th>
+                                <th>New Mode</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pump-view-pump">
+                                <td>
+                                    <div class="relative">
+                                        <span class="control-icon PUMP_LOCREM"></span>
+                                    </div>
+                                    <div class="mode-lbl remotemode PUMP_LOCREM" data-opcvalue="True">
+                                        REMOTE MODE
+                                        <span class="mode-lbl-subtxt">Remote Operation from PC</span>
+                                    </div>
+                                    <div class="mode-lbl localmode PUMP_LOCREM" data-opcvalue="True">
+                                        LOCAL MODE
+                                        <span class="mode-lbl-subtxt">Locally operated from Equipment</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="relative">
+                                        <span class="control-icon PUMP_LOCREM new-mode"></span>
+                                    </div>
+                                    <div class="mode-lbl remotemode PUMP_LOCREM new-mode" data-opcvalue="True">
+                                        REMOTE MODE
+                                        <span class="mode-lbl-subtxt">Remote Operation from PC</span>
+                                    </div>
+                                    <div class="mode-lbl localmode PUMP_LOCREM new-mode" data-opcvalue="True">
+                                        LOCAL MODE
+                                        <span class="mode-lbl-subtxt">Locally operated from Equipment</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnModeChangeOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs a:first').tab('show');
+        opcPageName = "PumpsView.*";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/PumpsView/Index.js"></script>

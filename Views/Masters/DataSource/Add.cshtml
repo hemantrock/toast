@@ -1,0 +1,178 @@
+﻿
+@using TOAST.Data.Model;
+
+@{
+    ViewBag.Title = "Add Tag Master";
+    Layout = null;
+
+    List<tblProcess> processList = ViewBag.processList;
+    List<tblConnTypeMaster> connTypeList = ViewBag.connTypeList;
+
+    List<tblDropdownValue> ddlist = ViewBag.dropdown;
+    List<tblDropdownValue> ddlBR = ddlist.Where(x => x.ddlType.ToUpper() == "BAUDRATE").ToList();
+    List<tblDropdownValue> ddlParity = ddlist.Where(x => x.ddlType.ToUpper() == "PARITY").ToList();
+    List<tblDropdownValue> ddlCommType = ddlist.Where(x => x.ddlType.ToUpper() == "TCPCommType".ToUpper()).ToList();
+}
+
+<h2 class="headingPage">
+    Create a new Data Source
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmDataSource" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>DS Name</label>
+                        <input id="txtDSName" name="DSName" type="text" placeholder="Data Source Name" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Process Id</label>
+                        <select class="form-control" id="ddlProcessId" name="ProcessId">
+                            <option value="0" selected="selected">Select Process Id</option>
+                            @foreach (tblProcess process in processList)
+                            {
+                                <option value="@process.ProcessID">@process.ProcessName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Conn Type</label>
+                        <select class="form-control" id="ddlConnType" name="ConnType">
+                            <option value="0" ConnType="0" selected="selected">Select Conn Type</option>
+                            @foreach (tblConnTypeMaster connType in connTypeList)
+                            {
+                                <option value="@connType.ConnTypeID" ConnType="@connType.ConnTypeID">@connType.ConnTypeName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                @*RTU Field*@
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Primary Serial Port</label>
+                        <input id="txtPrimarySerialPort" name="PrimarySerialPort" type="text" placeholder="Eg. COM1/COM2 ..." class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Backup Serial Port</label>
+                        <input id="txtBackupSerialPort" name="BackupSerialPort" type="text" placeholder="Eg. COM6/COM7 ..." class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Baud Rate</label>
+                        <select class="form-control" id="ddlBaudRate" name="BaudRate">
+                            <option value="0">Select Baud Rate</option>
+                            @foreach (tblDropdownValue data in ddlBR)
+                            {
+                                <option value="@data.ddlValues">@data.ddlValues</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Parity</label>
+                        <select class="form-control" id="ddlParity" name="Parity">
+                            <option value="0">Select Parity</option>
+                            @foreach (tblDropdownValue data in ddlParity)
+                            {
+                                <option value="@data.ddlValues">@data.ddlValues</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>FIFO</label>
+                        <input id="txtFIFO" name="FIFO" type="text" placeholder="FIFO" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 RTUField">
+                    <div class="fields form-group">
+                        <label>Poll Interval Msec</label>
+                        <input id="txtPoll_Interval_msec" name="Poll_Interval_msec" type="text" placeholder="Poll Interval (msec)" class="form-control">
+                    </div>
+                </div>
+
+                @*OPC Field*@
+                <div class="col-lg-2 col-md-2 col-sm-2 OPCField">
+                    <div class="fields form-group">
+                        <label>Primary Host Name</label>
+                        <input id="txtPrimaryHostName" name="PrimaryHostName" type="text" placeholder="Primary Host Name" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 OPCField">
+                    <div class="fields form-group">
+                        <label>Backup Host Name</label>
+                        <input id="txtBackupHostName" name="BackupHostName" type="text" placeholder="Backup Host Name" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 OPCField">
+                    <div class="fields form-group">
+                        <label>ProgId</label>
+                        <input id="txtProgId" name="ProgId" type="text" placeholder="Prog Id" class="form-control">
+                    </div>
+                </div>
+
+                @*TCP Field*@
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Comm Type</label>
+                        <select class="form-control" id="ddlCommType" name="CommType">
+                            <option value="0">Select Comm Type</option>
+                            @foreach (tblDropdownValue data in ddlCommType)
+                            {
+                                <option value="@data.ddlValues">@data.ddlValues</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Primary IP Address</label>
+                        <input id="txtPrimaryIPAddress" name="PrimaryIPAddress" type="text" placeholder="Primary IP Address" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Primary IP Port</label>
+                        <input id="txtPrimaryIPPort" name="PrimaryIPPort" type="text" placeholder="Primary Port" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Backup IP Address</label>
+                        <input id="txtBackupIPAddress" name="BackupIPAddress" type="text" placeholder="Backup IP" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Backup IP Port</label>
+                        <input id="txtBackupIPPort" name="BackupIPPort" type="text" placeholder="Backup Port" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 TCPField">
+                    <div class="fields form-group">
+                        <label>Poll Interval mSec</label>
+                        <input id="txtPoll_Interval_msec_TCP" name="Poll_Interval_msec_TCP" type="text" placeholder="Poll Interval in mSec" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="saveNewDS();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/DataSource/DataSource.js"></script>

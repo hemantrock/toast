@@ -1,0 +1,81 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - TOBV View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">TOBV View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 content-top-spacing tobv-container">
+        <div class="tobv-tbl-container">
+            @{
+                foreach (tblMOVMaster mov in Model)
+                {
+                    <div class="col-lg-2 tobv-block">
+                        <table class="tobv-detail-tbl">
+                            <thead>
+                                <tr>
+                                    <th colspan="1" class="text-center">
+                                        <span class="view-header">
+                                            <span style="background-color:@(mov.tblHeadersMaster.tblProduct.ProductColor); color: #fff; text-shadow: 0px 1px 1px #000;">@(mov.MovName)</span>
+                                            <span style="background-color:@(mov.tblHeadersMaster.tblProduct.ProductColor); color: #fff; text-shadow: 0px 1px 1px #000;">@(mov.tblHeadersMaster.tblProduct.ProdNameShort)</span>
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @{ 
+                                        string MoVPrefix = (mov.TagPrefix + "_");
+                                        string movpage = mov.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:00}", mov.MovTypeSeqNo);
+                                    <td>
+                                        <div class="tobv-name"><span></span> </div>
+                                        <div class="tobv-valve-info-container" onclick="GetMOVModal('@mov.MOVType','@mov.UniqueID','@movpage')">
+                                            <div title="No Feedback" data-tooltip-attr="TOBV*" class="tooltips tobv-valve @(MoVPrefix+"GEN_ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                                                <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                                <span class="mov-valve-fill">
+
+                                                    <span class="fill-value percentage @(MoVPrefix+"_FILL")" data-id="@(MoVPrefix+"PER_OPN")"></span>
+                                                </span>
+                                                <span class="percentage-fill-val"><span class="per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%</span>
+                                            </div>
+                                            <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                            <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, '', '@mov.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode TOBV'); cancelBubble(event);"></span>
+                                            <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                        </div>
+                                        <table class="detail-tbl">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                                                    <td>
+                                                        <span class="circle-cont-xsm">
+                                                            <span class="@(MoVPrefix+"CONN01")"></span>
+                                                        </span>
+                                                    </td>
+                                                    <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                                                    <td>
+                                                        <span class="circle-cont-xsm">
+                                                            <span class="@(MoVPrefix+"CONN02")"></span>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/TOBVView/Index.js"></script>

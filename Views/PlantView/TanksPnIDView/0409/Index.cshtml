@@ -1,0 +1,316 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    ViewBag.Title = "Plant View - Tanks P&ID View";
+    List<tblPump> AllPumps = ViewBag.AllPumps;
+    List<tblMOVMaster> AllMoVs = ViewBag.AllMoVs;
+    List<tblDeviceMaster> tnkDevices = ViewBag.Devices;
+    List<tblMOVMaster> HdrMOVs = ViewBag.HeaderValves;
+    Layout = null;
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+    string ProdNameShort = Model.FirstOrDefault().tblProduct.ProdNameShort.ToUpper();
+    string Prodcolor = (Model.FirstOrDefault().tblProduct.ProductColor);
+    <style>
+        .pillar-tank-block.status_true {
+            border-color: @Prodcolor  !important;
+        }
+        .piller-connector-line.status_true {
+            background-color: @Prodcolor !important;
+        }
+        .sko-connector.status_true, .tlf-header-line.status_true, .from-receipt-line.status_true {
+            background-color: @Prodcolor  !important;
+        }
+        .piller-tank-row.status_true, .piller-tank-row.piller-connector-line.status_true  {
+            border-color: @Prodcolor  !important;
+            background-color: @Prodcolor !important;
+        }
+        .tank-pid-piller.disp_true, .tank-pid-piller.status_true {
+            background-color: @Prodcolor !important;
+        }
+        .receipt-vertical-line.status_true{
+            background-color: @Prodcolor  !important;
+        }
+        .recirculation-line-horizontal.status_true{
+            border-color: @Prodcolor  !important;
+        }
+        .recirculation-vertical-connector.status_true{
+            border-color: @Prodcolor  !important;
+        }
+        .recirculation-line-vertical.status_true{
+            border-color: @Prodcolor  !important;
+            background-color: @Prodcolor !important;
+        }
+        .sko-block.status_true {
+            border-color: @Prodcolor  !important;
+        }
+        .piller-pump-row .pump-line.status_true {
+            border-color: @Prodcolor  !important;
+        }
+        .piller-pump-row .piller-connector-line.t_01.status_true {
+            background-color: @Prodcolor  !important;
+        }
+        .piller-pump-row .piller-connector-line.t_02.status_true {
+            border-color: @Prodcolor  !important;
+            background-color: transparent  !important;
+        }
+        .u-connector.recp_true {
+            border-color: @Prodcolor  !important;
+            border-left-color: #fff !important;
+        }
+    </style>
+
+}
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant sticky-page-heading" style="color:black">Tanks P&ID - @ProdNameShort</h3>
+        </div>
+    </div>
+    <div class="row m-t-40">
+        <div class="row m-t-40">
+            @{
+                List<tblTank> lstTanks = Model;
+                string TankPages = String.Join(",", lstTanks.Select(x => x.PageName));
+                string PumpPages = String.Join(",", AllPumps.Select(x => x.PageName));
+                string MovPageLink = "";
+                List<tblPump> lstWagonPumps = AllPumps.Where(x => x.ServiceID == 2).ToList();
+                List<tblPump> lstTLFPumps = AllPumps.Where(x => x.ServiceID == 1).ToList();
+
+                <!--TANK PID Screen --- -->
+                <div class="row">
+                    <div class="col-lg-12 tank-PID-container">
+                        <div class="tank-pid-piller @(ProdNameShort+"_DISP_HDR_FLOW")">
+                            <span class="tank-piller-signal dispatch-top"></span>
+                            <span class="tank-piller-signal dispatch-bottom"></span>
+                            <span class="tank-piller-signal receipt-top"></span>
+                            <span class="tank-piller-signal receipt-bottom"></span>
+                            <div class="receipt-vertical-line @(ProdNameShort+"_RECP_HDR_FLOW")"></div>
+                            <div class="recirculation-line-vertical @(ProdNameShort+"_RECIR_HDR_FLOW")">
+                                <span>Recirculation Line</span>
+                                <span class="tank-piller-signal recirculation-top"></span>
+                                <span class="tank-piller-signal recirculation-bottom"></span>
+                            </div>
+                            <div class="left-side">
+
+                                @for (int i = 0; i < lstTanks.Count(); i++)
+                                {
+                                    string TagVFT = ""; string TagRdrRelay = "";
+                                    string TkPrefix = lstTanks[i].TagPrefix;
+                                    tblDeviceMaster VFT = tnkDevices.Where(x => x.TankID == lstTanks[i].UniqueID && x.DeviceID == 1).FirstOrDefault();
+                                    if (VFT != null) { TagVFT = VFT.TagPrefix + "_STATUS"; }
+
+                                    tblDeviceMaster RdrRelay = tnkDevices.Where(x => x.TankID == lstTanks[i].UniqueID && x.DeviceID == 4).FirstOrDefault();
+                                    if (RdrRelay != null) { TagRdrRelay = RdrRelay.TagPrefix + "_STATUS"; }
+
+                                    <div class="piller-tank-row t_@((i + 1).ToString("00"))  @(lstTanks[i].TagPrefix + "_IN_FLOW")">
+                                        <div class="u-connector @(ProdNameShort + "_RECP_HDR_FLOW")"></div>
+                                        <div class="piller-connector-line @(lstTanks[i].TagPrefix + "_OUT_FLOW")"></div>
+                                        @{
+                                            List<tblMOVMaster> lstinletValves = lstTanks[i].tblMOVMasters.Where(y => y.MOVLine == 1).ToList();
+                                            foreach (tblMOVMaster mov in lstinletValves)
+                                            {
+                                                string movpos = "";
+                                                if (lstinletValves.Count == 1) { movpos = "left:105px;"; }
+                                                string movpage = mov.PageName;
+                                                MovPageLink = movpage + "," + MovPageLink;
+                                                string MoVPrefix = (mov.TagPrefix + "_");
+                                                <div title="No Feedback" data-tooltip-attr="@mov.tblMOVType.MOVType.ToUpper()*" style="@movpos" class="tooltips inlet-device @mov.tblMOVType.MOVType.ToLower() @(MoVPrefix + "GEN_ALRM_IMG") @(MoVPrefix + "OPN_IMG") @(MoVPrefix + "CLS_IMG")">
+                                                    <span class="device-txt lbl">@mov.tblMOVType.MOVLoc</span>
+                                                    <span class="device-txt name">@mov.MovName</span>
+
+                                                    <span class="action-icon remote-icon"></span>
+                                                    <span class="action-icon local-icon"></span>
+                                                    <span class="action-icon auto-icon"></span>
+                                                    <span class="action-icon manual-icon"></span>
+                                                </div>
+                                            }
+                                        }
+                                        <div class="pillar-tank-block">
+                                            <div class="tank-block @(lstTanks[i].tblTankType.TankType)" onclick="OpenTankViewModal(@lstTanks[i].UniqueID,'@lstTanks[i].PageName')">
+                                                <span class="tank-radar vft @TagVFT"></span>
+                                                <span class="tank-radar radar-relay @TagRdrRelay"></span>
+                                                <span class="stair">
+                                                    <span class="app-logo @CustName"></span>
+                                                </span>
+                                                <span class="pnid-thermometer-block">
+                                                    <span class="pnid-therm-fill-percent tooltips" title="Tank % filled"><span class="@(lstTanks[i].TagPrefix + "_PER_LVL")" data-id="@lstTanks[i].TagPrefix"></span> %</span>
+                                                    <span class="pnid-therm-fill-prod-level get-hover tooltips" title="Process Radar Product Level" onclick="OpenChartModal('@(lstTanks[i].TagPrefix + "_LEVEL")', '@(lstTanks[i].PageName)'); cancelBubble(event);"><span class="@(TkPrefix + "_LEVEL")"></span> @clsConfig.TFMSLevelUnit</span>
+                                                    <span class="pnid-therm-fill-degree get-hover tooltips" title="Product Avg Temp." onclick="OpenChartModal('@(lstTanks[i] + "_AVG_TEMP")', '@(lstTanks[i].PageName)'); cancelBubble(event);"><span class="@(lstTanks[i] + "_AVG_TEMP")"></span> °C</span>
+                                                </span>
+                                                <span class="@(lstTanks[i].TagPrefix)_OIL_TANK_FILL oil-tank-fill-container">
+                                                    <input type="hidden" class="hdnHeight" data-id="@lstTanks[i].TagPrefix" value="@(lstTanks[i].SafeFillingCapacity ?? lstTanks[i].DipReferenceHeight)" />
+                                                    <div class="hide chdnHeight @(TkPrefix)_LVL_HHH" data-id="@TkPrefix" data-sfl="@(lstTanks[i].SafeFillingCapacity ?? lstTanks[i].DipReferenceHeight)"></div>
+                                                    <span class="oil-tank-base"></span>
+                                                    <span class="oil-tank-fill @(lstTanks[i].TagPrefix + "_PER_HGHT")" style="background-color:@lstTanks[i].tblProduct.ProductColor; height: 3%"></span>
+                                                </span>
+                                                <span class="pid-tank-lbl">
+                                                    <span class="oil-tank-lbl hhh">
+                                                        <span class="@(TkPrefix)_HHH @(TkPrefix)_ALRM_HHH @(lstTanks[i].TankType==3?"hide":"")"></span>
+                                                        <label class="@(lstTanks[i].TankType==3?"hide":"")">HHH</label>
+                                                    </span>
+
+                                                    <span class="oil-tank-lbl hh">
+                                                        <span class="@(TkPrefix)_HH @(TkPrefix)_ALRM_HH"></span>
+                                                        <label>HH</label>
+                                                    </span>
+
+                                                    <span class="oil-tank-lbl h">
+                                                        <span class="@(TkPrefix)_H @(TkPrefix)_ALRM_H"></span>
+                                                        <label>H</label>
+                                                    </span>
+
+                                                    <span class="oil-tank-lbl l">
+                                                        <span class="@(TkPrefix)_L @(TkPrefix)_ALRM_L"></span>
+                                                        <label>L</label>
+                                                    </span>
+
+                                                    <span class="oil-tank-lbl ll">
+                                                        <span class="@(TkPrefix)_LL @(TkPrefix)_ALRM_LL"></span>
+                                                        <label>LL</label>
+                                                    </span>
+                                                </span>
+                                                <span class="tank-bottom-txt">
+                                                    @lstTanks[i].TankName<span>:</span>
+                                                    <span class="@(lstTanks[i].TagPrefix + "_MODE_DDL")">
+                                                        <span></span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        @{
+                                            List<tblMOVMaster> lstDispValves = lstTanks[i].tblMOVMasters.Where(y => y.MOVLine == 2).ToList();
+                                            foreach (tblMOVMaster mov in lstDispValves)
+                                            {
+                                                string movpos = "";
+                                                if (lstDispValves.Count == 1) { movpos = "right:175px;"; }
+                                                string movpage = mov.PageName;
+                                                MovPageLink = movpage + "," + MovPageLink;
+                                                string MoVPrefix = mov.TagPrefix + "_";
+                                                <div title="No Feedback" data-tooltip-attr="@mov.tblMOVType.MOVType.ToUpper()*" style="@movpos" class="tooltips outlet-device @mov.tblMOVType.MOVType.ToLower() @(MoVPrefix + "GEN_ALRM_IMG") @(MoVPrefix + "OPN_IMG") @(MoVPrefix + "CLS_IMG")">
+                                                    <span class="maintainence-mode-icon @(MoVPrefix + "_MAINT")"></span>
+                                                    <span class="device-txt lbl">@mov.tblMOVType.MOVLoc</span>
+                                                    <span class="device-txt name">@mov.MovName</span>
+
+                                                    <span class="action-icon remote-icon"></span>
+                                                    <span class="action-icon local-icon"></span>
+                                                    <span class="action-icon auto-icon"></span>
+                                                    <span class="action-icon manual-icon"></span>
+                                                </div>
+                                            }
+                                            List<tblMOVMaster> lstReCirValves = lstTanks[i].tblMOVMasters.Where(y => y.MOVLine == 3).ToList();
+                                            foreach (tblMOVMaster mov in lstReCirValves)
+                                            {
+                                                string movpos = "";
+                                                if (lstReCirValves.Count == 1) { movpos = "right:272px; top: -2px;"; }
+                                                string movpage = mov.PageName;
+                                                MovPageLink = movpage + "," + MovPageLink;
+                                                string MoVPrefix = mov.TagPrefix + "_";
+                                                <div title="No Feedback" data-tooltip-attr="@mov.tblMOVType.MOVType.ToUpper()*" style="@movpos" class="tooltips outlet-device @mov.tblMOVType.MOVType.ToLower() @(MoVPrefix + "GEN_ALRM_IMG") @(MoVPrefix + "OPN_IMG") @(MoVPrefix + "CLS_IMG")">
+                                                    <span class="maintainence-mode-icon @(MoVPrefix + "_MAINT")"></span>
+                                                    @*<span class="device-txt lbl">@mov.tblMOVType.MOVLoc</span>*@
+                                                    <span class="device-txt name">@mov.MovName</span>
+
+                                                    <span class="action-icon remote-icon"></span>
+                                                    <span class="action-icon local-icon"></span>
+                                                    <span class="action-icon auto-icon"></span>
+                                                    <span class="action-icon manual-icon"></span>
+                                                </div>
+                                                <div class="recirculation-line-horizontal @(lstTanks[i].TagPrefix + "_REC_FLOW")">
+                                                    <div class="connector-angle circulation-line right"></div>
+                                                </div>
+                                            }
+                                        }
+                                        <span class="line-txt top">Dispatch Line</span>
+                                        <span class="line-txt bottom">Receipt Line</span>
+                                        <div class="connector-angle tank-row right"></div>
+                                        <div class="connector-angle tank-row left"></div>
+                                    </div>
+                                            }
+
+                                <div class="piller-pump-row pp-409 @(lstWagonPumps.Count()>0?"":"hide")">
+                                    @for (int i = 0; i < lstWagonPumps.Count(); i++)
+                                    {
+                                        string pumpName = lstWagonPumps[i].TagPrefix;
+                                        <div class="piller-connector-line t_@((i+1).ToString("00")) @(pumpName+"_RUN_FB")"></div>
+                                        <div title="Pump Off" data-tooltip-attr="PMP*" class="tooltips pump-block p_@((i+1).ToString("00")) @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG") ">
+                                            <span class="line-txt">@lstWagonPumps[i].EquipmentName</span>
+                                        </div>
+                                        <div class="pump-line p_@((i+1).ToString("00")) @(pumpName+"_RUN_FB")"></div>
+                                    }
+                                    <div class="from-receipt-line @(ProdNameShort+"_WGN_PUMP_RUNNING")">
+                                        <div class="signal"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right-side">
+                                <div class="sko-block @(ProdNameShort+"_TLF_PUMP_RUNNING")">
+                                    @for (int i = 0; i < lstTLFPumps.Count(); i++)
+                                    {
+                                        string pumpName = lstTLFPumps[i].TagPrefix;
+                                        <div title="Pump Off" data-tooltip-attr="PMP*" style="top:@(i*67)px" class="tooltips pump-block p_@((i+1).ToString("00")) @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG")">
+                                            <span class="line-txt">@lstTLFPumps[i].EquipmentName</span>
+                                            <div class="piller-connector-line p_@((i+1).ToString("00"))  @(pumpName+"_RUN_FB")">
+                                                <div class="connector-angle pump"></div>
+                                            </div>
+                                            <div class="sko-connector p_@((i+1).ToString("00")) @(pumpName+"_RUN_FB")"></div>
+                                            <div class="recirculation-vertical-connector @(ProdNameShort+"_RECIR_HDR_FLOW")">
+                                                <div class="connector-angle circulation-line right"></div>
+                                                <div class="connector-angle circulation-line top"></div>
+                                            </div>
+                                        </div>
+
+                                    }
+                                    <div class="sko-pump">
+                                        @{
+                                            if (HdrMOVs.Count() > 0)
+                                            {
+                                                <div class="tlf-header-line @(ProdNameShort+"_TLF_HDR_FLOW")">
+                                                    @foreach (tblMOVMaster hmov in HdrMOVs)
+                                                    {
+                                                        MovPageLink = hmov.PageName + "," + MovPageLink;
+                                                        string mType = hmov.tblMOVType.MOVType.ToLower();
+                                                        <span class="maintainence-mode-icon @(hmov.TagPrefix+"_MAINT")"></span>
+                                                        <span title="No Feedback" data-tooltip-attr="@(mType)*" class="tooltips @(mType)-valve @(hmov.TagPrefix+"_GEN_ALRM_IMG") @(hmov.TagPrefix+"_OPN_IMG") @(hmov.TagPrefix+"_CLS_IMG")"></span>
+                                                                @*<span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(hmov.TagPrefix+"_LOCREM") @(hmov.TagPrefix+"_REMOTE_SELECT") @(hmov.TagPrefix+"_STOP_SELECT")"></span>
+                                                                    <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(hmov.TagPrefix+"_AUTOMAN")"></span>*@
+
+                                                    }
+                                                    <div class="to-gantry @CustName @Application"></div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="tlf-header-line">
+                                                    <div class="to-gantry @CustName @Application"></div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                @*<div class="header-line-item">
+                                        <div></div>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--TANK PID Screen end --- -->
+            }
+            <div id="opcPages" style="display:none">@(TankPages + "," + PumpPages + "," + MovPageLink + "PTView" + ",AOPView" + ",RDRView" + ",TankPnIDView_" + ProdNameShort)</div>
+        </div>
+    </div>
+</div>
+@* The Extra Activities of Pumps used to overrider Tanks Extra Activities. Hence Pumps Scripts moved before Tanks Script. *@
+<script src="~/Scripts/PageJS/PlantView/PumpsView/Index.js"></script>
+<script src="~/Scripts/PageJS/PlantView/TanksView/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        opcPageName = $('#opcPages').html();
+        console.log(opcPageName);
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>

@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Index1";
+    Layout = null;
+    int TankCount = ViewBag.TankCount;
+}
+<form id="FormTankArchive" class="form-fields" role="form">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>From Date</label>
+                <input id="dtpTnkArchFrom" autocomplete="off" name="FromDate" type="text" placeholder="From Date" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>To Date</label>
+                <input id="dtpTnkArchTo" autocomplete="off" name="ToDate" type="text" placeholder="To Date" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Data Posted</label>
+                <select class="form-control" id="ddlPosted" name="Posted" onchange="ViewTankArchive()">
+                    <option value="ALL" selected>ALL</option>
+                    <option value="POSTED">POSTED</option>
+                    <option value="NOTPOSTED">NOT POSTED</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-2">
+            <div class="fields form-group pull-right">
+                <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="ViewTankArchive()"><span class="glyphicon glyphicon-print"></span>VIEW ARCHIVED DATA</a>
+                <a id="downloadButton" role="button" class="btn btn-primary" href="#" onclick="UpdateHREF()"> <i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;DOWNLOAD DATA</a>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row" id="dvTankData">
+
+</div>
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+<script>
+    var tankCount = @TankCount;
+    var nPageSize = Math.floor((iGblNoRows-3)/tankCount)*tankCount;
+</script>
+<script src="~/Scripts/PageJS/TFMS/TankArchive/0413/Index.js"></script>

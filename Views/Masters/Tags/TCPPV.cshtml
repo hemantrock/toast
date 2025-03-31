@@ -1,0 +1,92 @@
+﻿@using TOAST.Data.Model;
+
+@{
+    ViewBag.Title = "TCP Tag Add";
+    List<tblDropdownValue> ddlist = ViewBag.dropdown;
+    //List<tblDropdownValue> ddlCommType = ddlist.Where(x => x.ddlType.ToUpper() == "TCPCommType".ToUpper()).ToList();
+    List<tblDropdownValue> ddlRegType = ddlist.Where(x => x.ddlType.ToUpper() == "MBUSREGTYPE").ToList();
+}
+
+<form id="frmTCP" role="form" class="form-fields">
+	<div class="row">
+		@*<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Comm Type</label>
+                <select class="form-control" id="ddlCommType" name="CommType">
+                    <option value="">Select Comm Type</option>
+                    @foreach (tblDropdownValue data in ddlCommType)
+                    {
+
+                        <option value="@data.ddlValues">@data.ddlValues</option>
+                    }
+                </select>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Primary IP Address</label>
+				<input id="txtPrimaryIPAddress" name="PrimaryIPAddress" type="text" placeholder="Primary IP Address" class="form-control">
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Primary IP Port</label>
+				<input id="txtPrimaryIPPort" name="PrimaryIPPort" type="text" placeholder="Primary Port" class="form-control">
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Backup IP</label>
+				<input id="txtBackupIPAddress" name="BackupIPAddress" type="text" placeholder="Backup IP" class="form-control">
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Backup IP Port</label>
+				<input id="txtBackupIPPort" name="BackupIPPort" type="text" placeholder="Backup Port" class="form-control">
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Poll Interval mSec</label>
+				<input id="txtPoll_Interval_msec" name="Poll_Interval_msec" type="text" placeholder="Poll Interval in mSec" class="form-control">
+			</div>
+		</div>*@
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Slave Id</label>
+				<input id="txtSlaveId" name="SlaveId" type="text" placeholder="Slave Id" class="form-control">
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+                <label>Register Type</label>
+                <select class="form-control" id="ddlRegType" name="RegType">
+                    <option disabled value="">Select Register Type</option>  
+                    @foreach (tblDropdownValue dat in ddlRegType)
+                    {
+                        <option value="@dat.ddlValues">@dat.ddlValues</option>
+                    }
+                </select>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>Start Register</label>
+				<input id="txtStartRegister" name="StartRegister" type="text" placeholder="Start Register" class="form-control">
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-2 col-sm-2">
+			<div class="fields form-group">
+				<label>No Of Bytes</label>
+				<input id="txtNoOfBytes" name="NoOfBytes" type="text" placeholder="No Of Bytes" class="form-control">
+			</div>
+		</div>
+        <div class="col-lg-2 col-md-2 col-sm-2 BoolData">
+            <div class="fields form-group">
+                <label>Segment No</label>
+                <input id="txtSegmentNo" name="SegmentNo" type="text" placeholder="Segment no incase of Bool" class="form-control">
+            </div>
+        </div>
+	</div>
+</form>

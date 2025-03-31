@@ -1,0 +1,56 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddTanks()">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW TANK DETAILS
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">TANK DETAILS</h3>
+        <table id="tblTanks" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>TANK NAME</th>
+                    <th>ERP TANK NO</th>
+                    <th>PLANT CODE</th>
+                    <th>TANK TYPE</th>
+                    <th>PRODUCT</th>
+                    <th>DIP REFERENCE HEIGHT</th>
+                    <th>NOMINAL DIA</th>
+                    <th>MAX VOLUME</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTank itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.UniqueID);">
+                        <td style="display:none;">@itm.UniqueID</td>
+                        <td>@itm.TankName</td>
+                        <td>@itm.SAPTankNo</td>
+                        <td>@(itm.tblSAPTASConfig==null ? "" : itm.tblSAPTASConfig.PlantCode.ToString())</td>
+                        <td>@itm.tblTankType.TankType</td>
+                        <td>@itm.tblProduct.ProductName</td>
+                        <td>@itm.DipReferenceHeight</td>
+                        <td>@itm.NominalDia</td>
+                        <td>@itm.MaxVolume</td>
+                        <td class="text-center"><span id="spanDelete_@itm.UniqueID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.UniqueID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/Masters/Tanks/0406/Index.js"></script>

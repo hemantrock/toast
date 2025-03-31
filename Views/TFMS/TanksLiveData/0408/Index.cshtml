@@ -1,0 +1,12 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblMeterMaster>
+@{
+    ViewBag.Title = "Tanks Live Data View";
+    bool ShowSafetyRadarLevel;
+    ShowSafetyRadarLevel = ViewBag.ShowSafetyRadarLevel;
+}
+<div id="ShowSafetyRadarLevel" style="display:none">@ShowSafetyRadarLevel</div>
+<div id="jqxgridTkLiveData" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/TFMS/TankLiveData/0408/Index.js"></script>

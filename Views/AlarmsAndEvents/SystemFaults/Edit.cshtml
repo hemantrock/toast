@@ -1,0 +1,90 @@
+﻿@using Newtonsoft.Json;
+@using TOAST.Data.ViewModels;
+@model TOAST.Data.Model.tblSystemFault
+@{
+    ViewBag.Title = "Add System Faults";
+    List<DeviceList> dicDeviceList = ViewBag.DeviceTagList;
+    string jobj = JsonConvert.SerializeObject(dicDeviceList);
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Update / Close a System Fault
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Item Group</label>
+                        <select class="form-control" id="ddlItemGroup" name="ItemGroup" onchange="UpdateTagsList()">
+                            <option value="0" selected="selected">Select Group</option>
+                            @foreach (string grp in dicDeviceList.Select(x => x.DeviceName))
+                            {
+                                <option value="@grp" @(grp == Model.ItemGroup ? "selected" : "")>@grp</option>
+                            }
+                        </select>
+                        @*<input type="text" class="form-control" placeholder="Item Tags" id="txtItemGroup" name="ItemGroup" autocomplete="off" value="@Model.ItemGroup" />*@
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Item Tags</label>
+                        <input type="text" class="form-control" placeholder="Item Tags" id="txtItemTags" name="ItemTags" autocomplete="off" value="@Model.ItemTags" />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Issue Title</label>
+                        <input type="text" class="form-control" placeholder="Issue Title" id="txtIssueTitle" name="IssueTitle" autocomplete="off" value="@Model.IssueTitle" />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Issue Since</label>
+                        <input type="text" class="form-control" placeholder="Select Issue Since date" id="dtpIssueSince" name="IssueSince" autocomplete="off" value="@(Model.IssueSince == null ? "" : Model.IssueSince.Value.ToString("dd-MMM-yy HH:mm"))" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 ">
+                    <div class="fields form-group">
+                        <label>Issue Description</label>
+                        <textarea type="text" class="form-control" placeholder="Issue Description" id="txtIssueDesc" name="IssueDesc" autocomplete="off" rows="8" wrap="hard">@Model.IssueDesc</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Resolution Date</label>
+                        <input type="text" class="form-control" placeholder="Select Resolution Date" id="dtpResolutionDate" name="ResolutionDate" autocomplete="off" value="@(Model.ResolutionDate==null?"": Model.ResolutionDate.Value.ToString("dd-MMM-yyyy HH:mm"))" />
+                    </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 ">
+                    <div class="fields form-group">
+                        <label>Closure Remarks</label>
+                        <textarea type="text" class="form-control" placeholder="Closure Remarks" id="txtClosureRemarks" name="ClosureRemarks" autocomplete="off">@Model.ClosureRemarks</textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        @if(Model.ClosureDate == null)
+        {
+            <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="CheckClosureUpdate();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        }
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/AlarmsAndEvents/SystemFaults/SystemFaults.js"></script>
+<script>
+    var dicDevices =  @Html.Raw(jobj);
+    var FaultID = '@Model.UniqueID'
+</script>

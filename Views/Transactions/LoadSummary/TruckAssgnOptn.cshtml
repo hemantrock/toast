@@ -1,0 +1,181 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    Layout = null;
+    tblTruckStatu objTruckStatus = null;
+    long LoadID = 0;
+    string activityDetail = "";
+    if (Model != null)
+    {
+        objTruckStatus = Model.tblTruckStatu;
+        LoadID = Model.LoadID;
+        activityDetail = Model.tblTruckMaster.TruckNumber + " (" + Model.ShipmentNo + ")";
+    }
+}
+
+
+@if (objTruckStatus != null && Model != null && Model.BayReportingTime == null && objTruckStatus.TruckCancel == true)
+{
+    <div class="text-right">
+        <a id="btnSampleQty" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('Add Sampling Qty', function (ApproverId) { SampleQtyView('@LoadID',ApproverId); } , 'Add Sampling Qty', '@activityDetail', '@LoadID');">
+            <span class="glyphicon glyphicon-plus-sign">  </span>Add Sample Qty
+        </a>
+    </div>
+}
+
+
+@if (objTruckStatus != null && objTruckStatus.AssignBayCard == true)
+{
+    <div class="text-right">
+        <a id="btnBayAssign" role="button" class="btn btn-primary" href="#" onclick="BayAssign('@LoadID');">
+            <span class="glyphicon glyphicon-check"></span>Bay Assign
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.AssignCard == true)
+{
+    <div class="text-right">
+        <a id="btnCardAssign" role="button" class="btn btn-primary" href="#" onclick="CardAssignView('@LoadID');">
+            <span class="glyphicon glyphicon glyphicon-credit-card"></span>Card Assign
+        </a>
+    </div>
+}
+
+@if (objTruckStatus != null && objTruckStatus.CardReallocate == true)
+{
+    <div class="text-right">
+        <a id="btnCardReallocate" role="button" class="btn btn-primary" href="#" onclick="CardToBeReallocated('@LoadID');">
+            <span class="glyphicon glyphicon-refresh"></span>Card To Reallocate
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.CardReauthorize == true)
+{
+    <div class=" text-right">
+        <a id="btnCardReAuthorize" role="button" class="btn btn-primary" href="#" onclick="CardReauthorize('@LoadID');">
+            <span class="glyphicon glyphicon-repeat"></span>ReAuthorize Card
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.BayReallocate == true)
+{
+    <div class="text-right">
+        <a id="btnBayReallocate" role="button" class="btn btn-primary" href="#" onclick="BayReallocate('@LoadID');">
+            <span class="glyphicon glyphicon-refresh">  </span>Bay To Reallocate
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.BayDeallocate == true)
+{
+    <div class="text-right">
+        <a id="btnBayDeallocate" role="button" class="btn btn-primary" href="#" onclick="BayDeallocate('@LoadID');">
+            <span class="glyphicon glyphicon-arrow-down">  </span>Bay Deallocate
+        </a>
+    </div>
+}
+<!--if (objTruckStatus.Regularize == true && Model.tblLoadDetails.Any(x => (x.LoadStatus == 1 || x.LoadStatus == 3 || x.LoadStatus == 5 || x.LoadStatus == 6))) -->
+@if (objTruckStatus != null && objTruckStatus.Regularize == true && !Model.tblLoadDetails.Any(x => (x.LoadStatus == 2)))
+{
+    <div class="text-right">
+        <a id="btnRegularize" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('Truck Regularize', function (ApproverId) { TruckRegularizeView('@LoadID',ApproverId); } , 'TT Regularize', '@activityDetail', '@LoadID' );">
+            <span class="glyphicon glyphicon-transfer">  </span>Regularize
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.TruckCancel == true)
+{
+    <div class="text-right">
+        <a id="btnTruckCancel" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('Truck Cancel', function (ApproverId) { TruckCancel('@LoadID',ApproverId); } , 'TT Cancel', '@activityDetail', '@LoadID');">
+            <span class="glyphicon glyphicon-remove">  </span>Cancel Truck
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.TruckAbort == true && Model.tblLoadDetails.Any(x => x.LoadStatus == 3))
+{
+    <div class="text-right">
+        <a id="btnTruckAbort" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('Truck Abort', function (ApproverId) { TruckAbort('@LoadID',ApproverId); }, 'TT Abort', '@activityDetail', '@LoadID');">
+            <span class="glyphicon glyphicon-remove">  </span>Abort Truck
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.TruckSick == true && Model.tblLoadDetails.Any(x => x.LoadStatus == 3))
+{
+    <div class="text-right">
+        <a id="btnTruckSick" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('Truck Sick', function (ApproverId) { TruckSick('@LoadID',ApproverId); }, 'TT Sick', '@activityDetail', '@LoadID');">
+            <span class="glyphicon glyphicon-exclamation-sign">  </span>Truck Sick
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.BaySick == true && Model.tblLoadDetails.Any(x => x.LoadStatus == 3))
+{
+    <div class="text-right">
+        <a id="btnBaySick" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('Bay Sick', function (ApproverId) { BaySick('@LoadID',ApproverId); }, 'Bay Sick','@activityDetail', '@LoadID');">
+            <span class="glyphicon glyphicon-ban-circle">  </span>Bay Sick
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.TopUp == true)
+{
+    <div class="text-right">
+        <a id="btnTruckTopUp" role="button" class="btn btn-primary" href="#" onclick="TruckTopUp('@LoadID');">
+            <span class="glyphicon glyphicon-plus-sign">  </span>Generate TopUp
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.TruckCheckOut == true)
+{
+    <div class="text-right">
+        <a id="btnTruckCheckOut" role="button" class="btn btn-primary" href="#" onclick="TruckCheckOut('@LoadID');">
+            <span class="glyphicon glyphicon-log-out">  </span>CheckOut Truck
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.LogWeight == true)
+{
+    <div class="text-right">
+        <a id="btnLogWeight" role="button" class="btn btn-primary" href="#" onclick="LogWeight('@LoadID');">
+            <span class="glyphicon glyphicon-download-alt">  </span>Log Weight
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.TruckTerminate == true)
+{
+    <div class="text-right">
+        <a id="btnTruckTerminate" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordModalForReqTrn('TT Terminate', function (ApproverId) { TruckTerminate('@LoadID',ApproverId); }, 'TT Terminate','@activityDetail', '@LoadID');">
+            <span class="glyphicon glyphicon-remove-circle">  </span>Terminate Truck
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.PrintFAN == true)
+{
+    <div class="text-right">
+        <a id="btnPrintFAN" role="button" class="btn btn-primary" href="#" onclick="PrintFAN('@LoadID');">
+            <span class="glyphicon glyphicon-print">  </span>Print FAN
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.PrintBOL == true)
+{
+    <div class="text-right">
+        <a id="btnPrintBOL" role="button" class="btn btn-primary" href="#" onclick="PrintBOL('@LoadID');">
+            <span class="glyphicon glyphicon-print">  </span>Print BOL
+        </a>
+    </div>
+}
+@if (objTruckStatus != null && objTruckStatus.PrintUAN == true)
+{
+    <div class="text-right">
+        <a id="btnPrintUAN" role="button" class="btn btn-primary" href="#" onclick="PrintUAN('@LoadID');">
+            <span class="glyphicon glyphicon-print">  </span>Print UAN
+        </a>
+    </div>
+}
+@if (Model != null && Model.ManualPost == true)
+{
+    <div class="text-right">
+        <a id="btnManualPost" role="button" class="btn btn-primary" href="#" onclick="ManualPost('@LoadID');">
+            <span class="glyphicon glyphicon-tasks">  </span>Postload Repost
+        </a>
+    </div>
+}

@@ -1,0 +1,677 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblNetwork>
+@{
+    ViewBag.Title = "Plant View - System Config View";
+    Layout = null;
+    tblNetwork Dev;
+    List<tblBatchController> lstBCs = ViewBag.BCs;
+    string PriConn = "ETH1_SW01_CONN";
+    string SecConn = "ETH2_SW02_CONN";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">System Config View - BPCL Bhitoni</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="system-config-wrapper">
+        <div id="system-config-container">
+            <div class="system-arch-top @PriConn">
+                <div class="screen-block">
+                    <h4>LRC1</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceTag.ToUpper() == "LRC1").FirstOrDefault();
+                                <li>
+                                    <div class="ball-indicator left @("ETH1_"+Dev.DeviceTag)"></div>@Dev.PrimaryIP
+                                </li>
+                                <li>
+                                    <div class="ball-indicator left @(" ETH2_"+Dev.DeviceTag)"></div>@Dev.SecondaryIP
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp device-status LRC1_ROLE"></span>
+                    <span class="screen-block-txt bot device-status tooltips LRC1_WITNESS_NAME" title="Witness Machine Name connected to LRC1"></span>
+                </div>
+                <div class="screen-block">
+                    <h4>LRC2</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceTag.ToUpper() == "LRC2").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_"+Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_"+Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp device-status LRC2_ROLE"></span>
+                    <span class="screen-block-txt bot device-status tooltips LRC2_WITNESS_NAME" title="Witness Machine Name connected to LRC2"></span>
+                </div>
+                <div class="screen-block">
+                    <h4>WITNESS-01</h4>
+                    <h5>Witness</h5>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "Witness-1").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp lrc1 device-status tooltips" title="Witness Connectivity with LRC1">LRC1: 
+                        <span class="circle-cont-xsm">
+                            <span class="LRC1_WIT_STATE status_connected"></span>
+                        </span>
+                    </span>
+                    <span class="screen-block-txt bot lrc2 device-status tooltips" title="Witness Connectivity with LRC2">LRC2: 
+                        <span class="circle-cont-xsm">
+                            <span class="LRC2_WIT_STATE status_disconnected"></span>
+                        </span>
+                    </span>
+                </div>
+                <div class="screen-block">
+                    <h4>OIC-01</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "OIC-01").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>OIC-02</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "OIC-02").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>TM-PC</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "TM-PC").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>EWS-PC</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "EWS-PC").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>SECURITY</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "SECURITY").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="screen-block">
+                    <h4>SECURITY</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            @{ Dev = Model.Where(x => x.DeviceName == "SECURITY").FirstOrDefault();
+                                if (Dev != null)
+                                {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <span class="network-txt">Primary Network</span>
+                <span class="sys-printer"></span>
+                <ul class="printer-ipaddress">
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "PRINTER-1").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                            <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                        }
+                    }
+                </ul>
+                <span class="printer-connector @PriConn"></span>
+
+            </div>
+            <div class="system-arch-middle @SecConn">
+                <div class="sym-arh-m-left">
+                        @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                            if (Dev != null)
+                            {
+                                <div class="mem-block left">
+                                    <span class="mem-line-connector primary @PriConn"></span>
+                                    <span class="mem-line-connector secondary @SecConn"></span>
+                                    <span class="mem-line"></span>
+                                    <div class="sl-right">
+                                        <ul>
+
+                                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li><div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)" style="top:21px"></div>@Dev.SecondaryIP</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <div class="mem-block right">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <span class="mem-line"></span>
+                                <div class="sl-right">
+                                    <ul>
+                                        <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                        <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)" style="top:21px"></div>@Dev.SecondaryIP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="sym-arh-m-left-join-line"></div>
+                </div>
+                <div class="sym-arh-m-right">
+                    <div class="sym-arh-l">
+                        <div class="slave-block">
+                            <h4>SFTPLC-A</h4>
+                            <div class="sl-left">
+                                <div class="slave">
+                                    <span class="mem-line-connector primary @PriConn"></span>
+                                    <span class="mem-line-connector secondary @SecConn"></span>
+                                    <span class="slave-line"></span>
+                                </div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "Safety-PLC-01").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status primary_true"></span>
+                        </div>
+
+                        <div class="slave-block r-s">
+                            <h4>SFTPLC-B</h4>
+                            <div class="sl-left">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <div class="slave"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "Safety-PLC-02").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status primary_false"></span>
+                        </div>
+                        <div class="sym-arh-l-join-line"></div>
+                    </div>
+                    <div class="sym-arh-r">
+                        <div class="slave-block">
+                            <h4>TAS PLC-01</h4>
+                            <span class="mem-line-connector primary @PriConn"></span>
+                            <span class="mem-line-connector secondary @SecConn"></span>
+                            <div class="sl-left">
+                                <div class="slave"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "TAS PLC-01").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left  @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li> <div class="ball-indicator left  @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status PLC_01_PRIM"></span>
+                        </div>
+                        <div class="slave-block r_s">
+                            <span class="mem-line-connector primary @PriConn"></span>
+                            <span class="mem-line-connector secondary @SecConn"></span>
+                            <h4>TAS PLC-02</h4>
+                            <div class="sl-left">
+                                <div class="slave"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "TAS PLC-02").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                            <li><div class="ball-indicator left  @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                            <li> <div class="ball-indicator left  @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status PLC_02_PRIM"></span>
+                        </div>
+                        <div class="sym-arh-r-join-line"></div>
+                    </div>
+                </div>
+                <span class="network-txt">Secondry Network</span>
+                <span class="printer-connector hide @SecConn"></span>
+            </div>
+            <div class="system-arch-bottom">
+                <div class="system-arch-bottom-left">
+
+                    <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                    <div class="w-100">
+                        <div class="col-lg-6">
+                            <table class="table-striped detail-tbl w-100">
+                                <tbody>
+                                    @{
+                                        foreach (tblBatchController BC in lstBCs)
+                                        {
+                                            string BCPri = "BC_CONN01" + "_BC" + string.Format("{0:00}", BC.SlaveID);
+                                            string BCSec = "BC_CONN02" + "_BC" + string.Format("{0:00}", BC.SlaveID);
+                                            <tr>
+                                                <td class="tbl-lbl w-60">@BC.BCName</td>
+                                                <td class="tbl-val w-20">
+                                                    <div class="circle-cont-xsm">
+                                                        <span class="@BCPri"></span>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-val w-20">
+                                                    <div class="circle-cont-xsm">
+                                                        <span class="@BCSec"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <table class="table-striped detail-tbl w-100">
+                                <tbody>
+                                    <tr>
+                                        <td class="tbl-lbl w-60">TTRS Reader</td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="BG_CONN01_S03"></span>
+                                            </div>
+                                        </td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="BG_CONN02_S03"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tbl-lbl w-60">BG201-Entry</td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="BG_CONN01_S01"></span>
+                                            </div>
+                                        </td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="BG_CONN02_S01"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tbl-lbl w-60">BG202-Exit</td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="BG_CONN01_S02"></span>
+                                            </div>
+                                        </td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="BG_CONN02_S02"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tbl-lbl w-60">EDU</td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="status_bad"></span>
+                                            </div>
+                                        </td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="status_bad"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tbl-lbl w-60">TOBV</td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="status_bad"></span>
+                                            </div>
+                                        </td>
+                                        <td class="tbl-val w-20">
+                                            <div class="circle-cont-xsm">
+                                                <span class="status_bad"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="system-arch-bottom-middle">
+                    <div class="system-arch-b-m-l">
+                        <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                        <div class="tree-box">
+                            <div class="tree-box-row">
+                                <div class="box-left">
+                                    <div class="tree-box-cont">
+                                        Fire Pump
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                                <div class="row-v-liner"></div>
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r">
+                                        ROSOV
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tree-box-row push-up">
+                                <div class="box-left">
+                                    <div class="tree-box-cont">
+                                        <span>Jockey Pump</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r">
+                                        <span>Vibrating Fork</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tree-box-row push-up t-minus60">
+                                <div class="box-left">
+                                    <div class="tree-box-cont">
+                                        <span>ESD Push Button</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r">
+                                        <span>SIL Radar Gauge</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tree-box-row push-up t-minus85">
+                                <div class="box-left">
+                                    <div class="tree-box-cont">
+                                        <span>SIL Hydrant PT</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r">
+                                        <span>Wailing Siren</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tree-box-row push-up t-minus106">
+                                <div class="box-left">
+                                    <div class="tree-box-cont">
+                                        <span>ESD Push Button</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r">
+                                        <span>Smoke Detectors</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tree-box-row push-up t-minus128">
+                                <div class="box-left">
+                                    <div class="tree-box-cont">
+                                        <span>Hooters</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                                <div class="box-right">
+                                    <div class="tree-box-cont t-25 float-r">
+                                        <span>HCD</span>
+                                        <div class="tree-joiner"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="system-arch-b-m-r">
+
+
+                    </div>
+                </div>
+                <div class="system-arch-bottom-right">
+                    <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                    <div class="tree-box">
+                        <div class="tree-box-row">
+                            <div class="box-left">
+                                <div class="tree-box-cont">
+                                    Barrier Gate
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                            <div class="row-v-liner"></div>
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r">
+                                    Header Line PT
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-box-row push-up">
+                            <div class="box-left">
+                                <div class="tree-box-cont">
+                                    MOV
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r">
+                                    UPS
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-box-row push-up t-minus50">
+                            <div class="box-left">
+                                <div class="tree-box-cont">
+                                    TTL Pumps
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+
+                            <div class="box-right">
+                                <div class="tree-box-cont t-25 float-r">
+                                    Dyke Valves
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-box-row push-up t-minus68">
+                            <div class="box-left">
+                                <div class="tree-box-cont">
+                                    TWL Pumps
+                                    <div class="tree-joiner"></div>
+                                </div>
+                            </div>
+
+                            <div class="box-right">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="device-status">
+                        <table class="table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="text-center">Other Device Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>CIU 1</th>
+                                    <td>Active?</td>
+                                </tr>
+                                <tr>
+                                    <th>CIU 2</th>
+                                    <td>InActive?</td>
+                                </tr>
+                                <tr>
+                                    <th>WDM 1</th>
+                                    <td>Backup?</td>
+                                </tr>
+                                <tr>
+                                    <th>WDM 2</th>
+                                    <td>Primary?</td>
+                                </tr>
+                                <tr>
+                                    <th>WDM Sync Status</th>
+                                    <td>Synchronized?</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/SystemConfigView/Index.js"></script>
+
+<script type="text/javascript">
+
+
+    // $(this).next().slideToggle();
+
+
+    $(".tree-box-toggle-icon").click(function () {
+        $(this).toggleClass('fa-plus-circle');
+        $(this).next().slideToggle();
+    });
+
+</script>

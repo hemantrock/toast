@@ -1,0 +1,56 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - Safety UPS View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Safety UPS View</h3>
+
+    </div>
+</div>
+<div class="row ups-status-container">
+    <div class="col-lg-12 m-t-40">
+        <div class="col-lg-2">
+            <div class="ups-bg emerson safety-ups" style="width:260px"></div>
+        </div>
+        <div class="col-lg-10">
+            <div class="col-lg-4">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="3">ALERTS  and  STATUS</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 55%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 15%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 15%">UPS-02</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Low Battery Indication">Low Battery</td>
+                            <td><span class="SFTYUPS01_LOW_BATTRY"></span></td>
+                            <td><span class="SFTYUPS02_LOW_BATTRY"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Indicate the Main’s fail condition.">Main's Fail</td>
+                            <td><span class="SFTYUPS01_MAIN_FAIL"></span></td>
+                            <td><span class="SFTYUPS02_MAIN_FAIL"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="On Status">On Status</td>
+                            <td><span class="circle-cont-sm"><span class="SFTYUPS01_ON"></span></span></td>
+                            <td><span class="circle-cont-sm"><span class="SFTYUPS02_ON"></span></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="On Bypass">On Bypass</td>
+                            <td><span class="circle-cont-sm"><span class="SFTYUPS01_BYPASS_ON"></span></span></td>
+                            <td><span class="circle-cont-sm"><span class="SFTYUPS02_BYPASS_ON"></span></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/UPSView/Index.js"></script>

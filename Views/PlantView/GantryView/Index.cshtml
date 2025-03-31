@@ -1,0 +1,150 @@
+﻿@using TOAST.Data.Model;
+@using System.Drawing;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblBatchSetup>
+@{
+    ViewBag.Title = "Plant View - Gantry View";
+    Layout = null;
+    List<tblBaysMaster> Bays = Model.Select(x => x.tblLoadingPointMaster.tblBaysMaster).Distinct().ToList();
+    List<string> Purpose = Model.Select(x => x.tblLoadingPointMaster.tblPurpose.LoadPurposeDesc).Distinct().ToList();
+    List<tblLoadDetail> loadDetailData = ViewBag.loadDetailData;
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+    int Width = Bays.Count() < 4 ? Bays.Count() * 3 : 12;
+}
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Gantry @String.Join(", ", Bays.Select(x => (x.GantryNo ?? 0).ToString("0#")).Distinct()) Overview - @String.Join(",", Purpose) </h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-@Width content-top-spacing gantry-overview-container"> @*style="overflow-x: hidden;"*@
+
+        <table id="tblGantry" class="tblGantry table table-bordered table-striped dataTable no-footer">
+            <thead>
+                <tr>
+                    @{foreach (tblBaysMaster bay in Bays)
+                        {
+                            <th><div class="truck-bay-bg"><span class="bay-num">@(bay.BayNum.ToString("0#"))</span></div></th>
+                        }}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @{foreach (tblBaysMaster bay in Bays)
+                        {
+                            string bayNo = "B" + bay.BayID.ToString("0#"), truckNumber = string.Empty; string ShowTruck = "none";
+                            tblLoadDetail ld = loadDetailData.Where(x => x.BayID == bay.BayID).FirstOrDefault();
+                            if (ld != null)
+                            {
+                                truckNumber = loadDetailData.Where(x => x.BayID == bay.BayID).FirstOrDefault().tblLoadMaster.tblTruckMaster.TruckNumber;
+                                ShowTruck = "block";
+                            }
+
+                            <td class="truck-front clickable" onclick="cancelBubble(event);OpenBayViewHMIBasedOnSelectedBay('@bay.BayID');">
+                                <div class="lamp GREEN_LAMP_@bayNo EOBL_LAMP_@bayNo ALARM_LAMP_@bayNo"></div>
+                                <div class="truck-front-bg @CustName @Application" id="dvTruckDetails_@bayNo" style="display:@ShowTruck;">
+                                    <div class="truck-num-bg"><span class="number-plate TRUCK_NO_@bayNo" id="@("TruckNo_"+bayNo)">@truckNumber</span></div>
+                                </div>
+                            </td>
+                        }}
+                </tr>
+                <tr>
+                    @{
+                        foreach (tblBaysMaster bay in Bays)
+                        {
+                            List<tblBatchSetup> batchs = Model.Where(x => x.tblLoadingPointMaster.BayID == bay.BayID).ToList();
+                            List<tblLoadDetail> ld = loadDetailData.Where(x => x.BayID == bay.BayID && batchs.Select(y => y.CompNo).ToList().Contains(x.CompNo)).ToList();
+                            double preSet = 0, delivered = 0, PreviousQty = 0, fillPercent = 0;
+                            string cardNumber = string.Empty, numOfComp = string.Empty;
+                            string Prodcolor = "#ff0000";
+                            string LoadProds = (String.Join(", ", loadDetailData.Where(x => x.BayID == bay.BayID).Select(x => x.tblProduct.ProdNameShort).Distinct()));
+                            Color MyColor = Color.White;
+                            string bayArmNo = "B" + bay.BayID.ToString("0#") + "_A01";
+                            if (ld != null && ld.Count > 0)
+                            {
+                                Prodcolor = ld.FirstOrDefault().tblProduct.ProductColor;
+                                MyColor = Color.FromArgb(System.Drawing.ColorTranslator.FromHtml(Prodcolor).ToArgb() ^ 0xffffff);
+                                preSet = ld.FirstOrDefault().tblLoadMaster.tblLoadDetails.Sum(x => x.PresetQty ?? 0);
+                                delivered = (ld.FirstOrDefault().tblLoadMaster.tblLoadDetails.Sum(x => x.BaseProdQtyGrs ?? 0) + ld.FirstOrDefault().tblLoadMaster.tblLoadDetails.Sum(x => x.EthBlendingQtyGrs ?? 0));
+                                PreviousQty = (ld.FirstOrDefault().tblLoadMaster.tblLoadDetails.Sum(x => x.PrevBaseQty ?? 0) + ld.FirstOrDefault().tblLoadMaster.tblLoadDetails.Sum(x => x.PrevBlendQty ?? 0));
+                                fillPercent = Math.Round((delivered + PreviousQty) * 100 / preSet, 1);
+                                tblCard card = ld.FirstOrDefault().tblLoadMaster.tblCard;
+                                cardNumber = (card == null) ? string.Empty : card.CardNumber.ToString();
+                                numOfComp = ld.FirstOrDefault().tblLoadMaster.tblLoadDetails.Count().ToString();
+                            }
+
+                            string bayNo = "B" + bay.BayID.ToString("0#");
+                            string LPNo = "LP" + bay.BayID.ToString("0#");
+                            <td>
+                                <table class="gantry-detail-tbl @("tbl_"+bayNo)">
+                                    <tr class="odd">
+                                        <td class="gdetails-lbl">Comp.</td>
+                                        <td class="gdetails-val"><span class="CURR_CHAMBER_@bayNo" id="@("CurrChamber_"+bayNo)">@(String.Join(",", ld.Select(x => x.CompNo).Distinct()))</span>/<span class="NO_OF_CHAMBERS_@bayNo" id="@("NoOfComps_"+bayNo)">@numOfComp</span></td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="gdetails-lbl">Product</td>
+                                        <td class="gdetails-val PROD_NAME_@bayNo" style="color:@Prodcolor; font-weight:600;" id="@("Products_"+bayNo)">@LoadProds</td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="gdetails-lbl">Preset</td>
+                                        <td class="gdetails-val QTY_PR_@bayNo" id="@("Preset_"+bayNo)">@preSet</td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="gdetails-lbl">Delivered</td>
+                                        <td class="gdetails-val" id="@("Delivered_"+bayNo)">
+                                            @{ List<tblLoadDetail> Trkld = loadDetailData.Where(x => x.BayID == bay.BayID).ToList();
+                                                if (Trkld != null && Trkld.Count > 0)
+                                                {
+                                                    foreach (tblLoadDetail Chamber in Trkld)
+                                                    {
+                                                        string chamberBay = "CH" + Chamber.CompNo.ToString("D2") + "_" + bayNo;
+                                                        <span class="Chamber-wise-qty-@bayNo QTY_ACC_@chamberBay" style="display:none;">@((Chamber.BaseProdQtyGrs ?? 0) + (Chamber.EthBlendingQtyGrs ?? 0))</span>
+                                                    }
+                                                    <span class="bay-prev-qty-@bayNo " style="display:none;">@(PreviousQty)</span>
+                                                }
+                                            }
+                                            <span class="QTY_ACC_@bayNo">@(delivered + PreviousQty)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="gdetails-lbl">%Delivered</td>
+                                        <td class="gdetails-val text-center">
+                                            @*<span class="percentage" data-id="@bayNo"></span>*@
+                                            <div style="line-height:20px; height: 100%; width: @fillPercent%; background-color:@Prodcolor; font-weight:600;" id="@("Color_"+bayNo)">
+                                                <span class="percentage" style="color: #fff; mix-blend-mode:difference;" data-id="@bayNo">@fillPercent%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @*<tr class="even">
+                                        <td class="gdetails-lbl">MassFlow</td>
+                                        <td class="gdetails-val MFM_MASSFLOW_@LPNo"></td>
+                                    </tr>*@
+                                    <tr class="even">
+                                        <td class="gdetails-lbl">CardNo</td>
+                                        <td class="gdetails-val spnCardNo" data-id="@bayNo" id="@("CardNo_"+bayNo)">@cardNumber</td>
+                                    </tr>
+
+                                    @if (clsConfig.ProjPath == "0400")
+                                    {
+                                        <tr class="odd tooltips" title="MFM Flow Rate: Kg/Hr">
+                                            <td class="gdetails-lbl">MFM Flow</td>
+                                            <td class="gdetails-val MFM_MASS_FLWRATE_CN01_@bayArmNo"></td>
+                                        </tr>
+                                    }
+                                </table>
+                            </td>
+                        }
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/GantryView/Index.js"></script>

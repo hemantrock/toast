@@ -1,0 +1,309 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblPLCConfig>
+@{
+    ViewBag.Title = "Plant View - PLC View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Process PLC View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing">
+        <div class="col-lg-12 plc-box">
+            @{
+                List<tblPLCConfig> lstController = Model.Where(x => x.MasterItemID == null).ToList();
+                for (int i = 0; i < lstController.Count; i++)
+                {
+                    string Prefix = lstController[i].TagPrefix;
+                    <div class="col-lg-6 plc-block plc-block-@(i + 1)">
+                        @{
+                            List<tblPLCConfig> lstRHCM = Model.Where(x => (x.MasterItemID ?? 0) == lstController[i].UniqueID || x.UniqueID == lstController[i].UniqueID).OrderBy(x => x.SeqNo).ToList();
+                            for (int j = 0; j < lstRHCM.Count(); j++)
+                            {
+                                List<string> lstDevTags = lstRHCM[j].TagPrefix.Split(',').ToList();
+                                List<string> lstDevClass = lstRHCM[j].ClassName.Split(',').ToList();
+                                string RHCMPrefix = lstRHCM[j].TagPrefix.Replace(",", " "); // RHCM -> Rack & Host Communication Modules
+                                <div class="item-block tooltips @lstRHCM[j].ClassName.Replace(","," ")" title="@(lstRHCM[j].ItemName+ ": " + lstRHCM[j].ItemDesc)">
+                                    <span class="plc-lbl">@lstRHCM[j].ItemName</span>
+                                    <div class="plc-bg @lstDevTags[0] @lstDevClass[0]">
+                                        <table>
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                @if (lstDevClass[0].Contains("cpuht"))
+                                                {
+                                                    <tr>
+                                                        <td width="20%" class="circle-cont-xsm"><span class="PLC_RING"></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="20%" class="circle-cont-xsm"><span class="PLC_RED"></span></td>
+                                                    </tr>
+                                                }
+                                                @for (int d = 1; d < lstDevTags.Count; d++)
+                                                {
+
+                                                    <tr>
+                                                        @{
+                                                            string cls = "";
+                                                            if (d + 1 <= lstDevClass.Count) { cls = lstDevClass[d]; }
+                                                            <td width="20%" class="circle-cont-xsm"><span class="@lstDevTags[d] @cls"></span></td>
+                                                        }
+                                                    </tr>
+                                                            }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                                            }
+                        }
+                        <span class="plc-type @Prefix"></span>
+                    </div>
+                                                            }
+            }
+
+            <div class="row">
+                @{
+                    List<string> Nodes = Model.Where(x => x.ItemType.ToUpper().Contains("NODE")).Select(x => x.ItemType).Distinct().ToList();
+                    if (Nodes != null && Nodes.Count() > 0)
+                    {
+                        int iNode = 0;
+                        foreach (string NodeName in Nodes)
+                        {
+                            <div class="row">
+                                <div class="plc-block-rack line-@(iNode+1)">
+                                    @{
+                                        List<tblPLCConfig> Node = Model.Where(x => x.ItemType == NodeName).OrderBy(x => x.SeqNo).ToList();
+                                        for (int k = 0; k < Node.Count(); k++)
+                                        {
+                                            string ItemPrefix = String.Format(Node[k].TagPrefix, (iNode + 1).ToString("00"), (k + 1).ToString("00"));
+                                            <div class="item-center-block tooltips" title="@(Node[k].ItemName + ": " + Node[k].ItemDesc)">
+                                                <span class="plc-lbl">@Node[k].ItemName</span>
+                                                <span class="rack-bg @(ItemPrefix+"_STS") @Node[k].ClassName"></span>
+                                                @*<img src="../../../Images/plc/@(lstRHCM[j].ItemName).jpg" />*@
+                                            </div>
+                                            List<tblPLCConfig> Cards = Model.Where(x => (x.MasterItemID ?? 0) == Node[k].UniqueID).OrderBy(x => x.SeqNo).ToList();
+                                            for (int l = 0; l < Cards.Count(); l++)
+                                            {
+                                                string IOCardPrefix = String.Format(@Cards[l].TagPrefix, (iNode + 1).ToString("00"), (l + 1).ToString("00"));
+                                                <div class="item-center-block tooltips" title="@(Cards[l].ItemName+ ": " + Cards[l].ItemDesc)"><span class="plc-lbl">@Cards[l].ItemName</span><span class="rack-bg @(IOCardPrefix+"_ERR") @Cards[l].ClassName"></span></div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                                                iNode = iNode + 1;
+                                            }
+                                        }
+                }
+            </div>
+            <div class="plc-data-tbl">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="background-color: #6e6d6b; color:#fff;">Other Diagnostics</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Master</th>
+                            <th>Slave</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="lbl">Local Control</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_LOCAL"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_LOCAL"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Remote Control</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_REMOTE"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_REMOTE"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Base Power Error</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_BASE_POW_ERR"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_BASE_POW_ERR"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Base Power Warning</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_BASE_POW_WAR"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_BASE_POW_WAR"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Battery Error</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_BATT_ERR"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_BATT_ERR"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">IO Detach Error</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_IO_DETACH_ERR"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_IO_DETACH_ERR"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Remote Key Status</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_REMOTE_KEY"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_REMOTE_KEY"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Stop Key Status</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_STOP_KEY"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_STOP_KEY"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Run Key Status</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCM_RUN_KEY"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="PLCS_RUN_KEY"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Ring Topology Status</td>
+                            <td colspan="2">
+                                <span class="circle-cont-sm">
+                                    <span class="PLC_RING"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl">Redundancy Status</td>
+                            <td colspan="2">
+                                <span class="circle-cont-sm">
+                                    <span class="PLC_RED"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <table class="app-tbl host-connection-tbl" style="right: -6545px;">
+                <thead>
+                    <tr>
+                        <th colspan="3" style="background-color: #6e6d6b; color:#fff;">Host Connection</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 34%;"></th>
+                        <th>PLC-A</th>
+                        <th>PLC-B</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="lbl">ETH-1</td>
+                        <td>
+                            <span class="alert-cont-sm">
+                                <span class="ETH01_TASPLC01"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="alert-cont-sm">
+                                <span class="ETH01_TASPLC02"></span>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="even">
+                        <td class="lbl">ETH-2</td>
+                        <td>
+                            <span class="alert-cont-sm">
+                                <span class="ETH02_TASPLC01"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="alert-cont-sm">
+                                <span class="ETH02_TASPLC02"></span>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="hidden">
+                        <td class="lbl">ETH-3</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+<script src="~/Scripts/PageJS/PlantView/PLCView/Index.js"></script>

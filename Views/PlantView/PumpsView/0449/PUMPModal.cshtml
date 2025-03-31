@@ -1,0 +1,535 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblPump
+@{
+    ViewBag.Title = "Plant View - Pump View";
+    Layout = null;
+    string PumpName = Model.EquipmentName;
+    List<tblPump> SameGrpPumps = ViewBag.SameGrpPumps;
+    string servicecls = Model.tblPumpService.TagPrefix.ToLower();
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    tblPump pump = Model;
+    string PmpTagPrefix = Model.TagPrefix;
+    tblDeviceMaster SucPT = Model.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.ToUpper().Contains("SUC")).FirstOrDefault();
+    tblDeviceMaster DiscPT = Model.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.ToUpper().Contains("DISC")).FirstOrDefault();
+    tblDeviceMaster StrainerDPT = Model.tblDeviceMasters.Where(x => x.DeviceID == 23).FirstOrDefault();
+    List<tblPumpService> PumpsServices = ViewBag.PumpsServices;
+    List<tblPumpPriority> ddlPumpPriorities = ViewBag.PumpPriorities;
+    string PumpPages = Model.PageName + "," + String.Join(",", pump.tblDeviceMasters.Select(x => x.PageName));
+}
+<style>
+    .pump-househeader-popup .pump-view-detail-container .detail-tbl-val {
+        height: 27px;
+    }
+    .pump-househeader-popup .pump-househeader-info-container .detail-tbl-val {
+        min-width: 40px;
+    }
+    /*    .alert-cont-sm .alert_bad, .alert-cont-sm .inv_alert_bad {
+        margin-top: -7px;
+    }*/
+</style>
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 550px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@Model.EquipmentName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@Model.tblProduct.ProductName</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                @{
+                    string strSameGrpPumpsPrtyTags = String.Join(",", SameGrpPumps.Select(x => (x.TagPrefix + "_PRIORITY_DDL")).ToList());
+                }
+                <input type="hidden" id="SameGrpPumpsPrtyTags" value="@(strSameGrpPumpsPrtyTags)" />
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row">
+                        <a class="push-btn-02 pump-start-btn @(PmpTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_START")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                        <a class="push-btn-02 pump-stop-btn @(PmpTagPrefix+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_STOP")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump">
+                                <span class="maintainence-mode-icon @(PmpTagPrefix+"_MAINT")"></span>
+                                <div class="machine-wrapper pump-modal-img">
+                                    <div class="">
+                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips @(Model.tblPumpService.TagPrefix.ToLower()+"-ctrl") control-icon  @(PmpTagPrefix+"_LOCREM")"></span>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips @(Model.tblPumpService.TagPrefix.ToLower()+"-ctrl") control-icon @(PmpTagPrefix+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @Model.EquipmentName', '@(PmpTagPrefix+"_AUTOMAN")', '@(PmpTagPrefix+"_LOCREM")', 'TAG_AUTOMAN','@Model.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        <div title="No Feedback" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@Model.UniqueID,'@(Model.PageName)')" class="tooltips @Model.tblPumpService.TagPrefix.ToLower() @(PmpTagPrefix+"_RUN_IMG") @(PmpTagPrefix+"_TRIP_IMG") @(PmpTagPrefix+"_FAIL_IMG")" style="position: relative;left:10px;top:2px;margin: auto;">
+                                            <span class="maintainence-mode-icon @(PmpTagPrefix+"_MAINT")"></span>
+                                        </div>
+                                        <span class="sine-wave tooltips @(PmpTagPrefix+"_ON_VFD")" title="Pump on VFD"></span>
+                                        <a class="push-btn-01 set @(PmpTagPrefix+"_RESET_FAIL") tooltips" title="Reset Fault / Fail / Trip" onclick="SetProcessValue('Reset Pump Fail','Reset Fault/Fail/Trip: @PumpName',this, '@(PmpTagPrefix+"_RESET_FAIL")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+                            <table class="detail-tbl table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Run Fdbk</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont-sm">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_RUN_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl"><span class="">Trip Fdbk</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont-sm">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_TRIP_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" colspan="2"><span class="">Fail to Start</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-sm">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_F2START")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(PmpTagPrefix+"_RESET_F2START") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: 7px; top:-3px; width: 25px; height: 25px;" title="Reset Fail to Start"
+                                               onclick="SetProcessValue('Reset Pump Fail to Start', 'Reset Pump Fail to Start: @Model.EquipmentName', this, '@(PmpTagPrefix+"_RESET_F2START")','GENERIC', '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" colspan="2"><span class="">Fail to Stop</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-sm">
+                                                <span class="pump-househeader-info-val @(PmpTagPrefix+"_F2STOP")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(PmpTagPrefix+"_RESET_F2STOP") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: 7px; top:-3px; width: 25px; height: 25px;" title="Reset Fail to Stop"
+                                               onclick="SetProcessValue('Reset Pump Fail to Stop', 'Reset Pump Fail to Stop: @Model.EquipmentName', this, '@(PmpTagPrefix+"_RESET_F2STOP")','GENERIC', '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" colspan="2"><span class="">Run Hours</span></td>
+                                        <td class="detail-tbl-val" colspan="2">
+                                            <span class="@(PmpTagPrefix + "_RUN_HRS_HH")"></span>:<span class="@(PmpTagPrefix + "_RUN_HRS_MM")"></span>
+                                        </td>
+                                    </tr>
+                                    @*<tr class="odd">
+                                            <td class="detail-tbl-lbl">
+                                                <span class="v-align-sub">Maintainence Mode</span>
+                                            </td>
+                                            <td class="detail-tbl-val">
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set PUMP Maintainence Mode','Set Pump to Maintainence Mode: @(PmpTagPrefix)',this, '@(PmpTagPrefix+"_MAINT")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn @(PmpTagPrefix+"_MAINT") " checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>*@
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl" colspan="4">
+                                            <span class="v-align-sub">Priority: &nbsp;</span>
+                                            <select id="ddl@(PmpTagPrefix)" class="prty_@servicecls @(PmpTagPrefix)_PRIORITY_DDL">
+                                                <option value="0">-Select Priority-</option>
+                                                @foreach (tblPumpPriority prty in ddlPumpPriorities)
+                                                {
+                                                    <option value="@prty.PriorityID">@prty.PriorityDescription</option>
+                                                }
+                                            </select>
+                                            <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriorityDDL('@(PmpTagPrefix+"_PRIORITY_DDL")','@servicecls','ddl@(PmpTagPrefix)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    @* Status *@
+                    <div class="col-lg-12 pump-view-detail-container" style="margin-top: 0px;">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center header-main" colspan="4">STATUS</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hide">
+                                    <td class="detail-tbl-lbl"><span>Remote PLC ESD</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_ESD")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Control Supply Fail</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_CTRL_POW_FAIL")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>LPG Pump Local Start PB</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_LCS_START")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">LPG Pump Local Stop PB</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_LCS_STOP")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Cooling Water Open Sel</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_CWTR_OPN")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Discharge SV Open Sel</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_DISC_SV_OPN")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span> Panel Door Open SW</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_PNL_OPN_DSW")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Cooling Water PSW</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_WATER_PRESS_LO")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="hide">
+                                    <td class="detail-tbl-lbl"><span>System Acknowledge</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SYS_ACK")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">System Test</td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SYS_TEST")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="hide">
+                                    <td class="detail-tbl-lbl"><span>System Next Selection</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SYS_NEXT")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">System Prev Selection</td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SYS_PREV")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="hide">
+                                    <td class="detail-tbl-lbl"><span>System Reset</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SYS_RESET")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15"></td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_XXXX")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @*Alarms *@
+                    <div class="col-lg-12 pump-view-detail-container">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center header-main" colspan="4">ALARMS</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Cooling Water Low Level</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_CWTR_ALRM_LO_ALRM")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">LPG Pump Low Suction</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SUC_PRESS_LO_ALRM")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>LPG Pump Low Discharge</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_DISC_PRESS_LO_ALRM")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">LPG Pump MCC Trip</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_MCC_TRIP_ALRM")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span> Local Control Panel Fault</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_LCP_FAULT_ALRM")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">System Faulty in HMI</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SYS_FAULT_HMI")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @*Trip *@
+                    <div class="col-lg-12 pump-view-detail-container">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center header-main" colspan="4">TRIP</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Mechanical Seal Low PSW</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_MSEAL_LO_PSW_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Mechanical Seal Low LSW</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_MSEAL_LO_LSW_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>LPG Pump Low Suction</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_SUC_PRESS_LO_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">LPG Pump High Discharge</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_DISC_PRESS_HI_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Panel Door Open Trip</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_PNL_DOOR_OPN_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Remote PLC Trip</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_REM_PLC_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Remote PLC ESD Trip</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_REM_PLC_ESD_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Local Panel ESD Trip</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_PNL_ESD_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Cooling Water Low Trip</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_CWTR_LO_LVL_TRIP")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Control Supply Fail</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="alert-cont-sm">
+                                            <span class="@(PmpTagPrefix+"_CTRL_POW_FAIL")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @*Analog Values *@
+                    <div class="col-lg-12 pump-view-detail-container">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center header-main" colspan="4">ANALOG</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>PT101-B</span></td>
+                                    <td class="detail-tbl-val @(PmpTagPrefix+"_PT_VALUE") get-hover" onclick="OpenChartModal('@(PmpTagPrefix+"_PT_VALUE")', '@pump.PageName'); cancelBubble(event);">
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15"></td>
+                                    <td class="detail-tbl-val">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>Low Suction Trip SP</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="@(PmpTagPrefix+"_SUC_PRESS_LO_TRIP_SP")"></span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">Low Suction Alarm SP</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="@(PmpTagPrefix+"_SUC_PRESS_LO_ALRM_SP")"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-tbl-lbl"><span>High Discharge Alarm SP</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span class="@(PmpTagPrefix+"_DISC_PRESS_HI_ALRM_SP")"></span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15">High Discharge Trip SP</td>
+                                    <td class="detail-tbl-val">
+                                        <span class="@(PmpTagPrefix+"_DISC_PRESS_LO_TRIP_SP")"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (SucPT != null || DiscPT != null || StrainerDPT != null)
+                    {
+                        <div class="hide col-lg-12 pump-view-detail-container">
+                            <table class="table-striped app-tbl">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="background-color: #aca89f;color: #fff;font-size: 17px;" colspan="6">Pump Pressure Transmitters</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center bg-color" style="width: 20%">Location</th>
+                                        <th class="text-center bg-color" style="width: 12%">Value</th>
+                                        <th class="text-center bg-color" style="width: 17%">Hi-Set Point</th>
+                                        <th class="text-center bg-color" style="width: 12%">Hi Alrm</th>
+                                        <th class="text-center bg-color" style="width: 17%">Lo Set-Point</th>
+                                        <th class="text-center bg-color" style="width: 12%">Lo Alrm</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        if (SucPT != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (SucPT.TagPrefix + "_VALUE") || (x.TagName == SucPT.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == SucPT.TagPrefix + "_MAX_SP" || x.TagName == SucPT.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == SucPT.TagPrefix + "_MIN_SP" || x.TagName == SucPT.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>Suction</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@pump.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal??-999) max="@(MaxSPTag.MaxVal??9999)" readonly class="editable-input @(SucPT.TagPrefix)_MAX_SP" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(SucPT.TagPrefix)_MAX_SP">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Max SetPoint: @(pump.EquipmentName)',this, '@(SucPT.TagPrefix)_MAX_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(SucPT.TagPrefix)_MAX_ALRM"></span></span></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MinSPTag.MinVal??-999) max="@(MinSPTag.MaxVal??9999)" readonly class="editable-input @(SucPT.TagPrefix)_MIN_SP" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(SucPT.TagPrefix)_MIN_SP">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(SucPT.TagPrefix)_MIN_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(SucPT.TagPrefix)_MIN_ALRM"></span></span></td>
+                                            </tr>
+                                        }
+
+                                        if (DiscPT != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (DiscPT.TagPrefix + "_VALUE") || (x.TagName == DiscPT.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == DiscPT.TagPrefix + "_MAX_SP" || x.TagName == DiscPT.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == DiscPT.TagPrefix + "_MIN_SP" || x.TagName == DiscPT.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>Discharge</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@pump.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(DiscPT.TagPrefix)_MAX_SP" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(DiscPT.TagPrefix)_MAX_SP">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Max SetPoint: @(pump.EquipmentName)',this, '@(DiscPT.TagPrefix)_MAX_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(DiscPT.TagPrefix)_MAX_ALRM"></span></span></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(DiscPT.TagPrefix)_MIN_SP" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(DiscPT.TagPrefix)_MIN_SP">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(DiscPT.TagPrefix)_MIN_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(DiscPT.TagPrefix)_MIN_ALRM"></span></span></td>
+                                            </tr>
+                                        }
+
+                                        if (StrainerDPT != null)
+                                        {
+                                            tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (StrainerDPT.TagPrefix + "_VALUE") || (x.TagName == StrainerDPT.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MaxSPTag = (DeviceTags.Where(x => x.TagName == StrainerDPT.TagPrefix + "_MAX_SP" || x.TagName == DiscPT.TagPrefix + "_SP_H").FirstOrDefault() ?? new tblTagMaster());
+                                            tblTagMaster MinSPTag = (DeviceTags.Where(x => x.TagName == StrainerDPT.TagPrefix + "_MIN_SP" || x.TagName == DiscPT.TagPrefix + "_SP_L").FirstOrDefault() ?? new tblTagMaster());
+                                            <tr>
+                                                <td>Strainer DPT</td>
+                                                <td class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@pump.PageName'); cancelBubble(event);"></td>
+                                                <td>
+                                                    <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(StrainerDPT.TagPrefix)_MAX_SP" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;width: 72%;" value="@(StrainerDPT.TagPrefix)_MAX_SP">
+                                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Max SetPoint: @(pump.EquipmentName)',this, '@(StrainerDPT.TagPrefix)_MAX_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(StrainerDPT.TagPrefix)_MAX_ALRM"></span></span></td>
+                                                <td>
+                                                    @if (!String.IsNullOrWhiteSpace(MinSPTag.TagName))
+                                                    {
+                                                        <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(StrainerDPT.TagPrefix)_MIN_SP" ondblclick="this.readOnly='';"
+                                                               style="border: 0px;width: 72%;" value="@(StrainerDPT.TagPrefix)_MIN_SP">
+                                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Pump Suction Pressure Min SetPoint: @(pump.EquipmentName)',this, '@(StrainerDPT.TagPrefix)_MIN_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                    }
+                                                </td>
+                                                <td><span class="alert-cont-sm"><span class="@(StrainerDPT.TagPrefix)_MIN_ALRM"></span></span></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+    opcPageName = opcPageName + ',' + '@PumpPages';
+    opc.server.getPageData(opcPageName, 0);
+</script>
+
+

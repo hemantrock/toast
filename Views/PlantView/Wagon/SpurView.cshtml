@@ -1,0 +1,232 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblWLoadRakeDetail>
+@{
+    List<tblWLoadRakeDetail> lstRakes = Model;
+    List<tblClusterMaster> lstClust = ViewBag.SpurClusters;
+    string sPurNo = ((int)ViewBag.SpurNo).ToString("D2");
+}
+<style>
+    .wagon-pos-page .TWDpump-table [class*=circle-] {
+        margin-top: 1px;
+    }
+
+    .wagon-pos-page .TWDpump-table td span {
+        font-size: 15px;
+    }
+
+    .wagon-pos-page .TWDpump-table td {
+        line-height: 1.10;
+    }
+    .circle-cont-xsm span.status_false:after{
+        top:-5px;
+    }
+    .circle-cont-xsm span.status_true:after {
+        top: 2px;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant relative" style="color:black" id="SpurView" data-spurno="@sPurNo"> Spur- @sPurNo View</h3>
+        </div>
+    </div>
+    <div class="row wagon-pos-page">
+        <div id="SpurTable">
+        </div>
+        <div class="col-lg-4">
+            <div class="row row-no-gutters">
+                <div class="col-lg-3">
+                    <table class="TWDpump-table table-striped table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><span class="bold">RFMT Pumps</span></td>
+                                <td><span title="RFMT Pump Demand" class="tooltips RFMT_TWL_PMP_DEMAND"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-3">
+                    <table class="TWDpump-table table-striped table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><span class="bold"> ATF Pumps</span></td>
+                                <td><span title="ATF Pump Demand" class="tooltips ATF_TWL_PMP_DEMAND"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span> ATF-12-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P12_ATF_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span> ATF-13-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P13_ATF_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span> ATF-14-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P14_ATF_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-3">
+                    <table class="TWDpump-table table-striped table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><span class="bold"> HSD Pumps</span></td>
+                                <td><span title="HSD Pump Demand" class="tooltips HSD_TWL_PMP_DEMAND"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span>HSD-01-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P01_HSD_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>HSD-02-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P02_HSD_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>HSD-03-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P03_HSD_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>HSD-10-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P10_HSD_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>HSD-11-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P11_HSD_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-3">
+                    <table class="TWDpump-table table-striped table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><span class="bold"> MS Pumps</span></td>
+                                <td><span title="MS Pump Demand" class="tooltips MS_TWL_PMP_DEMAND"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span> MS-07-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P07_MS_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span> MS-08-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P08_MS_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span> MS-09-TWL</span></td>
+                                <td>
+                                    <span class="circle-cont-xsm">
+                                        <span class="pump-househeader-info-val P09_MS_TWL_RUN_FB"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span></span></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/Wagon/SpurView.js"></script>
+<script>
+    opcPageName = 'HeaderView2[1234],SpurPmps';
+    InitConn(opcPageName, 0);
+    opc.server.readPageTags(opcPageName);
+    createTooltip();
+</script>

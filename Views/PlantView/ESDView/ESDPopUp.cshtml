@@ -1,0 +1,87 @@
+﻿
+@{
+    Layout = null;
+    int TimeoutTime = ViewBag.TimeoutTime;
+}
+<style>
+#btnESDMockDrillConfirm.status_true, #btnESDActualConfirm.status_true{
+    animation: 1s blinker linear infinite;
+}
+</style>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="ESDMsgLabel">ESD Activated</h3>
+        </div>
+        <div class="modal-body emergency-wrapper ESDModal">
+            <span class="danger"></span>
+            <p id="opcMsgModalMsg"></p>
+        </div>
+        <div class="modal-footer" style="margin-top: 0px">
+            <button type="button" class="pull-left btn btn-primary ESD_MOCK_DRILL" id="btnESDMockDrillConfirm" onclick="SetESDMockDrill('ESD_MOCK_DRILL')" style="background-color: lightgreen; color: black;font-weight: bold;"><i class="far fa-smile-wink">&nbsp;</i>Mock Drill</button>
+            <button type="button" class="btn btn-primary ESD_ACTUAL" id="btnESDActualConfirm" onclick="SetESDActual('ESD_ACTUAL')" style="background-color: red; font-weight: bold;"><i class="fas fa-skull-crossbones">&nbsp;</i>Emergency</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opc.server.getPageData('ESDView', 0);
+        $('#btnESDMockDrillConfirm').prop("disabled", false);
+        $('#btnESDActualConfirm').prop("disabled", false);
+    });
+
+    function SetESDMockDrill(TagName) {
+        var esdAct = $('#btnESDActualConfirm.status_true');
+        if (esdAct != undefined && esdAct.length>0) { alertDismissable("danger", "Actual ESD is already activated!"); return; }
+        var esdMock = $('#btnESDMockDrillConfirm.status_true');
+        if (esdMock != undefined && esdMock.length > 0) { alertDismissable("danger", "Mock Drill ESD is already activated!"); return; }
+
+        var activityDetail = "Tag:'" + TagName + "';";
+        var activityName = "Set ESD as Mock Drill";
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/ValidateRequiredTrnPwd?activityName=" + activityName + "&UserID=" + CurrUserID,
+            cache: false,
+            success: function (result) {
+                if (result.blnStatus != 'undefined' && result.blnStatus == false) {
+                    if (result.strType == "danger") {
+                        alertDismissable(result.strType, result.strMessage); return;
+                    }
+                    else {
+                        SetMockDrillDo(TagName);
+                    }
+                }
+                else {
+                    ShowPasswordModalForReqTrn(activityName + " : Requires Transaction Password", function (ApproverId) {
+                        SetMockDrillDo(TagName);
+                    }, activityName, activityDetail);
+                }
+            }
+        });
+    }
+    function SetESDActual(TagName) {
+        var esdMock = $('#btnESDMockDrillConfirm.status_true');
+        if (esdMock != undefined && esdMock.length > 0) { alertDismissable("danger", "Mock Drill ESD is already activated!"); return; }
+        var esdAct = $('#btnESDActualConfirm.status_true');
+        if (esdAct != undefined && esdAct.length > 0) { alertDismissable("danger", "Actual ESD is already activated!"); return; }
+        opc.server.sendDataToOPC(TagName, false, 'ESDView', CurrUserID, '', '', '', true, false);
+        UpdateActivityTime();
+        $(".modal-backdrop").slideUp('slow');
+        //$('#ESDMsgModal').modal('hide');
+    }
+
+    function SetMockDrillDo(TagName) {
+        opc.server.sendDataToOPC(TagName, false, 'ESDView', CurrUserID, '', '', '', true, false);
+        UpdateActivityTime();
+        $(".modal-backdrop").slideUp('slow');
+        //$('#ESDMsgModal').modal('hide');
+    }
+
+    function DisableESDButtons() {
+        $('#btnESDMockDrillConfirm').prop("disabled", true);
+        $('#btnESDActualConfirm').prop("disabled", true);
+    }
+</script>

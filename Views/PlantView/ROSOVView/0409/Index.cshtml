@@ -1,0 +1,209 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - ROSOV View";
+    Layout = null;
+    List<tblTank> lstTanks;
+    bool ShowConn = ViewBag.ShowMOVConn;
+    if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Product-Wise".ToUpper()) { lstTanks = Model.Where(x => x.tblTank != null && x.tblTank.ProductID != null).OrderBy(x => x.tblTank.ProductID).Select(x => x.tblTank).Distinct().ToList(); }
+    else if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Type-Wise".ToUpper()) { lstTanks = Model.Where(x => x.MOVType != null).OrderBy(x => x.MOVType).Select(x => x.tblTank).Distinct().ToList(); }
+    else if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Line-Wise".ToUpper()) { lstTanks = Model.Where(x => x.MOVLine != null).OrderBy(x => x.MOVLine).Select(x => x.tblTank).Distinct().ToList(); }
+    else { lstTanks = Model.Where(x => x.TankID != null).Select(x => x.tblTank).Distinct().ToList(); }
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">ROSOV View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing rosov-container rosov-lg">
+        <div class="rosov-tbl-container">
+            @{
+                foreach (tblTank tank in Model.Where(x => x.TankID != null).Select(x => x.tblTank).Distinct().ToList())
+                {
+                    string TkPrefix = tank.TagPrefix + "_";
+                    <div class="col-lg-@Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderByDescending(x => x.tblMOVLine.Line).Count() rosov-block">
+                        <input type="hidden" id="hdnTankAutoMan_@tank.TankName" class="@(TkPrefix + "AUTOMAN")" />
+                        <table class="rosov-detail-tbl">
+                            <thead>
+                                <tr>
+                                    <th colspan="@Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderByDescending(x => x.tblMOVLine.Line).Count()" class="text-center">
+                                        <span class="view-header">
+                                            <span style="background-color:@tank.tblProduct.ProductColor; color: #fff; text-shadow: 0px 1px 1px #000;">@tank.TankName</span>
+                                            <span style="background-color:@tank.tblProduct.ProductColor; color: #fff; text-shadow: 0px 1px 1px #000;">@tank.tblProduct.ProdNameShort</span>
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @foreach (tblMOVMaster mov in Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderByDescending(x => x.tblMOVLine.Line))
+                                    {
+                                        string MoVPrefix = (mov.TagPrefix) + "_";
+                                        <td>
+                                            <div class="rosov-name"><span>@mov.tblMOVLine.Line</span> </div>
+                                            <div class="rosov-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@mov.PageName')">
+                                                <div title="No Feedback" data-tooltip-attr="ROSOV*" class="tooltips rosov-valve @(MoVPrefix + "GEN_ALRM_IMG") @(MoVPrefix + "OPN_IMG") @(MoVPrefix + "CLS_IMG")">
+                                                    <span class="maintainence-mode-icon @(MoVPrefix+"MAINT_MODE")"></span>
+                                                    <span class="mov-valve-fill">
+                                                        <span class="fill-value percentage @(MoVPrefix + "_FILL")" data-id="@(MoVPrefix + "PER_OPN")"></span>
+                                                    </span>
+                                                    <span class="percentage-fill-val hide"><span class="per_opn_mov @(MoVPrefix + "PER_OPN")"></span>%</span>
+                                                </div>
+                                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(MoVPrefix + "LOCREM")"></span>
+                                                <span class="valve-icons remote-indicator @(MoVPrefix + "REMOTE_IMG")"></span>
+                                                <span class="valve-icons stop-indicator @(MoVPrefix + "STOP_IMG")"></span>
+                                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix + "AUTOMAN")" onclick="OpenValveAutoManModal(this, 'hdnTankAutoMan_@tank.TankName', '@mov.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix + "AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode ROSOV'); cancelBubble(event);"></span>
+                                                <div class="rosov-lbl"><span>@mov.MovName</span></div>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+        <div class="rosov-tbl-container">
+            @{
+                List<tblMOVMaster> lstHeaderMovs = Model.Where(x => x.tblHeadersMaster != null && x.Custom != null).ToList();
+
+                if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Product-Wise".ToUpper()) { lstHeaderMovs = Model.Where(x => x.HeaderID != null && (x.tblHeadersMaster.ProductID) != 0).OrderBy(x => x.tblHeadersMaster.ProductID).Distinct().ToList(); }
+                else if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Type-Wise".ToUpper()) { lstHeaderMovs = Model.Where(x => x.HeaderID != null).OrderBy(x => x.MOVType).Distinct().ToList(); }
+                else if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Line-Wise".ToUpper()) { lstHeaderMovs = Model.Where(x => x.HeaderID != null).OrderBy(x => x.MOVLine).Distinct().ToList(); }
+                else { lstHeaderMovs = Model.Where(x => x.tblHeadersMaster != null && x.Custom != null).ToList(); }
+
+                if (lstHeaderMovs.Count() > 0)
+                {
+                    List<string> strHeaders = lstHeaderMovs.Select(x => x.Custom).Distinct().ToList();
+                    foreach (string custom in strHeaders)
+                    {
+                        <div class="col-lg-@lstHeaderMovs.Where(x=>x.Custom==custom).OrderBy(x => (x.tblMOVLine==null?"zzz":x.tblMOVLine.Line)).Count() rosov-block">
+                            <table class="rosov-detail-tbl">
+                                <thead>
+                                    <tr>
+                                        <th colspan="@lstHeaderMovs.Where(x=>x.Custom==custom).OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)).Count()" class="text-center">
+                                            <span class="view-header">
+                                                @*<span class="single-col" style="color: #fff; text-shadow: 0px 1px 1px #000;">@lstHeaderMovs.FirstOrDefault().tblHeadersMaster.tblProduct.ProdNameShort</span>*@
+                                                <span class="single-col" style="color: #fff; text-shadow: 0px 1px 1px #000; width: 100%;">@custom</span>
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        @foreach (tblMOVMaster mov in lstHeaderMovs.Where(x => x.Custom == custom).OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)))
+                                        {
+                                            string MoVPrefix = mov.TagPrefix + "_";
+                                        <td>
+                                            <div class="rosov-name" style="background-color:@mov.tblHeadersMaster.tblProduct.ProductColor; color:#fff;">
+                                                <span>@mov.tblHeadersMaster.tblProduct.ProdNameShort</span>
+                                            </div>
+                                            <div class="rosov-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@mov.PageName')">
+                                                <div title="No Feedback" data-tooltip-attr="ROSOV*" class="tooltips rosov-valve @(MoVPrefix+"ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                                                    <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                                    <span class="percentage-fill-val"><span class="per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%</span>
+                                                </div>
+                                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(MoVPrefix + "LOCREM")"></span>
+                                                <span class="valve-icons remote-indicator @(MoVPrefix + "REMOTE_IMG")"></span>
+                                                <span class="valve-icons stop-indicator @(MoVPrefix + "STOP_IMG")"></span>
+                                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix + "AUTOMAN")" onclick="OpenValveAutoManModal(this, '', '@mov.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix + "AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode ROSOV'); cancelBubble(event);"></span>
+                                                <div class="rosov-lbl"><span>@mov.MovName</span></div>
+                                            </div>
+                                            <table class="@(!ShowConn?"hide":"")  detail-tbl">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                                                        <td>
+                                                            <span class="circle-cont-xsm">
+                                                                <span class="@(MoVPrefix+"CONN01")"></span>
+                                                            </span>
+                                                        </td>
+                                                        <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                                                        <td>
+                                                            <span class="circle-cont-xsm">
+                                                                <span class="@(MoVPrefix+"CONN02")"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AutoManModal" tabindex="-1" role="dialog" aria-labelledby="AutoManModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="AutoManLabel">Change Control</h3>
+            </div>
+            <div class="modal-body">
+                <div id="dvChangeAutoMan" class="automanual-popup">
+                    <span id="hdnAutoMan" data-opcvalue="" class="" style="display:none;"></span>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Current Control</th>
+                                <th>New Control</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pump-view-pump">
+                                <td>
+                                    <div class="barrier-gate-detail-container">
+                                        <span class="pump-view-icons auto-icon MOV_AUTOMAN"></span>
+                                        <span class="pump-view-icons manual-icon MOV_AUTOMAN"></span>
+                                    </div>
+                                    <div class="mode-lbl mode-btn automode MOV_AUTOMAN" data-opcvalue="True">
+                                        AUTO MODE
+                                        <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                    </div>
+                                    <div class="mode-lbl mode-btn manualmode MOV_AUTOMAN" data-opcvalue="True">
+                                        MANUAL MODE
+                                        <span class="mode-lbl-subtxt">All Operations (open, close etc) manually</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="barrier-gate-detail-container">
+                                        <span class="pump-view-icons auto-icon new-mode MOV_AUTOMAN"></span>
+                                        <span class="pump-view-icons manual-icon new-mode MOV_AUTOMAN"></span>
+                                    </div>
+                                    <div class="mode-lbl mode-btn automode new-mode MOV_AUTOMAN" data-opcvalue="True">
+                                        AUTO MODE
+                                        <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                    </div>
+                                    <div class="mode-lbl mode-btn manualmode new-mode MOV_AUTOMAN" data-opcvalue="True">
+                                        MANUAL MODE
+                                        <span class="mode-lbl-subtxt">All Operations (open, close etc) manually</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAutoManOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/ROSOVView/Index.js"></script>

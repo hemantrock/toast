@@ -1,0 +1,16 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Device Table View";
+    Layout = null;
+    string TypeIDs = ViewBag.TypeIDs;
+}
+<div class="col-lg-8 text-right">
+    <div id="jqxgrid" class="jqx-tbl-container mfm-dataview-cont">
+    </div>
+</div>
+<script>
+    var TypeIDs = '@TypeIDs';
+</script>
+<script src="~/Scripts/PageJS/PlantView/DeviceView/DeviceTable/Index.js"></script>

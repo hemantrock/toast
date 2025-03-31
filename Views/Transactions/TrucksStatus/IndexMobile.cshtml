@@ -1,0 +1,179 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@model List<TrucksStatusViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<div class="col-xs-12">
+    <div class="row">
+        <h2>TRUCKS STATUS</h2>
+    </div>
+    <div class="row">
+        <div class="truck-status-container" onunload="clearTimer()">
+            <div class="toggle-menu-container">
+                <div class="menu-item" id="mnuItemPending">
+                    @{
+                        if (Model != null && Model.Count() > 0)
+                        {
+                            <text>PENDING TOTAL : </text><strong>@(Model.Sum(x => x.Registered + x.Authorized + x.In_Queue + x.Loading))</strong><i class="fa fa-plus-circle"></i>
+                        }
+                        else
+                        {
+                            <text>PENDING TOTAL : 0</text>
+                        }
+                    }
+                </div>
+                <div class="menu-content">
+                    @{
+                        if (Model != null && Model.Count() > 0)
+                        {
+                            <table class="responsive">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <th>@item.Product</th>
+                                        }
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Registered : @(Model.Sum(x => x.Registered))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Registered)</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>Authorized : @(Model.Sum(x => x.Authorized))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Authorized)</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>In Queue : @(Model.Sum(x => x.In_Queue))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.In_Queue)</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>Loading : @(Model.Sum(x => x.Loading))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Loading)</td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                    }
+                </div>
+                <div class="menu-item" id="mnuItemCompleted">
+                    @{
+                        if (Model != null && Model.Count() > 0)
+                        {
+                            <text>COMPLETED TOTAL : </text><strong>@(Model.Sum(x => x.Loaded + x.Invoiced + x.Exited))</strong><i class="fa fa-plus-circle"></i>
+                        }
+                        else
+                        {
+                            <text>COMPLETED TOTAL : 0</text>
+                        }
+                    }
+                </div>
+                <div class="menu-content">
+                    @{
+                        if (Model != null && Model.Count() > 0)
+                        {
+                            <table class="responsive">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <th>@item.Product</th>
+                                        }
+
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Loaded : @(Model.Sum(x => x.Loaded))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Loaded)</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>Invoiced : @(Model.Sum(x => x.Invoiced))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Invoiced)</td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>Exited : @(Model.Sum(x => x.Exited))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Exited)</td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                    }
+                </div>
+                <div class="menu-item" id="mnuItemNetPlanned">
+                    @{
+                        if (Model != null && Model.Count() > 0)
+                        {
+                            <text>NET PLANNED : </text><strong>@(Model.Sum(x => x.Registered + x.Authorized + x.In_Queue + x.Loading + x.Loaded + x.Invoiced + x.Exited))</strong><i class="fa fa-plus-circle"></i>
+                        }
+                        else
+                        {
+                            <text>NET PLANNED : 0</text>
+                        }
+                    }
+                </div>
+                <div class="menu-content">
+                    @{
+                        if (Model != null && Model.Count() > 0)
+                        {
+                            <table class="responsive">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <th>@item.Product</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>NetPlanned : @(Model.Sum(x => x.Registered + x.Authorized + x.In_Queue + x.Loading + x.Loaded + x.Invoiced + x.Exited))</td>
+                                        @foreach (TrucksStatusViewModel item in Model.OrderBy(x => x.Product).ToList())
+                                        {
+                                            <td>@(item.Registered + item.Authorized + item.In_Queue + item.Loading + item.Loaded + item.Invoiced + item.Exited)</td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/Transactions/TrucksStatus/Index.js"></script>

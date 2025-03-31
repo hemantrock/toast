@@ -1,0 +1,130 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblACSUser
+@{
+    ViewBag.Title = "Edit User";
+    Layout = null;
+    List<tblACSUserType> ddlTypes = ViewBag.ddlTypes;
+    List<tblTransporter> ddlTransporters = ViewBag.ddlTransporters;
+    string strTTChange = ""; string TASUserName = "";
+    if (Model.UserType == 2)
+    {
+        strTTChange = "disabled";
+    }
+    if (Model.TASUserID != null)
+    {
+        TASUserName = Model.tblUser.UserName.Trim() + " (" + Model.tblUser.LoginID + ")";
+    }
+}
+
+<h2 class="headingPage">
+    Edit User
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-6 col-sm-6" style="display:none;">
+                <input id="hdnIdKey" type="hidden" value="@Model.UniqueID">
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>ACSCode</label>
+                    <input id="txtEmpId" autocomplete="off" name="EmpId" type="text" placeholder="Emp-Id" value="@Model.ACSCode" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Reference Code/ Unique ID</label>
+                    <input type="text" autocomplete="off" name="ReferenceCode" id="txtReferenceCode" placeholder="Reference Code" value="@Model.ReferenceCode" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>User Name</label>
+                    <input id="txtUserName" name="FirstName" type="text" placeholder="User Name" class="form-control" value="@Model.UserName" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Transporter</label>
+                    <select id="ddlTransporters" class="js-basic-single" data-placeholder="Select a Transporter" data-allow-clear="true">
+                        @{
+                            if (Model.TransporterID == null) { <option></option> }
+                            foreach (tblTransporter Tptr in ddlTransporters)
+                            {
+                                string strSelection = (Model.TransporterID == Tptr.UniqueID?"selected":"");
+                                <option @strSelection value="@Tptr.UniqueID">@(Tptr.TransporterDesc) - @(Tptr.TransporterCode)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input id="txtTruckNumber" autocomplete="off" name="TruckNumber" type="text" placeholder="Truck Number"
+                           value="@(Model.TruckID==null?"":Model.tblTruckMaster.TruckNumber)" data-key-value="@(Model.TruckID)"
+                           class="form-control" @strTTChange>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Mobile No</label>
+                    <input type="text" autocomplete="off" name="MobileNo" id="txtMobileNo" placeholder="Mobile No" value="@Model.MobileNo" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 hide">
+                <div class="fields form-group">
+                    <label>TAS User</label>
+                    <input id="txtTASUser" autocomplete="off" name="TASUser" type="text" placeholder="TAS User" value="@(TASUserName)" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>User Type</label>
+                    <select class="form-control" id="ddlUserTypes" name="UserTypes">
+                        <option value="0">Select User Type</option>
+                        @foreach (tblACSUserType typ in ddlTypes)
+                        {
+                            if (typ.UniqueID != Model.UserType)
+                            {
+                                <option value="@typ.UniqueID">@typ.ACSUserType</option>
+                            }
+                            else
+                            {
+                                <option value="@typ.UniqueID" selected="selected">@typ.ACSUserType</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 hide">
+                <div class="fields form-group">
+                    <label>Valid Upto</label>
+                    <input id="dtpValidUpto" autocomplete="off" name="ValidUpto" type="text" placeholder="Valid upto Date (dd-M-yyyy)" value="@Model.ValidUpto" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        @if (Model.Enabled == true)
+                        {
+                            <input id="chkEnabled" name="Enabled" type="checkbox" checked="checked" class="form-control">
+                        }
+                        else
+                        {
+                            <input id="chkEnabled" name="Enabled" type="checkbox" class="form-control">
+                        }
+                    </span>
+                    <input type="text" class="form-control" value="Enabled" disabled>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateACSUsers();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/ACSUsers/ACSUsers.js"></script>

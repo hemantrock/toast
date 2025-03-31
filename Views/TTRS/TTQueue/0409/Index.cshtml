@@ -1,0 +1,102 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@model List<TOAST.Data.ViewModels.TTQueueViewModel>
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    List<tblTTRSMaster> lstTTRSData = ViewBag.lstTTRS;
+    List<tblTruckMaster> lstTTs = ViewBag.TTs;
+    string Showheading = (lstTTRSData.Count() == 0 ? "hide" : "");
+    string strPage = String.Join(",", lstTTRSData.Select(x => x.PageName));
+}
+
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+<div id="dvContent" class="content tt-queue-container p-400">
+    <div class="row">
+        <div class="col-lg-10 text-right">
+            <table class="detail-tbl padd-t-10">
+                <tbody>
+                    @{
+                        foreach (tblTTRSMaster ttrs in lstTTRSData)
+                        {
+                            <tr>
+                                <td class="val bold" width="8%" style="padding-right: 10px;">@ttrs.TTRSName <i class="fa fa-caret-right" aria-hidden="true"></i></td>
+                                <td class="lbl" width="5%">Pri. Conn.</td>
+                                <td class="val" width="2%">
+                                    <span class="circle-cont-sm">
+                                        <span class="@((ttrs.tblACUMaster.TagPrefix??ttrs.TagPrefix) + "_CONN01")"></span>
+                                    </span>
+                                </td>
+                                <td class="lbl" width="8%">Sec. Conn.</td>
+                                <td class="val text-center" width="2%">
+                                    <span class="circle-cont-sm">
+                                        <span class="@((ttrs.tblACUMaster.TagPrefix??ttrs.TagPrefix) + "_CONN02")"></span>
+                                    </span>
+                                </td>
+                                <td class="lbl" width="5%">Card No:</td>
+                                @*<td class="val text-left" width="10%"><span class="@(ttrs.TagPrefix + "_CARD")"></span></td>*@
+                                <td class="val text-left" width="10%">
+                                    <input id="spnCardNumber" type="number" min=1 readonly class="editable-input @(ttrs.TagPrefix + "_CARD")" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('@(ttrs.TagPrefix + "_CARD")','@(ttrs.TagPrefix + "_GLYPH")')" onfocus="updateGlyphButton('@(ttrs.TagPrefix + "_CARD")','@(ttrs.TagPrefix + "_GLYPH")')"
+                                           style="border: 0px;width: 80%;" value="">
+                                    <span class="glyphicon glyphicon-upload hide" id="@(ttrs.TagPrefix + "_GLYPH")" onclick="SetCardNo('Force TTRS Card No','Force TTRS Card  at TT Reporting','@(ttrs.TagPrefix + "_CARD")','@(ttrs.TagPrefix + "_GLYPH")','@ttrs.tblACUMaster.SlaveID','@ttrs.tblACUMaster.DSID')" aria-hidden="true"></span>
+                                </td>
+                                <td class="lbl" width="5%">Msg</td>
+                                <td class="val text-left"><span class="@(ttrs.TagPrefix + "_MSG")"></span></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-2 @Showheading">
+            <select id="ttqTruck" class="js-basic-single" data-placeholder="Select TT to Add" data-allow-clear="true" data-width="75%">
+                <option></option>
+                @foreach (tblTruckMaster TTMast in lstTTs)
+                {
+                    <option value="@TTMast.TruckID">@TTMast.TruckNumber</option>
+                }
+            </select>
+            <div class="fields form-group pull-right">
+                <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="AddTruckinTTQueue()" style="padding: 3px 6px;"><span class="glyphicon glyphicon-plus"></span>Add</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tab-wrapper w-100">
+    <div class="panel with-nav-tabs panel-default">
+        <div class="panel-heading">
+            <ul class="nav nav-tabs" id="tabTTQ">
+                <li class="active"><a href="#ola" data-toggle="tab">REGISTERED TRUCKS</a></li>
+                <li><a href="#failTT" data-toggle="tab">FAILED TRUCKS</a></li>
+            </ul>
+        </div>
+        <div class="panel-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="ola">
+                    <div id="jqxRegistered" class="jqx-tbl-container">
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="failTT">
+                    <div id="jqxFailedTTs" class="jqx-tbl-container">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/TTRS/TTQueue/HPCL/Index.js"></script>
+<script>
+    opcPageName = '@strPage';
+    $(document).ready(function () {
+        $('.js-basic-single').select2({
+            placeholder: "Select TT to Add",
+            width: "75%",
+            allowClear: true
+        });
+    });
+</script>

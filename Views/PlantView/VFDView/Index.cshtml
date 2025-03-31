@@ -1,0 +1,315 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    List<tblPump> Pumps = ViewBag.Pumps;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">VFD View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 m-t-40 vfd-wrapper">
+        <div class="tab-wrapper w-100">
+            <div class="panel with-nav-tabs panel-default pump-view-tab-container">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        @foreach (tblDeviceMaster Device in Model)
+                        {
+                            string DevName = Device.TagPrefix;
+                            <li><a href="#@DevName" data-toggle="tab">@Device.DeviceName</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="panel-body" style="padding-bottom:5px">
+                    <div class="tab-content">
+                        @foreach (tblDeviceMaster Device in Model)
+                        {
+                            string DevName = Device.TagPrefix;
+                            string DeviceDetail = DevName + "; Product: " + Device.tblPump.tblProduct.ProdNameShort;
+                            int HeaderNo = (Device.HeaderID == null ? 0 : (Device.tblHeadersMaster.tblProduct.HeaderNo ?? 0));
+                            string HdrSuffix = "HDR" + string.Format("{0:00}", HeaderNo);
+                            List<tblPump> lstPmps = Pumps.Where(x => x.ProductID == Device.tblPump.ProductID).OrderBy(x => x.TypeSeqNo).ToList();
+                            <div class="tab-pane fade" id="@DevName">
+                                <div class="col-lg-@(lstPmps.Count*2+2) p-@clsConfig.ProjPath">
+                                    <div class="content-box">
+                                        <h3 style="font-size: 25px;font-weight: bold;">@Device.DeviceName</h3>
+                                        @foreach (tblPump pump in lstPmps)
+                                        {
+                                            string pumpName = pump.TagPrefix;
+                                            string PumpPrd = pump.tblProduct.ProdNameShort;
+                                            if (clsConfig.ProjPath.Contains("394") || clsConfig.ProjPath == "") { PumpPrd = "VFD-PMP-" + String.Format("{0:00}", pump.TypeSeqNo); }
+                                            <div class="device-box pumps pump-view-wrapper pump-view-lg" style="width:305px">
+                                                <div class="pump-view-header">
+                                                    <span class="h-col h-left" style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000; width:40%">@pump.EquipmentName</span>
+                                                    <span class="h-col h-right" style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000; width:40%">@PumpPrd</span>
+                                                </div>
+                                                <div class="device-block" style="padding: 0px 0;">
+                                                    <div class="pump-view-pump" style="padding: 0px 0;">
+                                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(pumpName+"_LOCREM")" onclick="OpenLocRemModal('@pump.EquipmentName', 'PUMP_LOCREM', '@(pumpName+"_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                        @if (pump.PTAvailable)
+                                                        {
+                                                            <span class="percentage-fill-val get-hover" style="left: 10px; right:auto;" title="Please click to view trend" onclick="OpenChartModal('@(pumpName+"_PT_SUC")', '@(pump.PageName)'); cancelBubble(event);">
+                                                                <span class="pt-pump-val @(pumpName+"_PT_SUC") @(pumpName+"_PT")"></span><br />Kg/cm²
+                                                            </span>
+                                                        }
+                                                        <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@pump.UniqueID,'@("PumpsView"+pump.UniqueID.ToString("0#"))')" class="tooltips pump-header @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG") ">
+                                                            <span class="maintainence-mode-icon @(pumpName+"_MAINT")"></span>
+                                                        </div>
+                                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(pumpName+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @pump.EquipmentName', '@(pumpName+"_AUTOMAN")', '@(pumpName+"_LOCREM")', 'TAG_AUTOMAN','@pump.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                        @if (pump.PTAvailable)
+                                                        {
+                                                            <span class="percentage-fill-val get-hover" title="Please click to view trend" onclick="OpenChartModal('@(pumpName+"_PT_DISC")', '@(pump.PageName)'); cancelBubble(event);">
+                                                                <span class="pt-pump-val @(pumpName+"_PT_DISC") @(pumpName+"_PT")"></span><br />Kg/cm²
+                                                            </span>
+                                                        }
+                                                        <span class="sine-wave tooltips @(pumpName+"_ON_VFD")" title="Pump on VFD"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="device-detail">
+                                                    <table class="table-striped pump-view-detail-tbl w-100">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="tbl-lbl" style="width: 45%;">Priority</td>
+                                                                <td class="tbl-val @(pumpName+"_PRIORITY_DDL")">
+                                                                    <span class="tank_mode_lbl"></span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tbl-lbl">Pump On VFD</td>
+                                                                <td class="tbl-val">
+                                                                    <span class="circle-cont-sm">
+                                                                        <span class="@(pumpName+"_ON_VFD")"></span>
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <table class="table-striped value-tbl status-tbl w-100">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center bg-color" colspan="3">VFD Data</th>
+                                                <th class="text-center bg-color" colspan="6">VFD Alarms</th>
+                                            </tr>
+                                        </thead>
+                                        <tr>
+                                            <td class="tbl-lbl head">Max Flow Rate</td>
+                                            <td class="tbl-val normal @(DevName+"_MAX_FLOW_RATE")"></td>
+
+                                            <td class="tbl-lbl head">Ground Fault</td>
+                                            <td class="tbl-val normal" style="width: 5%;">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_GND_FAULT")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Inverter Overload</td>
+                                            <td class="tbl-val normal" style="width: 5%;">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_INV_OVERLOAD")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Memobus Comm Err</td>
+                                            <td class="tbl-val normal" style="width: 5%;">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_MEMOBUS_COMM_ERR")"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl head">Pump Demand</td>
+                                            <td class="tbl-val normal @(DevName+"_PMP_DEMAND")"></td>
+
+                                            <td class="tbl-lbl head">Inverter Overheat</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_INV_OVERHEAT")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Fuse Blown</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_FUSE_BLOWN")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Operator Disconnected</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_OPER_DISCONN")"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl head">Header Pressure</td>
+                                            <td class="tbl-val normal PT_HDR_@(Device.tblPump.tblProduct.ProdNameShort.Replace("-BD","").Replace("IND-",""))_VALUE" style="width: 7%;"></td>
+
+                                            <td class="tbl-lbl head">Fuse blown</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_FUSE_BLOWN")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">PID feedback Ref lost</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_PID_FB_REF_LOST")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Inject. Trans Resistance</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_INJECT_TRANS_RES")"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl head">PT SP (kg/cm²)</td>
+                                            <td class="tbl-val">
+                                                <input type="number" min=1 readonly class="editable-input @(DevName+"_PT_SP")" ondblclick="this.readOnly='';"
+                                                       style="border: 0px; width: 75%;">
+                                                <span class="glyphicon glyphicon-upload" onclick="UpdateVFDSetPoint('@(DevName+"_PT_SP")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" style="margin-left:-10px;top: 3px;" aria-hidden="true"></span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">External Fault</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_PID_FB_REF_LOST")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Hardware Error</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_HWR_ERROR")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Main Ciruit Overvoltage</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_MAIN_CIRC_OVERVOLT")"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl head">Reset Fault</td>
+                                            <td class="tbl-val normal">
+                                                <a class="push-btn-01 set @(DevName+"_FAULT_RESET") tooltips" title="Reset Fault / Fail / Trip" onclick="SetProcessValue('Reset VFD Fail','Reset Fault/Fail/Trip: @Device.DeviceName',this, '@(DevName+"_FAULT_RESET")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" style="width: 30px;height: 30px;left: 25px;">
+                                                    <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Motor Overload</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_MOTOR_OVRLOAD")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Overspeed</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_OVERSPEED")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Main Ciruit Undervoltage</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_MAIN_CIRC_UNDERVOLT")"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl head tooltip-custom" title="<div>VFD+Auto &nbsp;&nbsp;&nbsp;&nbsp;: VFD Controlled by PT<br>VFD+Manual: VFD with Manual Start Stop<br>TAS+Auto&nbsp;&nbsp;&nbsp;&nbsp;: Pump Demand<br>TAS+Manual: Each Pump Manual Start Stop&#013</div>">VFD /TAS Mode</td>
+                                            <td class="tbl-val ">
+                                                <div class="toggle-wrapper" onclick="SetToggleTAS_DOL('@DeviceDetail',this, '@(DevName+"_VFD_TAS_MODE")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]', event)">
+                                                    <input id="toggle-tasdol-mode" class="on-off-btn @(DevName+"_VFD_TAS_MODE") " data-on="VFD" data-off="TAS" checked type="checkbox" data-width="80">
+                                                </div>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Power Loss</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_POWER_LOSS")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Voltage Fault</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_VOLTAGE_FAULT")"></span>
+                                                </span>
+                                            </td>
+
+                                            <td class="tbl-lbl head">Power Fault</td>
+                                            <td class="tbl-val normal ">
+                                                <span class="circle-cont-sm alert-cont-sm">
+                                                    <span class="@(DevName+"_POW_FAULT")"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        <div class="row">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            @{
+                <div class="col-lg-6 hide">
+                    <table class="table-striped app-tbl">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Ethanol Pump Demand</td>
+                                <td>
+                                    <input type="number" step="1" min="0" max="20" class="ETH_PMP_DEMAND" style="border: 0px;width: 72%;" value="" disabled>
+                                    @*<input type="number" step="1" min="0" max="10" readonly="" class="editable-input ETH_PMP_DEMAND" ondblclick="this.readOnly='';" style="border: 0px;width: 72%;" value="">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints', 'Update Ethanol Pump Demand', this, 'ETH_PMP_DEMAND', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                </td>
+                                <td class="bold">XP Pump Demand</td>
+                                <td>
+                                    <input type="number" step="1" min="0" max="20" class="MS_ADD_PMP_DEMAND" style="border: 0px;width: 72%;" value="" disabled>
+                                    @*<input type="number" step="1" min="0" max="10" readonly="" class="editable-input MS_ADD_PMP_DEMAND blink_text" ondblclick="this.readOnly='';" style="border: 0px;width: 72%;" value="">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update XP Pump Demand',this, 'MS_ADD_PMP_DEMAND', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                </td>
+                                <td class="bold">XM Pump Demand</td>
+                                <td>
+                                    <input type="number" step="1" min="0" max="20" class="HSD_ADD_PMP_DEMAND" style="border: 0px;width: 72%;" value="" disabled>
+                                    @*<input type="number" step="1" min="0" max="20" readonly="" class="editable-input HSD_ADD_PMP_DEMAND" ondblclick="this.readOnly='';" style="border: 0px;width: 72%;" value="">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update XM Pump Demand',this, 'HSD_ADD_PMP_DEMAND', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    opcPageName = "VFDView,PumpsView.*,HeaderView.*";
+</script>
+<script src="~/Scripts/PageJS/PlantView/VFDView/Index.js"></script>

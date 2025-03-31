@@ -1,0 +1,194 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@using TOAST.Data.ViewModels;
+@model List<BayQueue>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+    int ConfigMaxTTs = (int)(ViewBag.MaxTrucksPerBay) + 1;
+    int TotalBays = Model.Count();
+    double TTperGrp = 8;
+    int Grps = 1;
+    int Cols = (ConfigMaxTTs > 3 ? 1 : 2);
+    if (TotalBays <= 10) { Grps = 1; TTperGrp = TotalBays; }
+    else if (TotalBays <= 20) { Grps = 2; TTperGrp = Math.Ceiling((double)TotalBays / 2); }
+    else { Grps = 3; TTperGrp = Math.Ceiling((double)(TotalBays / 3)); }
+    string strTop = ""; string strLeft = ""; string strFontSize = "";
+    string showDir = (Model.FirstOrDefault().ShowDirection ? "" : "hide");
+    string showPurp = (Model.FirstOrDefault().ShowPurpose ? "" : "hide");
+    int iMaxTrucksPerBay = (int)(ViewBag.MaxTrucksPerBay);
+    string sAutoFAN = (string)(ViewBag.AutoFAN);
+}
+
+
+@{
+    <div class="row bay-queue-wrapper m-t-10">
+        @for (int GrpNo = 0; GrpNo < Grps; GrpNo++)
+        {
+            int NoOfGrps = Math.Max(Grps, Cols);
+            <div class="col-lg-@(12 / NoOfGrps)">
+
+                @{
+                    int iAddWidth = 0; int iAddPurpWidth = 0;
+                    int MaxTTs = Math.Max(Model.Select(x => x.lstTruck.Count()).Max(), ConfigMaxTTs);
+                    if (showDir != "") { iAddWidth = 4; }
+                    if (showPurp != "") { iAddPurpWidth = 6; }
+
+                    <table id="tblLoadingPointMasterQueue_@GrpNo" class="app-tbl tblBayQueueData">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" width="3%">Bay</th>
+                                <th class="bg-color @showDir" width="4%">Type</th>
+                                <th class="bg-color @showPurp" width="6%">Purpose</th>
+                                <th class="bg-color" width="3%">LPNo</th>
+                                <th class="bg-color" width="@(4 + iAddWidth + iAddPurpWidth)%">Prods</th>
+                                @for (int i = 0; i < MaxTTs; i++)
+                                {
+                                    <th class="text-center bg-color" width="@(80 / MaxTTs)%">TT-@((i + 1).ToString("D2"))</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                List<BayQueue> lstBays = Model.Where(x => x.BayID > (GrpNo * TTperGrp) && x.BayID <= ((GrpNo + 1) * TTperGrp)).ToList();
+                                for (int iBay = 0; iBay < lstBays.Count(); iBay++)
+                                {
+                                    BayQueue itm = lstBays[iBay]; bool bayDone = false;
+                                    int NoOfLPs = itm.lstBQLPData.Count();
+                                    List<string> lstDirs = itm.lstBQLPData.Select(x => x.strDirection).Distinct().ToList();
+                                    for (int iDirs = 0; iDirs < lstDirs.Count(); iDirs++)
+                                    {
+                                        string strDir = lstDirs[iDirs]; bool dirDone = false;
+                                        List<bqLPData> lstDirLPData = itm.lstBQLPData.Where(x => x.strDirection == strDir).ToList();
+
+                                        List<string> lstPurps = lstDirLPData.Select(x => x.strPurpose).Distinct().ToList();
+                                        for (int iPurp = 0; iPurp < lstPurps.Count(); iPurp++)
+                                        {
+                                            string strPurp = lstPurps[iPurp]; bool PurpDone = false;
+                                            List<bqLPData> lstPurpLPData = lstDirLPData.Where(x => x.strPurpose == strPurp).ToList();
+
+                                            for (int iLP = 0; iLP < lstPurpLPData.Count(); iLP++)
+                                            {
+                                                bqLPData oLPData = lstPurpLPData[iLP];
+                                                string BayDisabled = (!oLPData.enabled ? "":""); //(!oLPData.enabled ? "background-color: lightcoral;":"");
+                                                string strProdID = "Prod_B" + itm.BayID + "_L" + oLPData.LPNo;
+                                                <tr class="@(itm.BayID % 2 == 0 ? "even" : "odd")" style="@BayDisabled">
+                                                    @if (bayDone == false)
+                                                    {
+                                                        <td rowspan="@itm.lstBQLPData.Count()" style="height:71px;vertical-align:middle !important; font-weight:bold" class="text-center get-hover" onclick="cancelBubble(event);OpenBayViewHMIBasedOnSelectedBay('@itm.BayID');">@itm.BayID</td>
+                                                    }
+                                                    @if (dirDone == false)
+                                                    {
+                                                        <td class="@showDir text-center get-hover" rowspan="@lstDirLPData.Count()" style="vertical-align:middle !important; font-weight:bold" onclick="cancelBubble(event);OpenBayViewHMIBasedOnSelectedBay('@itm.BayID');">@strDir</td>
+                                                        dirDone = true;
+                                                    }
+                                                    @if (PurpDone == false)
+                                                    {
+                                                        <td class="@showPurp text-center get-hover" rowspan="@lstPurpLPData.Count()" style="vertical-align:middle !important; font-weight:bold" onclick="cancelBubble(event);OpenBayViewHMIBasedOnSelectedBay('@itm.BayID');">@strPurp</td>
+                                                        PurpDone = true;
+                                                    }
+                                                    <td style="vertical-align: middle !important; text-align: center;" class="get-hover" onclick="cancelBubble(event);OpenBayViewHMIBasedOnSelectedBay('@itm.BayID');"> @oLPData.LPNo.ToString("00")</td>
+                                                    <td id="@strProdID" style="vertical-align: middle !important" title="@oLPData.lstLPProds" class="tooltips get-hover" onclick="cancelBubble(event);OpenBayViewHMIBasedOnSelectedBay('@itm.BayID');">@oLPData.lstProdGrp</td>
+                                                    @if (bayDone == false)
+                                                    {
+                                                        int TrkInBay = 0;
+                                                        foreach (BayQueueTruck truck in itm.lstTruck)
+                                                        {
+                                                            if (@CustName == "IOCL")
+                                                            {
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 2 && MaxTTs <= 3) { strTop = "7%"; strLeft = "10%"; strFontSize = "19px"; }  //Checked OK in 419
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 2 && MaxTTs == 4) { strTop = "12%"; strLeft = "11%"; strFontSize = "18px"; }  //Checked OK in 419
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 2 && MaxTTs >= 5) { strTop = "15%"; strLeft = "11%"; strFontSize = "15px"; }  //Checked OK in 419
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 3 && MaxTTs <= 3) { strTop = "15%"; strLeft = "10%"; strFontSize = "16px"; }  //Checked OK in 2415
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 3 && MaxTTs == 4) { strTop = "17%"; strLeft = "11%"; strFontSize = "12px"; }  //Checked OK in 2415
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 3 && MaxTTs == 5) { strTop = "16%"; strLeft = "11%"; strFontSize = "10px"; }  //Checked OK in 2415
+                                                                if (NoOfLPs >= 3 && Cols == 2 && MaxTTs <= 3) { strTop = "37px"; strLeft = "11%"; strFontSize = "20px"; } //Checked OK in 0436
+                                                                if (NoOfLPs >= 3 && Cols == 2 && MaxTTs >= 4) { strTop = "32%"; strLeft = "17%"; strFontSize = "16px"; }
+                                                                if (NoOfLPs <= 2 && Cols == 1 && MaxTTs <= 3) { strTop = "4%"; strLeft = "7%"; strFontSize = "16px"; }
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 3 && Cols == 1 && MaxTTs == 4) { strTop = "17%"; strLeft = "11%"; strFontSize = "12px"; }  //Checked OK in 2415
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 1 && Cols == 1 && MaxTTs == 4) { strTop = "6%"; strLeft = "5%"; strFontSize = "18px"; }    //Checked in 394 
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 1 && Cols == 1 && MaxTTs == 5) { strTop = "6%"; strLeft = "6%"; strFontSize = "18px"; }     //Checked in 394
+                                                                if (NoOfLPs >= 3 && Cols == 1 && MaxTTs <= 4) { strTop = "12px"; strLeft = "17%"; strFontSize = "32px"; }
+                                                                if (NoOfLPs >= 3 && Cols == 1 && MaxTTs == 5) { strTop = "15%"; strLeft = "14%"; strFontSize = "27px"; }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 2 && MaxTTs <= 3) { strTop = "15%"; strLeft = "10%"; strFontSize = "16px"; }
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 2 && MaxTTs >= 4) { strTop = "4%"; strLeft = "15%"; strFontSize = "16px"; }
+                                                                if (NoOfLPs >= 3 && NoOfGrps == 1 && MaxTTs <= 3) { strTop = "33px"; strLeft = "18%"; strFontSize = "20px"; } //Checked OK in 0436
+                                                                if (NoOfLPs >= 3 && NoOfGrps == 2 && MaxTTs <= 3) { strTop = "33px"; strLeft = "18%"; strFontSize = "20px"; } //Checked OK in 0436
+                                                                if (NoOfLPs >= 3 && NoOfGrps == 2 && MaxTTs >= 4) { strTop = "32%"; strLeft = "17%"; strFontSize = "16px"; }
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 1 && MaxTTs <= 3) { strTop = "4%"; strLeft = "7%"; strFontSize = "16px"; }
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 2 && Cols == 1 && MaxTTs == 4) { strTop = "17%"; strLeft = "11%"; strFontSize = "12px"; }
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 1 && Cols == 1 && MaxTTs == 4) { strTop = "2%"; strLeft = "7%"; strFontSize = "18px"; }     //Checked in 394
+                                                                if (NoOfLPs <= 2 && NoOfGrps == 1 && Cols == 1 && MaxTTs == 5) { strTop = "2%"; strLeft = "9%"; strFontSize = "18px"; }     //Checked in 394
+                                                                if (NoOfLPs >= 3 && Cols == 1 && MaxTTs <= 4) { strTop = "12px"; strLeft = "17%"; strFontSize = "32px"; } //Checked OK in 0436
+                                                                if (NoOfLPs >= 3 && Cols == 1 && MaxTTs == 5) { strTop = "15%"; strLeft = "14%"; strFontSize = "27px"; }
+                                                            }
+                                                            string strID = "BayTruck_B" + (itm.BayID) + "_T" + TrkInBay;
+                                                            <td id="@strID" rowspan="@itm.lstLPProds.Count()" align="center" class="clickable truckImage @CustName @Application truckStatus_@truck.TruckStatusId"
+                                                                onclick="ShowTruckNoDetails(this, '@truck.TruckNumber.Trim()', '@truck.LoadID');console.log('NoOfLPs:' + @NoOfLPs+'|NoOfGrps:'+@NoOfGrps+'|Cols:'+@Cols+'|MaxTTs:'+@MaxTTs)">
+                                                                @* <span class="truckNumber" style="top:@((NoOfLPs-2)*8+3)px;left: @(NoOfLPs*10+12)px;font-size: @(16+(NoOfLPs-2)*3)px;">@truck.TruckNumber.Trim()</span> <span class="truckStatus" style="top:@((NoOfLPs)*23-21)px;font-size: @(12+(NoOfLPs-2)*5)px;">@truck.TruckStatus</span> *@
+                                                                <div class="truckNumber" style="position:relative;top:@strTop;left: @strLeft;font-size: @strFontSize;">@truck.TruckNumber.Trim()</div>
+                                                                <span class="truckStatus" style="top:@Math.Max(23,((NoOfLPs) * 23 - 21))px;font-size: @Math.Max(12,(12 + (NoOfLPs - 2) * 5))px;">@truck.TruckStatus</span>
+                                                            </td>
+                                                            TrkInBay++;
+                                                        }
+                                                        if (TrkInBay < MaxTTs)
+                                                        {
+                                                            for (int iCnt = TrkInBay; iCnt < MaxTTs; iCnt++)
+                                                            {
+                                                                string strID = "BayTruck_B" + (itm.BayID) + "_T" + iCnt;
+                                                                <td id="@strID" rowspan="@NoOfLPs">&nbsp;</td>
+                                                            }
+                                                        }
+                                                        bayDone = true;
+                                                    }
+                                                </tr>
+                                            }
+                                            PurpDone = false;
+                                        }
+                                        dirDone = false;
+                                    }
+                                    bayDone = false;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        }
+    </div>
+    <div class="row" style="position: relative; top: 25px;">
+        <div class="col-lg-2">
+            <div class="col-lg-8">
+                <label>Max Truck Per Bay</label>
+                <select id="ddlMaxTrucksPerBay" class="form-control">
+                    @for (int i = 1; i <= 4; i++)
+                    {
+                        <option value="@i" @(iMaxTrucksPerBay == i ? "selected" : "") )>@i</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-4" style="margin-top:20px">
+                <a class="push-btn set" href="javascript:void(0);" onclick="UpdateConfigParam('MaxTrucksPerBay',$('#ddlMaxTrucksPerBay'))">SET</a>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="col-lg-8">
+                <label>Auto FAN</label>
+                <select id="ddlAutoFAN" class="form-control">
+                    <option value="Yes" @(sAutoFAN == "YES" ? "selected" : "") )>Yes</option>
+                    <option value="No" @(sAutoFAN == "NO" ? "selected" : "") )>No</option>
+                </select>
+            </div>
+            <div class="col-lg-4" style="margin-top:20px">
+                <a class="push-btn set" href="javascript:void(0);" onclick="UpdateConfigParam('AutoBayAllocateOnLoadGeneration',$('#ddlAutoFAN'))">SET</a>
+            </div>
+        </div>
+    </div>
+}
+

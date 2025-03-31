@@ -1,0 +1,407 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Security Page View";
+    List<tblPump> Pumps = ViewBag.Pumps;
+    List<tblPump> JockeyPump = Pumps.Where(x => x.ServiceID == 3).ToList();
+    List<tblPump> FirePump = Pumps.Where(x => x.ServiceID == 4).ToList();
+    string OtherPages = String.Join(",", Model.Where(x=>!x.PageName.Contains("VRS")).Select(x => x.PageName).Distinct());
+    string PumpPages = String.Join(",", Pumps.Select(x => x.PageName).Distinct());
+    string strPages = (OtherPages + "," + PumpPages + ",SecurityView");
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Security View</h3>
+    </div>
+</div>
+
+<div class="security-system-container" style="margin-top:5px">
+    <div class="row first">
+        <div class="col-lg-6">
+            @{
+                if (Model.Where(x => x.DeviceID == 5).Count() > 0)
+                {
+                    <div class="col-lg-6" style="width:60%">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center bg-color" colspan="4">HYDROCARBON DETECTORS</th></tr>
+                                <tr>
+                                    <th class="text-center" style="width: 46%">AREA</th>
+                                    <th class="text-center  tooltips" title="Current Value" style="width: 6%">Value</th>
+                                    <th class="text-center  tooltips" title="20% LEL ALARM" style="width: 6%">20%</th>
+                                    <th class="text-center  tooltips" title="40% LEL ALARM" style="width: 6%">40%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 5))
+                {
+                    string DevName = Device.TagPrefix;
+                                    <tr>
+                                        <td class="">@Device.DeviceDesc</td>
+                                        <td><span class="@(DevName + "_VALUE")"></span></td>
+                                        <td><span class="@(DevName + "_LEL20")"></span></td>
+                                        <td><span class="@(DevName + "_LEL40")"></span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+            <div class="col-lg-6" style="padding: 0px 0px 0px 0px; width:40%">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="1">Dyke Valve</th>
+                            <th class="text-center bg-color" colspan="1">Open</th>
+                            <th class="text-center bg-color" colspan="1">Close</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 9))
+                        {
+                            string DevName = Device.TagPrefix;
+                            <tr>
+                                <td class="bold">@Device.DeviceDesc</td>
+                                <td class="tbl-val ">
+                                    <span class="circle-cont-sm">
+                                        <span class="@(DevName+"_OPN_FB")"></span>
+                                    </span>
+                                </td>
+                                <td class="tbl-val ">
+                                    <span class="circle-cont-sm">
+                                        <span class="@(DevName+"_CLS_FB")"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+           
+        </div>
+        <div class="col-lg-6">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="6">EMERGENCY SHUTDOWN</th></tr>
+                </thead>
+                <tbody>
+                    @{
+                        List<tblDeviceMaster> lstESDPBs = Model.Where(x => x.DeviceID == 16 && !(x.DeviceDesc.ToUpper().Contains("HMI") || x.DeviceDesc.ToUpper().Contains("SOFT"))).ToList();
+                        for (int i = 0; i < lstESDPBs.Count(); i = i + 2)
+                        {
+                            <tr>
+                                <td width="5%" class="bold">@lstESDPBs[i].TypeSeqNo</td>
+                                <td width="35%" class="bold">@lstESDPBs[i].DeviceDesc</td>
+                                <td width="10%"><span class="@lstESDPBs[i].TagPrefix"><span class="alert-maint-mode @(lstESDPBs[i].TagPrefix)_MAINT"></span></span></td>
+                                @{
+
+                                    if (i + 1 >= lstESDPBs.Count)
+                                    {
+                                        <td width="5%" class="bold"></td>
+                                        <td class="bold"></td>
+                                        <td><span class=""></span></td>
+                                    }
+                                    else
+                                    {
+                                        <td width="5%" class="bold">@lstESDPBs[i + 1].TypeSeqNo</td>
+                                        <td width="35%" class="bold">@lstESDPBs[i + 1].DeviceDesc</td>
+                                        <td width="10%"><span class="@lstESDPBs[i + 1].TagPrefix"><span class="alert-maint-mode @(lstESDPBs[i + 1].TagPrefix)_MAINT"></span></span></td>
+                                    }
+                                }
+
+                            </tr>
+                        }
+                        <tr class="">
+                            <td width="5%" class="bold">#</td>
+                            <td class="bold">Soft ESD from OIC</td>
+                            <td><span class="SOFT_ESD"></span></td>
+                            <td width="5%" class="bold">#</td>
+                            <td class="bold">Central ESD</td>
+                            <td><span class="PROCESS_ESD"></span></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td width="5%" class="bold">#</td>
+                        <td class="bold">ESD Radar Relay</td>
+                        <td><span class="ESD_RDR_RELAY"></span></td>
+                        <td width="5%" class="bold">#</td>
+                        <td class="bold">ESD - Vibrating Fork</td>
+                        <td><span class="ESD_VFS"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table-striped app-tbl" style="margin-bottom: -10px; margin-top:5px">
+                <tbody>
+                    <tr>
+                        <td width="5%" class="bold">1</td>
+                        <td width="21%" class="bold">Fire Hydrant Pressure</td>
+                        <td width="7%"><span class="FIRE_HYD01_PRESSURE"></span></td>
+                        <td width="10%" class="tooltips" title="Hydrant Low Pressure Setpoint">
+                            <input type="number" step="1" min="0" readonly="" class="editable-input FIRE_HYD01_SP" ondblclick="this.readOnly='';" style="border: 0px;width: 72%;" value="">
+                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints', 'Update Fire Hydrant SetPoint', this, 'FIRE_HYD01_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                        </td>
+                        <td width="7%"  class="tooltips" title="Hydrant Low Pressure alarm"><span class="alert-cont-sm"><span class="FIRE_HYD01_ALRM"></span></span></td>
+                        <td width="5%" class="bold">2</td>
+                        <td width="24%" class="bold">Air line Pressure</td>
+                        <td width="7%"><span class="AIR_COMP_PRESSURE"></span></td>
+                        <td width="10%" class="tooltips" title="ROSOV Air Low Pressure Setpoint">
+                            <input type="number" step="1" min="0" readonly="" class="editable-input AIR_COMP_SP" ondblclick="this.readOnly='';" style="border: 0px;width: 72%;" value="">
+                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints', 'Update Fire Hydrant SetPoint', this, 'AIR_COMP_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                        </td>
+                        <td width="7%" class="tooltips" title="ROSOV Air Low Pressure Alarm"><span class="alert-cont-sm"><span class="AIR_COMP_ALRM"></span></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row m-t-20 second">
+        <div class="col-lg-6 fire-jocky-container">
+            <table class="">
+                <thead>
+                    <tr><th class="text-center bg-color" style="background-color: #6e6d6b;color: #fff; font-size: 17px;" colspan="2">FIRE ENGINE &amp; JOCKY PUMP</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            @foreach (tblPump fw in FirePump)
+                            {
+                                string PumpName = fw.TagPrefix;
+                                <div class="device-box fire-water-pump-wrapper">
+                                    <div class="device-header">
+                                        <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@fw.EquipmentName</span>
+                                        <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">FWP</span>
+                                    </div>
+                                    <div class="device-block">
+                                        <div class="device fwp">
+                                            <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@fw.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                            <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@fw.UniqueID,'@fw.PageName')" class="tooltips fire-water-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                                <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                            </div>
+                                            <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@fw.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                            <span class="machine-icon speed-icon @(PumpName + "_OVER_SPEED")"></span>
+                                            <span class="machine-icon high-temp-icon @(PumpName + "_HIGH_TEMP")"></span>
+                                            <span class="machine-icon oil-pressure-icon @(PumpName + "_LUBE_PRESS_LOW")"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @foreach (tblPump jcy in JockeyPump)
+                            {
+                                string PumpName = jcy.TagPrefix;
+                                <div class="device-box jocky-pump-wrapper">
+                                    <div class="device-header">
+                                        <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@jcy.EquipmentName</span>
+                                        <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">JOCKEY</span>
+                                    </div>
+                                    <div class="device-block">
+                                        <div class="device jcy">
+                                            <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@jcy.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                            <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@jcy.UniqueID,'@jcy.PageName')" class="tooltips jocky-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                                <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                            </div>
+                                            <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@jcy.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="hide col-lg-4" style="padding: 10px 0px 0px 15px;">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr><th class="text-center bg-color" colspan="2">Siren Operations</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td width="60%" class="tbl-lbl">Disaster</td>
+                                            <td class="tbl-val">
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: SIREN01',this, '@("SIREN01"+"_DISASTER")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_DISASTER")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl">Fire</td>
+                                            <td class="tbl-val">
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Emergency Mode','Siren: SIREN01',this, '@("SIREN01"+"_EMERGENCY")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_EMERGENCY")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl">Test</td>
+                                            <td class="tbl-val">
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: SIREN01',this, '@("SIREN01"+"_MOCK_DRILL")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_MOCK_DRILL")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl">All Clear</td>
+                                            <td class="tbl-val">
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to All Clear Mode','Siren: SIREN01',this, '@("SIREN01"+"_RESET")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_RESET")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-6">
+                    <table class="hide table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="2">FIRE HYDRANT LINE PT</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 28))
+                            {
+                                string DevName = Device.TagPrefix;
+                                <tr>
+                                    <td class="bold">@Device.DeviceDesc</td>
+                                    <td width="35%"><span class="@(DevName+"_PRESSURE")"></span> Kg/cm2</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="2">SIREN</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 10))
+                            {
+                                string DevName = Device.TagPrefix;
+                                <tr>
+                                    <td class="bold">@Device.DeviceDesc</td>
+                                    <td width="35%"><span class="SIREN01_ACTIVE"></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="3">VFT STATUS</th></tr>
+                            <tr>
+                                <th class="text-center" style="width: 34%">Tank No</th>
+                                <th class="text-center" style="width: 33%">HHH Sw</th>
+                                <th class="text-center" style="width: 33%">HH Radar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                List<int> TankDevices = new List<int>() { 1, 4 };
+                                foreach (tblTank oTank in Model.Where(x => TankDevices.Contains(x.DeviceID ?? 0)).Select(x=>x.tblTank).Distinct())
+                                {
+                                    tblDeviceMaster VFT = (oTank.tblDeviceMasters.Where(x => x.DeviceID == 1).FirstOrDefault() ?? new tblDeviceMaster());
+                                    tblDeviceMaster Rdr = (oTank.tblDeviceMasters.Where(x => x.DeviceID == 4).FirstOrDefault()??new tblDeviceMaster());
+                                    <tr>
+                                        <td class="bold">@oTank.TankName</td>
+                                        <td width="30%"><span class="@(VFT.TagPrefix+"_STATUS")"></span></td>
+                                        <td width="30%"><span class="@(Rdr.TagPrefix+"_STATUS")"></span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                    @*<table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="2">HOOTER</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 7))
+                            {
+                            string DevName = Device.tblDeviceType.DevicePrefix + string.Format("{0:00}", Device.TypeSeqNo);
+                            <tr>
+                                <td width="80%" class="bold">@Device.DeviceDesc</td>
+                                <td width="20%"><span class="@(Device.TagPrefix+" _STATUS")"></span></td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>*@
+                    
+                </div>
+                <div class="col-lg-6">
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="2">HOOTER</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 7))
+                            {
+                                string DevName = Device.tblDeviceType.DevicePrefix + string.Format("{0:00}", Device.TypeSeqNo);
+                                <tr>
+                                    <td width="80%" class="bold">@Device.DeviceDesc</td>
+                                    <td width="20%"><span class="@(Device.TagPrefix+"_STATUS")"></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="2">Siren Operations</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="60%" class="tbl-lbl">Disaster</td>
+                                <td class="tbl-val">
+                                    <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: SIREN01',this, '@("SIREN01"+"_DISASTER")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_DISASTER")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tbl-lbl">Fire</td>
+                                <td class="tbl-val">
+                                    <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Emergency Mode','Siren: SIREN01',this, '@("SIREN01"+"_EMERGENCY")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_EMERGENCY")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tbl-lbl">Test</td>
+                                <td class="tbl-val">
+                                    <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: SIREN01',this, '@("SIREN01"+"_MOCK_DRILL")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_MOCK_DRILL")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tbl-lbl">All Clear</td>
+                                <td class="tbl-val">
+                                    <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to All Clear Mode','Siren: SIREN01',this, '@("SIREN01"+"_RESET")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        <input id="toggle-maintainence-mode" class="on-off-btn @("SIREN01"+"_RESET")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        createTooltip();
+        if (opcStartDone == true) {
+            setTimeout(function () { opc.server.readPageTags(opcPageName); }, 3000);
+        }
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/SecurityView/Index.js"></script>

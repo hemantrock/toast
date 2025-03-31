@@ -1,0 +1,37 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+@model tblEventMaster
+@{
+    Layout = null;
+    string EventId = "";
+    if (Model != null)
+    {
+        EventId = Model.EventID;
+    }
+}
+<div class="col-lg-12 col-md-12 form-container">
+    <form id="FormSMS" role="form" class="form-fields">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="fields">
+                    <label>SMS Receivers</label>
+                    <select id="ddlReceivers" data-placeholder="Choose Receivers..." multiple style="width:400px;"></select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@*<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveEventSMSReceivers('@EventId');"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>*@
+<script src="~/Scripts/PageJS/Masters/SMSConfig/Edit.js"></script>
+<script>
+    var sel = '@(string.Join(",", Model.tblEventSMSReceiverMaps.Select(x => x.tblSMSReceiver.UniqueID).Distinct().ToList()))';
+    $(document).ready(function () {
+        LoadDDLSMSReceivers(sel);
+    });
+</script>

@@ -1,0 +1,23 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    byte iPurpose = ViewBag.Purpose;
+    string folder = (iPurpose == 2 ? "UnLoad" : "");
+    string jsName = (@clsConfig.IsWeightBased ? "TableWeight" : "TableVolume");
+    string path = "../Scripts/PageJS/Transactions/ExitedTTs/" + clsConfig.ProjPath + "/" + folder + "/"+ jsName + ".js";
+    if (!System.IO.File.Exists(Server.MapPath(path)))
+    {
+        path = path.Replace(clsConfig.ProjPath, "");
+    }
+}
+
+<div id="jqxExitedLSgrid" class="jqx-tbl-container">
+</div>
+<div id="jqxgridSummary" class="jqx-tbl-container">
+</div>
+<script>
+    Purpose = @iPurpose;
+    $.getScript('@path');
+</script>

@@ -1,0 +1,31 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+@*<h4 class="description col-lg-12 text-center">
+    MANUAL FAN / LOCAL ORDER ENTRY
+</h4>*@
+<h2 class="description text-center" style="color:black;font-size: 30px; text-decoration: underline;">
+    MANUAL FAN (LOCAL ORDER ENTRY)
+</h2>
+
+<form id="FormBU" role="form" class="form-fields">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group ui-widget">
+                <label>Truck Number</label>
+                <input type="text" id="txtTruck" name="TruckNumber" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div id="dvManualLoadDetails">
+    </div>
+</form>
+<script src="~/Scripts/PageJS/Transactions/ManualFAN/ManualFAN.js"></script>
+<script>
+    $(document).ready(function () {
+        AutoComplete($("#txtTruck"), "TruckNumber", "ManualLoad");
+    });
+</script>

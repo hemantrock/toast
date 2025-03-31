@@ -1,0 +1,629 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+<style>
+    .toggle-wrapper .toggle.btn {
+        width: 50px !important;
+        height: 25px !important;
+        min-width: 50px;
+        min-height: 25px;
+    }
+
+    .toggle-wrapper .toggle-group label {
+        top: -4px;
+    }
+
+    .toggle-wrapper .btn.btn-primary {
+        left: -4px;
+    }
+</style>
+
+<div id="dvContent" class="content">
+        <div class="row">
+            <div class="col-lg-2">
+                <h3 class="grid-headerplant" style="color:black">ANALYSER</h3>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="grid-headerplant" style="color:black">SWITCHES</h3>
+            </div>
+            <div class="col-lg-4">
+                <h3 class="grid-headerplant" style="color:black">OTHERS</h3>
+            </div>
+        </div>
+        <div class="security-system-container m-t-40">
+            <div class="row">
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">AT-601</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT601 Measure existing',this, 'AT601_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn AT601_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Fault Existing</td>
+                                <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="AT601_CDH"></span></span></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT601_VSHH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT601 High high setting value',this, 'AT601_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Alarm Existing High value</td>
+                                <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="AT601_CAH"></span></span></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT601_VSH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT601 High high setting value',this, 'AT601_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="bold">Min Outlet Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT601_MINS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT601 Min Outlet Value',this, 'AT601_MINS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Max Outlet Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT601_MAXS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT601 Max Outlet Value',this, 'AT601_MAXS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">AT-602</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT602 Measure existing',this, 'AT602_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn AT602_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Fault Existing</td>
+                                <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="AT602_CDH"></span></span></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT602_VSHH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT602 High high setting value',this, 'AT602_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Alarm Existing High Value</td>
+                                <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="AT602_CAH"></span></span></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT602_VSH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT602 High high setting value',this, 'AT602_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Min Outlet Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT602_MINS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT602 Min Outlet Value',this, 'AT602_MINS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Max Outlet Value</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input AT602_MAXS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: AT602 Max Outlet Value',this, 'AT602_MAXS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">BP RESET</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: BP RESET existing',this, 'BP_RESET_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn BP_RESET_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filter Time Fault High</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input BP_RESET_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: BP RESET Filtering time  fault high',this, 'BP_RESET_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filter Time Fault Low</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input BP_RESET_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: BP RESET Filtering time  fault low',this, 'BP_RESET_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">S-LOAD1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 1 existing',this, 'SBYPASS_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SLOAD1_TEH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 1 Filtering time',this, 'SLOAD1_TEH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">S-LOAD4</th>
+                            </tr>
+                        </thead>
+                          <tbody>
+                              <tr>
+                                  <td class="bold">Measure Existing</td>
+                                  <td width="25%">
+                                      <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 4 existing',this, 'SBYPASS_EX', 'INPUT')">
+                                          <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td class="bold">Filtering Time</td>
+                                  <td width="25%">
+                                      <input type="number" step="0.01" min=0 readonly class="editable-input SLOAD1_TEH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                      <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 4 Filtering time',this, 'SLOAD1_TEH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                  </td>
+                              </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">WEIGHT SLOAD-1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Weight SLOAD 1</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PR_LOAD1" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: WEIGHT SLOAD 1 WEIGHT SLOAD 1',this, 'PR_LOAD1', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">WEIGHT SLOAD-2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Weight SLOAD 2</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PR_LOAD2" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: WEIGHT SLOAD 2 WEIGHT SLOAD 2',this, 'PR_LOAD2', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">SSECU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SSECU existing',this, 'SSECU_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SSECU_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filter Time Fault High</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SSECU_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SSECU Filtering time  fault high',this, 'SSECU_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filter Time Fault Low</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SSECU_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SSECU Filtering time  fault low',this, 'SSECU_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">S-LOAD2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 2 existing',this, 'SBYPASS_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SLOAD1_TEH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 2 Filtering time',this, 'SLOAD1_TEH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">S-LOAD5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 5 existing',this, 'SBYPASS_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SLOAD1_TEH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 5 Filtering time',this, 'SLOAD1_TEH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">WEIGHT SLOAD-3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Weight SLOAD 3</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PR_LOAD3" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: WEIGHT SLOAD 3 WEIGHT SLOAD 3',this, 'PR_LOAD3', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">WEIGHT SLOAD-4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Weight SLOAD 4</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PR_LOAD4" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: WEIGHT SLOAD 4 WEIGHT SLOAD 4',this, 'PR_LOAD4', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">BYPASS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: BYPASS existing',this, 'SBYPASS_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filter Time Fault High</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SBYPASS_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: BYPASS Filtering time  fault high',this, 'SBYPASS_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filter Time Fault Low</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SBYPASS_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: BYPASS Filtering time  fault low',this, 'SBYPASS_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">S-LOAD3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 3 existing',this, 'SBYPASS_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SLOAD1_TEH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 3 Filtering time',this, 'SLOAD1_TEH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">S-LOAD6</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="25%">
+                                    <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 6 existing',this, 'SBYPASS_EX', 'INPUT')">
+                                        <input id="toggle-tasdol-mode" class="on-off-btn SBYPASS_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SLOAD1_TEH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SLOAD 6 Filtering time',this, 'SLOAD1_TEH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">WEIGHT SLOAD-5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Weight SLOAD 5</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PR_LOAD5" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: WEIGHT SLOAD 5 WEIGHT SLOAD 5',this, 'PR_LOAD5', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">WEIGHT SLOAD-6</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Weight SLOAD 6</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PR_LOAD6" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: WEIGHT SLOAD 6 WEIGHT SLOAD 6',this, 'PR_LOAD6', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">VESSELS (B51,B52)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Time For REGEN (sec)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input B50_TPR" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: VESSELS (B51,B52) Time for Regen (s)',this, 'B50_TPR', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time For PURGE (sec)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input B50_TPP" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: NAME Time for Purge (s)',this, 'B50_TPP', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time For PROLONGATION (Factor x 10sec)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input B50_TPPR" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: Time for Regen (s) Time for Prolongation (factor x10 s)',this, 'B50_TPPR', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">VALUE MAX LOADING</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input B50_VSMC" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: Time for Purge (s) Value maxi loading',this, 'B50_VSMC', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TIME EMPTYING V4X</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Time Emptying V4X (s)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input V4X_TPV" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TIME EMPTYING 4X Time emptying V4X',this, 'V4X_TPV', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">V4X</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Max Fault Allowed Vacuum Group</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input NBR_DEF_MAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: V4X Max fault allowed Vaccum Groupe',this, 'NBR_DEF_MAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">VACUUM (V41,V42)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Setting Vacuum Pressure</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input B50_VSPR" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: VACCUM ( V41,V42) Setting vaccum pressure',this, 'B50_VSPR', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Reprise Regulation-PT401(mbar)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input PT401_VSM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: VACCUM ( V41,V42) Reprise regulation according to PT401 (mbar)',this, 'PT401_VSM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TIME CRACK OPEN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Time Opening UV514 (s)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TPCV" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TIME CRACK OPEN Time opening UV514 (s)',this, 'UV514_TPCV', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Opening UV524 (s)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TPCV" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TIME CRACK OPEN Time opening UV524 (s)',this, 'UV524_TPCV', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">DELAY TIME OPENING 411,421</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Delay Time Opening (EV-411,421)</td>
+                                <td width="25%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV_TPAI" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: DELAY TIME OPENING 411,421 Delay time opening EV 411, 421',this, 'EV_TPAI', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "VRS_SetPoints";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

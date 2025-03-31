@@ -1,0 +1,96 @@
+﻿@using TOAST.Shared;
+@{
+    ViewBag.Title = "TOAST";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Mobile View -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pocket HMI</title>
+    <link href="~/Content/images/favicon.ico" rel="shortcut icon">
+    <link href="~/Content/Mobile/boostrap.css" rel="stylesheet" />
+    <link href="~/fonts/font-awesome-5.12.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/Mobile/normalize.css" rel="stylesheet" />
+    <link href="~/Content/Mobile/style.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrapValidator.css" rel="stylesheet" />
+    <script src="~/Scripts/js/jquery/jquery.min.js"></script>
+    <script src="~/Scripts/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap/bootstrapValidator.min.js"></script>
+    <script src="~/Scripts/lib/notify.min.js"></script>
+    <script src="~/Scripts/script.js"></script>
+</head>
+<body class="homeBody login-body">
+    <div id="wrapper" class="login-wrapper">
+        <header>
+            <div class="icon-control-logo"><img src="../images/icon_control_small.png" border="0" /></div>
+            <div class="tas-logo">Pocket <span>HMI</span></div>
+            <div class="indian-oil-logo"><img src="../images/indianoil_logo.png" border="0" /></div>
+        </header>
+
+        <div id="page-content-wrapper" class="login-page-container">
+            <div class="container-fluid">
+                <!--<div class="welcome-txt text-center">WELCOME TO <span>TOAST</span></div>-->
+                <div class="login-form">
+                    <form id='frmLogin'>
+                        <div class="form-row fields form-group">
+                            <i class="fa fa-user"></i>
+                            <input type="text" class="text form-control" placeholder="Enter Login ID" id="txtLoginID" name="LoginID">
+                        </div>
+                        <div class="form-row fields form-group">
+                            <i class="fa fa-lock"></i>
+                            <input type="password" class="text form-control" placeholder="Enter Password" id="txtPassword" name="password">
+                        </div>
+                        <div class="btn-row">
+                            <input type="button" class="btn btn-default" id="loginButton" onclick="AuthenticateUser();" value="LOG IN">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <i class="fa-li fa fa-spinner fa-spin" id="spinnerLogin" style="display:none;"></i>
+                        </div>
+                    </form>
+                    <!--<div class="truck-bg"></div>-->
+                </div>
+            </div>
+        </div>
+        <!-- Alerts Dismissable -->
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close">&times;</button>
+            <span class="glyphicon glyphicon-ok"></span>
+            <span id="success">You successfully read this important alert message.</span>
+        </div>
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close">&times;</button>
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            <span id="danger">Change a few things up and try submitting again.</span>
+        </div>
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title" id="myConfirmLabel">Confirmation.</h3>
+                    </div>
+                    <div class="modal-body" id="myConfirmMsg">
+                        <p>Are you sure ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnConfirmOK">OK</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnConfirmCancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    $(document).ready(function () {
+        $("#txtPassword ").on("copy cut paste drop", function () {
+            return false;
+        });
+    });
+    </script>
+
+    <script src="~/Scripts/PageJS/Home/Index.js"></script>
+</body>
+</html>

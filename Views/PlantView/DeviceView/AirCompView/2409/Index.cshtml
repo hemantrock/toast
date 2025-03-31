@@ -1,0 +1,108 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    PlantViewBL plantViewBL = new PlantViewBL(1);
+    List<tblDeviceMaster> lstDevices = plantViewBL.GetDeviceDetails(new List<int>() { 32 });
+    ViewBag.Title = "Plant View - Air Compressor View";
+    Layout = null;
+    List<tblTagMaster> DeviceTags = new TagsBL(1).GetDeviceTagsFromPrefix(new List<string>() { "AirComp" });
+    string stropcPages = String.Join(",", lstDevices.Select(x => x.PageName).Distinct());
+}
+<style>
+    .device-container .device-box {
+        width: 300px;
+        min-height: 500px;
+    }
+    table.value-tbl td.tbl-val {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">@string.Join(", ", lstDevices.Select(x => x.tblDeviceType.DeviceTypeDesc).Distinct()) View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="device-container col-lg-12 m-t-10">
+        @{
+            foreach (tblDeviceMaster Device in lstDevices)
+            {
+                string DevName = Device.TagPrefix;
+                string DeviceType = Device.tblDeviceType.DeviceName.ToLower().Replace(" ", "-");
+                string ProdNameShort = "";
+                string strUOM = "Status "; string strTag = Device.TagPrefix + "_STATUS";
+                tblTagMaster DevValTag = DeviceTags.Where(x => x.TagName == Device.TagPrefix + "_VALUE").FirstOrDefault();
+                if (DevValTag != null && DevValTag.UnitId != null) { strUOM = "Value (" + DevValTag.tblUOMMaster.UOM + ")"; strTag = Device.TagPrefix + "_VALUE"; }
+                if (Device.HeaderID != null) { ProdNameShort = Device.tblHeadersMaster.tblProduct.ProdNameShort; }
+                else if (Device.TankID != null) { ProdNameShort = Device.tblTank.tblProduct.ProdNameShort; }
+                tblTagMaster PressValueTag = (DeviceTags.Where(x => x.TagName == (Device.TagPrefix + "_PT_DISC_VALUE") || (x.TagName == Device.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                <div class="device-box @DeviceType-wrapper">
+                    <div class="device-header">
+                        <span class="h-col h-full" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceDesc</span>
+                    </div>
+                    <div class="device-block">
+                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(Device.TagPrefix+"_LOCREM")" style="top:-35px;left:15px;"></span>
+                        <div class="device @DeviceType @(Device.TagPrefix +"_RUN_IMG") @(Device.TagPrefix +"_TRIP_IMG") @(Device.TagPrefix +"_FAIL_IMG")">
+                            <span class="maintainence-mode-icon @(DevName + "_MAINT")"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl">Name</td>
+                                    <td class="tbl-val">@Device.DeviceName</td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Pressure (kg/cm²)</td>
+                                    <td class="tbl-val get-hover @(Device.TagPrefix+"_DISC_PRESSURE")" onclick="OpenChartModal('@(Device.TagPrefix+"_DISC_PRESSURE")', '@Device.PageName'); cancelBubble(event);"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Discharge Temp (°C)</td>
+                                    <td class="tbl-val get-hover @(Device.TagPrefix+"_DISC_TEMP")" onclick="OpenChartModal('@(Device.TagPrefix+"_DISC_TEMP")', '@Device.PageName'); cancelBubble(event);"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Run Hours MSB</td>
+                                    <td class="tbl-val @(Device.TagPrefix+"_TOTAL_RUN_HOUR")"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Service Level</td>
+                                    <td class="tbl-val @(Device.TagPrefix+"_SERVICE_LEVEL")"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Power Out Restart Option</td>
+                                    <td class="tbl-val">
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Device.TagPrefix+"_POW_OUT_RESTART")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Warning Code</td>
+                                    <td class="tbl-val @(Device.TagPrefix+"_WARNING_CODE")"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Trip Code</td>
+                                    <td class="tbl-val @(Device.TagPrefix+"_TRIP_CODE")"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@stropcPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

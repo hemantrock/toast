@@ -1,0 +1,39 @@
+﻿@using TOAST.Data.Model;
+@model List<tblMenuConfig>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    Layout = null;
+    List<int> DashBoardIDs = Model.Where(x=>x.DashboardID!=null && x.ysnVisible == true).Select(x => (x.DashboardID??0)).Distinct().ToList();
+}
+
+ 
+<div class="row">
+    <div class="col-lg-12 m-t-40 text-center" style="margin-bottom:-30px">
+
+        <div class="center-block m-t-40 dashboard-container">
+        @foreach (int dbid in DashBoardIDs)
+        {
+            tblMenuConfig MasterItem = Model.Where(x => x.UniqueID == dbid && x.ysnVisible == true).FirstOrDefault();
+            List<tblMenuConfig> MenuItems = Model.Where(x => x.DashboardID == dbid && x.ysnVisible == true).ToList();
+            if (MasterItem!=null && (MenuItems != null || MenuItems.Count() > 0))
+            {
+                <div class="col-lg-3 item-row">
+                    <div class="col-lg-12 text-center">
+                        <div class="dashboard-control-item" onclick="@MenuItems.FirstOrDefault().JSFunction">
+                            <div class="item-circle clickable"><i class="fa @MasterItem.glyphicon" aria-hidden="true"></i></div>
+                            <a href="#" class="text-faded">@MasterItem.MenuTitle</a>
+                            <ul>
+                                @foreach (tblMenuConfig item in MenuItems ?? Enumerable.Empty<tblMenuConfig>())
+                                {
+                                    <li><i class="@item.glyphicon" aria-hidden="true"></i> <a href="#" onclick="cancelBubble(event);@item.JSFunction" title="@item.ToolTip">@item.MenuTitle</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+     </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/DashboardView/Index.js"></script>

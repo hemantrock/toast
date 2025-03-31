@@ -1,0 +1,156 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadSecCheck>
+@{
+    ViewBag.Title = "Edit Truck Securuty Data";
+    Layout = null; string defSelect = ""; bool hCritical = false;
+    tblLoadMaster LMast = ViewBag.LoadMaster;
+    string strStage = ViewBag.Stage;
+    bool blnHindi = ViewBag.Hindi;
+    bool blnLocal = ViewBag.Local;
+    bool blnEng = ViewBag.Eng;
+    if ((blnEng || blnHindi || blnLocal) == false) { blnEng = true; }
+    if (strStage.ToUpper().Contains(" ENTRY")) { defSelect = "YES"; hCritical = true; }
+}
+<style  type="text/css">
+    h2.headingPage {
+        position: fixed;
+        z-index: 1;
+        background: #fff;
+        top: 0;
+        margin: 0;
+        padding: 20px 20px 10px;
+        width:100%;
+    }
+    table.dataTable thead tr th {
+        font-size: 15px;
+        /*height: 24px;*/
+    }
+
+    table.dataTable tbody tr td {
+        font-size: 24px;
+        /*height: 24px;*/
+    }
+
+    #cancelModal1 {
+        font-size: 32px !important;
+    }
+
+        #cancelModal1 .modal-footer #confirmOK {
+            margin-right: 50px;
+        }
+
+        #cancelModal1 .btn {
+            font-size: 26px !important;
+            margin-right: 20px;
+            padding: 6px 20px 6px 17px;
+        }
+
+    .lgchkbox {
+        width: 30px;
+        height: 30px;
+    }
+    .topSpace {
+        margin-top: 80px;
+    }
+    @@media  (min-width: 660px) {
+         .topSpace {
+            margin-top: 60px;
+        }
+    }
+</style>
+<h2 class="headingPage" style="margin-bottom:0.25em">
+    Truck Security Check : <span style="font-weight:bold" id="txtTruckNum"> @LMast.tblTruckMaster.TruckNumber </span> (@(strStage=="R2"?"Entry": strStage == "R3"?"Exit": strStage))
+</h2>
+<div class="row topSpace">
+    <div class="col-lg-6 col-md-9 col-sm-12 form-container" style="padding-bottom: 50px;">
+        <form id="FormLoadSecCheck" role="form" class="form-fields">
+            <div class="row">
+                <div>
+                    <table id="tblLoadSecCheck" class="table">
+                        <thead>
+                            <tr>
+                                <th style="display:none;">LoadID</th>
+                                <th style="display:none;">Stage</th>
+                                <th style="display:none;">SeqNo</th>
+                                <th class="text-center">SNo</th>
+                                <th class="text-center">Description</th>
+                                <th>Yes</th>
+                                <th>No</th>
+                                <th>N/A</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 0;
+                                foreach (tblLoadSecCheck itm in Model)
+                                {
+                                    i = i + 1; bool added = false; bool bHighlight = ((itm.tblSecurityCheck.Critical ?? true) && hCritical);
+                                    string sColor = ""; if (bHighlight) { sColor = "style=color:red"; } //sColor = "style=color:red";"style=background-color:lightgoldenrodyellow";
+                                    string strYes = ((itm.Selection ?? defSelect).ToUpper() == "YES" ? "checked" : "");
+                                    string strNo = ((itm.Selection ?? "").ToUpper() == "NO" ? "checked" : "");
+                                    string strNA = ((itm.Selection ?? "").ToUpper() == "NA" ? "checked" : "");
+                                    <tr>
+                                        <td style="display:none;">@LMast.LoadID</td>
+                                        <td style="display:none;">@strStage</td>
+                                        <td style="display:none;">@itm.SeqNo</td>
+                                        <td @sColor>@(i)</td>
+                                        @{
+                                            <td @sColor>
+                                                @{ if (blnEng)
+                                                    { @itm.tblSecurityCheck.CheckNameEng; added = true;
+                                                }}
+                                                @if (blnHindi)
+                                                {
+                                                    if (added)
+                                                    {<br> }
+                                                    @itm.tblSecurityCheck.CheckNameHindi; added = true;
+                                                }
+                                                @if (blnLocal)
+                                                {
+                                                    if (added)
+                                                    {<br> }
+                                                    @itm.tblSecurityCheck.CheckNameLocal;
+                                                }
+                                            </td>
+                                        }
+                                        <td @sColor><input type="checkbox" class="lgchkbox clsYes" name=@("chkTTSec"+itm.SeqNo) @strYes></td>
+                                        <td @sColor><input type="checkbox" class="lgchkbox clsNo" name=@("chkTTSec"+itm.SeqNo) @strNo></td>
+                                        <td @sColor><input type="checkbox" class="lgchkbox clsNA" name=@("chkTTSec"+itm.SeqNo) @strNA></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row button-bar" style="right: 2em;">
+        <div class="col-lg-12">
+            <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTruckSecCheck();" style="font-size: 22px !important; margin-right: 24px"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+            <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal1" style="font-size:22px !important; margin-right:24px"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="cancelModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+    <div class="modal-dialog" style="top:0px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Cancel Confirmation.</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to cancel?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmOK">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var oSecCheckStage = '@strStage';
+    var iSecLoadID = '@LMast.LoadID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/SecCheck/SecCheck.js"></script>

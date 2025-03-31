@@ -1,0 +1,79 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - Other MOVs View";
+    Layout = null;
+    string Grp = ViewBag.MovsGrp;
+    string strPages = String.Join(",", Model.Select(x => x.PageName));
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">@Grp MOVs View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 content-top-spacing mov-container mov-lg">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="mov-tbl-container">
+                        @{
+                            List<tblMOVMaster> lstHeaderMovs = Model.Where(x=>x.TankID==null).ToList();
+
+                            if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Product-Wise".ToUpper()) { lstHeaderMovs = Model.Where(x => x.HeaderID != null && (x.tblHeadersMaster.ProductID) != 0).OrderBy(x => x.tblHeadersMaster.ProductID).Distinct().ToList(); }
+                            else if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Type-Wise".ToUpper()) { lstHeaderMovs = Model.Where(x => x.HeaderID != null).OrderBy(x => x.MOVType).Distinct().ToList(); }
+                            else if (clsConfig.UnGroupedMOVsOrdering.ToUpper() == "Line-Wise".ToUpper()) { lstHeaderMovs = Model.Where(x => x.HeaderID != null).OrderBy(x => x.MOVLine).Distinct().ToList(); }
+
+                            if (lstHeaderMovs.Count() > 0)
+                            {
+                                foreach (tblMOVMaster mov in lstHeaderMovs.OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)))
+                                {
+                                    string MoVPrefix = mov.TagPrefix + "_";
+                                    string MovType = (mov.tblMOVType.MOVType.ToLower());
+                                    <div class="col-lg-1 mov-block">
+
+                                        <table class="mov-detail-tbl">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="mov-name" style="background-color:#0000FF; color: #fff; text-shadow: 0px 1px 1px #000;">
+                                                            <span>@mov.tblMOVLine.Line</span>
+                                                        </div>
+                                                        <div class="@MovType-valve-info-container @MovType-lg" onclick="OpenMOVModal('@mov.UniqueID','@(mov.PageName)')">
+                                                            <div title="No Feedback" data-tooltip-attr="@MovType*" class="tooltips @MovType-valve @(MoVPrefix+"ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                                                                <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                                                @*<span class="mov-valve-fill">
+                                                                        <span class="fill-value percentage @(MoVPrefix+"_FILL")" data-id="@(MoVPrefix+"PER_OPN")"></span>
+                                                                    </span>*@
+                                                                <span class="percentage-fill-val"><span class="per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%</span>
+                                                            </div>
+                                                            <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                                            <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix+"AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode MOV', 'Device: @mov.MovName', '@(mov.TagPrefix + "_AUTOMAN")', '@(mov.TagPrefix + "_LOCREM")', 'TAG_AUTOMAN' , '@mov.PageName', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                            <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/MOVsView/Index.js"></script>

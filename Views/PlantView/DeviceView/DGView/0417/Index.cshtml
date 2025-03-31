@@ -1,0 +1,72 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Diesel Generator View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">DG View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="dg-view-container col-lg-12 m-t-40">
+        @{
+            foreach (tblDeviceMaster Device in Model)
+            {
+                <div class="device-box" style="width:325px">
+                    <div class="device-header">
+                        <span class="h-col h-full" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                    </div>
+                    <div class="device-block">
+                        <div title="No Feedback" data-tooltip-attr="DG*" onclick="OpenDGModal('@Device.UniqueID','@Device.PageName');" class="tooltips device dgset @(Device.TagPrefix +"_RUN_IMG") @(Device.TagPrefix +"_TRIP_IMG") @(Device.TagPrefix +"_FAIL_IMG")">
+                            <span class="maintainence-mode-icon @(Device.TagPrefix + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl">Device Desc</td>
+                                    <td class="tbl-val">@Device.DeviceDesc</td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Run Feedback</td>
+                                    <td class="tbl-val ">
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Device.TagPrefix+"_RUN_FB")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Lube Low Pressure</td>
+                                    <td class="tbl-val ">
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Device.TagPrefix+"_LO_LUBE_PRES_ALM")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = 'DGView.*';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

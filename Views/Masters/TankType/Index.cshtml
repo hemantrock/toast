@@ -1,0 +1,41 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTankType>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddTankType();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW TANK TYPE MASTER
+        </a>
+
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">TANK TYPE MASTERS</h3>
+        <table id="tblTankType" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">TYPE ID</th>
+                    <th>TYPE</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTankType itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.TYPE_ID);">
+                        <td style="display:none;">@itm.TYPE_ID</td>
+                        <td>@itm.TYPE</td>
+                        <td class="text-center"><span id="spanDelete_@itm.TYPE_ID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TYPE_ID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+  </div>   
+<script src="~/Scripts/PageJS/Masters/TankType/Index.js"></script>

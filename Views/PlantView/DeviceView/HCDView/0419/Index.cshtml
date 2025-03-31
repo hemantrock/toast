@@ -1,0 +1,70 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Hydrocarbon Detectors View";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">HCD View</h3>
+
+    </div>
+</div>
+
+<div class="security-system-container m-t-40">
+    <div class="row first">
+        <div class="col-lg-6">
+            @{
+                if (Model.Where(x => x.DeviceID == 5).Count() > 0)
+                {
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="10">HYDROCARBON DETECTORS</th></tr>
+                            <tr>
+                                <th class="text-center" style="width: 45%">AREA</th>
+                                <th class="text-center  tooltips" title="Current Value" style="width: 11%">Value</th>
+                                <th class="text-center  tooltips" title="20% LEL SETPOINT" style="width: 12%"> 20% LEL SetPoint</th>
+                                <th class="text-center  tooltips" title="20% LEL ALARM" style="width: 10%"> 20% LEL Alarm</th>
+                                <th class="text-center  tooltips" title="40% LEL SETPOINT" style="width: 12%"> 40% LEL SetPoint</th>
+                                <th class="text-center  tooltips" title="40% LEL ALARM" style="width: 10%"> 40% LEL Alarm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (tblDeviceMaster Device in Model.Where(x => x.DeviceID == 5))
+                {
+                    string DevName = Device.TagPrefix;
+                                <tr>
+                                    <td class="">@Device.DeviceDesc</td>
+                                    <td><span class="@(DevName + "_VALUE")"></span></td>
+                                    <td>
+                                        <input type="number" step="0.01" min=0 readonly class="editable-input @(Device.TagPrefix)_LEL20_SP" ondblclick="this.readOnly='';"
+                                               style="border: 0px;width: 72%;" value="@(Device.TagPrefix)_LEL20_SP">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Strainer DPT SetPoint: @(Device.DeviceName)',this, '@(Device.TagPrefix)_LEL20_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                    </td>
+                                    <td><span class="@(DevName + "_LEL20")"></span></td>
+                                    <td>
+                                        <input type="number" step="0.01" min=0 readonly class="editable-input @(Device.TagPrefix)_LEL40_SP" ondblclick="this.readOnly='';"
+                                               style="border: 0px;width: 72%;" value="@(Device.TagPrefix)_LEL40_SP">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Strainer DPT SetPoint: @(Device.DeviceName)',this, '@(Device.TagPrefix)_LEL40_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                    </td>
+                                    <td><span class="@(DevName + "_LEL40")"></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = 'HCDView.*';
+        InitConn(opcPageName, 0);
+        createTooltip();
+        if (opcStartDone == true) {
+            setTimeout(function () { opc.server.readPageTags(opcPageName); }, 3000);
+        }
+    });
+</script>

@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Add ProductGroup";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a new ProductGroup
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PRODUCT GROUP</label>
+                        <input id="txtProductGroup" name="productGroup" type="text" placeholder="Product Group" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PRODUCT</label>
+                        <select class="form-control" id="ddlProduct" name="Product"></select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveProductGroup();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/ProductGroup/ProductGroup.js"></script>
+<script>
+
+    $(document).ready(function () {
+        LoadDDLProduct($('#ddlProduct'));
+    });
+
+</script>
+
+

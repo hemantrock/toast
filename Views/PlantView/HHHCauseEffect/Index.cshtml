@@ -1,0 +1,59 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    ViewBag.Title = "Plant View - Cause and Effect View";
+    Layout = null;
+    List<tblTank> lstTanks = Model;
+    List<tblPump> lstPumps = ViewBag.AllPumps;
+}
+<div class="row col-lg-5">
+    <div id="esd-cause-container" style="">
+        <div class="cont-main-heading">
+            <h3>Cause and Effect View - 3H</h3>     
+        </div>
+
+        <div class="tbl-scrols">
+            <table class="hhh-ce-table">
+                <thead>
+                    <tr>
+                        <th class="effect-cause">
+                            <span class="right-arr"></span>
+                            <span class="eff">Effect</span>
+                            <span class="cau">Cause</span>
+                            <span class="down-arr"></span>
+                        </th>
+                        @{
+                                <th scope="col" abbr="Starter" class="">Receipt ROSOV Closed</th>
+                                <th scope="col" abbr="Medium" class="">Receipt Tank in Dormant Mode</th>
+                                <th scope="col" abbr="Business" class="">Stop Feedback of Receipt Pump</th>
+                                <th scope="col" abbr="Deluxe" class="">Close Feedback of Receipt MOV/DBBV</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+
+            @{
+                foreach (tblTank tank in lstTanks.Where(x => x.TankType != 3 && !x.tblProduct.ProductName.ToUpper().Contains("WATER")))
+                {
+                    List<tblMOVMaster> tankMOVs = tank.tblMOVMasters.ToList();
+                    tblMOVMaster ReceiptROSOV = tankMOVs.Where(y => y.MOVType == 1 && y.MOVLine == 1).FirstOrDefault();
+                    if (ReceiptROSOV == null) { ReceiptROSOV = new tblMOVMaster() { TagPrefix="" }; };
+                    tblMOVMaster ReceiptDBBV = tankMOVs.Where(y => y.MOVType == 2 && y.MOVLine == 1).FirstOrDefault();
+                    if (ReceiptDBBV == null) { ReceiptDBBV = new tblMOVMaster() { TagPrefix = "" }; };
+                    string ReceiptPumpsStop = tank.tblProduct.ProdNameShort + "_WGN_PUMP_STOP";
+                    <tr class="@(tank.TagPrefix+"_HHH")">
+                        <th scope="row">@tank.TankName </th>
+                        <td><i class="fa @(ReceiptROSOV.TagPrefix + "_CLS_FB")" aria-hidden="true"></i></td>
+                        <td><i class="fa @(tank.TagPrefix+ "_DORMANT")" aria-hidden="true"></i></td>
+                        <td><i class="fa @(ReceiptPumpsStop)" aria-hidden="true"></i></td>
+                        <td><i class="fa @(ReceiptDBBV.TagPrefix + "_CLS_FB")" aria-hidden="true"></i></td>
+                    </tr>
+                }
+            }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/HHHCauseEffect/Index.js"></script>

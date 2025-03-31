@@ -1,0 +1,73 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblUser>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddUsers()">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW USERS
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Users Master</h3>
+        <table id="tblUsers" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>Login ID</th>
+                    <th>EmpID</th>
+                    <th>Full Name</th>
+                    <th>Designation</th>
+                    <th>Company</th>
+                    <th>PhoneNumber</th>
+                    <th>MailId</th>
+                    <th>Notifications</th>
+                    <th>CardNumber</th>
+                    <th>CurrentStatus</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblUser itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.UserID);">
+                        <td style="display:none;">@itm.UserID</td>
+                        <td>@itm.LoginID</td>
+                        <td>@itm.EmpID</td>
+                        <td>@itm.UserName @itm.MiddleName  @itm.Surname</td>
+                        <td>@itm.tblUserRoleMaster.UserRoleDesc</td>
+                        <td>@itm.Company</td>
+                        <td>@itm.PhoneNumber</td>
+                        <td>@itm.MailID</td>
+                        <td class="text-center">
+                            <span id="spanNotify_@itm.UserID" class="glyphicon glyphicon-list clickable spanNotify" data-id="@itm.UserID"></span>
+                        </td>
+                        <td>@(itm.tblCard == null ? "" : itm.tblCard.CardNumber.ToString())</td>
+                        <td>
+                            @if (itm.CurrentStatus == true)
+                            {
+                                <text>Logged</text>
+                            }
+                            else
+                            {
+                                <text>Not Logged</text>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <span id="spanDelete_@itm.UserID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.UserID"></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>	
+
+<script src="~/Scripts/PageJS/Masters/Users/Index.js"></script>

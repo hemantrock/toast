@@ -1,0 +1,855 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblNetwork>
+@{
+    ViewBag.Title = "Plant View - System Config View";
+    Layout = null;
+    tblNetwork Dev;
+    List<tblBatchController>
+        lstBCs = ViewBag.BCs;
+    List<tblDataSourceMaster>
+        lstDS = ViewBag.DataSources;
+    List<ConnectionTags>
+        TSPortData = ViewBag.ConnTags;
+    string PriConn = "ETH01_SW01_CONN";
+    string SecConn = "ETH02_SW02_CONN";
+    string PriDevTag = ""; string PriIP = "";
+    string SecDevTag = ""; string SecIP = "";
+    string DevName = "";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">System Config View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="system-config-wrapper">
+        <div id="system-config-container" class="p-419">
+            <div class="system-arch-top @PriConn">
+                @{
+                    List<tblNetwork> lstServers = Model.Where(x => x.DeviceType.ToUpper() == "SERVER").ToList();
+                    foreach (tblNetwork Serv in lstServers)
+                    {
+                        PriDevTag = ""; PriIP = "";
+                        SecDevTag = ""; SecIP = ""; DevName = "";
+                <div class="screen-block">
+                    <h4>@Serv.DeviceName</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+                            <li>
+                                <div class="ball-indicator left @(" ETH01_" + Serv.DeviceTag)"></div>@Serv.PrimaryIP
+                            </li>
+                            <li>
+                                <div class="ball-indicator left @(" ETH02_" + Serv.DeviceTag)"></div>@Serv.SecondaryIP
+                            </li>
+                        </ul>
+                    </div>
+                    <span class="screen-block-txt tp device-status tooltips @(Serv.DeviceTag)_ROLE" title="Current Role of @(Serv.DeviceName)"></span>
+                    <span class="screen-block-txt mid device-status tooltips @(Serv.DeviceTag)_STATE" title="Synchronization Status of @(Serv.DeviceName)"></span>
+                </div>
+                    }
+                }
+                @{
+                    List<tblNetwork> lstOICs = Model.Where(x => x.DeviceType == "OIC").ToList();
+                    for (int i = 0; i < lstOICs.Count(); i++)
+                    {
+                <div class="screen-block">
+                    @{
+                                PriDevTag = ""; PriIP = "";
+                                SecDevTag = ""; SecIP = ""; DevName = "";
+                                //Dev = Model.Where(x => x.DeviceName == "OIC-02").FirstOrDefault();
+                                Dev = lstOICs[i];
+                                if (Dev != null)
+                                {
+                                    PriDevTag = (" ETH01_" + Dev.DeviceTag);
+                                    SecDevTag = (" ETH02_" + Dev.DeviceTag);
+                                    PriIP = Dev.PrimaryIP;
+                                    SecIP = Dev.SecondaryIP;
+                                    DevName = Dev.DeviceName;
+                                }
+                    }
+                    <h4>@DevName</h4>
+                    <div class="sc-left">
+                        <div class="screen"></div>
+                        <div class="screen-v-line-dark @PriConn"></div>
+                        <div class="screen-v-line-light @SecConn"></div>
+                    </div>
+                    <div class="sc-right">
+                        <ul>
+
+                            <li><div class="ball-indicator left @(PriDevTag)"></div>@PriIP</li>
+                            <li> <div class="ball-indicator left @(SecDevTag)"></div>@SecIP</li>
+                        </ul>
+                    </div>
+                    @{
+                                if (i == 0)
+                                {
+                            <span class="screen-block-txt tp lrc01 device-status tooltips" title="Witness Connectivity with LRC01">
+                                LRC01:
+                                <span class="circle-cont-xsm">
+                                    <span class="LRC01_WIT_STATE"></span>
+                                </span>
+                            </span>
+                            <span class="screen-block-txt mid lrc02 device-status tooltips" title="Witness Connectivity with LRC02">
+                                LRC02:
+                                <span class="circle-cont-xsm">
+                                    <span class="LRC02_WIT_STATE"></span>
+                                </span>
+                            </span>
+                                }
+                    }
+                </div>
+                                }
+                }
+
+                <span class="network-txt">Primary Network</span>
+                @{
+                    List<tblNetwork> lstPrinters = Model.Where(x => (x.Enabled ?? false) && x.DeviceType.ToUpper().Contains("PRINTER")).ToList();
+                    for (int i = 0; i < lstPrinters.Count(); i++)
+                    {
+                <div class="printer-block @(" printer_" + i)">
+                    <span class="sys-printer "></span>
+                    <ul class="printer-ipaddress">
+                        <li><div class="ball-indicator left @(" ETH01_" + lstPrinters[i].DeviceTag)"></div>@lstPrinters[i].PrimaryIP</li>
+                        @{
+                                    if (!String.IsNullOrWhiteSpace(lstPrinters[i].SecondaryIP))
+                                    {
+                                <li>
+                                    <span class="printer-connector secondary"></span>
+                                    <div class="ball-indicator left @(" ETH02_" + lstPrinters[i].DeviceTag)"></div>@lstPrinters[i].SecondaryIP
+                                </li>
+                                    }
+                        }
+                    </ul>
+                    <span class="printer-connector @PriConn"></span>
+                </div>
+                                    }
+
+
+                }
+            </div>
+            <div class="system-arch-middle @SecConn">
+                <div class="sym-arh-m-left">
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <div class="mem-block left" title="Click to view Port-wise Details">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <span class="mem-line"></span>
+                                <div class="sl-right">
+                                    <ul>
+
+                                        <li><div class="ball-indicator left @("ETH01_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                        <li><div class="ball-indicator left @("ETH02_" + Dev.DeviceTag)" style="top:21px"></div>@Dev.SecondaryIP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                        if (Dev != null)
+                        {
+                            <div class="mem-block right" title="Click to view Port-wise Details">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <span class="mem-line"></span>
+                                <div class="sl-right">
+                                    <ul>
+                                        <li><div class="ball-indicator left @(" ETH01_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                        <li> <div class="ball-indicator left @(" ETH02_" + Dev.DeviceTag)" style="top:21px"></div>@Dev.SecondaryIP</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="sym-arh-m-left-join-line"></div>
+
+                    <!--New-->
+                    <div class="system-arch-bottom">
+                        <div class="system-arch-bottom-left">
+                            <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                            <div class="w-100">
+                                <div class="col-lg-6">
+                                    <table class="table-striped detail-tbl w-100 tbl-portwise-dtl tooltips" title="Click to view Port-wise Details">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" class="text-center top-head">
+                                                    TS-01
+                                                    @*<i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i>*@
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center">Port#</th>
+                                                <th class="text-center">Device</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                                                List
+                                                <int>
+                                                    lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                                                foreach (int port in lstPorts)
+                                                {
+                                                    string DSName = "";
+                                                    List<ConnectionTags>
+                                                        ConnTags = TSPortData.Where(x => x.TSName == "TS-01" && x.PortNo == port).ToList();
+                                                    if (ConnTags.Count() > 0)
+                                                    {
+                                                        DSName = ConnTags.FirstOrDefault().DSName;
+                                                    }
+                                                    <tr>
+                                                        <td class="tbl-lbl" style="width: 41px;">@(port)</td>
+                                                        <td class="tbl-val" style="width: 80px;"><span>@(DSName)</span></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div class="col-lg-6">
+
+                                    <table class="table-striped detail-tbl w-100 tbl-portwise-dtl tooltips" title="Click to view Port-wise Details">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" class="text-center top-head">
+                                                    TS-02
+                                                    @*<i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i>*@
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center">Port#</th>
+                                                <th class="text-center">Device</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                                                lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                                                foreach (int port in lstPorts)
+                                                {
+                                                    string DSName = "";
+                                                    List
+                                                    <ConnectionTags>
+                                                        ConnTags = TSPortData.Where(x => x.TSName == "TS-02" && x.PortNo == port).ToList();
+                                                    if (ConnTags.Count() > 0)
+                                                    {
+                                                        DSName = ConnTags.FirstOrDefault().DSName;
+                                                    }
+                                                    <tr>
+                                                        <td class="tbl-lbl" style="width: 30px;">@(port)</td>
+                                                        <td class="tbl-val" style="width: 50px;"><span>@(DSName)</span></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                            <div style="width:140%">
+                                <div class="col-lg-1 device-status">
+                                    <table class="table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3" class="text-center" style="background-color: antiquewhite;">CIU Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th width="45%">CIU-01</th>
+                                                <td class="TFMS_PRIMARY_ACTIVE ciu-01"></td>
+                                                <td class="tbl-val w-20">
+                                                    <div class="circle-cont-xsm">
+                                                        <span class="CIU01_HEALTHY"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>CIU-02</th>
+                                                <td class="TFMS_PRIMARY_ACTIVE ciu-02"></td>
+                                                <td class="tbl-val w-20">
+                                                    <div class="circle-cont-xsm">
+                                                        <span class="CIU02_HEALTHY"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-lg-1 device-status">
+                                    <table class="table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3" class="text-center" style="background-color: antiquewhite;">MCS Connectivity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td width="45%">MCS-A Master</td>
+                                                <td class="tbl-val w-20">
+                                                    <div class="circle-cont-xsm">
+                                                        <span class="MCS_PRIMARY"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>MCS-B Master</td>
+                                                <td class="tbl-val w-20">
+                                                    <div class="circle-cont-xsm">
+                                                        <span class="MCS_SECONDARY"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!--New end-->
+                </div>
+                <div class="sym-arh-m-middle">
+                    <div class="sym-arh-l">
+                        <div class="slave-block">
+                            <h4>SFTPLC-A</h4>
+                            <div class="sl-left">
+                                <div class="slave sftplc left">
+                                    <span class="mem-line-connector primary @PriConn"></span>
+                                    <span class="mem-line-connector secondary @SecConn"></span>
+                                    <span class="slave-line"></span>
+                                </div>
+                            </div>
+                            <div class="sl-right middle-b">
+                                <ul class="">
+                                    @{ Dev = Model.Where(x => x.DeviceName == "Safety-PLC-01").FirstOrDefault();
+                                    if (Dev != null)
+                                    {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    @*
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>*@
+                                    }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status SFTYPLC_01_MASTER primary_true"></span>
+                        </div>
+
+                        <div class="slave-block r-s">
+                            <h4>SFTPLC-B</h4>
+                            <div class="sl-left">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <div class="slave sftplc right"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="hide sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName == "Safety-PLC-02").FirstOrDefault();
+                                    if (Dev != null)
+                                    {
+                                    <li><div class="ball-indicator left @(" ETH1_" + Dev.DeviceTag)"></div></li>
+                                    @*
+                                    <li> <div class="ball-indicator left @(" ETH2_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>*@
+                                    }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status SFTYPLC_02_MASTER primary_false"></span>
+                        </div>
+                        <div class="sym-arh-l-join-line"></div>
+                    </div>
+                    <!--New -->
+                    <div class="system-arch-bottom">
+                        <div class="system-arch-bottom-middle">
+                            <div class="system-arch-b-m-l">
+                                <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                                <div class="tree-box">
+                                    <div class="tree-box-row">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                                Fire Pump
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row-v-liner"></div>
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenROSOVViewHMI);">
+                                                ROSOV
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-box-row push-up">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                                <span>Jockey Pump</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenAOPView);">
+                                                <span>Vibrating Fork</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tree-box-row push-up t-minus60">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenESDViewHMI);">
+                                                <span>ESD Push Button</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenRadarRelays);">
+                                                <span>SIL Radar Gauge</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-box-row push-up t-minus85">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenPressureTransmitters);">
+                                                <span>SIL Hydrant PT</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenSirenView);">
+                                                <span>Wailing Siren</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="tree-box-row push-up t-minus106">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                                <span>HCD</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenSecurityView);">
+                                                <span>Smoke Detectors</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tree-box-row push-up t-minus128">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenSecurityView);">
+                                                <span>Hooters</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenDBBVViewHMI);">
+                                                <span>DBBV</span>
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="system-arch-b-m-r hide">
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--New end-->
+                </div>
+                <div class="sym-arh-m-right">
+                    <div class="sym-arh-l">
+                        <div class="slave-block">
+                            <h4>TAS PLC-01</h4>
+                            <div class="sl-left">
+                                <div class="slave left">
+                                    <span class="mem-line-connector primary @PriConn"></span>
+                                    <span class="mem-line-connector secondary @SecConn"></span>
+                                    <span class="slave-line"></span>
+                                </div>
+                            </div>
+                            <div class="sl-right">
+                                <ul class="">
+                                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TAS PLC-01").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                    <li><div class="ball-indicator left @(" ETH01_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li> <div class="ball-indicator left @(" ETH02_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status PLCA_MASTER"></span>
+                        </div>
+                        <div class="slave-block r-s">
+                            <h4>TAS PLC-02</h4>
+                            <div class="sl-left">
+                                <span class="mem-line-connector primary @PriConn"></span>
+                                <span class="mem-line-connector secondary @SecConn"></span>
+                                <div class="slave right"><span class="slave-line"></span></div>
+                            </div>
+                            <div class="sl-right">
+                                <ul>
+                                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TAS PLC-02").FirstOrDefault();
+                                        if (Dev != null)
+                                        {
+                                    <li><div class="ball-indicator left @(" ETH01_" + Dev.DeviceTag)"></div>@Dev.PrimaryIP</li>
+                                    <li><div class="ball-indicator left @(" ETH02_" + Dev.DeviceTag)"></div>@Dev.SecondaryIP</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <span class="screen-block-txt device-status PLCB_MASTER"></span>
+                        </div>
+                        <div class="sym-arh-l-join-line"></div>
+                    </div>
+                    <!--New -->
+                    <div class="system-arch-bottom">
+                        <div class="system-arch-bottom-middle">
+                            <div class="system-arch-b-m-l">
+                                <i class="fa fa-minus-circle tree-box-toggle-icon" aria-hidden="true"></i>
+                                <div class="tree-box">
+                                    <div class="tree-box-row">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenBGViewHMI);">
+                                                Barrier Gate
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row-v-liner" style="height: 216px;"></div>
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenPressureTransmitters);">
+                                                Header Line PT
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-box-row push-up">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenTOBVViewHMI);">
+                                                TOBV
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(function () { OpenUPSViewHMI('Process') });">
+                                                UPS
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-box-row push-up t-minus50">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenPumpsViewHMI);">
+                                                TTL Pumps
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenDykeValveView);">
+                                                Dyke Valves
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-box-row push-up t-minus68">
+                                        <div class="box-left">
+                                            <div class="tree-box-cont get-hover" onclick="GoToView(OpenPumpsViewHMI);">
+                                                TWL Pumps
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-right">
+                                            <div class="tree-box-cont t-25 float-r get-hover" onclick="GoToView(OpenVFDViewHMI);">
+                                                VFD
+                                                <div class="tree-joiner"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="system-arch-b-m-r hide">
+                            </div>
+                        </div>
+                    </div>
+                    <!--New end-->
+                </div>
+                
+
+                <span class="network-txt">Secondary Network</span>
+                <span class="printer-connector hide @SecConn"></span>
+            </div>
+            <div class="system-arch-bottom">
+
+
+                <div class="system-arch-bottom-right">
+                    <!--Device Status-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mem-block-tbl" id="detTS01">
+    <h1>TS Details</h1><i class="fa fa-window-close" aria-hidden="true"></i>
+    <div class="mem-block-tbl-cont">
+        <div class="col-lg-6 ts-01">
+
+            <table class="table-striped detail-tbl w-100">
+                <thead>
+                    <tr>
+                        <th colspan="3" class="text-center top-head">TS-01 <i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i></th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Port#</th>
+                        <th class="text-center" colspan="2">Device</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-01").FirstOrDefault();
+                        lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                        foreach (int port in lstPorts)
+                        {
+                            string DSName = "";
+                            List<ConnectionTags>
+                            ConnTags = TSPortData.Where(x => x.TSName == "TS-01" && x.PortNo == port).ToList();
+                            if (ConnTags.Count() > 0)
+                            {
+                                DSName = ConnTags.FirstOrDefault().DSName;
+                            }
+                            <tr>
+                                <td class="tbl-lbl" style="width: 42px;">@(port)</td>
+                                <td class="tbl-val" style="width: 95px;"><span>@(DSName)</span></td>
+                                <td class="tbl-val terminal-child-data-col">
+
+                                    <i class="fa fa-minus-circle " aria-hidden="true"></i>
+                                    <table class="table-striped detail-tbl ">
+                                        <tbody>
+                                            @{
+
+                                                for (int i = 0; i < ConnTags.Count(); i = i + 2)
+                                                {
+                                                    <tr>
+                                                        <td class="tbl-lbl tooltips" title="@(ConnTags[i].DeviceName)">@(ConnTags[i].DeviceName)</td>
+                                                        <td class="tbl-val">
+                                                            <div class="circle-cont-xsm">
+                                                                <span class="@(ConnTags[i].ConnTag)"></span>
+                                                            </div>
+                                                        </td>
+                                                        @if (i + 1 < ConnTags.Count())
+                                                        {
+                                                            <td class="tbl-lbl tooltips" title="@(ConnTags[i+1].DeviceName)">@(ConnTags[i + 1].DeviceName)</td>
+                                                            <td class="tbl-val">
+                                                                <div class="circle-cont-xsm">
+                                                                    <span class="@(ConnTags[i+1].ConnTag)"></span>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+
+                                </td>
+
+                            </tr>
+                                                }
+                    }
+                </tbody>
+            </table>
+
+
+
+        </div>
+        <div class="col-lg-6 ts-02">
+
+            <table class="table-striped detail-tbl w-100">
+                <thead>
+                    <tr>
+                        <th colspan="3" class="text-center top-head">TS-02 <i class="fa fa-minus-circle ts-server-toggle-icon" aria-hidden="true"></i></th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Port#</th>
+                        <th class="text-center" colspan="2">Device</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ Dev = Model.Where(x => x.DeviceName.ToUpper() == "TS-02").FirstOrDefault();
+                        lstPorts = TSPortData.Select(x => x.PortNo).Distinct().OrderBy(x => x).ToList();
+                        foreach (int port in lstPorts)
+                        {
+                            string DSName = "";
+                            List<ConnectionTags>
+                            ConnTags = TSPortData.Where(x => x.TSName == "TS-02" && x.PortNo == port).ToList();
+                            if (ConnTags.Count() > 0)
+                            {
+                                DSName = ConnTags.FirstOrDefault().DSName;
+                            }
+                            <tr>
+                                <td class="tbl-lbl" style="width: 42px;">@(port)</td>
+                                <td class="tbl-val" style="width: 95px;"><span>@(DSName)</span></td>
+                                <td class="tbl-val terminal-child-data-col">
+                                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
+
+                                    <table class="table-striped detail-tbl">
+                                        <tbody>
+                                            @{
+
+                                                for (int i = 0; i < ConnTags.Count(); i = i + 2)
+                                                {
+                                                    <tr>
+                                                        <td class="tbl-lbl tooltips" title="@(ConnTags[i].DeviceName)">@(ConnTags[i].DeviceName)</td>
+                                                        <td class="tbl-val">
+                                                            <div class="circle-cont-xsm">
+                                                                <span class="@(ConnTags[i].ConnTag)"></span>
+                                                            </div>
+                                                        </td>
+                                                        @if (i + 1 < ConnTags.Count())
+                                                        {
+                                                            <td class="tbl-lbl tooltips" title="@(ConnTags[i+1].DeviceName)">@(ConnTags[i + 1].DeviceName)</td>
+                                                            <td class="tbl-val">
+                                                                <div class="circle-cont-xsm">
+                                                                    <span class="@(ConnTags[i+1].ConnTag)"></span>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                            </tr>
+                                                }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<div class="mem-block-tbl" id="detTS02">
+    <h1>TS-02</h1><i class="fa fa-window-close" aria-hidden="true"></i>
+</div>
+
+
+<script src="~/Scripts/PageJS/PlantView/SystemConfigView/Index.js"></script>
+
+<script type="text/javascript">
+
+    $('.mem-block-tbl').draggable();
+
+    $(".tree-box-toggle-icon").click(function () {
+        if ($(this).hasClass('fa-plus-circle')) {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        } else {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        }
+        $(this).next().slideToggle();
+    });
+
+    $(".terminal-child-data-col .fa").click(function () {
+        var ele = $(this);
+        if ($(this).hasClass('fa-plus-circle')) {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        } else {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        }
+        $(this).siblings().slideToggle();
+        $(this).parents().find('.ts-server-toggle-icon').removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        
+
+        //var chTbl = $(this).parents('.detail-tbl').find('.terminal-child-data-col table');
+
+        //    if (chTbl.is(':visible')) {
+        //        ele.parents().find('.ts-server-toggle-icon').removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        //    }
+
+    });
+
+
+    $(".ts-server-toggle-icon").click(function () {
+        var ele = $(this);
+        //showHideContent($(this));
+        // $(this).toggleClass('fa-minus-circle');
+        // 
+        if ($(this).hasClass('fa-minus-circle')) {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        } else {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        }
+
+
+        var tsTbl = $(this).closest('table').find('tbody');
+        var childTblIcon = tsTbl.find('.terminal-child-data-col .fa');
+        var childTbl = tsTbl.find('.terminal-child-data-col .detail-tbl');
+
+        if (childTblIcon.hasClass('fa-minus-circle')) {
+            childTblIcon.removeClass('fa-minus-circle').addClass('fa-plus-circle');
+            childTbl.hide();
+        } else {
+            childTblIcon.removeClass('fa-plus-circle').addClass('fa-minus-circle');
+            childTbl.show();
+        }
+
+
+        //tsTbl.slideToggle();
+    });
+
+    $(".tbl-portwise-dtl").click(function () {
+        showhideMemBlockTbl(this);
+    });
+
+    $(".mem-block").click(function () {
+        showhideMemBlockTbl(this);
+    });
+
+    $(".mem-block-tbl .fa-window-close").click(function () {
+        $(this).parent().slideUp();
+    });
+
+    function showhideMemBlockTbl(ele) {
+        if (!$(".mem-block-tbl").is(":visible")) {
+            $('#detTS01').slideToggle();
+            if ($(ele).hasClass('left')) {
+                //$(".mem-block-tbl h1").text('TS-01');
+                // $('#detTS01').slideToggle();
+            } else {
+                //$(".mem-block-tbl h1").text('TS-02');
+                //$('#detTS02').slideToggle();
+            }
+        }
+        else {
+            $('#detTS01').slideToggle();
+        }
+    }
+</script>

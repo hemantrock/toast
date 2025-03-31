@@ -1,0 +1,83 @@
+﻿
+
+@{
+    ViewBag.Title = "Add Batch Controller";
+    Layout = null;
+    var dropdownMakes = ViewBag.dropdownMakes;
+}
+
+<h2 class="headingPage">
+    Create a new Batch Controller
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Batch Controller Number</label>
+                    <input id="txtBCNo" name="BCNo" type="text" placeholder="Batch Controller Number" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Batch Controller Name</label>
+                    <input id="txtBCName" name="BCName" type="text" placeholder="Batch Controller Name (3-30 Chars)" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Loop Number</label>
+                    <input id="txtLoopNo" name="LoopNo" type="text" placeholder="Loop Number" class="form-control">
+                </div>
+            </div>
+            <div class="hide col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>ACU Number</label>
+                    <input id="txtACUNo" name="ACUNo" type="text" placeholder="ACU Number" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Modbus Address</label>
+                    <input id="txtSlaveID" name="SlaveID" type="text" placeholder="Modbus Address (1 Chars)" class="form-control">
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Makes</label>
+                    <select class="form-control" id="ddlBatchMake" name="batchMake">
+                        <option value="0">Select Make</option>
+                        @foreach (TOAST.Data.Model.tblBCMake data in dropdownMakes)
+                        {
+                            <option value="@data.UniqueID">@data.Make</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Model</label>
+                    <select class="form-control" id="ddlBatchModel" name="batchModel">
+                        <option value="0">Select Model</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Firmware Version</label>
+                    <select class="form-control" id="ddlBatchFirmware" name="batchFirmware">
+                        <option value="0">Select Firmware Version</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveBatchController();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/BatchController/BatchController.js"></script>

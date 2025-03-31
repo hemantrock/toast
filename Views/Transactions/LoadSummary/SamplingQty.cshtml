@@ -1,0 +1,64 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Sampling Qty";
+    Layout = null;
+}
+<div class="col-lg-12 col-md-12 form-container">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input type="text" id="txtTruck" name="TruckNumber" maxlength="50" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Remarks</label>
+                    <input type="text" id="txtRemarks" name="Remarks" maxlength="50" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="col-lg-12">
+    <table id="tblSamplingQty" class="table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>CompNo</th>
+                <th>Product</th>
+                <th>Preset</th>
+                <th>Sample Qty</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblLoadDetail itm in Model.tblLoadDetails)
+            {
+            <tr id="Sampl_@itm.CompNo">
+                <td>
+                    <input name="chkSelect" type="checkbox" id="@itm.CompNo"/>
+                </td>
+                <td id="txtCompNo_@itm.CompNo">@itm.CompNo</td>
+                <td id="txtProduct_@itm.CompNo">@itm.tblProduct.ProductName</td>
+                <td id="txtPreset_@itm.CompNo">@itm.PresetQty</td>
+                <td>
+                    <input type="number" disabled max="5" name="SamplingQty" value="@(itm.tblProduct.DefaultSamplingQty??0)" placeholder="@(itm.tblProduct.DefaultSamplingQty??2) Ltrs" id="txtSampling_@itm.CompNo" onchange="UpdateTotal('@itm.CompNo');" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" style="width:100px" />
+                </td>
+                <td id="txtTotal_@itm.CompNo">
+                    <span>@(itm.PresetQty + (itm.SamplingQty ?? itm.tblProduct.DefaultSamplingQty??0))</span>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    Purpose = '@Model.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/SamplingQty.js"></script>

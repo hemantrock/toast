@@ -1,0 +1,56 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblTagTrendMaster>
+@{
+    Layout = null;
+    string Arch = "";
+    DateTime BkupDT = ViewBag.DBTime;
+    bool FromArchives = ViewBag.FromArchives;
+    if (FromArchives)
+    {
+        Arch = " - Archives";
+    }
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">View Tags Trends @Arch</h3>
+        <table id="tblTagTrendsGraph" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th align="center">Tag Name</th>
+                    <th align="center">Tag Desc</th>
+                    <th>Trend Name</th>
+                    <th>Scan Time (Sec)</th>
+                    <th>Archived (Days)</th>
+                    @{
+                        if (FromArchives) { <th>Data Older Than</th> }
+                        else { <th>Data Available From</th> }
+                    }
+                    <th class="text-center hide">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTagTrendMaster itm in Model)
+                {
+                    <tr class="clickable">
+                        <td style="display:none;">@itm.TagName</td>
+                        <td><a href="#" onclick="OpenChartModal('@itm.TagName','',@FromArchives.ToString().ToLower(),@itm.tblTagMaster.DataType); return false;">@itm.TagName</a></td>
+                        <td>@itm.tblTagMaster.TagDescShort</td>
+                        <td>@itm.TrendName</td>
+                        <td>@itm.ScanTime</td>
+                        <td>@itm.ArchiveDurationDays</td>
+                        <td>@(BkupDT.AddDays(-1*itm.ArchiveDurationDays).ToString("dd-MMM-yyyy  HH:mm"))</td>
+                        <td class="text-center hide"><span id="spanDelete_@itm.TagName" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TagName"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*<div id="jqxgrid" class="jqx-tbl-container">
+</div>*@
+
+<script src="~/Scripts/PageJS/AlarmsAndEvents/ViewTrends/Index.js"></script>

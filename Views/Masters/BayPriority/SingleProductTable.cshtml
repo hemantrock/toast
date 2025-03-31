@@ -1,0 +1,49 @@
+﻿@using TOAST.Data.Model;
+@model List<tblLoadingPointMaster>
+@{
+    ViewBag.Title = "Single Product Priority";
+    Layout = null;
+    List<int> lstBays = new List<int>();
+}
+<script>
+     $('#ddlProduct option:selected').text();
+</script>
+<div class="col-lg-6">
+    <h3 class="grid-header">Single Product Priority</h3>
+    <table id="tblSinglePriority" class="table">
+        <thead>
+            <tr>
+                <th>Bay No</th>
+                <th>Base Product</th>
+                <th>Move Up</th>
+                <th>Single Product Priority</th>
+                <th>Move Down</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblLoadingPointMaster itm in Model)
+            {
+                if (lstBays.IndexOf(itm.BayID??0) < 0)
+                {
+                    lstBays.Add(itm.BayID ?? 0);
+                    <tr class="clickable">
+                        <td>@itm.BayID</td>
+                        <td class="baseProduct">
+                        </td>
+                        <td><span class="glyphicon glyphicon-arrow-up spanUp"></span></td>
+                        <td class="priority">@itm.SingleProdPriority</td>
+                        <td><span class="glyphicon glyphicon-arrow-down spanDown"></span></td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateBaySingleProdPriority();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/BayPriority/SingleProdPriority.js"></script>

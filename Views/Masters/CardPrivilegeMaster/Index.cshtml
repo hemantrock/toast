@@ -1,0 +1,38 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblCardPrivilegeMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick='OpenAddCardPrivilegeMaster()'>
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW CARD PRIVILEGE
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">Card Privilege</h3>
+        <table id="tblCardPrivilegeMaster" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Status</th>
+                    <th> CARD PRIVILEGE</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblCardPrivilegeMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.PrivilegeID);">
+                        <td style="display:none;">@itm.PrivilegeID</td>
+                        <td>@itm.PrivilegeDesc</td>
+                         <td class="text-center"><span id="spanDelete_@itm.PrivilegeID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.PrivilegeID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/CardPrivilegeMaster/Index.js"></script>

@@ -1,0 +1,133 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Truck Regularize";
+    Layout = null;
+
+    LoadSummaryBL assignBL = new LoadSummaryBL(Convert.ToInt32(System.Web.HttpContext.Current.Session[clsConstants.UserID]));
+    double tolerance = 20;
+    string Label = Model.PurposeID == 2 ? "Decanted Qty" : "Filled Qty";
+    List<tblRegularizeTruckOption> lsTruckStatusOps = ViewBag.NewTruckStatus;
+    List<tblLoadStatu> lstSts = ViewBag.ChamberOptns;
+}
+<div class="col-lg-12 col-md-12 form-container">
+    <input type="hidden" id="lblTolerance" name="Tolerance" value="@tolerance" class="form-control" disabled />
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input type="text" id="txtTruck" name="TruckNumber" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <table id="tblLoadDetails" class="table">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Comp No</th>
+                            <th>Product</th>
+                            <th>Load Status</th>
+                            <th>Actual Load Status</th>
+                            <th>Preset Qty</th>
+                            <th>@Label</th>
+                            <th>Top Up Qty</th>
+                            <th>Decant Qty</th>
+                            <th>Eff Qty</th>
+                            <th style="display:none">UOM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (tblLoadDetail itm in Model.tblLoadDetails)
+                            {
+                                double DeliveredQty = (itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0);
+                                double PreviousQty = (itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0);
+                                double EffQty = (itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0) + (itm.TopUpQty ?? 0) - (itm.DecantedQty ?? 0);
+
+                                <tr id="@itm.CompNo">
+                                    <td>
+                                        <input name="chkSelect" type="checkbox" id="@itm.CompNo" onchange="EnableCols(this,'@itm.CompNo')" />
+                                    </td>
+                                    <td>@itm.CompNo</td>
+                                    <td>@itm.tblProduct.ProdNameShort</td>
+                                    <td>@itm.tblLoadStatu.LoadStatusDesc</td>
+                                    <td>
+                                        <select name="ActualLoadStatus" id="ddlLoadDetails_@itm.CompNo" data-id="@itm.LoadStatus.Value" class="form-control" disabled>
+                                            @{
+                                                string strSelected = "";
+                                                foreach (tblLoadStatu cSts in lstSts)
+                                                {
+
+                                                    if (cSts.LoadStatusID == itm.LoadStatus) { strSelected = "selected"; } else { strSelected = ""; }
+                                                    <option @strSelected value="@cSts.LoadStatusID">@cSts.LoadStatusDesc</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td id="txtPreset_@itm.CompNo">@((itm.PresetQty??0)+(itm.SamplingQty??0))</td>
+                                    <td id="txtFilled_@itm.CompNo" value="@(DeliveredQty + PreviousQty)">@(DeliveredQty + PreviousQty)</td>
+                                    <td>
+                                        <input name="TopUp_@itm.CompNo" type="number" min="0" max="@(Math.Max((double)(itm.PresetQty- (DeliveredQty + PreviousQty)+20),0))" id="txtTopUp_@itm.CompNo" value="@(itm.TopUpQty??0)" onkeypress="return isDecimalKey(event)" onchange="UpdateEffQty('@itm.CompNo')" style="width:90%" disabled />
+                                    </td>
+                                    <td><input name="Decant_@itm.CompNo" type="number" min="0" max="@(DeliveredQty + PreviousQty)" id="txtDecant_@itm.CompNo" value="@(itm.DecantedQty??0)" onkeypress="return isDecimalKey(event)" onchange="UpdateEffQty('@itm.CompNo')" style="width:90%" disabled /></td>
+                                    <td id="txtEffQty_@itm.CompNo">@EffQty</td>
+                                    <td style="display:none" id="txtUOM_@itm.CompNo">@itm.tblProduct.UomID</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>CurrentTruck Status</label>
+                    <input type="text" id="txtTruckStatus" name="TruckStatus" value="@Model.tblTruckStatu.TruckStatusDesc" class="form-control" data-id="@Model.TruckStatus.Value" disabled />
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Actual/New Truck Status</label>
+                    <select id="ddl_ActualTruckStatus" name="ActualTruckStatus" class="form-control">
+                        @{
+                            <option  value="-1" selected>--Select New Truck Status--</option>
+                            foreach (tblRegularizeTruckOption trkSts in lsTruckStatusOps)
+                            {
+                                <option value="@trkSts.ActualTTStatusOptions">@trkSts.tblTruckStatu.TruckStatusDesc</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="fields form-group">
+                    <label>Remarks</label>
+                    <input type="text" id="txtRemarks" name="Remarks" autocomplete="off" maxlength="50" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<script>
+    Purpose = '@Model.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/TruckRegularize.js"></script>
+<script>
+    $(document).ready(function () {
+
+        @*$("#myModalBody select[name='ActualLoadStatus']").each(function () {
+            LoadCompartmentStatus($(this), '@Model.LoadID', '@Model.TruckStatus', $(this).attr('data-id'));
+        });
+        LoadActualTruckStatus($('#ddl_ActualTruckStatus'), '@Model.TruckStatus', '@Model.tblLoadDetails.FirstOrDefault().tblProduct.UomID')*@
+    });
+</script>

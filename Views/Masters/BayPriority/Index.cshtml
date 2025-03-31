@@ -1,0 +1,59 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadingPointMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="SingleProductButton" role="button" class="btn btn-primary" href="#" onclick='OpenAddSingleProductPriority()'>
+            <span class="glyphicon glyphicon-plus"></span>Single Product Priority
+        </a>
+        <a id="MixedProductButton" role="button" class="btn btn-primary" href="#" onclick='OpenAddMixedProductPriority()'>
+            <span class="glyphicon glyphicon-plus"></span>Mixed Product Priority
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">Bays / LP Load Priority</h3>
+        <table id="tblLPPriority" class="table">
+            <thead>
+                <tr>
+                    <th>Bay No</th>
+                    <th>LP No.</th> 
+                    <th>Product Name</th>
+                    <th>Single Product Priority</th>
+                    <th>Mixed Product Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblLoadingPointMaster itm in Model)
+                {
+                        <tr class="clickable">
+                            <td>@itm.BayID</td>
+                            <td>@itm.LoadingPointNo</td>
+                             @if (itm.tblLoadingPointProducts.Count == 0 || itm.tblLoadingPointProducts
+                                .Where(x => x.LoadingPointNo == itm.LoadingPointNo && x.ProductStatus == true &&
+                                x.tblProduct.IsBaseProduct == true).FirstOrDefault() == null)
+                                    {
+                                       <td>&nbsp;</td>
+                                   }
+                                 else
+                                   {
+                            <td>
+                                @(itm.tblLoadingPointProducts
+                                            .Where(x => x.LoadingPointNo == itm.LoadingPointNo && x.ProductStatus == true &&
+                                            x.tblProduct.IsBaseProduct == true).FirstOrDefault().tblProduct.ProductName)
+                            </td>
+                                              
+                             }
+                            <td>@itm.SingleProdPriority</td>
+                        <td>@itm.MixedProdPriority</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/BayPriority/Index.js"></script>

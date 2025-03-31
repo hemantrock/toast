@@ -1,0 +1,198 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@{
+    ViewBag.Title = "Add Cards";
+    //List<tblProduct> ddlProds = ViewBag.AllowedProds;
+    List<tblSAPTASConfig> lstSAPConfs = ViewBag.SAPConfs;
+    List<tblTank> lstTanks = ViewBag.Tanks;
+    IEnumerable<tblDeviceMaster> lstMFMs = ViewBag.RecMFMs;
+    List<tblDropdownValue> ddlist = ViewBag.DropDownValues;
+    List<tblDropdownValue> ddlIssueReceipt = ddlist.Where(x => x.ddlType.ToUpper() == "IssueReceipt".ToUpper()).OrderBy(x => x.SNo).ToList();
+    List<tblDropdownValue> ddlSalePucTrfr = ddlist.Where(x => x.ddlType.ToUpper() == "SalePurTrfr".ToUpper()).OrderBy(x => x.SNo).ToList();
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a RECEIPT MFM Batch
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Issuing Plant Code</label>
+                        <input type="text" class="form-control" placeholder="Issuing Plant Code" id="txtIssuingPlantCode" name="IssuingPlantCode" maxlength="4" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Receiving Plant Code</label>
+                        <select class="form-control" id="ddlReceivingPlantCode" name="ReceivingPlantCode">
+                            <option value="0" selected="selected">--Select--</option>
+                            @foreach (tblSAPTASConfig conf in lstSAPConfs)
+                            {
+                                <option value="@conf.sPlantCode">@conf.sPlantCode</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Issuing Storage Tank</label>
+                        @*<input type="text" class="form-control" placeholder="Issuing Storage Tank" id="txtIssuingStorageTank" name="IssuingStorageTank" maxlength="4" autocomplete="off" />*@
+                        <select class="form-control" id="txtIssuingStorageTank" name="IssuingStorageTank">
+                            <option value="" selected="selected">Select Issuing Tank</option>
+                            <option value="MNSP">MNSP</option>
+                            <option value="MNSL">MNSL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Receiving Storage Tank</label>
+                        <select class="form-control" id="ddlReceivingStorageTank" name="ReceivingStorageTank">
+                            <option value="0" selected="selected">Select Receiving Tank</option>
+                            @foreach (tblTank tnk in lstTanks)
+                            {
+                                <option value="@tnk.UniqueID">@tnk.SAPTankNo (@tnk.tblProduct.ProdNameShort)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>MFM No</label>
+                        <select class="form-control" id="ddlMFMDevice" name="MFMDevice">
+                            <option value="0" selected="selected">Select MFM</option>
+                            @foreach (tblDeviceMaster mfm in lstMFMs)
+                            {
+                                <option value="@mfm.UniqueID">@mfm.DeviceName (@mfm.DeviceDesc)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Receipt / Issue</label>
+                        <select class="form-control" id="ddlReceiptIssue" name="ReceiptIssue">
+                            <option value="R">Receipt</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Stock Transfer / OMC Sale Purchase</label>
+                        <select class="form-control" id="ddlStkTrOMC" name="StkTrOMC">
+                            <option value="S">Stock Transfer</option>
+                        </select>
+                    </div>
+                </div>
+                @{ if (clsConfig.ProjPath == "2409")
+                    {
+                        <div class="col-lg-2 col-md-2 col-sm-2 ">
+                            <div class="fields form-group">
+                                <label>Average Temp (°C)</label>
+                                <input type="text" class="form-control" placeholder="Average Temp" id="txtAvgBatchTemp" name="AvgBatchTemp" maxlength="5" autocomplete="off" onkeypress="return isDecimalKey(event)" />
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Remarks</label>
+                        <input type="text" class="form-control" placeholder="Remarks" id="txtRemarks" name="Remarks" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Start Date Time</label>
+                <input id="dtpStartBatchTime" autocomplete="off" name="StartDT" type="text" placeholder="Start DateTime" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>End Date Time</label>
+                <input id="dtpEndBatchTime" autocomplete="off" name="EndDT" type="text" placeholder="End DateTime" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-2 form-container">
+            <div class="text-left" style="padding-top:20px;">
+                <a id="btnRefereshData" role="button" class="btn btn-primary" href="#" onclick="GenerateMFMBatch();"><span class="glyphicon glyphicon-refresh"></span>Refresh Data</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-4 col-md-4 form-container">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr><th class="text-center bg-color" colspan="4">MFM Data</th></tr>
+                <tr>
+                    <th class="text-center" style="width: 40%">Parameter</th>
+                    <th class="text-center tooltips" style="width: 22%">Start</th>
+                    <th class="text-center tooltips" style="width: 22%">End</th>
+                    <th class="text-center tooltips" style="width: 16%">Diff.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MFM Amb. Vol Totz (KL)</td>
+                    <td><span id="MFMTotzAmbVolStart"></span></td>
+                    <td><span id="MFMTotzAmbVolEnd"></span></td>
+                    <td><span id="MFMTotzAmbVolDiff"></span></td>
+                </tr>
+                <tr>
+                    <td>MFM 15°C Vol Totz (KL)</td>
+                    <td><span id="MFMTotz15VolStart"></span></td>
+                    <td><span id="MFMTotz15VolEnd"></span></td>
+                    <td><span id="MFMTotz15VolDiff"></span></td>
+                </tr>
+                <tr>
+                    <td>MFM 29.5°C Vol Totz (KL)</td>
+                    <td><span id="MFMTotz295VolStart"></span></td>
+                    <td><span id="MFMTotz295VolEnd"></span></td>
+                    <td><span id="MFMTotz295VolDiff"></span></td>
+                </tr>
+                <tr>
+                    <td>MFM Mass Totz (Ton)</td>
+                    <td><span id="MFMTotzMassStart"></span></td>
+                    <td><span id="MFMTotzMassEnd"></span></td>
+                    <td><span id="MFMTotzMassDiff"></span></td>
+                </tr>
+                <tr>
+                    <td>Tank Level (@clsConfig.TFMSLevelUnit)</td>
+                    <td><span id="TankLevelStart"></span></td>
+                    <td><span id="TankLevelEnd"></span></td>
+                    <td><span id="TankLevelDiff"></span></td>
+                </tr>
+                <tr>
+                    <td>Avg Temp °C</td>
+                    <td colspan="3" style="text-align: center;"><span id="AvgTemp"></span></td>
+                </tr>
+                <tr>
+                    <td>Avg Obs. Density (Kg/m³)</td>
+                    <td colspan="3" style="text-align: center;"><span id="AvgDensObs"></span></td>
+                </tr>
+                <tr>
+                    <td>Avg Density 15°C (Kg/m³)</td>
+                    <td colspan="3" style="text-align: center;"><span id="AvgDens15"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveGeneratedBatch();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Transactions/MFMBatch/MFMBatch.js"></script>

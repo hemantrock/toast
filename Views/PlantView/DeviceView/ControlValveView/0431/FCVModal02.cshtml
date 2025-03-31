@@ -1,0 +1,497 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - Control Valve Details View";
+    Layout = null;
+    string DeviceName = ViewBag.Name;
+    string DeviceTagPrefix = ViewBag.TagPrefix;
+}
+
+<div class="modal-dialog modal-pvalve" style="width: 620px; height: 465px;">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header ui-draggable-handle" id="POVModalLabel">
+            <div><h3 class="modal-title">PCV1002A</h3></div>
+            <div style="border:0px;"><h3 class="modal-title">PCV-1002A at PRS SKID</h3></div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body clearfix">
+            <div class="mov-valve-popup">
+                <div class="feedback-row hide">
+                    <a class="push-btn-02 open-mov-btn FCV01_OPN_CMD" href="javascript:void(0);" onclick="SetProcessValue('Open/Close Command to MOV','Set Reset Open Command to Valve: CV 1023',this, 'FCV01_OPN_CMD','')" data-opcvalue="">OPEN</a>
+                </div>
+                <div id="svgContentModal" class="" style="width: 600px; height: 430px; position: relative;">
+                    @*style="width: 392px ;height: 274px;"*@
+                    <!--SVGStart-->
+<svg id="_422_DEF_PLANT" data-name="422_DEF_PLANT" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 391.84795 273.86947">
+  <defs>
+    <clipPath id="clip-path">
+      <polygon points="22.329 53.172 33.968 51.699 33.968 60.924 22.329 59.331 22.329 53.172" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="8129.65581" y1="7650.6284" x2="8130.65582" y2="7650.6284" gradientTransform="translate(-70548.80876 75056.90364) rotate(-90) scale(9.22499)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b90000"/>
+      <stop offset="0.45" stop-color="#ffd6d6"/>
+      <stop offset="0.57" stop-color="#ffb1b1"/>
+      <stop offset="0.77" stop-color="#ff6565"/>
+      <stop offset="1" stop-color="#b90000"/>
+    </linearGradient>
+    <clipPath id="clip-path-2">
+      <rect x="33.82443" y="48.62407" width="3.01113" height="15.37479" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-2" x1="7785.94288" y1="7988.99456" x2="7786.94287" y2="7988.99456" gradientTransform="translate(-122795.61172 119773.01721) rotate(-90) scale(15.37502)" href="#linear-gradient"/>
+    <clipPath id="clip-path-3">
+      <polygon points="11.093 51.699 21.525 51.699 22.55 53.172 22.55 59.387 21.525 60.924 11.093 60.924 11.093 51.699" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-3" x1="8129.65581" y1="7650.6291" x2="8130.65582" y2="7650.6291" gradientTransform="translate(-70560.14209 75056.90364) rotate(-90) scale(9.22499)" href="#linear-gradient"/>
+    <clipPath id="clip-path-4">
+      <rect x="9.93166" y="50.16121" width="1.34315" height="12.29995" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-4" x1="7914.83505" y1="7862.10759" x2="7915.83505" y2="7862.10759" gradientTransform="translate(-96693.34809 97414.96043) rotate(-90) scale(12.3)" href="#linear-gradient"/>
+    <clipPath id="clip-path-5">
+      <rect x="7.23911" y="48.62407" width="3.01113" height="15.37479" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-5" x1="7785.94288" y1="7988.99465" x2="7786.94287" y2="7988.99465" gradientTransform="translate(-122822.19839 119773.01721) rotate(-90) scale(15.37502)" href="#linear-gradient"/>
+    <clipPath id="clip-path-6">
+      <polygon points="21.525 51.699 22.55 53.172 22.55 59.387 21.525 60.924 21.525 51.699" style="fill: none"/>
+    </clipPath>
+    <radialGradient id="radial-gradient" cx="4892.75949" cy="6081.16028" r="0.99997" gradientTransform="translate(-16034.77329 -19900.53313) scale(3.28175)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd6d6"/>
+      <stop offset="0.17" stop-color="#fbb"/>
+      <stop offset="0.48" stop-color="#ff6f6f"/>
+      <stop offset="0.91" stop-color="#f60000"/>
+      <stop offset="1" stop-color="#db0000"/>
+    </radialGradient>
+    <clipPath id="clip-path-7">
+      <path d="M15.31051,48.17579v3.52313s-.00171,1.47342,2.13561,1.47342c2.02865,0,2.02865-1.47342,2.02865-1.47342V48.17579Z" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-6" x1="5396.69576" y1="6593.14072" x2="5397.69613" y2="6593.14072" gradientTransform="translate(-22458.89335 -27406.04834) scale(4.16444)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#900"/>
+      <stop offset="0.52" stop-color="#ff7b7b"/>
+      <stop offset="1" stop-color="#ca0000"/>
+    </linearGradient>
+    <clipPath id="clip-path-8">
+      <rect x="13.77337" y="22.55076" width="7.23911" height="1.53771" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-7" x1="6192.48774" y1="7401.5234" x2="6193.48777" y2="7401.5234" gradientTransform="translate(-44812.92482 -53555.44705) scale(7.23888)" href="#linear-gradient-6"/>
+    <clipPath id="clip-path-9">
+      <rect width="36.83556" height="64" style="fill: none"/>
+    </clipPath>
+    <clipPath id="clip-path-10">
+      <polygon points="23 52.63 35 51.111 35 60.623 23 58.98 23 52.63" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-8" x1="8129.8382" y1="7650.71178" x2="8130.81381" y2="7650.71178" gradientTransform="translate(-70548.72653 75057.66213) rotate(-90) scale(9.22499)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b8b8b"/>
+      <stop offset="0.45" stop-color="#f5f5f5"/>
+      <stop offset="0.57" stop-color="#ebebeb"/>
+      <stop offset="0.77" stop-color="#d9d9d9"/>
+      <stop offset="1" stop-color="#8b8b8b"/>
+    </linearGradient>
+    <clipPath id="clip-path-11">
+      <rect x="34" y="48" width="3" height="15" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-9" x1="7786.09007" y1="7989.00027" x2="7787.06568" y2="7989.00027" gradientTransform="translate(-122795.52949 119774.28137) rotate(-90) scale(15.37502)" href="#linear-gradient-8"/>
+    <clipPath id="clip-path-12">
+      <polygon points="12 51 22.016 51 23 52.437 23 58.5 22.016 60 12 60 12 51" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-10" x1="8129.8382" y1="7650.69371" x2="8130.81381" y2="7650.69371" gradientTransform="translate(-70560.05986 75057.66213) rotate(-90) scale(9.22499)" href="#linear-gradient-8"/>
+    <clipPath id="clip-path-13">
+      <rect x="11" y="50" width="1" height="12" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-11" x1="7914.95477" y1="7862.17381" x2="7915.93038" y2="7862.17381" gradientTransform="translate(-96693.26586 97415.97175) rotate(-90) scale(12.3)" href="#linear-gradient-8"/>
+    <clipPath id="clip-path-14">
+      <rect x="8" y="48" width="3" height="15" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-12" x1="7786.09007" y1="7989.03843" x2="7787.06568" y2="7989.03843" gradientTransform="translate(-122822.11616 119774.28137) rotate(-90) scale(15.37502)" href="#linear-gradient-8"/>
+    <clipPath id="clip-path-15">
+      <polygon points="22 51.367 23 52.805 23 58.867 22 60.366 22 51.367" style="fill: none"/>
+    </clipPath>
+    <radialGradient id="radial-gradient-2" cx="4892.95755" cy="6080.91301" r="0.97557" gradientTransform="translate(-16034.9609 -19900.53313) scale(3.28175)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f5f5f5"/>
+      <stop offset="0.17" stop-color="#eee"/>
+      <stop offset="0.48" stop-color="#dbdbdb"/>
+      <stop offset="0.91" stop-color="#b9b9b9"/>
+      <stop offset="1" stop-color="#a4a4a4"/>
+    </radialGradient>
+    <clipPath id="clip-path-16">
+      <path d="M16,48c-1.3328,6.61417,5.18339,6.4802,4,0Z" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-13" x1="5396.92421" y1="6593.09892" x2="5397.88473" y2="6593.09892" gradientTransform="translate(-22459.15354 -27406.04834) scale(4.16444)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#737373"/>
+      <stop offset="0.52" stop-color="#dedede"/>
+      <stop offset="1" stop-color="#989898"/>
+    </linearGradient>
+    <clipPath id="clip-path-17">
+      <rect x="14" y="22" width="7" height="2" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-14" x1="6192.58991" y1="7401.47925" x2="6193.55691" y2="7401.47925" gradientTransform="translate(-44813.43779 -53555.44704) scale(7.23888)" href="#linear-gradient-13"/>
+    <clipPath id="clip-path-18">
+      <rect width="37" height="64" style="fill: none"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-15" x1="8129.65581" y1="7650.6284" x2="8130.65582" y2="7650.6284" gradientTransform="translate(-70548.80876 75056.90364) rotate(-90) scale(9.22499)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00b900"/>
+      <stop offset="0.45" stop-color="#d6ffd6"/>
+      <stop offset="0.57" stop-color="#b1ffb1"/>
+      <stop offset="0.77" stop-color="#65ff65"/>
+      <stop offset="1" stop-color="#00b900"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-16" x1="7785.94288" y1="7988.99456" x2="7786.94287" y2="7988.99456" gradientTransform="translate(-122795.61172 119773.01721) rotate(-90) scale(15.37502)" href="#linear-gradient-15"/>
+    <linearGradient id="linear-gradient-17" x1="8129.65581" y1="7650.6291" x2="8130.65582" y2="7650.6291" gradientTransform="translate(-70560.14209 75056.90364) rotate(-90) scale(9.22499)" href="#linear-gradient-15"/>
+    <linearGradient id="linear-gradient-18" x1="7914.83505" y1="7862.10759" x2="7915.83505" y2="7862.10759" gradientTransform="translate(-96693.34809 97414.96043) rotate(-90) scale(12.3)" href="#linear-gradient-15"/>
+    <linearGradient id="linear-gradient-19" x1="7785.94288" y1="7988.99465" x2="7786.94287" y2="7988.99465" gradientTransform="translate(-122822.19839 119773.01721) rotate(-90) scale(15.37502)" href="#linear-gradient-15"/>
+    <radialGradient id="radial-gradient-3" cx="4892.75949" cy="6081.16028" r="0.99997" gradientTransform="translate(-16034.77329 -19900.53313) scale(3.28175)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d6ffd6"/>
+      <stop offset="0.17" stop-color="#bfb"/>
+      <stop offset="0.48" stop-color="#6fff6f"/>
+      <stop offset="0.91" stop-color="#00f600"/>
+      <stop offset="1" stop-color="#00db00"/>
+    </radialGradient>
+    <linearGradient id="linear-gradient-20" x1="5396.69576" y1="6593.14072" x2="5397.69613" y2="6593.14072" gradientTransform="translate(-22458.89335 -27406.04834) scale(4.16444)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#090"/>
+      <stop offset="0.52" stop-color="#7bff7b"/>
+      <stop offset="1" stop-color="#00ca00"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-21" x1="6192.48774" y1="7401.5234" x2="6193.48777" y2="7401.5234" gradientTransform="translate(-44812.92482 -53555.44705) scale(7.23888)" href="#linear-gradient-20"/>
+    <symbol id="pcv_opn_img_true" data-name="pcv_opn_img_true" viewBox="0 0 36.836 64">
+      <g id="Group_5" data-name="Group 5">
+        <rect x="14.09365" y="3.80018" width="6.59854" height="4.40092" style="fill: #009700"/>
+        <rect x="14.60622" y="7.86887" width="5.57341" height="1.66002" style="fill: #009700"/>
+        <rect x="13.77337" y="0.00114" width="7.23911" height="4.0357" style="fill: #009700"/>
+      </g>
+      <g id="Group_Port2" data-name="Group Port2">
+        <g style="clip-path: url(#clip-path)">
+          <rect x="22.32946" y="51.69892" width="11.63833" height="9.2251" style="fill: url(#linear-gradient-15)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-2)">
+          <rect x="33.82443" y="48.62407" width="3.01113" height="15.37479" style="fill: url(#linear-gradient-16)"/>
+        </g>
+      </g>
+      <g id="Group_Port1" data-name="Group Port1">
+        <g style="clip-path: url(#clip-path-3)">
+          <rect x="11.09333" y="51.69892" width="11.45685" height="9.2251" style="fill: url(#linear-gradient-17)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-4)">
+          <rect x="9.93166" y="50.16121" width="1.34315" height="12.29995" style="fill: url(#linear-gradient-18)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-5)">
+          <rect x="7.23911" y="48.62407" width="3.01113" height="15.37479" style="fill: url(#linear-gradient-19)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-6)">
+          <rect x="21.52505" y="51.69892" width="1.02514" height="9.2251" style="fill: url(#radial-gradient-3)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-7)">
+          <rect x="15.3088" y="48.17579" width="4.16597" height="4.99655" style="fill: url(#linear-gradient-20)"/>
+        </g>
+      </g>
+      <g id="Group_4" data-name="Group 4">
+        <rect x="10.25024" y="45.74094" width="14.35022" height="1.53771" style="fill: #009700"/>
+        <rect x="13.26137" y="45.10037" width="8.26368" height="3.07428" style="fill: #00fc00"/>
+        <rect x="21.52505" y="19.98848" width="2.05028" height="27.67474" style="fill: #31ff31"/>
+        <rect x="15.82308" y="19.98848" width="3.20341" height="21.26791" style="fill: #31ff31"/>
+        <rect x="11.27481" y="19.98848" width="1.98599" height="27.67474" style="fill: #31ff31"/>
+        <rect x="14.79851" y="41.25639" width="5.18884" height="3.33027" style="fill: #00ca00"/>
+        <rect x="15.31051" y="44.5878" width="4.16484" height="0.51257" style="fill: #fff"/>
+        <g style="clip-path: url(#clip-path-8)">
+          <rect x="13.77337" y="22.55076" width="7.23911" height="1.53771" style="fill: url(#linear-gradient-21)"/>
+        </g>
+      </g>
+      <g id="Group_Hose" data-name="Group Hose">
+        <g style="clip-path: url(#clip-path-9)">
+          <path d="M7.75168,18.011a4.582,4.582,0,0,0-2.69028.85618A9.21282,9.21282,0,0,0,2.2528,22.235,16.75222,16.75222,0,0,0,.64853,27.09959,23.64454,23.64454,0,0,0,.32028,30.815H.83285A20.86484,20.86484,0,0,1,2.762,22.63381c2.37056-4.59605,4.98972-4.10908,4.98972-4.10908Z" style="fill: #00ca00"/>
+        </g>
+      </g>
+      <g id="Group_3" data-name="Group 3">
+        <rect x="1.98599" y="27.09959" width="30.8133" height="2.02069" style="fill: #00ca00"/>
+        <rect x="1.98599" y="34.9787" width="30.8133" height="2.75456" style="fill: #003100"/>
+        <rect x="1.98599" y="28.57302" width="30.8133" height="6.91826" style="fill: #006500"/>
+        <rect x="7.75168" y="17.68221" width="0.96028" height="0.96085" style="fill: #006500"/>
+        <polygon points="0 30.815 0 32.993 1.986 32.993 1.986 31.775 0.961 31.775 0.961 30.815 0 30.815" style="fill: #003100"/>
+      </g>
+      <g id="Group_2" data-name="Group 2">
+        <rect x="7.75168" y="24.60103" width="19.34677" height="15.24679" style="fill: #003100"/>
+        <rect x="8.26368" y="25.04932" width="18.32221" height="14.2848" style="fill: #00ca00"/>
+        <rect x="13.77337" y="29.4053" width="7.23911" height="5.57341" style="fill: none;stroke: #4c4c4c;stroke-miterlimit: 2.27555561065674;stroke-width: 0.142222225666046px"/>
+      </g>
+      <g id="Group_1" data-name="Group 1">
+        <rect x="22.22933" y="19.6682" width="3.20341" height="1.53771" style="fill: #006500"/>
+        <polygon points="5.381 14.287 5.51 12.749 7.239 12.749 8.264 9.226 26.585 9.226 27.61 12.749 29.084 12.749 29.468 14.287 5.381 14.287" style="fill: #53ff53"/>
+        <rect x="11.27481" y="12.1088" width="2.30628" height="0.64057" style="fill: #00fc00"/>
+        <rect x="21.2042" y="12.1088" width="2.37056" height="0.64057" style="fill: #00fc00"/>
+        <rect x="26.58532" y="12.1088" width="2.37056" height="0.64057" style="fill: #00fc00"/>
+        <rect x="5.82997" y="12.1088" width="2.43371" height="0.64057" style="fill: #00fc00"/>
+        <polygon points="17.296 21.014 15.311 20.757 13.261 20.502 11.275 20.244 9.225 19.989 9.097 19.989 8.264 18.323 7.687 16.465 7.367 15.824 7.239 15.761 5.061 15.761 5.381 14.287 29.469 14.287 29.596 15.761 29.34 15.761 27.61 15.761 27.483 15.824 26.778 17.49 26.137 19.347 25.689 19.989 23.575 20.244 21.525 20.502 19.475 20.757 17.873 20.95 17.296 21.014" style="fill: #009700"/>
+        <polygon points="27.931 12.749 27.418 8.906 25.881 8.906 25.881 12.749 27.931 12.749" style="fill: #45ff45"/>
+        <polygon points="16.272 12.749 16.656 8.906 18.193 8.906 18.513 12.749 16.272 12.749" style="fill: #45ff45"/>
+        <polygon points="6.855 12.749 7.367 8.906 8.905 8.906 8.905 12.749 6.855 12.749" style="fill: #45ff45"/>
+      </g>
+    </symbol>
+    <symbol id="pcv_cls_img_true" data-name="pcv_cls_img_true" viewBox="0 0 36.836 64">
+      <g id="Group_5-2" data-name="Group 5">
+        <rect x="14.09365" y="3.80018" width="6.59854" height="4.40092" style="fill: #970000"/>
+        <rect x="14.60622" y="7.86887" width="5.57341" height="1.66002" style="fill: #970000"/>
+        <rect x="13.77337" y="0.00114" width="7.23911" height="4.0357" style="fill: #970000"/>
+      </g>
+      <g id="Group_Port2-2" data-name="Group Port2">
+        <g style="clip-path: url(#clip-path)">
+          <rect x="22.32946" y="51.69892" width="11.63833" height="9.2251" style="fill: url(#linear-gradient)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-2)">
+          <rect x="33.82443" y="48.62407" width="3.01113" height="15.37479" style="fill: url(#linear-gradient-2)"/>
+        </g>
+      </g>
+      <g id="Group_Port1-2" data-name="Group Port1">
+        <g style="clip-path: url(#clip-path-3)">
+          <rect x="11.09333" y="51.69892" width="11.45685" height="9.2251" style="fill: url(#linear-gradient-3)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-4)">
+          <rect x="9.93166" y="50.16121" width="1.34315" height="12.29995" style="fill: url(#linear-gradient-4)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-5)">
+          <rect x="7.23911" y="48.62407" width="3.01113" height="15.37479" style="fill: url(#linear-gradient-5)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-6)">
+          <rect x="21.52505" y="51.69892" width="1.02514" height="9.2251" style="fill: url(#radial-gradient)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-7)">
+          <rect x="15.3088" y="48.17579" width="4.16597" height="4.99655" style="fill: url(#linear-gradient-6)"/>
+        </g>
+      </g>
+      <g id="Group_4-2" data-name="Group 4">
+        <rect x="10.25024" y="45.74094" width="14.35022" height="1.53771" style="fill: #970000"/>
+        <rect x="13.26137" y="45.10037" width="8.26368" height="3.07428" style="fill: #fc0000"/>
+        <rect x="21.52505" y="19.98848" width="2.05028" height="27.67474" style="fill: #ff3131"/>
+        <rect x="15.82308" y="19.98848" width="3.20341" height="21.26791" style="fill: #ff3131"/>
+        <rect x="11.27481" y="19.98848" width="1.98599" height="27.67474" style="fill: #ff3131"/>
+        <rect x="14.79851" y="41.25639" width="5.18884" height="3.33027" style="fill: #ca0000"/>
+        <rect x="15.31051" y="44.5878" width="4.16484" height="0.51257" style="fill: #fff"/>
+        <g style="clip-path: url(#clip-path-8)">
+          <rect x="13.77337" y="22.55076" width="7.23911" height="1.53771" style="fill: url(#linear-gradient-7)"/>
+        </g>
+      </g>
+      <g id="Group_Hose-2" data-name="Group Hose">
+        <g style="clip-path: url(#clip-path-9)">
+          <path d="M7.75168,18.011a4.582,4.582,0,0,0-2.69028.85618A9.21282,9.21282,0,0,0,2.2528,22.235,16.75222,16.75222,0,0,0,.64853,27.09959,23.64454,23.64454,0,0,0,.32028,30.815H.83285A20.86484,20.86484,0,0,1,2.762,22.63381c2.37056-4.59605,4.98972-4.10908,4.98972-4.10908Z" style="fill: #ca0000"/>
+        </g>
+      </g>
+      <g id="Group_3-2" data-name="Group 3">
+        <rect x="1.98599" y="27.09959" width="30.8133" height="2.02069" style="fill: #ca0000"/>
+        <rect x="1.98599" y="34.9787" width="30.8133" height="2.75456" style="fill: #310000"/>
+        <rect x="1.98599" y="28.57302" width="30.8133" height="6.91826" style="fill: #650000"/>
+        <rect x="7.75168" y="17.68221" width="0.96028" height="0.96085" style="fill: #650000"/>
+        <polygon points="0 30.815 0 32.993 1.986 32.993 1.986 31.775 0.961 31.775 0.961 30.815 0 30.815" style="fill: #310000"/>
+      </g>
+      <g id="Group_2-2" data-name="Group 2">
+        <rect x="7.75168" y="24.60103" width="19.34677" height="15.24679" style="fill: #310000"/>
+        <rect x="8.26368" y="25.04932" width="18.32221" height="14.2848" style="fill: #ca0000"/>
+        <rect x="13.77337" y="29.4053" width="7.23911" height="5.57341" style="fill: none;stroke: #4c4c4c;stroke-miterlimit: 2.27555561065674;stroke-width: 0.142222225666046px"/>
+      </g>
+      <g id="Group_1-2" data-name="Group 1">
+        <rect x="22.22933" y="19.6682" width="3.20341" height="1.53771" style="fill: #650000"/>
+        <polygon points="5.381 14.287 5.51 12.749 7.239 12.749 8.264 9.226 26.585 9.226 27.61 12.749 29.084 12.749 29.468 14.287 5.381 14.287" style="fill: #ff5353"/>
+        <rect x="11.27481" y="12.1088" width="2.30628" height="0.64057" style="fill: #fc0000"/>
+        <rect x="21.2042" y="12.1088" width="2.37056" height="0.64057" style="fill: #fc0000"/>
+        <rect x="26.58532" y="12.1088" width="2.37056" height="0.64057" style="fill: #fc0000"/>
+        <rect x="5.82997" y="12.1088" width="2.43371" height="0.64057" style="fill: #fc0000"/>
+        <polygon points="17.296 21.014 15.311 20.757 13.261 20.502 11.275 20.244 9.225 19.989 9.097 19.989 8.264 18.323 7.687 16.465 7.367 15.824 7.239 15.761 5.061 15.761 5.381 14.287 29.469 14.287 29.596 15.761 29.34 15.761 27.61 15.761 27.483 15.824 26.778 17.49 26.137 19.347 25.689 19.989 23.575 20.244 21.525 20.502 19.475 20.757 17.873 20.95 17.296 21.014" style="fill: #970000"/>
+        <polygon points="27.931 12.749 27.418 8.906 25.881 8.906 25.881 12.749 27.931 12.749" style="fill: #ff4545"/>
+        <polygon points="16.272 12.749 16.656 8.906 18.193 8.906 18.513 12.749 16.272 12.749" style="fill: #ff4545"/>
+        <polygon points="6.855 12.749 7.367 8.906 8.905 8.906 8.905 12.749 6.855 12.749" style="fill: #ff4545"/>
+      </g>
+    </symbol>
+    <symbol id="pcv_general" data-name="pcv_general" viewBox="0 0 37 64">
+      <g id="Group_5-3" data-name="Group 5">
+        <rect x="14" y="4" width="7" height="4" style="fill: #717171"/>
+        <rect x="15" y="7" width="6" height="2" style="fill: #717171"/>
+        <rect x="14" width="7" height="4" style="fill: #717171"/>
+      </g>
+      <g id="Group_Port2-3" data-name="Group Port2">
+        <g style="clip-path: url(#clip-path-10)">
+          <rect x="23" y="51" width="12" height="9" style="fill: url(#linear-gradient-8)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-11)">
+          <rect x="34" y="48" width="3" height="15" style="fill: url(#linear-gradient-9)"/>
+        </g>
+      </g>
+      <g id="Group_Port1-3" data-name="Group Port1">
+        <g style="clip-path: url(#clip-path-12)">
+          <rect x="12" y="51" width="11" height="9" style="fill: url(#linear-gradient-10)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-13)">
+          <rect x="11" y="50" width="1" height="12" style="fill: url(#linear-gradient-11)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-14)">
+          <rect x="8" y="48" width="3" height="15" style="fill: url(#linear-gradient-12)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-15)">
+          <rect x="22" y="51" width="1" height="9" style="fill: url(#radial-gradient-2)"/>
+        </g>
+        <g style="clip-path: url(#clip-path-16)">
+          <rect x="16" y="48" width="4" height="5" style="fill: url(#linear-gradient-13)"/>
+        </g>
+      </g>
+      <g id="Group_4-3" data-name="Group 4">
+        <rect x="11" y="45" width="14" height="2" style="fill: #717171"/>
+        <rect x="14" y="45" width="8" height="3" style="fill: #bebebe"/>
+        <rect x="22" y="19" width="2" height="28" style="fill: #ccc"/>
+        <rect x="16" y="20" width="3" height="21" style="fill: #ccc"/>
+        <rect x="12" y="19" width="2" height="28" style="fill: #ccc"/>
+        <rect x="15" y="41" width="5" height="3" style="fill: #989898"/>
+        <rect x="16" y="44" width="4" height="1" style="fill: #fff"/>
+        <g style="clip-path: url(#clip-path-17)">
+          <rect x="14" y="22" width="7" height="2" style="fill: url(#linear-gradient-14)"/>
+        </g>
+      </g>
+      <g id="Group_Hose-3" data-name="Group Hose">
+        <g style="clip-path: url(#clip-path-18)">
+          <path d="M8,17.196C5.46116,17.14168.52805,21.17953.5686,30h.51257C.23563,28.37655,4.4426,16.46127,8,17.70972Z" style="fill: #989898"/>
+        </g>
+      </g>
+      <g id="Group_3-3" data-name="Group 3">
+        <rect x="2" y="27" width="31" height="2" style="fill: #989898"/>
+        <rect x="2" y="34" width="31" height="3" style="fill: #252525"/>
+        <rect x="2" y="28" width="31" height="7" style="fill: #4c4c4c"/>
+        <rect x="8" y="17" width="1" height="1" style="fill: #4c4c4c"/>
+        <polygon points="2 30 2 32 3 32 3 31 3 31 3 30 2 30" style="fill: #252525"/>
+      </g>
+      <g id="Group_2-3" data-name="Group 2">
+        <rect x="8" y="24" width="19" height="15" style="fill: #252525"/>
+        <rect x="9" y="25" width="18" height="14" style="fill: #989898"/>
+        <rect x="14" y="29" width="7" height="6" style="fill: none;stroke: #4c4c4c;stroke-miterlimit: 2.27555561065674;stroke-width: 0.142222225666046px"/>
+      </g>
+      <g id="Group_1-3" data-name="Group 1">
+        <rect x="23" y="19" width="3" height="2" style="fill: #4c4c4c"/>
+        <polygon points="5.916 14 6.045 13 7.774 13 8.799 9 27.12 9 28.146 13 29.619 13 30.004 14 5.916 14" style="fill: #d4d4d4"/>
+        <rect x="12" y="11" width="2" height="1" style="fill: #bebebe"/>
+        <rect x="22" y="11" width="2" height="1" style="fill: #bebebe"/>
+        <rect x="27" y="11" width="2" height="1" style="fill: #bebebe"/>
+        <rect x="7" y="11" width="2" height="1" style="fill: #bebebe"/>
+        <path d="M17.88521,19.96932C15.96392,19.7372,13.49449,19.37811,10.1274,19a34.80008,34.80008,0,0,1-1.63616-3.94026A19.52667,19.52667,0,0,0,5.596,15l.32028-1h24.0879l.12743,1a23.26325,23.26325,0,0,0-2.60916.05974c-.49691.75256-.57416,2.16252-1.69753,3.94026C23.97038,19.21286,21.03334,19.60938,17.88521,19.96932Z" style="fill: #717171"/>
+        <polygon points="28.134 12 27.6 8 26 8 26 12 28.134 12" style="fill: #d1d1d1"/>
+        <polygon points="16.761 12 17.161 8 18.761 8 19.094 12 16.761 12" style="fill: #d1d1d1"/>
+        <polygon points="6.866 12 7.4 8 9 8 9 12 6.866 12" style="fill: #d1d1d1"/>
+      </g>
+    </symbol>
+    <symbol id="alrm_alert_false_2" data-name="alrm_alert_false 2" viewBox="0 0 6.92 6.92">
+      <circle id="ALRM_FALSE" cx="3.45996" cy="3.45996" r="3.45996" style="fill: #74e83d"/>
+    </symbol>
+    <symbol id="alrm_alert_true" data-name="alrm_alert_true" viewBox="0 0 6.92 9.441">
+      <g id="ALRM_TRUE">
+        <circle cx="3.45996" cy="3.85669" r="3.45996" style="fill: #f20f0f"/>
+        <text transform="translate(2.25293 6.56152)" style="font-size: 7.648509979248047px;fill: #ff0;font-family: Arial-BoldMT, Arial;font-weight: 700"><animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" />!</text>
+      </g>
+    </symbol>
+    <symbol id="alrm_alert_bad" data-name="alrm_alert_bad" viewBox="0 0 6.92 8.271">
+      <g id="ALRM_BAD">
+        <circle cx="3.45996" cy="3.45996" r="3.45996" style="fill: #f20f0f"/>
+        <text transform="translate(1.24121 5.68311) scale(1.09717 1)" style="font-size: 6.618520259857178px;fill: #fff;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+      </g>
+    </symbol>
+  </defs>
+  
+  <rect x="0.27231" y="0.27231" width="391.30333" height="273.32484" style="fill: none;stroke: #1b1464;stroke-miterlimit: 10;stroke-width: 0.544625428176363px"/>
+  <g id="PCV1002A" data-tooltip-attr="MOV*" class="tooltips clickable svg-valve PCV1002A_GEN_ALRM_IMG PCV1002A_OPN_IMG PCV1002A_CLS_IMG" onclick="OpenCustomDeviceModal('PCV-1002A','PCV1002A','Views/PlantView/DeviceViewControlValveView#1FCVModal02.cshtml','MOVView47','')">
+    <use width="36.83556" height="64" transform="translate(28.25391 12.40476)" href="#pcv_opn_img_true"/>
+    <use width="36.83556" height="64" transform="translate(28.25391 12.40476)" href="#pcv_cls_img_true"/>
+    <use width="37" height="64" transform="translate(28.25391 12.40476)" href="#pcv_general"/>
+  </g>
+  <text transform="translate(221.69886 29.73421)" style="font-size: 12px;font-family: ArialMT, Arial">PID Parameters</text>
+  <text transform="translate(22.6244 188.94548)" style="font-size: 12px;font-family: ArialMT, Arial">Position<tspan x="42.69141" y="0" style="letter-spacing: -0.01806640625em"> </tspan><tspan x="45.80859" y="0" style="letter-spacing: -0.037109375em">T</tspan><tspan x="52.69336" y="0">ransmitter</tspan></text>
+  <text transform="translate(13.5999 234.87696)" style="font-size: 12px;font-family: ArialMT, Arial">High<tspan x="24.67969" y="0" style="letter-spacing: -0.05517578125em"> </tspan><tspan x="27.35156" y="0">Alarm</tspan></text>
+  <text transform="translate(230.51708 188.94555)" style="font-size: 12px;font-family: ArialMT, Arial">Hydraulic Pressure<tspan x="101.36719" y="0" style="letter-spacing: -0.01806640625em"> </tspan><tspan x="104.48438" y="0">Txr</tspan></text>
+  <g id="PID-SP">
+    <text transform="translate(15.14532 94.94837)" style="font-size: 12px;font-family: ArialMT, Arial">PID S<tspan x="31.3418" y="0" style="letter-spacing: -0.01806640625em">P</tspan></text>
+    <path d="M136.261,89.54181v10.53512c0,.56864-.345,1.03058-.766,1.03058H67.02434c-.42132,0-.76339-.46194-.76339-1.03058V89.54181c0-.5725.34207-1.0343.76339-1.0343h68.47057C135.916,88.50751,136.261,88.96931,136.261,89.54181Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="kg_cm_" data-name="kg/cm²" transform="translate(104.82911 94.94857)" style="font-size: 8.126839637756348px;fill: #fff;font-family: ArialMT, Arial"><tspan xml:space="preserve"> kg/cm²</tspan></text>
+    <text id="PCV1002A_PID_SP_VALUE" title="LPBS Close Button Status for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_PID_SP_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_PID_SP_VALUE"  transform="translate(99.39942 96.29525)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="PID-PV">
+    <text transform="translate(15.00854 120.05572)" style="font-size: 12px;font-family: ArialMT, Arial">PID PV</text>
+    <path d="M136.12417,114.64916v10.53512c0,.56864-.34495,1.03058-.766,1.03058H66.88756c-.42133,0-.76339-.46194-.76339-1.03058V114.64916c0-.5725.34206-1.0343.76339-1.0343h68.47057C135.77922,113.61486,136.12417,114.07666,136.12417,114.64916Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="kg_cm_2" data-name="kg/cm²" transform="translate(104.69233 120.05592)" style="font-size: 8.126839637756348px;fill: #fff;font-family: ArialMT, Arial"><tspan xml:space="preserve"> kg/cm²</tspan></text>
+    <text id="PCV1002A_PID_PV_VALUE" title="Remote Select Status for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_PID_PV_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_PID_PV_VALUE"  transform="translate(99.26264 121.4026)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="PS-Txr">
+    <text transform="translate(13.5999 211.94702)" style="font-size: 12px;font-family: ArialMT, Arial">Txr <tspan x="20.66016" y="0" style="letter-spacing: -0.07421875em">V</tspan><tspan x="27.77344" y="0">alue</tspan></text>
+    <path d="M148.9745,205.19356v10.53512c0,.56864-.345,1.03059-.766,1.03059H79.73789c-.42132,0-.76339-.46195-.76339-1.03059V205.19356c0-.5725.34207-1.03429.76339-1.03429h68.47057C148.62955,204.15927,148.9745,204.62106,148.9745,205.19356Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="kg_cm_3" data-name="kg/cm²" transform="translate(126.11988 210.6003)" style="font-size: 8.126839637756348px;fill: #fff;font-family: ArialMT, Arial"><tspan xml:space="preserve"> %</tspan></text>
+    <text id="PCV1002A_PS_TXR_VALUE" title="Force Open Feedback for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_PS_TXR_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_PS_TXR_VALUE"  transform="translate(112.11305 211.94698)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="HYD-Txr">
+    <text transform="translate(219.05212 211.94663)" style="font-size: 12px;font-family: ArialMT, Arial">Txr <tspan x="20.66016" y="0" style="letter-spacing: -0.07421875em">V</tspan><tspan x="27.77344" y="0">alue</tspan></text>
+    <path d="M354.42673,205.19356v10.53512c0,.56864-.345,1.03059-.766,1.03059H285.19012c-.42132,0-.76339-.46195-.76339-1.03059V205.19356c0-.5725.34207-1.03429.76339-1.03429h68.47057C354.08178,204.15927,354.42673,204.62106,354.42673,205.19356Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="kg_cm_4" data-name="kg/cm²" transform="translate(322.99494 210.6003)" style="font-size: 8.126839637756348px;fill: #fff;font-family: ArialMT, Arial"><tspan xml:space="preserve"> kg/cm²</tspan></text>
+    <text id="PCV1002A_PRESS_TXR_VALUE" title="Local Select Status for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_PRESS_TXR_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_PRESS_TXR_VALUE"  transform="translate(317.56525 211.94698)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="PID-PT">
+    <text transform="translate(9.38136 145.16265)" style="font-size: 12px;font-family: ArialMT, Arial">Inuse P<tspan x="40.69336" y="0" style="letter-spacing: -0.01806640625em">T</tspan></text>
+    <path d="M134.62438,139.75609v10.53512c0,.56864-.345,1.03059-.766,1.03059H65.38777c-.42132,0-.76339-.462-.76339-1.03059V139.75609c0-.5725.34207-1.03429.76339-1.03429h68.47057C134.27943,138.7218,134.62438,139.18359,134.62438,139.75609Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="PCV1002A_PID_PT_INUSE_VALUE" title="Stop Command for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_PID_PT_INUSE_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_PID_PT_INUSE_VALUE"  transform="translate(97.76283 146.50953)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="PID-P">
+    <path d="M343.78979,45.34613V55.88125c0,.56864-.34494,1.03058-.766,1.03058H274.55318c-.42132,0-.76339-.46194-.76339-1.03058V45.34613c0-.5725.34207-1.0343.76339-1.0343h68.47057C343.44485,44.31183,343.78979,44.77363,343.78979,45.34613Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text transform="translate(189.30418 51.13955)" style="font-size: 12px;font-family: ArialMT, Arial">Proportional</text>
+    <text id="PCV1002A_PROP_SP_VALUE" title="LPBS Open Button Status for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_PROP_SP_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_PROP_SP_VALUE"  transform="translate(306.92823 52.09959)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="PID-I">
+    <text transform="translate(189.30431 72.23215)" style="font-size: 12px;font-family: ArialMT, Arial">Integral</text>
+    <path d="M343.78993,66.43872V76.97384c0,.56864-.345,1.03058-.766,1.03058H274.55332c-.42132,0-.76339-.46194-.76339-1.03058V66.43872c0-.5725.34207-1.0343.76339-1.0343h68.47057C343.445,65.40442,343.78993,65.86622,343.78993,66.43872Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="PCV1002A_INTEG_SP_VALUE" title="Close Command for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_INTEG_SP_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_INTEG_SP_VALUE"  transform="translate(306.92838 73.19216)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <g id="PID-D">
+    <text transform="translate(189.30396 93.53221)" style="font-size: 12px;font-family: ArialMT, Arial">Derivative</text>
+    <path d="M343.78958,87.73877V98.27389c0,.56864-.34495,1.03059-.766,1.03059H274.553c-.42132,0-.76339-.462-.76339-1.03059V87.73877c0-.5725.34207-1.03429.76339-1.03429h68.47057C343.44463,86.70448,343.78958,87.16627,343.78958,87.73877Z" transform="translate(-3.85508 -3.02068)" style="stroke: blue;stroke-miterlimit: 10;stroke-width: 0.535929202794692px;opacity: 0.75"/>
+    <text id="PCV1002A_DERIV_SP_VALUE" title="Open Command for PCV-1002A at PRS Skid" onclick="OpenChartModal('PCV1002A_DERIV_SP_VALUE', 'MOVView47'); cancelBubble(event);" text-anchor="end" class="get-hover tooltips PCV1002A_DERIV_SP_VALUE"  transform="translate(306.92802 94.49221)" style="font-size: 12px;fill: lime;font-family: Arial-BoldMT, Arial;font-weight: 700">?</text>
+  </g>
+  <rect x="156.61944" y="11.66153" width="227.92357" height="95.79828" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 2px"/>
+  <rect x="5.57476" y="173.44086" width="378.96824" height="95.11174" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 1.55429248750005px"/>
+  <g id="PCV1002A_PS_H_ALARM" title="" class="svg-alarm PCV1002A_PS_H_ALARM">
+    <use width="6.91992" height="6.91992" transform="translate(80.87125 223.30263) scale(2.16765 2.15644)" href="#alrm_alert_false_2"/>
+    <use width="6.91992" height="9.44092" transform="translate(80.87125 222.23161) scale(2.16765 2.17207)" href="#alrm_alert_true"/>
+    <use width="6.91992" height="8.27051" transform="translate(80.87125 223.2681) scale(2.16765 2.16649)" href="#alrm_alert_bad"/>
+  </g>
+  <g id="PCV1002A_HYDPRS_H_ALARM" title="" class="svg-alarm PCV1002A_HYDPRS_H_ALARM">
+    <use width="6.91992" height="6.91992" transform="translate(291.9306 223.30205) scale(2.16765 2.15644)" href="#alrm_alert_false_2"/>
+    <use width="6.91992" height="9.44092" transform="translate(291.9306 222.23103) scale(2.16765 2.17207)" href="#alrm_alert_true"/>
+    <use width="6.91992" height="8.27051" transform="translate(291.9306 223.26752) scale(2.16765 2.16649)" href="#alrm_alert_bad"/>
+  </g>
+  <g id="PCV1002A_OIL_LVL_ALARM" title="" class="svg-alarm PCV1002A_OIL_LVL_ALARM">
+    <use width="6.91992" height="6.91992" transform="translate(330.91149 119.69531) scale(2.16765 2.15644)" href="#alrm_alert_false_2"/>
+    <use width="6.91992" height="9.44092" transform="translate(330.91149 118.62429) scale(2.16765 2.17207)" href="#alrm_alert_true"/>
+    <use width="6.91992" height="8.27051" transform="translate(330.91149 119.66078) scale(2.16765 2.16649)" href="#alrm_alert_bad"/>
+  </g>
+  <g id="PCV1002A_FLT_ALARM" title="" class="svg-alarm PCV1002A_FLT_ALARM">
+    <use width="6.91992" height="6.91992" transform="translate(330.91149 145.3795) scale(2.16765 2.15644)" href="#alrm_alert_false_2"/>
+    <use width="6.91992" height="9.44092" transform="translate(330.91149 144.30848) scale(2.16765 2.17207)" href="#alrm_alert_true"/>
+    <use width="6.91992" height="8.27051" transform="translate(330.91149 145.34497) scale(2.16765 2.16649)" href="#alrm_alert_bad"/>
+  </g>
+  <g id="PCV1002A_HYDPRS_L_ALARM" title="" class="svg-alarm PCV1002A_HYDPRS_L_ALARM">
+    <use width="6.91992" height="6.91992" transform="translate(292.07455 247.01593) scale(2.16765 2.15644)" href="#alrm_alert_false_2"/>
+    <use width="6.91992" height="9.44092" transform="translate(292.07455 245.94491) scale(2.16765 2.17207)" href="#alrm_alert_true"/>
+    <use width="6.91992" height="8.27051" transform="translate(292.07455 246.9814) scale(2.16765 2.16649)" href="#alrm_alert_bad"/>
+  </g>
+  <g id="PCV1002A_PS_L_ALARM" title="" class="svg-alarm PCV1002A_PS_L_ALARM">
+    <use width="6.91992" height="6.91992" transform="translate(80.86914 247.24836) scale(2.16765 2.15644)" href="#alrm_alert_false_2"/>
+    <use width="6.91992" height="9.44092" transform="translate(80.86914 246.17734) scale(2.16765 2.17207)" href="#alrm_alert_true"/>
+    <use width="6.91992" height="8.27051" transform="translate(80.86914 247.21383) scale(2.16765 2.16649)" href="#alrm_alert_bad"/>
+  </g>
+  <line x1="5.57476" y1="195.1768" x2="384.543" y2="195.1768" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 2px"/>
+  <line x1="156.61944" y1="140.07967" x2="384.543" y2="140.07967" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 1.55104071377085px"/>
+  <line x1="5.57476" y1="219.02394" x2="384.543" y2="219.02394" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 2px"/>
+  <line x1="189.17989" y1="268.55254" x2="189.17989" y2="173.4408" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 1.00194912348357px"/>
+  <line x1="5.57476" y1="241.95387" x2="384.543" y2="241.95387" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 2px"/>
+  <text transform="translate(13.59973 258.21327)" style="font-size: 12px;font-family: ArialMT, Arial">Low<tspan x="22.01367" y="0" style="letter-spacing: -0.05517578125em"> </tspan><tspan x="24.68555" y="0">Alarm</tspan></text>
+  <text transform="translate(222.72091 234.87878)" style="font-size: 12px;font-family: ArialMT, Arial">High<tspan x="24.67969" y="0" style="letter-spacing: -0.05517578125em"> </tspan><tspan x="27.35156" y="0">Alarm</tspan></text>
+  <text transform="translate(3.68031 161.39754)" style="font-size: 9px;font-family: ArialMT, Arial">(0:PI<tspan x="19.00635" y="0" style="letter-spacing: -0.05517578125em">T</tspan><tspan x="24.00732" y="0">-1019, 1:PI</tspan><tspan x="68.03613" y="0" style="letter-spacing: -0.05517578125em">T</tspan><tspan x="73.03711" y="0">-1020, 2:PI</tspan><tspan x="117.06592" y="0" style="letter-spacing: -0.05517578125em">T</tspan><tspan x="122.06689" y="0">-1007)</tspan></text>
+  <text transform="translate(222.72091 258.21319)" style="font-size: 12px;font-family: ArialMT, Arial">Low<tspan x="22.01367" y="0" style="letter-spacing: -0.05517578125em"> </tspan><tspan x="24.68555" y="0">Alarm</tspan></text>
+  <rect x="156.61944" y="115.09148" width="227.92357" height="51.9768" style="fill: none;stroke: #fbb03b;stroke-miterlimit: 10;stroke-width: 2px"/>
+  <text transform="translate(161.55532 129.75051)" style="font-size: 12px;font-family: ArialMT, Arial">Hydraulic Oil<tspan x="68.01563" y="0" style="letter-spacing: -0.01806640625em"> </tspan><tspan x="71.13281" y="0" style="letter-spacing: -0.11083984375em">T</tspan><tspan x="77.13281" y="0">ank Level Low</tspan></text>
+  <text transform="translate(161.55517 156.74956)" style="font-size: 12px;font-family: ArialMT, Arial">Hydraulic System<tspan x="93.35742" y="0" style="letter-spacing: -0.01806640625em"> </tspan><tspan x="96.47461" y="0" style="letter-spacing: -0.037109375em">T</tspan><tspan x="103.35938" y="0">rouble</tspan></text>
+</svg>
+
+<!--SVGEnd-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //svgOnPageLoad();
+</script>

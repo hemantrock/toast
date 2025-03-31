@@ -1,0 +1,67 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTruckMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddTruckMasters()">
+            <span class="glyphicon glyphicon-plus"></span>Add New Truck
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Truck Master</h3>
+        <table id="tblTruckMasters" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>Truck No.</th>
+                    <th>Transporter</th>
+                    <th>No. of Comp</th>
+                    <th>Loading Type</th>
+                    <th>Card No.</th>
+                    <th>Tare Weight</th>
+                    <th>Max Weight</th>
+                    <th>CCOE Weight</th>
+                    <th class="text-center">Edit</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTruckMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="ShowTruckDetails(@itm.TruckID);">
+                        <td style="display:none;">@itm.TruckID</td>
+                        <td>@itm.TruckNumber</td>
+                        <td>@(itm.tblTransporter == null ?"":itm.tblTransporter.TransporterDesc.ToString())</td>
+                        <td>@itm.TotalNoOfComp</td>
+                        <td>
+                            @if (itm.LoadingType == 1)
+                            {
+                                <text>Top</text>
+                            }
+                            else if (itm.LoadingType == 2)
+                            {
+                                <text>Bottom</text>
+                            }
+                        </td>
+                        <td>@(itm.tblCard==null?"":itm.tblCard.CardNumber.ToString())</td>
+                        <td>@(itm.PrintedTareWeight.HasValue ? itm.PrintedTareWeight.Value.ToString() : "")</td>
+                        <td>@(itm.MaxWeight.HasValue ? itm.MaxWeight.Value.ToString() : "")</td>
+                        <td>@(itm.CCOEWeight.HasValue ? itm.CCOEWeight.Value.ToString() : "")</td>
+                        <td class="text-center"><span id="spanEdit_@itm.TruckID" class="glyphicon glyphicon-pencil clickable spanEdit" data-id="@itm.TruckID"></span></td>
+                        <td class="text-center"><span id="spanDelete_@itm.TruckID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TruckID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row" id="dvTruckDetails">
+
+</div>
+<script src="~/Scripts/PageJS/Masters/TruckMasters/Index.js"></script>

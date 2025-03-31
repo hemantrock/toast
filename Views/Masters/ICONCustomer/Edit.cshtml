@@ -1,0 +1,32 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblICONCustomer
+@{
+    ViewBag.Title = "Edit Customer Group";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit ICONCustomer
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <input id="hdnIdKey" type="hidden" value="@Model.Id">
+                    <div class="fields form-group">
+                        <label>GROUP NAME</label>
+                        <input id="txtICONCustomer" name="ICONCustomer" type="text" placeholder="Customer Group Name (1-30 Chars)" class="form-control" value="@Model.GroupName">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateICONCustomer();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/ICONCustomer/ICONCustomer.js"></script>

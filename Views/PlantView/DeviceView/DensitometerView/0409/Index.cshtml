@@ -1,0 +1,115 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Densitometer View";
+    Layout = null;
+    List<string> Groups;
+    if (clsConfig.TanksGrouping.ToUpper() == "Type-Wise".ToUpper())
+    { Groups = Model.Where(x => x.tblTank.TankType != null && x.tblTank.tblProduct.Visible).Select(x => x.tblTank.tblTankType.TankType).Distinct().ToList(); }
+    else { Groups = Model.Where(x => x.tblTank.tblProduct != null && x.tblTank.tblProduct.Visible).OrderBy(x => x.tblTank.ProductID).Select(x => x.tblTank.tblProduct.ProdNameShort).Distinct().ToList(); }
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Densitometer</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing ">
+        <div class="tab-wrapper w-100">
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        @{
+                            //List<string> ProdTanks = Model.Select(x => x.tblProduct.ProdNameShort).Distinct().ToList();
+                            foreach (string prod in Groups)
+                            {
+                                <li><a href="#@prod" data-toggle="tab" style="font-size: 23px;">@prod</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        @{
+                            foreach (string prod in Groups)
+                            {
+                                List<tblDeviceMaster> lstDevices;
+                                if (clsConfig.TanksGrouping == "Type-Wise".ToUpper()) { lstDevices = Model.Where(x => x.tblTank.tblTankType.TankType == prod).ToList(); }
+                                else { lstDevices = Model.Where(x => x.tblTank.tblProduct.ProdNameShort == prod).ToList(); }
+                                <div class="tab-pane fade" id="@prod">
+                                    <div class="densitometer-container col-lg-12">
+                                        @{
+                                            foreach (tblDeviceMaster Device in lstDevices)
+                                            {
+                                                string DevPrefix = Device.TagPrefix;
+                                                string DevTKPrefix = "";
+                                                if (Device.TankID != null) { DevTKPrefix = Device.tblTank.TagPrefix; }
+                                                string PriConn = Device.TagPrefix + "_CONN01";
+                                                string SecConn = Device.TagPrefix + "_CONN02"; ;
+                                                string ProdName = (Device.tblTank != null ? Device.tblTank.tblProduct.ProdNameShort : (Device.tblHeadersMaster != null ? Device.tblHeadersMaster.tblProduct.ProdNameShort : ""));
+                                                <div class="device-box densitometer-wrapper">
+                                                    <div class="device-header">
+                                                        <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                                                        <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@ProdName</span>
+                                                    </div>
+                                                    <div class="device-block">
+                                                        <div class="device densitometer">
+                                                            <span class="maintainence-mode-icon @(DevPrefix + "_MAINT")"></span>
+                                                            <span class="action-icon remote-icon"></span>
+                                                            <span class="action-icon local-icon"></span>
+                                                            <span class="action-icon auto-icon"></span>
+                                                            <span class="action-icon manual-icon"></span>
+                                                        </div>
+                                                        <div class="device-status-reading-block">
+                                                            <span class="obs-temp tooltips" title="Observed Temperature"><span class="@(DevPrefix + "_OBS_TEMP")">?</span> °C</span>
+                                                            <span class="obs-density tooltips" title="Observed Density"><span class="@(DevTKPrefix + "_AMB_DENSITY")">?</span> kg/m³</span>   
+                                                            <span class="std-density tooltips" title="Standard Density"><span class="@(DevTKPrefix + "_STD_DENSITY")">?</span> kg/m³</span>   
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="device-detail">
+                                                        <table class="table-striped value-tbl w-100">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="tbl-lbl">Connections</td>
+                                                                    <td class="tbl-val">
+                                                                        <span class="circle-cont-sm">
+                                                                            <span class="@PriConn"></span>
+                                                                        </span>
+                                                                    </td>
+                                                                    <td class="tbl-val">
+                                                                        <span class="circle-cont-sm">
+                                                                            <span class="@SecConn"></span>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="tbl-lbl">Status</td>
+                                                                    <td class="tbl-val @(DevPrefix + "_STATUS")" colspan="2"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    opcPageName = '@string.Join(",",Model.Select(x=>x.PageName).Distinct())';
+</script>
+<script src="~/Scripts/PageJS/PlantView/DeviceView/DensitometerView/0409/Index.js"></script>

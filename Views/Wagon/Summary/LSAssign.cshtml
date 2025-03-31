@@ -1,0 +1,155 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model TOAST.Data.Model.tblWLoadRakeDetail
+@{
+    Layout = null;
+    //List<int> lstClusters = ViewBag.lstClusters;
+    //List<int> lstLoadSpots = ViewBag.lstLoadSpots;
+    tblWagonMaster mRake = Model.tblWagonMaster;
+    tblWagonBCUMaster mBCU = Model.tblLoadSpotMaster.tblWagonBCUArmBatch.tblWagonBCUMaster;
+    tblClusterMaster mClus = mBCU.tblClusterMaster;
+    double DeliveredQty = (Model.tblWLoadRakeComponents.Select(x => (x.DeliveredQtyGrs ?? 0) + (x.PrevQtyGrs ?? 0)).DefaultIfEmpty(0).Sum());
+    string sLoadSpotNo = ""; string sClusterNo = ""; string sSpurNo = ""; string sTankNo = "";
+    if (Model.LoadSpotID != null && Model.tblLoadSpotMaster != null)
+    {
+        sSpurNo = String.Format("{0:00}", mClus.tblSpurMaster.SpurNo);
+        sClusterNo = String.Format("{0:00}", mClus.ClusterNo);
+        sLoadSpotNo = String.Format("{0:00}", Model.tblLoadSpotMaster.LoadSpotNo);
+    }
+    if (Model.TankID != null)
+    {
+        sTankNo = (Model.tblTank.TankName);
+    }
+}
+
+@if (Model != null)
+{
+    <div class="modal-dialog" style="width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Wagon Load Spot Reassign</h3>
+            </div>
+            <div class="modal-body" id="myModalBody">
+                <div class="row m-t-10">
+                    <div class="col-lg-6" style="padding: 0px 5px 0px 15px;">
+                        <table class="table-striped app-tbl">
+                            <tbody>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Rake No</td>
+                                    <td>@mRake.WagonNo</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Rake Status</td>
+                                    <td>@Model.tblTruckStatu.TruckStatusDesc</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Load Status</td>
+                                    <td>@Model.tblLoadStatu.LoadStatusDesc</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-6" style="padding: 0px 15px 0px 5px;">
+                        <table class="table-striped app-tbl">
+                            <tbody>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Load No</td>
+                                    <td>@Model.WLoadID</td>
+                                    <td class="truck-detail-info-head bold">Seq No</td>
+                                    <td>@Model.WagonSeqNo</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Product</td>
+                                    <td>@Model.tblProduct.ProdNameShort</td>
+                                    <td class="truck-detail-info-head bold">Preset</td>
+                                    <td>@Model.PresetQty</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Tank</td>
+                                    <td>@sTankNo</td>
+                                    <td class="truck-detail-info-head bold">Filled</td>
+                                    <td>@DeliveredQty</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row m-t-10">
+                    <div class="col-lg-6" style="padding: 0px 5px 0px 15px;">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center bg-color" colspan="3" style="font-size: 22px;">Previous Allocation</th></tr>
+                                <tr>
+                                    <th class="text-center bg-color" style="width: 33%">Old Spur</th>
+                                    <th class="text-center bg-color" style="width: 33%">Old Cluster</th>
+                                    <th class="text-center bg-color" style="width: 34%">Old Load Spot</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">@sSpurNo</td>
+                                    <td class="text-center">@sClusterNo</td>
+                                    <td class="text-center">@sLoadSpotNo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-6" style="padding: 0px 15px 0px 5px;">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr><th class="text-center bg-color" colspan="3" style="font-size: 22px;">New Allocation</th></tr>
+                                <tr>
+                                    <th class="text-center bg-color" style="width: 20%">New Spur</th>
+                                    <th class="text-center bg-color" style="width: 40%">New Cluster</th>
+                                    <th class="text-center bg-color" style="width: 40%">New Load Spot</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">@sSpurNo</td>
+                                    <td class="text-center">
+                                        <select class="form-control" id="ddlClusterNo" name="ClusterNo">
+                                            <option value="0">Select</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                        </select>
+                                    </td>
+                                    <td class="text-center">
+                                        <select class="form-control" id="ddlLoadSpotNo" name="LoadSpotNo">
+                                            <option value="0">Select</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top:0px">
+                <button type="button" class="btn btn-primary" id="btnOK">OK</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/PageJS/Wagon/Summary/LoadSpotAssign.js"></script>

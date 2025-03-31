@@ -1,0 +1,105 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<tblTagMaster>
+@{
+    ViewBag.Title = "Plant View - Pressure Transmitter Details View";
+    Layout = null; tblTagMaster ParameterTag = new tblTagMaster();
+    List<tblTagMaster> DeviceTags = Model;
+    tblDeviceMaster devMFM = ViewBag.devMFM;
+    tblMeterMaster mtrMFM = ViewBag.mtrMFM;
+    string DevName = ""; string DevDesc = ""; string TagPrefix = ""; string TagSuffix = ""; string PageName = ""; string strUnit = "";
+    if (devMFM != null) { DevName = devMFM.DeviceName; DevDesc = devMFM.DeviceDesc; TagPrefix = devMFM.TagPrefix; TagSuffix = (devMFM.TagSuffix==null?"":"_"+ devMFM.TagSuffix); PageName = devMFM.PageName; }
+    if (mtrMFM != null) { DevName = mtrMFM.MeterNo; DevDesc = mtrMFM.MeterDesc; TagPrefix = mtrMFM.TagPrefix; TagSuffix = (mtrMFM.TagSuffix == null ? "" : "_" + mtrMFM.TagSuffix); PageName = mtrMFM.PageName; }
+}
+<div class="modal-dialog mov-modal" style="width: 550px;">
+    <div class="modal-content">
+        <div class="modal-header pump-househeader-popup-header">
+            <div><h3 class="modal-title" id="">@DevName</h3></div>
+            <div style="border-right: 0px;"><h3 class="modal-title" id="">@DevDesc</h3></div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <div class="mov-valve-popup">
+                <div class="device-box pressure-transmission-wrapper" style="width:165px">
+                    <div class="device-block">
+                        <div class="device mfm @(TagPrefix+ "_STATUS")" style="top:auto">
+                            <span class="maintainence-mode-icon @(TagPrefix + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color">Parameter</th>
+                                <th class="text-center bg-color">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                strUnit = "KL/Hr";
+                                ParameterTag = DeviceTags.Where(x => x.TagName.Contains(TagPrefix+"_VOL_FLWRATE"+ TagSuffix)).FirstOrDefault();
+                                if (ParameterTag != null && ParameterTag.UnitId != null)
+                                {
+                                    strUnit = ParameterTag.tblUOMMaster.UOM;
+                                    <tr>
+                                        <td style="width:75%">Volume FlowRate (@strUnit)</td>
+                                        <td class="@ParameterTag.TagName get-hover" onclick="OpenChartModal('@ParameterTag.TagName', '@PageName'); cancelBubble(event);"></td>
+                                    </tr>
+                                }
+                                strUnit = "Ton/Hr";
+                                ParameterTag = DeviceTags.Where(x => x.TagName.Contains(TagPrefix + "_MASS_FLWRATE" + TagSuffix)).FirstOrDefault();
+                                if (ParameterTag != null && ParameterTag.UnitId != null)
+                                {
+                                    strUnit = ParameterTag.tblUOMMaster.UOM;
+                                    <tr>
+                                        <td>Mass Flow Rate (@strUnit)</td>
+                                        <td class="@ParameterTag.TagName get-hover" onclick="OpenChartModal('@ParameterTag.TagName', '@PageName'); cancelBubble(event);"></td>
+                                    </tr>
+                                }
+                                strUnit = "ºC";
+                                ParameterTag = DeviceTags.Where(x => x.TagName.Contains(TagPrefix + "_TEMP" + TagSuffix)).FirstOrDefault();
+                                if (ParameterTag != null && ParameterTag.UnitId != null)
+                                {
+                                    strUnit = ParameterTag.tblUOMMaster.UOM;
+                                    <tr>
+                                        <td>Observed Temp (@strUnit)</td>
+                                        <td class="@ParameterTag.TagName get-hover" onclick="OpenChartModal('@ParameterTag.TagName', '@PageName'); cancelBubble(event);"></td>
+                                    </tr>
+                                }
+                                strUnit = "Kg/m³";
+                                ParameterTag = DeviceTags.Where(x => x.TagName.Contains(TagPrefix + "_OBS_DENSITY" + TagSuffix)).FirstOrDefault();
+                                if (ParameterTag != null && ParameterTag.UnitId != null)
+                                {
+                                    strUnit = ParameterTag.tblUOMMaster.UOM;
+                                    <tr>
+                                        <td>Observed Density (@strUnit)</td>
+                                        <td class="@ParameterTag.TagName get-hover" onclick="OpenChartModal('@ParameterTag.TagName', '@PageName'); cancelBubble(event);"></td>
+                                    </tr>
+                                }
+                                strUnit = "Kg/m³";
+                                ParameterTag = (DeviceTags.Where(x => x.TagName.Contains(TagPrefix + "_STD_DENS" + TagSuffix)).FirstOrDefault() ?? new tblTagMaster());
+                                if (ParameterTag != null && ParameterTag.UnitId != null)
+                                {
+                                    strUnit = ParameterTag.tblUOMMaster.UOM;
+                                    <tr>
+                                        <td>Standard Density (@strUnit)</td>
+                                        <td class="@(ParameterTag.TagName) get-hover" onclick="OpenChartModal('@(ParameterTag.TagName)', '@PageName'); cancelBubble(event);"></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

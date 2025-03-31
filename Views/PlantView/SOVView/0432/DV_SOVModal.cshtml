@@ -1,0 +1,59 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+
+@{
+    ViewBag.Title = "Plant View - SOV Details View";
+    Layout = null;
+    string DeviceName = ViewBag.Name;
+    string DeviceTagPrefix = ViewBag.TagPrefix;
+    string DevPageName = ViewBag.DevPageName;
+    string DevDesc = ViewBag.DevDesc;
+
+    string DevTagPrefix = "DV" + DeviceTagPrefix + "_AIRSTN_SV";
+    string BypassTag = "ZN" + DeviceTagPrefix + "_AIR_SOV_BYPASS";
+}
+<div class="modal-dialog sov-modal" style="width: 350px;">
+    <div class="modal-content">
+        <div class="modal-header sov-valve-popup-header">
+            <div class="sov-valve-popup-tank-name" style="border-right: none;"><h3 class="modal-title" id="">@DeviceName</h3></div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <div class="sov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn @(BypassTag)" href="javascript:void(0);" onclick="SetProcessValue('Bypass Command to SOV','SOV: ZN@(DeviceTagPrefix)-AIR-SOV',this, '@(BypassTag)', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">BYPASS</a>
+                    @*<a class="push-btn-02 close-mov-btn @(DevTagPrefix+"_OPN_CMD")" href="javascript:void(0);" onclick="SetProcessValue('Open/Close Command to SOV','SOV: ZN@(DeviceTagPrefix)-AIR-SOV',this, '@(DevTag)', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>*@
+                </div>
+                <div class="sov-valve-info-container">
+                    <div class="col-lg-5">
+                        <div title="No Status" data-tooltip-attr="SOV*" class="tooltips sov-valve @(DevTagPrefix+"_OPN_IMG") @(DevTagPrefix+"_CLS_IMG") @(DevTagPrefix+"_OPN_CMD")">
+                            <span class="maintainence-mode-icon"></span>
+                        </div>
+                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon  @(DevTagPrefix+"_AUTOMAN")" onclick="OpenValveAutoManModal(this, '', '@DeviceName', 'VALVE_AUTOMAN', '@(DevTagPrefix+"_AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode sov.ToUpper()'); cancelBubble(event);"></span>
+                    </div>
+                    <div class="col-lg-7 no-padd">
+                        <div class="sov-valve-info-wrapper">
+                            <table class="detail-tbl">
+                                <tbody>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl"><span class="">Open Command</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(DevTagPrefix+"_OPN_CMD")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+    //opc.server.readPageTags(opcPageName);
+</script>

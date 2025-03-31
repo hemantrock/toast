@@ -1,0 +1,151 @@
+﻿@using TOAST.Data.Model;
+@model List<tblLogActivityArchive>
+@{
+    ViewBag.Title = "Plant View - Database View";
+    Layout = null;
+    string ASyncTime=""; string ASyncLostTime=""; string BSyncTime = ""; string BSyncLostTime = "";
+    tblLogActivityArchive AData = Model.Where(x => x.EventLogDesc.ToUpper().Contains("LRCA") && x.EventLogDesc.ToUpper().Contains("SYNCHRONIZED")).FirstOrDefault();
+    if (AData != null)
+    {
+        ASyncTime = (AData.LogTime??new DateTime()).ToString("dd-MMM-yyyy HH:mm:ss");
+    }
+    AData = Model.Where(x => x.EventLogDesc.ToUpper().Contains("LRCA") && (x.EventLogDesc.ToUpper().Contains("SYNCHRONIZING") || x.EventLogDesc.ToUpper().Contains("DISCONNECTED"))).FirstOrDefault();
+    if (AData != null)
+    {
+        ASyncLostTime = (AData.LogTime ?? new DateTime()).ToString("dd-MMM-yyyy HH:mm:ss");
+    }
+    tblLogActivityArchive BData = Model.Where(x => x.EventLogDesc.ToUpper().Contains("LRCB") && x.EventLogDesc.ToUpper().Contains("SYNCHRONIZED")).FirstOrDefault();
+    if (BData != null)
+    {
+        BSyncTime = (BData.LogTime ?? new DateTime()).ToString("dd-MMM-yyyy HH:mm:ss");
+    }
+    BData = Model.Where(x => x.EventLogDesc.ToUpper().Contains("LRCB") && x.EventLogDesc.ToUpper().Contains("SYNCHRONIZING") || x.EventLogDesc.ToUpper().Contains("DISCONNECTED")).FirstOrDefault();
+    if (BData != null)
+    {
+        BSyncLostTime = (BData.LogTime ?? new DateTime()).ToString("dd-MMM-yyyy HH:mm:ss");
+    }
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Database Status</h3>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing database-sever-container">
+        <div class="col-lg-4 server-block">
+            <div class="database-server-header">LRC-01</div>
+            <div class="db-server"></div>
+            <table class="detail-tbl table-striped">
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td width="40%;" class="LRC01_NAME LRC1_NAME"></td>
+                    </tr>
+                    <tr>
+                        <td>Role</td>
+                        <td class="LRC01_ROLE LRC1_ROLE"></td>
+                    </tr>
+                    <tr>
+                        <td>Current HSB Status (Sync State)</td>
+                        <td class="LRC01_STATE LRC1_STATE"></td>
+                    </tr>
+                    <tr>
+                        <td>DB Status</td>
+                        <td class="LRC01_DB_STATE LRC1_DB_STATE"></td>
+                    </tr>
+                    <tr>
+                        <td>Witness Name</td>
+                        <td class="LRC01_WITNESS_NAME LRC1_WITNESS_NAME"></td>
+                    </tr>
+                    <tr>
+                        <td>Witness State</td>
+                        <td class="LRC01_WITNESS_STATE LRC1_WITNESS_STATE"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4 server-block">
+            <div class="database-server-header">LRC-02</div>
+            <div class="db-server"></div>
+            <table class="detail-tbl table-striped">
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td width="40%;" class="LRC02_NAME LRC2_NAME"></td>
+                    </tr>
+                    <tr>
+                        <td>Role</td>
+                        <td class="LRC02_ROLE LRC2_ROLE"></td>
+                    </tr>
+                    <tr>
+                        <td>Current HSB Status (Sync State)</td>
+                        <td class="LRC02_STATE LRC2_STATE"></td>
+                    </tr>
+                    <tr>
+                        <td>DB Status</td>
+                        <td class="LRC02_DB_STATE LRC2_DB_STATE"></td>
+                    </tr>
+                    <tr>
+                        <td>Witness Name</td>
+                        <td class="LRC02_WITNESS_NAME LRC2_WITNESS_NAME"></td>
+                    </tr>
+                    <tr>
+                        <td>Witness State</td>
+                        <td class="LRC02_WITNESS_STATE LRC2_WITNESS_STATE"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <div class="pc-server-wrapper">
+                <div class="database-server-header">WITNESS</div>
+                <div class="pc-container">
+                    <div class="col-lg-3">
+                        <div class="pc-block pull-right"></div>
+                    </div>
+                    <div class="col-lg-9 no-padd">
+                        <table class="detail-tbl table-striped">
+                            <thead></thead>
+                            <tbody>
+                                <tr class="even">
+                                    <td>Witness Name from LRC1</td>
+                                    <td width="45%;" class="LRC01_WITNESS_NAME LRC1_WITNESS_NAME"></td>
+                                </tr>
+                                <tr class="odd">
+                                    <td>Witness State from LRC1</td>
+                                    <td class="LRC01_WITNESS_STATE LRC1_WITNESS_STATE"></td>
+                                </tr>
+                                <tr class="even">
+                                    <td>Witness Name from LRC2</td>
+                                    <td class="LRC02_WITNESS_NAME LRC2_WITNESS_NAME"></td>
+                                </tr>
+                                <tr class="odd">
+                                    <td>Witness State from LRC2</td>
+                                    <td class="LRC02_WITNESS_STATE LRC2_WITNESS_STATE"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div> 
+    <div class="hide col-lg-6 database-status-action-row">
+        <div class="col-lg-3">
+            <button type="button" class="btn btn-primary" id="btnPwdCancel" data-dismiss="modal"> <i class="fas fa-exchange-alt"></i> Manual Failover</button>
+        </div>
+        <div class="col-lg-9">
+            <label>New Witness:</label> 
+            <select id="" value="" class="form-control">
+                <option value="1" selected="">TLF</option>
+            </select> 
+            <button type="button" class="btn btn-primary" id="btnPwdCancel" data-dismiss="modal"> Witness</button>
+        </div>
+        
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/DatabaseView/Index.js"></script>

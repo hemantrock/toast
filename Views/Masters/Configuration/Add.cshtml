@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Add Configuration";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a new Configuration
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PARAMETER GROUP</label>
+                        <input id="txtParameterGroup" name="ParameterGroup" type="text" placeholder="Parameter Group (<50 Chars)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PARAMETER NAME</label>
+                        <input id="txtConfigurationName" name="ConfigurationName" type="text" placeholder="Parameter Name (3-30 Chars)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PARAMETER VALUE</label>
+                        <input id="txtConfigurationValue" name="ConfigurationValue" type="text" placeholder="Parameter Value" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>PARAMETER DESCRIPTION</label>
+                        <input id="txtConfigurationDesc" name="ConfigurationDesc" type="text" placeholder="Parameter Description (3-50 Chars)" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveConfiguration();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/Configuration/Configuration.js"></script>

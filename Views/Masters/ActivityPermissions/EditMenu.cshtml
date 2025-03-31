@@ -1,0 +1,62 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+
+@model List<MenuPermissionsCustom>
+
+@{
+    ViewBag.Title = "Edit Menu Permissions";
+    Layout = null;
+    int UserRoleID = ViewBag.UserRoleID;
+    string Designation = ViewBag.Designation;
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormMenus" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="grid-header">Menu Permissions : @Designation</h3>
+                    <table id="tblMenus" class="table">
+                        <thead>
+                            <tr>
+                                <th style="display:none;">MenuId</th>
+                                <th class="text-center">Permission</th>
+                                <th>Menu Name</th>
+                                <th>Menu Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (MenuPermissionsCustom itm in Model)
+                            {
+                                <tr>
+                                    <td style="display:none;">@itm.MenuID</td>
+                                    <td>
+                                        @if (itm.Permission == true)
+                                        {
+                                            <input type="checkbox" name="chkMenu" id="@itm.MenuID" checked>
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="chkMenu" id="@itm.MenuID">
+                                        }
+                                    </td> 
+                                    <td>@itm.MenuTitle</td>
+                                    <td>@itm.MenuToolTip</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveMenuPermissions(@UserRoleID);"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/ActivityPermissions/EditMenu.js"></script>

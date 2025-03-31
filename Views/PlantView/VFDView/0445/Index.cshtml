@@ -1,0 +1,169 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    List<tblPump> Pumps = ViewBag.Pumps;
+    List<tblPump> AllPumps = ViewBag.AllPumps;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">VFD View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 m-t-10 vfd-wrapper">
+        <div class="tab-wrapper w-100">
+            <div class="panel with-nav-tabs panel-default pump-view-tab-container">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        @foreach (tblDeviceMaster Device in Model)
+                        {
+                            string DevName = Device.TagPrefix;
+                            <li><a href="#@DevName" data-toggle="tab">@Device.DeviceName</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="panel-body" style="padding-bottom:5px">
+                    <div class="tab-content">
+                        @foreach (tblDeviceMaster Device in Model)
+                        {
+                            string DevName = Device.TagPrefix;
+                            string ProdShort = Device.tblPump.tblProduct.ProdNameShort;
+                            string DeviceDetail = DevName + "; Product: " + ProdShort;
+                            int HeaderNo = (Device.HeaderID == null ? 0 : (Device.tblHeadersMaster.tblProduct.HeaderNo ?? 0));
+                            string HdrSuffix = "HDR" + string.Format("{0:00}", HeaderNo);
+                            string sDmdPref = (DevName.Contains("TWL") ? "_TWL" : DevName.Contains("TLF") ? "_TLF" : "");
+                            tblDeviceMaster PTDevice = (Device.tblHeadersMaster.tblDeviceMasters.Where(x => x.DeviceID == 3).FirstOrDefault() ?? new tblDeviceMaster());
+                            tblPump LinkedPump = Device.tblPump;
+                            List<tblPump> lstPmps = AllPumps.Where(x => x.ProductID == Device.tblPump.ProductID && x.ServiceID == LinkedPump.ServiceID).OrderBy(x => x.TypeSeqNo).ToList();
+                            <div class="tab-pane fade" id="@DevName">
+                                <div class="row">
+                                    <div class="col-lg-@(lstPmps.Count*2+2) p-@clsConfig.ProjPath">
+                                        @foreach (tblPump pump in lstPmps)
+                                        {
+                                            string pumpName = pump.TagPrefix;
+                                            string PumpPrd = pump.tblProduct.ProdNameShort;
+                                            if (clsConfig.ProjPath.Contains("394") || clsConfig.ProjPath == "") { PumpPrd = "VFD-PMP-" + String.Format("{0:00}", pump.TypeSeqNo); }
+                                            <div class="device-box pumps pump-view-wrapper pump-view-lg" style="width:305px">
+                                                <div class="pump-view-header">
+                                                    <span class="h-col h-left" style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000; width:45%">@pump.EquipmentName</span>
+                                                    <span class="h-col h-right" style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000; width:45%">@PumpPrd</span>
+                                                </div>
+                                                <div class="device-block" style="padding: 0px 0;">
+                                                    <div class="pump-view-pump" style="padding: 0px 0;">
+                                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(pumpName+"_LOCREM")" onclick="OpenLocRemModal('@pump.EquipmentName', 'PUMP_LOCREM', '@(pumpName+"_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                        <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@pump.UniqueID,'@("PumpsView"+pump.UniqueID.ToString("0#"))')" class="tooltips pump-header @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG") ">
+                                                            <span class="maintainence-mode-icon @(pumpName+"_MAINT")"></span>
+                                                        </div>
+                                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(pumpName+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @pump.EquipmentName', '@(pumpName+"_AUTOMAN")', '@(pumpName+"_LOCREM")', 'TAG_AUTOMAN','@pump.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                        <span class="sine-wave tooltips @(pumpName+"_ON_VFD")" title="Pump on VFD"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="device-detail">
+                                                    <table class="table-striped pump-view-detail-tbl w-100">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="tbl-lbl" style="width: 45%;">Priority</td>
+                                                                <td class="tbl-val @(pumpName+"_PRIORITY_DDL")">
+                                                                    <span class="tank_mode_lbl"></span>
+                                                                </td>
+                                                            </tr>
+                                                            @*<tr>
+                                                                    <td class="tbl-lbl">Pump On VFD</td>
+                                                                    <td class="tbl-val">
+                                                                        <span class="circle-cont-sm">
+                                                                            <span class="@(pumpName+"_ON_VFD")"></span>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>*@
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-lg-3">
+                                        <table class="table-striped value-tbl status-tbl w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center bg-color" colspan="2">VFD Data</th>
+                                                </tr>
+                                            </thead>
+                                            <tr>
+                                                <td class="tbl-lbl head">Pump Demand</td>
+                                                <td class="tbl-val normal @(ProdShort+sDmdPref+"_PMP_DEMAND")" style="width:25%"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl head">Header Pressure</td>
+                                                <td class="tbl-val normal @(PTDevice.TagPrefix + "_VALUE") get-hover" style="width: 7%;" onclick="OpenChartModal('@(PTDevice.TagPrefix +"_VALUE")', '@(PTDevice.PageName)'); cancelBubble(event);"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl head">Drive Speed (RPM)</td>
+                                                <td class="tbl-val normal @(Device.TagPrefix+"_RPM") get-hover"  onclick="OpenChartModal('@(Device.TagPrefix+"_RPM")', '@(Device.PageName)'); cancelBubble(event);"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl head">Reference Speed (RPM)</td>
+                                                <td class="tbl-val normal @(Device.TagPrefix+"_SPEED_REF") get-hover" onclick="OpenChartModal('@(Device.TagPrefix+"_SPEED_REF")', '@(Device.PageName)'); cancelBubble(event);"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <table class="table-striped value-tbl status-tbl w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center bg-color" colspan="2">VFD Config</th>
+                                                </tr>
+                                            </thead>
+                                            <tr>
+                                                <td style="width:60%" class="tbl-lbl head">Header PT SP (kg/cm²)</td>
+                                                <td class="tbl-val">
+                                                    <input type="number" min=1 readonly class="editable-input @(DevName+"_PT_SP")" ondblclick="this.readOnly='';"
+                                                           style="border: 0px; width: 80%;">
+                                                    <span class="glyphicon glyphicon-upload" onclick="UpdateVFDSetPoint('@(DevName+"_PT_SP")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" style="float:right;top: 3px;" aria-hidden="true"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl head tooltip-custom" title="<div>VFD+Auto &nbsp;&nbsp;&nbsp;&nbsp;: VFD Controlled by PT<br>VFD+Manual: VFD with Manual Start Stop<br>TAS+Auto&nbsp;&nbsp;&nbsp;&nbsp;: Pump Demand<br>TAS+Manual: Each Pump Manual Start Stop&#013</div>">VFD /TAS Mode</td>
+                                                <td class="tbl-val ">
+                                                    <div class="toggle-wrapper" onclick="SetToggleTAS_DOL('@DeviceDetail',this, '@(DevName+"_VFD_TAS_MODE")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]', event)">
+                                                        <input id="toggle-tasdol-mode" class="on-off-btn @(DevName+"_VFD_TAS_MODE") " data-on="VFD" data-off="TAS" checked type="checkbox" data-width="80">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl head tooltip-custom" title="Sequence or Run Hrs Mode">Pump Mode</td>
+                                                <td class="tbl-val">
+                                                    <div class="toggle-wrapper" onclick="SetToggleTAS_DOL('@DeviceDetail',this, '@(DevName+"_SEQRH_MODE")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]', event)">
+                                                        <input id="toggle-tasdol-mode" class="on-off-btn @(DevName+"_SEQRH_MODE") " data-on="SEQ" data-off="RUN-HR" checked type="checkbox" data-width="80">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl head">Max Flow Rate</td>
+                                                <td class="tbl-val normal @(DevName+"_MAX_FLOW_RATE")" style="width:25%"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="row">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    opcPageName = "VFDView.*,PumpView.*,HeaderView.*";
+</script>
+<script src="~/Scripts/PageJS/PlantView/VFDView/Index.js"></script>

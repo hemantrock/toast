@@ -1,0 +1,35 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblEventMaster>
+
+@{
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">Event and SMS Receivers List</h3>
+        <table id="tblEvents" class="table">
+            <thead>
+                <tr>
+                    <th>EventId</th>
+                    <th style="display:none;">Event Desc</th>
+                    <th>SMS Template</th>
+                    <th>Receivers</th>
+                    <th class="text-center">Edit</th>           
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblEventMaster itm in Model)
+                {
+                    <tr>
+                        <td>@itm.EventID</td>
+                        <td style="display:none;">@itm.EventDesc</td>
+                        <td>@itm.SMS_Msg</td>
+                        <td>@string.Join("    ,    ", itm.tblEventSMSReceiverMaps.Select(x => x.tblSMSReceiver.Name + " [" + x.tblSMSReceiver.MobileNo + "]").Distinct())</td>
+                        <td class="text-center"><span id="spanEdit_@itm.EventID" class="glyphicon glyphicon-pencil clickable spanEdit" data-id="@itm.EventID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/SMSConfig/Index.js"></script>

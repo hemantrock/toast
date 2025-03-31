@@ -1,0 +1,661 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@using TOAST.Business;
+@model TOAST.Data.Model.tblTank
+@{
+    ViewBag.Title = "Plant View - Tank View";
+    Layout = null;
+    tblTank tank = Model;
+    int UserID = (int)Session[clsConstants.UserID];
+    List<tblTank> SameGrpTanks = ViewBag.SameGrpTanks;
+    List<tblPump> TankPumps = new TanksBL(UserID).GetProdTfrPump(Model.UniqueID);
+    tblPump FillPump = TankPumps.Where(x => x.ServiceID == 5).FirstOrDefault();
+    tblPump TrfPump = TankPumps.Where(x => x.ServiceID == 6).FirstOrDefault();
+    List<tblMOVMaster> tankMOVs = tank.tblMOVMasters.ToList();
+    string TkPrefix = tank.TagPrefix;
+    bool ShowSafetyRadarDataLevel = ViewBag.ShowSafetyRadarLevel;
+    string CustName = clsConfig.CustomerName;
+}
+<div class="modal-dialog tank-modal @tank.tblTankType.TankType" style="width: 960px;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myTANKVIEWModalLabel">@(tank.TankName) | @tank.tblProduct.ProdNameShort</h3>
+        </div>
+        <div class="modal-body " id="myMOVModalBody" style="padding: 5px;">
+            @{
+                string SameProdTanksTags = String.Join(",", SameGrpTanks.Select(x => (x.TagPrefix + "_MODE_DDL")).ToList());
+                if (SameProdTanksTags != "")
+                {
+                    <input type="hidden" id="SameGrpTankModeTags" value="@(SameProdTanksTags)" />
+                }
+            }
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-5">
+                        <div class="box-panel tank-level-detail-container">
+                            <div class="tank-level-detail-heading">Tank Details</div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Tank Name</div>
+                                <div class="tank-level-detail-val clstkname">@(tank.TankName)</div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Product Name</div>
+                                <div class="tank-level-detail-val" style="display: inherit;">@tank.tblProduct.ProdNameShort</div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Dip Ref. Height (mm)</div>
+                                <div class="tank-level-detail-val">@tank.DipReferenceHeight</div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Tank Dia (mm)</div>
+                                <div class="tank-level-detail-val">@tank.NominalDia</div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Tank Type</div>
+                                <div class="tank-level-detail-val">@tank.tblTankType.TankType</div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Safe Filling Height (mm)</div>
+                                <div class="tank-level-detail-val">
+                                    <input type="number" min=1 readonly class="editable-input @(TkPrefix+"_LVL_HH")" ondblclick="this.readOnly='';"
+                                           style="border: 0px; width: 70%; text-align:right" value="@(TkPrefix+"_LVL_HH")">
+                                    <span class="glyphicon glyphicon-upload cursor-point" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_HH','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Capacity (KL)</div>
+                                <div class="tank-level-detail-val">@tank.MaxVolume</div>
+                            </div>
+                        </div>
+                        <div class="box-panel tank-level-detail-container">
+                            <div class="tank-level-detail-heading">Measured Values</div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Level (mm)</div>
+                                <div class="tank-level-detail-val @(TkPrefix)_LEVEL"></div>
+                            </div>
+                            <div class="tank-level-detail-row even">
+                                <div class="tank-level-detail-lbl">Avg Temperature (℃)</div>
+                                <div class="tank-level-detail-val @(TkPrefix)_AVG_TEMP"></div>
+                            </div>
+                            <div class="tank-level-detail-row odd">
+                                <div class="tank-level-detail-lbl">Total Observed Volume(KL)</div>
+                                <div class="tank-level-detail-val @(TkPrefix)_TOV"></div>
+                            </div>
+                            @*<div class="tank-level-detail-row odd">
+                                    <div class="tank-level-detail-lbl">Density (kg/m³)</div>
+                                    <div class="tank-level-detail-val @(TkPrefix)_STD_DENSITY"></div>
+                                </div>
+                                <div class="tank-level-detail-row odd">
+                                    <div class="tank-level-detail-lbl">Product Mass (Kg)</div>
+                                    <div class="tank-level-detail-val @(TkPrefix)_MASS"></div>
+                                </div>
+                                <div class="tank-level-detail-row even">
+                                    <div class="tank-level-detail-lbl">Volume Flow Rate (m³/hr)</div>
+                                    <div class="tank-level-detail-val @(TkPrefix)_FLOW_RATE"></div>
+                                </div>
+                                <div class="tank-level-detail-row odd">
+                                    <div class="tank-level-detail-lbl">Gauge Status</div>
+                                    <div class="tank-level-detail-val">
+                                        <span class="circle-cont-md">
+                                            <span class="circle @(TkPrefix)_GAUGE_STATUS"></span>
+                                        </span>
+
+                                    </div>
+                                </div>*@
+                        </div>
+                        @*<div class="box-panel">
+                            @{
+                                string oil = ""; string OISD = "none";
+                                if (tank.tblProduct.ProductName.ToUpper().Contains("WATER")) { oil = "none"; OISD = "block"; }
+
+                                <div class="tank-level-detail-container-right" style="display: @oil;">
+                                    <div class="col-lg-12 no-padd hide">
+                                        <div class="tank-level-detail-row">
+                                            <div class="tank-level-detail-cct-alrm">HHH (mm)</div>
+                                            <div class="tank-level-detail-val-cct-alrm">
+                                                <input type="number" step="0.01" min=0 readonly class="@(TkPrefix)_LVL_HHH editable-input" ondblclick="this.readOnly='';"
+                                                       style="border: 0px;" value="@(TkPrefix)_LVL_HHH">
+                                                <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_HHH','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="tank-level-detail-cct-alrm"></div>
+                                            <div class="tank-level-detail-val-cct-alrm ">
+                                                <input type="number" disabled readonly class="@(TkPrefix)_LVL_LLL editable-input" ondblclick="this.readOnly='';"
+                                                       style="border: 0px;" value="@(TkPrefix)_LVL_LLL">
+                                                <span class="glyphicon glyphicon-upload" style="display:none" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_LLL','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-12 no-padd">
+                                        <div class="tank-level-detail-row">
+                                                                                    <div class="tank-level-detail-cct-alrm">HH (mm)</div>
+                                                <div class="tank-level-detail-val-cct-alrm">
+                                                    <input type="number" step="0.01" min=0 readonly class="@(TkPrefix)_LVL_HH editable-input" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;" value="@(TkPrefix)_LVL_HH">
+                                                    <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_HH','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </div>
+                                                <div class="tank-level-detail-cct-alrm">LL (mm)</div>
+                                                <div class="tank-level-detail-val-cct-alrm">
+                                                    <input type="number" step="0.01" min=0 readonly class="@(TkPrefix)_LVL_LL editable-input" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;" value="@(TkPrefix)_LVL_LL">
+                                                    <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_LL','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="col-lg-12 no-padd">
+                                            <div class="tank-level-detail-row">
+                                                <div class="tank-level-detail-cct-alrm">H (mm)</div>
+                                                <div class="tank-level-detail-val-cct-alrm">
+                                                    <input type="number" step="0.01" min=0 readonly class="@(TkPrefix)_LVL_H editable-input" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;" value="@(TkPrefix)_LVL_H">
+                                                    <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_H','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </div>
+                                                <div class="tank-level-detail-cct-alrm">L (mm)</div>
+                                                <div class="tank-level-detail-val-cct-alrm">
+                                                    <input type="number" step="0.01" min=0 readonly class="@(TkPrefix)_LVL_L editable-input" ondblclick="this.readOnly='';"
+                                                           style="border: 0px;" value="@(TkPrefix)_LVL_L">
+                                                    <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'@(TkPrefix)_LVL_L','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="statutory-gantry-block" style="display: @OISD;">
+                                        <table class="detail-tbl">
+                                            <tbody>
+                                                <tr class="odd">
+                                                    <td class="detail-tbl-lbl tooltips" title="Min Volume (in KL) required as per PESO/OISD"><span class="">Min Statutory Vol.(KL)</span></td>
+                                                    <td class="detail-tbl-val" style="width: 100px;">
+                                                        <input type="number" readonly class="editable-input MIN_WATER_VOL_SP" ondblclick="this.readOnly='';"
+                                                               style="border: 0px;" value="23">
+                                                        <span class="glyphicon glyphicon-upload" onclick="UpdateTankLvlSetPoints(this,'MIN_WATER_VOL_SP','@(tank.TankName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                                    </td>
+                                                    <td class="detail-tbl-lbl tooltips" title="Current Volume of Water in KL."><span class="">Curr. Vol.(KL)</span></td>
+                                                    <td class="detail-tbl-val bold f-size-15" width="10%"><span class="CURR_TOT_WATER_VOL">33000</span></td>
+
+                                                </tr>
+                                                <tr class="even">
+                                                    <td class="detail-tbl-lbl tooltips" title="Gantry Operation even if min water volume is not met.">
+                                                        <span class="">Gantry Operations</span>
+                                                        <span class="supportive-txt">If Water Level < min requirement.</span>
+                                                    </td>
+                                                    <td class="detail-tbl-val text-center">
+                                                        <div class="toggle-wrapper" onclick="ByPassGantryShutdown('@(tank.TankName)',this, 'GAN_SHUT_BYPASS','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]', event)">
+                                                            <input id="toggle-gantry-operation" class="on-off-btn GAN_SHUT_BYPASS" data-on="Allowed" data-off="Denied" checked type="checkbox" data-width="80">
+                                                        </div>
+                                                    </td>
+                                                    <td class="detail-tbl-lbl tooltips" title="Gantry Shutdown State"><span class="">Gantry Shutdown State</span></td>
+                                                    <td class="detail-tbl-val" width="10%">
+                                                        <span class="GAN_SHUT_STATE tooltips" title="Gantry Shutdown State"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                        </div>*@
+
+                        <div class="row " style="margin-bottom: 15px; margin-top: 18px;">
+                            <div class="col-lg-9">
+                                <label for="ddlTankMode">Mode</label>
+                                <select disabled id="ddlTankMode" class="@(TkPrefix)_MODE_DDL"></select>
+                            </div>
+                            <div class="col-lg-3 pull-right oil-tank-mode-selection">
+                                <a id="aChangeMode" href="javascript:void(0);" class="@(TkPrefix)_MODE_DDL push-btn"
+                                   onclick="ChangeTankMode(this,'@(tank.UniqueID)', '@(TkPrefix)_MODE_DDL','@(TkPrefix)_AUTOMAN','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')"
+                                   data-opcvalue="" style="left: -6px; top: -6px;">Change Mode</a>
+                                <a style="display:none" data-opcvalue="" onclick="ResetTankAlarms(this, '@tank.TankName', '@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" href="javascript:void(0);" class="push-btn reset-alarm">Reset Alarm</a>
+
+                                <a style="visibility:hidden" href="javascript: void(0)" id="OpenInterLockBtn">View mode interlock <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <div class="row LOBPTankInp" style="padding-left: 15px; display:none; margin-top: -10px;">
+                            <label for="tklobp">LOBP Tank</label>
+                            <input type="text" class="@(TkPrefix)_REC_LOBPTK" value="" id="tklobp">
+                        </div>
+                        <div class="row TankMultiDataContainer">
+                            <div class="col-lg-12">
+                                <input type="text" class="hide @(TkPrefix)_DISP_CFM" id="tkcfm">
+                                <select id="TankMultiDataTxtBox" placeholder="Choose Options..." data-placeholder="Choose Can Filling Machines ..." multiple style="width: 300px"></select>
+                                <a class="hide push-btn" id="BtnTankMulti" href="javascript: void(0)" style="margin-left:10px; width: 50px; left: auto; right: 20px;">Set</a>
+                                <label id="TankMultiDataLbl"></label>
+                            </div>
+                        </div>
+                        <div class="">
+                            <a style="position:relative; margin-top: 15px;" onclick="$('#myTANKVIEWModal').modal('hide');OpenPiggingView(@(tank.UniqueID));" href="javascript:void(0);" class="btn btn-primary">Pigging View</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="oil-tank-product-row">
+                            @*<div class="oil-tank-product-lbl">Tank Name</div>
+                                <div class="oil-tank-product-val">@(tank.TankName)</div>
+                                <div class="oil-tank-product-lbl">Product Name</div>
+                                <div class="oil-tank-product-val">@tank.tblProduct.ProdNameShort</div>*@
+                        </div>
+                        <div class="oil-tank-container @tank.tblTankType.TankType">
+                            @{
+                                tblMOVMaster TankInletValve = tankMOVs.Where(x => x.MOVType == 5 && x.MOVLine == 1).FirstOrDefault();
+                                tblMOVMaster TankOutletValve = tankMOVs.Where(x => x.MOVType == 5 && x.MOVLine == 2).FirstOrDefault();
+                                tblMOVMaster TankRevTnfrValve = tankMOVs.Where(x => x.MOVType == 5 && x.MOVLine == 9).FirstOrDefault();
+                                tblMOVMaster TankRecirValve = tankMOVs.Where(x => x.MOVType == 4 && x.MOVLine == 3).FirstOrDefault();
+
+                            }
+                            <div class="tank-outer-pipe">
+                                <span class="tank-pipe-connector bottom to">To CFA</span>
+                                <span class="tank-pipe-connector top to"><span>To LOBP</span></span>
+                                <div class="tooltips tank-valve left top @(TankRevTnfrValve.TagPrefix+"_IMG_OPN_FB")  @(TankRevTnfrValve.TagPrefix+"_IMG_CLS_FB")" title="@TankRevTnfrValve.MovDescription" onclick="OpenPValveModal('@TankRevTnfrValve.UniqueID','@(TankRevTnfrValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankRevTnfrValve.MovTypeSeqNo))')">
+                                    <span class="instrument-txt">@TankRevTnfrValve.MovDescShort</span>
+                                </div>
+                                <div class="tank-inner-pipe">
+                                    <div class="tooltips tank-valve left rotateto90 hide @(TankRecirValve.TagPrefix+"_IMG_OPN_FB")  @(TankRecirValve.TagPrefix+"_IMG_CLS_FB")" title="@TankRecirValve.MovDescription" onclick="OpenPValveModal('@TankRecirValve.UniqueID','@(TankRecirValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankRecirValve.MovTypeSeqNo))')">
+                                        <span class="instrument-txt">@TankRecirValve.MovDescShort</span>
+                                    </div>
+                                    <div class="white-layer"></div>
+                                    @if (FillPump != null)
+                                    {
+                                        <span title="No Feedback" data-tooltip-attr="PMP*" class="tooltips pump-img @FillPump.tblPumpService.TagPrefix.ToLower() @(FillPump.TagPrefix+"_RUN_IMG") @(FillPump.TagPrefix+"_TRIP_IMG") @(FillPump.TagPrefix+"_FAIL_IMG")" onclick="OpenPumpModal(@FillPump.UniqueID,'@FillPump.PageName')">
+                                            <span class="instrument-txt">@FillPump.EquipmentName</span>
+                                        </span>
+                                    }
+                                </div>
+
+                                <div class="tooltips tank-valve  right top rotateto90 @(TankInletValve.TagPrefix+"_IMG_OPN_FB")  @(TankInletValve.TagPrefix+"_IMG_CLS_FB")" title="@TankInletValve.MovDescription" onclick="OpenPValveModal('@TankInletValve.UniqueID','@(TankInletValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankInletValve.MovTypeSeqNo))')">
+                                    <span class="instrument-txt">@TankInletValve.MovDescShort</span>
+                                </div>
+                                <div class="tooltips tank-valve right bottom rotateto90 @(TankOutletValve.TagPrefix+"_IMG_OPN_FB")  @(TankOutletValve.TagPrefix+"_IMG_CLS_FB")" title="@TankOutletValve.MovDescription" onclick="OpenPValveModal('@TankOutletValve.UniqueID','@(TankOutletValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankOutletValve.MovTypeSeqNo))')">
+                                    <span class="instrument-txt">@TankOutletValve.MovDescShort</span>
+                                </div>
+                                @if (TrfPump != null)
+                                {
+                                    <span title="No Feedback" data-tooltip-attr="PMP*" class="tooltips pump-img @TrfPump.tblPumpService.TagPrefix.ToLower() @(TrfPump.TagPrefix+"_RUN_IMG") @(TrfPump.TagPrefix+"_TRIP_IMG") @(TrfPump.TagPrefix+"_FAIL_IMG")" onclick="OpenPumpModal(@TrfPump.UniqueID,'@TrfPump.PageName')">
+                                        <span class="instrument-txt">@TrfPump.EquipmentName</span>
+                                    </span>
+                                }
+                            </div>
+                            <div class="tank-block @tank.tblTankType.TankType">
+                                <span class="maintainence-mode-icon @(TkPrefix)_MAINT"></span>
+                                <span class="stair">
+                                    <span class="app-logo @CustName"></span>
+                                </span>
+                                <span class="@(TkPrefix + "_LEVEL")" style="display: none;"></span>
+                                <span class="@(TkPrefix)_OIL_TANK_FILL oil-tank-fill-container">
+                                    <span class="oil-tank-base test"></span>
+                                    <span class="oil-tank-fill" style="background-color:@tank.tblProduct.ProductColor; height: calc(100-30)"></span>
+                                </span>
+                                <span class="tank-lbl-wrapper">
+                                    <span class="oil-tank-lbl cir-red-hhh">
+                                        <label>HH</label>
+                                        <span class="@(TkPrefix)_HH"></span>
+                                    </span>
+
+                                    @*<span class="oil-tank-lbl  cir-red-hh">
+                                            <label>H</label>
+                                            <span class="@(TkPrefix)_H"></span>
+                                        </span>
+
+                                        <span class="oil-tank-lbl cir-red-l">
+                                            <label>L</label>
+                                            <span class="@(TkPrefix)_L"></span>
+                                        </span>
+
+                                        <span class="oil-tank-lbl  cir-red-ll">
+                                            <label>LL</label>
+                                            <span class="@(TkPrefix)_LL"></span>
+                                        </span>*@
+
+                                    <span class="oil-tank-lbl  cir-red-lll" style="display:none">
+                                        <label>LLL</label>
+                                        <span class="@(TkPrefix)_LLL"></span>
+                                    </span>
+                                </span>
+                                <span class="@(TkPrefix)_FLW_RATE level-rate-icon"></span>
+                                <span class="tank-bottom-txt">
+                                    Current Mode<span>:</span>
+                                    <span class="@(TkPrefix + "_MODE_DDL")" style="font-weight: bold;">
+                                        <span></span>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="remote-auto-icon-block">
+                                <span class="control-icon clickable @(TkPrefix)_AUTOMAN" onclick="OpenTankAutoManModal(this, '@tank.UniqueID','@(tank.TankName)','@(TkPrefix)_AUTOMAN', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]');" style="right:auto"></span>
+                            </div>
+
+                            <span class="thermometer-block">
+                                <span class="thermometer-lbl"></span>
+                                @*<span class="thermometer-fill-percentage"><span class="@(tank.TankName)_PERCENTAGE" data-id=""></span> %</span>*@
+                                <span class="thermometer-fill-percentage tooltips" title="Tank % filled"><span class="@(TkPrefix)_PER_LVL"></span> %</span>
+                                <span class="thermometer-fill-prod-level tooltips" title="Process Radar Product Level"><span class="@(TkPrefix)_LEVEL"></span> @clsConfig.TFMSLevelUnit</span>
+                                <span class="thermometer-fill-degree tooltips" title="Product Avg Temp."><span class="@(TkPrefix)_AVG_TEMP"></span> °C</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                    </div>
+                    <div class="col-lg-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+        @{
+            tblMOVMaster ReceiptROSOV = tankMOVs.Where(y => y.MOVType == 1 && y.MOVLine == 1).FirstOrDefault();
+            tblMOVMaster DispatchROSOV = tankMOVs.Where(y => y.MOVType == 1 && y.MOVLine == 2).FirstOrDefault();
+            tblMOVMaster ChurningROSOV = tankMOVs.Where(y => y.MOVType == 1 && y.MOVLine == 3).FirstOrDefault();
+            tblMOVMaster ReceiptDBBV = tankMOVs.Where(y => y.MOVType == 2 && y.MOVLine == 1).FirstOrDefault();
+            tblMOVMaster DispatchDBBV = tankMOVs.Where(y => y.MOVType == 2 && y.MOVLine == 2).FirstOrDefault();
+            tblMOVMaster ChurningDBBV = tankMOVs.Where(y => y.MOVType == 2 && y.MOVLine == 3).FirstOrDefault();
+        }
+        <div id="InterlockPanel" class="side-bar-panel">
+            <div class="side-bar-heading">
+                Interlock
+                <span id="sideBarCloseIcon" class="close">×</span>
+            </div>
+            <div class="side-bar-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <select id="ddlInterlockMode" class="@(TkPrefix)_MODE_DDL" onchange="showInterLockModeContent()"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 inter-lock-content">
+                        <div id="Dispatch">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table class="table-striped app-tbl">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width: 55%">Interlock</th>
+                                                <th class="text-center tooltips" style="width: 15%">Current Status</th>
+                                                <th class="text-center tooltips" style="width: 15%">Expected Status</th>
+                                                <th class="text-center tooltips" style="width: 15%">Effective Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="interlock-sts">
+                                                <td>No other tank of Same grp in Dispatch</td>
+                                                <td><span class="circle-cont-sm"><span class="curr tanksInSameMode_2"></span></span></td>
+                                                <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="true"></span></span></td>
+                                                <td class="text-center">
+                                                    <span class="cross result-val"></span>
+                                                </td>
+                                            </tr>
+                                            @if (ReceiptROSOV != null)
+                                            {
+                                                <tr class="interlock-sts">
+                                                    <td>Receipt ROSOV should be closed.</td>
+                                                    <td><span class="circle-cont-sm"><span class="curr @(ReceiptROSOV.tblMOVType.MOVType + string.Format("{0:00}", ReceiptROSOV.MovTypeSeqNo) + "_CLS_FB")"></span></span></td>
+                                                    <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="True"></span></span></td>
+                                                    <td class="text-center">
+                                                        <span class="cross result-val"></span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            @if (ReceiptDBBV != null)
+                                            {
+                                                <tr class="interlock-sts">
+                                                    <td>Receipt DBBV should be closed.</td>
+                                                    <td><span class="circle-cont-sm"><span class="curr @(ReceiptDBBV.tblMOVType.MOVType + string.Format("{0:00}", ReceiptDBBV.MovTypeSeqNo) + "_CLS_FB")"></span></span></td>
+                                                    <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="True"></span></span></td>
+                                                    <td class="text-center"><span class="cross result-val"></span></td>
+                                                </tr>
+                                            }
+                                            <tr class="interlock-sts">
+                                                <td>No ESD Active</td>
+                                                <td><span class="curr PROCESS_ESD"></span></td>
+                                                <td><span class="cmpr alert_false" data-opcvalue="False"></span></td>
+                                                <td class="text-center"><span class="cross result-val"></span></td>
+                                            </tr>
+                                            <tr class="interlock-sts">
+                                                <td>No Low Alarm Active</td>
+                                                <td><span class="curr @(TkPrefix)_L"></span></td>
+                                                <td><span class="cmpr alert_false" data-opcvalue="False"></span></td>
+                                                <td class="text-center"><span class="cross result-val"></span></td>
+                                            </tr>
+                                            <tr class="interlock-sts">
+                                                <td>No Low-Low Alarm Active</td>
+                                                <td><span class="curr @(TkPrefix)_LL"></span></td>
+                                                <td><span class="cmpr alert_false" data-opcvalue="False"></span></td>
+                                                <td class="text-center"><span class="cross result-val"></span></td>
+                                            </tr>
+                                            @if (ReceiptROSOV != null)
+                                            {
+                                                <tr class="interlock-sts">
+                                                    <td>Dispatch ROSOV LPBS in Pressed State</td>
+                                                    <td><span class="circle-cont-sm"><span class="curr @(ReceiptROSOV.tblMOVType.MOVType + string.Format("{0:00}", ReceiptROSOV.MovTypeSeqNo) + "_PBS_CLS_STS")"></span></span></td>
+                                                    <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="True"></span></span></td>
+                                                    <td class="text-center"><span class="cross result-val"></span></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <br />
+                            <span>Note: Valve should be opened locally within 120 Sec of setting to Dispatch Mode else tank will be set to Dormant Mode</span>
+                        </div>
+                        <div id="Dormant">
+                            There are no Pre-Requisites / Interlocks for Setting tank in Dormant Mode. <br /> On setting the tank to Dormant Mode,
+                            The Inlet and outlet ROSOV and DBBV valves will be closed automatically.
+                        </div>
+                        <div id="Receipt">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table class="table-striped app-tbl">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width: 55%">Interlock</th>
+                                                <th class="text-center tooltips" style="width: 15%">Current Status</th>
+                                                <th class="text-center tooltips" style="width: 15%">Expected Status</th>
+                                                <th class="text-center tooltips" style="width: 15%">Effective Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="interlock-sts">
+                                                <td>No other tank of Same grp in Receipt</td>
+                                                <td><span class="circle-cont-sm"><span class="curr tanksInSameMode_5"></span></span></td>
+                                                <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="true"></span></span></td>
+                                                <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                            </tr>
+                                            @if (DispatchROSOV != null)
+                                            {
+                                                <tr class="interlock-sts">
+                                                    <td>Dispatch ROSOV should be closed.</td>
+                                                    <td><span class="circle-cont-sm"><span class="curr @(DispatchROSOV.tblMOVType.MOVType + string.Format("{0:00}", DispatchROSOV.MovTypeSeqNo) + "_CLS_FB")"></span></span></td>
+                                                    <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="True"></span></span></td>
+                                                    <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                                </tr>
+                                            }
+                                            @if (DispatchDBBV != null)
+                                            {
+                                                <tr class="interlock-sts">
+                                                    <td>Dispatch DBBV should be closed.</td>
+                                                    <td><span class="circle-cont-sm"><span class="curr @(DispatchDBBV.tblMOVType.MOVType + string.Format("{0:00}", DispatchDBBV.MovTypeSeqNo) + "_CLS_FB")"></span></span></td>
+                                                    <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="True"></span></span></td>
+                                                    <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                                </tr>
+                                            }
+                                            <tr class="interlock-sts">
+                                                <td>No ESD Active</td>
+                                                <td><span class="circle-cont-sm"><span class="curr PROCESS_ESD"></span></span></td>
+                                                <td><span class="circle-cont-sm"><span class="cmpr alert_false" data-opcvalue="False"></span></span></td>
+                                                <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                            </tr>
+                                            <tr class="interlock-sts">
+                                                <td>No Low Alarm Active</td>
+                                                <td><span class="circle-cont-sm"><span class="curr @(TkPrefix)_L"></span></span></td>
+                                                <td><span class="circle-cont-sm"><span class="cmpr alert_false" data-opcvalue="False"></span></span></td>
+                                                <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                            </tr>
+                                            <tr class="interlock-sts">
+                                                <td>No Low-Low Alarm Active</td>
+                                                <td><span class="circle-cont-sm"><span class="curr @(TkPrefix)_LL"></span></span></td>
+                                                <td><span class="circle-cont-sm"><span class="cmpr alert_false" data-opcvalue="False"></span></span></td>
+                                                <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                            </tr>
+                                            @if (DispatchROSOV != null)
+                                            {
+                                                <tr class="interlock-sts">
+                                                    <td>Dispatch ROSOV LPBS in Pressed State</td>
+                                                    <td><span class="circle-cont-sm"><span class="curr @(DispatchROSOV.tblMOVType.MOVType + string.Format("{0:00}", ReceiptROSOV.MovTypeSeqNo) + "_PBS_CLS_STS")"></span></span></td>
+                                                    <td><span class="circle-cont-sm"><span class="cmpr status_true" data-opcvalue="True"></span></span></td>
+                                                    <td class="text-center"><span class="cross result-val" aria-hidden="true"></span></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> <br />
+                            <span>Note: Valve should be opened locally within 120 Sec of setting to Receipt Mode else tank will be set to Dormant Mode</span>
+                        </div>
+                        <div id="InterTankReceipt">
+                            Inter Tank Receipt Interlocks: <br />
+                            @if (ChurningROSOV == null && ChurningDBBV == null)
+                            {
+                                <span>Note: Churning / Re-circulation valves not defined</span>
+                            }
+                        </div>
+                        <div id="InterTankDispatch">
+                            Inter Tank Dispatch Interlocks: <br />
+                            @if (ChurningROSOV == null && ChurningDBBV == null)
+                            {
+                                <span>Note: Churning / Re-circulation valves not defined</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<script>
+    var lstcfm = new Array();
+    //$(function () {
+    //    $('.on-off-btn').bootstrapToggle();
+    //})
+    createTooltip();
+
+    //var ele = document.getElementById("OpenInterLockBtn");
+    $('#OpenInterLockBtn').on('click', function () {
+        $('#InterlockPanel').toggleClass('open');
+        $('#myTANKVIEWModal').toggleClass('tank-modal-left-spacing');
+
+    });
+    $('#sideBarCloseIcon').on('click', function () {
+        $('#InterlockPanel').removeClass('open');
+        $('#myTANKVIEWModal').removeClass('tank-modal-left-spacing');
+    });
+
+    $('.close').on('click', function () {
+        var tankModal = $('#myTANKVIEWModal');
+        if (tankModal.hasClass('tank-modal-left-spacing')) {
+            $('#InterlockPanel').removeClass('open');
+            tankModal.removeClass('tank-modal-left-spacing');
+        }
+    });
+
+
+
+    function showInterLockModeContent() {
+        selectedIndex = $('#ddlInterlockMode').val();
+        if (selectedIndex == undefined) { return; }
+        switch (selectedIndex) {
+            case "2":
+                $('#Dispatch').show();
+                $('.inter-lock-content > div').not('#Dispatch').hide();
+                break;
+            case "3":
+                $('#Maintenance').show();
+                $('.inter-lock-content > div').not('#Maintenance').hide();
+                break;
+            case "4":
+                $('#Dormant').show();
+                $('.inter-lock-content > div').not('#Dormant').hide();
+                break;
+            case "5":
+                $('#Receipt').show();
+                $('.inter-lock-content > div').not('#Receipt').hide();
+                break;
+            case "6":
+                $('#InterTankReceipt').show();
+                $('.inter-lock-content > div').not('#InterTankReceipt').hide();
+                break;
+            case "9":
+                $('#InterTankDispatch').show();
+                $('.inter-lock-content > div').not('#InterTankDispatch').hide();
+                break;
+
+        }
+    }
+
+    $(document).ready(function () {
+
+        var selData = new Array();
+        var Grp = "CanFillingMachines";
+        var ctrl = $('#TankMultiDataTxtBox');
+        $.ajax({
+            url: "/MachineView/GetDropDownList?Group=" + Grp,
+            type: "GET",
+            datatype: "json",
+            cache: false,
+            success: function (result) {
+                lstcfm = result;
+                ctrl.html('');
+                var r = "";
+                $.each(result, function (i, obj) {
+                    var selected = (selData.indexOf(obj.Id) >= 0 ? 'selected' : '');
+                    r = "<option " + selected + " value=" + obj.Id + ">" + obj.Desc + "</option>";
+                    ctrl.append(r);
+                });
+                $('#TankMultiDataTxtBox').chosen();
+                $('#TankMultiDataTxtBox_chosen').css('width', '350px');
+            }
+        });
+    });
+
+
+    $('#ddlTankMode').on('change', function () {
+        
+        var selectedItem = this.options[this.selectedIndex];
+        if (selectedItem) {
+            //console.log(this.value);
+            if (this.value === '2' || this.value === '15') {
+                $('.LOBPTankInp').hide();
+                $('.TankMultiDataContainer').show();
+            }
+            else if (this.value === '5') {
+                $('.TankMultiDataContainer').hide();
+                $('.LOBPTankInp').show();
+            }
+            else {
+                $('.LOBPTankInp').hide();
+                $('.TankMultiDataContainer').hide();
+            }
+        }
+    })
+
+    $('#tkcfm').on('change', function () {
+        var cmfs = this.value;
+        var BitArr = (parseInt(cmfs)).toString(2).split('').reverse();
+        var ctrl = $('#TankMultiDataTxtBox');
+        ctrl.html('');
+        //ctrl.append("<option selected disabled>Search Project/Initiative...</option>");
+        for (i = 0; i < lstcfm.length; i++) {
+            if (i >= BitArr.length)
+            { r = "<option value=" + lstcfm[i].Id + ">" + lstcfm[i].Desc + "</option>"; }
+            else if (BitArr[i] == '1')
+            { r = "<option selected value=" + lstcfm[i].Id + ">" + lstcfm[i].Desc + "</option>"; }
+            else { r = "<option value=" + lstcfm[i].Id + ">" + lstcfm[i].Desc + "</option>"; }
+            ctrl.append(r);
+        }
+        $("#TankMultiDataTxtBox").trigger("chosen:updated");
+    })
+
+</script>

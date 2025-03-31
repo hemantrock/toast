@@ -1,0 +1,119 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblModbusRTUMaster
+
+@{
+    ViewBag.Title = "RTU Tag Edit";
+    List<tblDropdownValue> ddlist = ViewBag.dropdown.DropDownValues;
+    //List<tblDropdownValue> ddlBR = ddlist.Where(x => x.ddlType.ToUpper() == "BAUDRATE").ToList();
+    //List<tblDropdownValue> ddlParity = ddlist.Where(x => x.ddlType.ToUpper() == "PARITY").ToList();
+    List<tblDropdownValue> ddlRegType = ddlist.Where(x => x.ddlType.ToUpper() == "MBUSREGTYPE").ToList();
+}
+<form id="frmRTU" role="form" class="form-fields">
+    <div class="row">
+        @*<div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Primary Serial Port</label>
+                    <input id="txtPrimarySerialPort" name="PrimarySerialPort" type="text" placeholder="Eg. COM1/COM2 ..." class="form-control" value="@Model.PrimarySerialPort">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Backup Serial Port</label>
+                    <input id="txtBackupSerialPort" name="BackupSerialPort" type="text" placeholder="Eg. COM6/COM7 ..." class="form-control" value="@Model.BackupSerialPort">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Baud Rate</label>
+                    <select class="form-control" id="ddlBaudRate" name="BaudRate">
+                        <option value="">Select Baud Rate</option>
+                        @foreach (tblDropdownValue data in ddlBR)
+                        {
+                            if (Model.BaudRate.ToString() != data.ddlValues)
+                            {
+                                <option value="@data.ddlValues">@data.ddlValues</option>
+                            }
+                            else
+                            {
+                                <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Parity</label>
+                    <select class="form-control" id="ddlParity" name="Parity">
+                        <option value="">Select Parity</option>
+                        @foreach (tblDropdownValue data in ddlParity)
+                        {
+                            if (Model.Parity.ToString() != data.ddlValues)
+                            {
+                                <option value="@data.ddlValues">@data.ddlValues</option>
+                            }
+                            else
+                            {
+                                <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>FIFO</label>
+                    <input id="txtFIFO" name="FIFO" type="text" placeholder="FIFO" class="form-control" value="@Model.FIFO">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Poll Interval Msec</label>
+                    <input id="txtPoll_Interval_msec" name="Poll_Interval_msec" type="text" placeholder="Poll Interval (msec)" class="form-control" value="@Model.Poll_Interval_msec">
+                </div>
+            </div>*@
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Slave Id</label>
+                <input id="txtSlaveId" name="SlaveId" type="text" placeholder="Slave Id" class="form-control" value="@Model.SlaveId">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Register Type</label>
+                <select class="form-control" id="ddlRegType" name="RegType">
+                    <option disabled value="">Select Register Type</option>
+                    @foreach (tblDropdownValue data in ddlRegType)
+                    {
+                        if (Model.RegType.ToString() != data.ddlValues)
+                        {
+                            <option value="@data.ddlValues">@data.ddlValues</option>
+                        }
+                        else
+                        {
+                            <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Start Register</label>
+                <input id="txtStartRegister" name="StartRegister" type="text" placeholder="Start Register" class="form-control" value="@Model.StartRegister">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>No Of Bytes</label>
+                <input id="txtNoOfBytes" name="NoOfBytes" type="text" placeholder="No Of Bytes" class="form-control" value="@Model.NoOfBytes">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 BoolData">
+            <div class="fields form-group">
+                <label>Segment No</label>
+                <input id="txtSegmentNo" name="SegmentNo" type="text" placeholder="Segment no incase of Bool" class="form-control" value="@Model.SegmentNo">
+            </div>
+        </div>
+    </div>
+    </form>

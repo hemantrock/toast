@@ -1,0 +1,38 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTruckTypeMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddTruckTypeMaster();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW TRUCK TYPE MASTER
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">TRUCK TYPE </h3>
+        <table id="tblTruckTypeMaster" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">TYPE ID</th>
+                    <th>TRUCK TYPE</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTruckTypeMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.TypeID);">
+                        <td style="display:none;">@itm.TypeID</td>
+                        <td>@itm.TypeDesc</td>
+                         <td class="text-center"><span id="spanDelete_@itm.TypeID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TypeID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/TruckTypeMaster/Index.js"></script>

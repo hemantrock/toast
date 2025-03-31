@@ -1,0 +1,74 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Rochester Gauge View";
+    Layout = null;
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Rochester Gauges</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="pressure-transmeter-container col-lg-12 m-t-40">
+        @{
+            foreach (tblDeviceMaster Device in Model)
+            {
+                string DevName = Device.TagPrefix;
+                string ProdNameShort = "";
+                if (Device.HeaderID != null) { ProdNameShort = Device.tblHeadersMaster.tblProduct.ProdNameShort; }
+                else if (Device.TankID != null) { ProdNameShort = Device.tblTank.tblProduct.ProdNameShort; }
+                <div class="device-box rochester-gauge-wrapper">
+                    <div class="device-header">
+                        <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                        <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@ProdNameShort</span>
+                    </div>
+                    <div class="device-block">
+                        <div class="device rochester-gauge">
+                            <span class="maintainence-mode-icon @(DevName + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl">Location</td>
+                                    <td class="tbl-val">
+                                        @Device.DeviceDesc
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Level Val.</td>
+                                    <td class="tbl-val @(DevName+"_SEC_LEVEL")"></td>
+                                </tr>
+                                @if (clsConstants.ProjPath == "" || clsConstants.ProjPath == "0394")
+                                {
+                                    <tr>
+                                        <td class="tbl-lbl">Maint Mode</td>
+                                        <td class="tbl-val">
+                                            <div class="toggle-wrapper float-r" onclick="PTMaintainenceMode('@(DevName)',this, '@(DevName + "_MAINT")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]',event)">
+                                                <input id="toggle-maintainence-mode" class="on-off-btn @(DevName + "_MAINT") " checked type="checkbox" data-opcvalue="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/DeviceView/RochesterGaugeView/Index.js"></script>

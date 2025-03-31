@@ -1,0 +1,95 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Add Meters Master";
+    Layout = null;
+    var loadingPoint = ViewBag.loadingPoint;
+    List<tblProduct> lstProd = ViewBag.Products;
+}
+
+<h2 class="headingPage">
+    Create a new Meters Master
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>LP No.</label>
+                    <select class="form-control" id="ddlLPNo" name="LPNo">
+                        <option value="0" selected="selected">Please Select LP No</option>
+                        @foreach (var data in loadingPoint)
+                        {
+                            <option value="@data.LoadingPointNo">@data.LoadingPointNo</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Meter/Component No.</label>
+                    <input type="text" class="form-control" id="txtMeterCompNo" name="MeterCompNo" placeholder="LPs Meter#/Component#" />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>PRODUCT</label>
+                    <select class="form-control" id="ddlProduct" name="Product">
+                        <option value="0" selected="selected">Please Select Product</option>
+                        @foreach (tblProduct prod in lstProd)
+                        {
+                            <option value="@prod.ProductID">@prod.ProductName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Meter Name</label>
+                    <input type="text" class="form-control" id="txtMeterDesc" name="MeterDesc" placeholder="Meter Description" disabled />
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>BC-K Factor PC</label>
+                    <input type="text" class="form-control" id="txtBckFactorPC" name="BckFactorPC" placeholder="Batch Controller K Factor Program Code"/>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Loop No.</label>
+                    <input type="text" class="form-control" id="txtLoopNo" name="LoopNo" placeholder="Loop No" />
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Slave ID</label>
+                    <input type="text" class="form-control" id="txtSlaveID" name="SlaveID" placeholder="Slave ID" />
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2 checkbox-field">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input id="chkEnable" name="Enable" type="checkbox" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Enabled" disabled>
+                </div>
+            </div>
+           
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveMeterMaster();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/MetersMaster/MetersMaster.js"></script>
+

@@ -1,0 +1,559 @@
+﻿@using TOAST.Business;
+@using TOAST.Data.Model;
+@using TOAST.Shared;
+@{
+    string FuncName = "OpenDashboardView";
+    string strParams = "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta http-equiv="PRAGMA" content="NO-CACHE">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="robots" content="index, follow" />
+    <title>Pocket HMI</title>
+    <link href="~/Content/images/favicon.ico" rel="shortcut icon">
+    @Styles.Render("~/Content/bundlecss")
+    @Styles.Render("~/Content/mobilecss")
+    @Scripts.Render("~/bundles/javascripts")
+    @Scripts.Render("~/bundles/mobilejs")
+    <link href="~/fonts/font-awesome-5.12.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/css/style.css" rel="stylesheet" />
+    <script src="~/Scripts/Script.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script type="text/javascript">
+        var opc = $.connection.opcServer;
+        var clicked = false;
+
+        function ClearUser() {
+            window.location.href = "/Home/GoToHome";
+            //window.location.href = "/Home/ClearUser";
+        }
+
+        opc.client.updateViewData = function (model, grpName) {
+            ShowOPCTagsinView(model, grpName);
+        }
+
+        opc.client.showAlertMsg = function (result) {
+            ShowAlertMsg(result);
+        }
+
+        opc.client.showPopup = function (strMsg, strTagName) {
+            if (strTagName.toUpperCase() == "PROCESS_ESD") {
+                OpenESDViewHMI();
+                $('.ESDModal').show();
+                $('.OPCModal').hide();
+                $('.ESDModal #opcMsgModalMsg').html(strMsg);
+                $('#opcMsgModal').modal('show');
+
+                $('#btnConfirmESD').unbind('click');
+                $('#btnConfirmESD').bind('click', function () {
+                    if ($('#rdMockDrill').is(':checked')) {
+                        var src = $('input[name=emrgoption] :checked');
+                        $(src).attr('data-opcvalue', 'True');
+                        SendDataToOPC(src, "IS_MOCK_DRILL_ESD", '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]', '');
+                    }
+                    else if ($('#rdActualESD').is(':checked')) {
+                        if ($('#rdMockDrill').attr('data-opcvalue') != undefined && $('#rdMockDrill').attr('data-opcvalue').toLowerCase() == 'true') {
+                            var src = $('#rdActualESD');
+                            $(src).prop('checked', true);
+                            $(src).attr('data-opcvalue', 'False');
+                            SendDataToOPC(src, "IS_MOCK_DRILL_ESD", '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]', '');
+                        }
+                    }
+                    else {
+                        alert("Select any given options.");
+                        return false;
+                    }
+                    $(".modal-backdrop").slideUp('slow');
+                    $('#opcMsgModal').modal('hide');
+                });
+            }
+            else {
+                $('.ESDModal').hide();
+                $('.OPCModal').show();
+                $('.OPCModal #opcMsgModalMsg').html(strMsg);
+                $('#opcMsgModal').modal('show');
+
+                $('#btnConfirmESD').unbind('click');
+                $('#btnConfirmESD').bind('click', function () {
+                    $(".modal-backdrop").slideUp('slow');
+                    $('#opcMsgModal').modal('hide');
+                });
+            }
+        }
+
+        opc.client.validateTanksModePermission = function (TankUnqId, TagName, UserID, result) {
+            ConfirmTankModeChange(TankUnqId, TagName, UserID, result);
+        }
+
+        opc.client.validateTankAutoManualPermission = function (TankUnqId, TagName, UserID, result) {
+            ConfirmTankAutoManualChange(TankUnqId, TagName, UserID, result);
+        }
+
+        console.log('Just before connection.hub.start');
+        $.connection.hub.start()
+            .done(function () {
+                console.log("Connected, transport = " + $.connection.hub.transport.name);
+                opcStartDone = true;
+            });
+
+        $.connection.hub.error(function (error) {
+            console.log('SignalR error: ' + error);
+        });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="sideNav">
+            <div id='sideNavMenuCont'>
+                <ul>
+                    <li class='active'>
+                        <div class="user-profile">
+                            <ul>
+                                <li><span class="icon glyphicon glyphicon-user" id="userIcon"></span></li>
+                                <li class="role">Admin</li>
+                                <li><span class="setting-icon glyphicon glyphicon-cog" title="Settings" aria-hidden="true"></span></li>
+                                @*onclick="ShowUserSettings();"*@
+                            </ul>
+
+                        </div>
+                    </li>
+                    @{
+                        SharedBL objBL = new SharedBL(Convert.ToInt32(System.Web.HttpContext.Current.Session[clsConstants.UserID]));
+                        List<tblMenuConfig> lst = objBL.GetMenuList(Convert.ToBoolean(Session[clsConstants.IsMobile]), ref FuncName, ref strParams);
+
+                        if (lst == null)
+                        {
+                            Response.Redirect("/Home/Index");
+                        }
+                        else
+                        {
+                            int iMenu = 0;
+                            int iMnuCnt = lst.Where(x => x.MainMenuId == null).Count();
+                            foreach (tblMenuConfig menu in lst.Where(x => x.MainMenuId == null))
+                            {
+                                iMenu = iMenu + 1;
+                                <li class="@(iMenu == iMnuCnt ? "last has-sub" : "has-sub")">
+                                    <a href="#"><span>@menu.MenuTitle</span></a>
+                                    <ul>
+                                        @{
+                                            int iCnt = 0;
+                                            int lstCnt = lst.Where(x => x.MainMenuId == menu.UniqueID).Count();
+                                            foreach (tblMenuConfig subMenu in lst.Where(x => x.MainMenuId == menu.UniqueID))
+                                            {
+                                                iCnt = iCnt + 1;
+                                                <li class="@(iCnt==lstCnt?"last":"")">
+                                                    <i class="fa @subMenu.glyphicon"></i>
+                                                    <a onclick='@subMenu.JSFunction'>@subMenu.MenuTitle</a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="logout">
+                <a href="#" onclick="LogoutUser(false);"><span>Logout <span aria-hidden="true" class="glyphicon glyphicon-log-out"></span></span></a>
+            </div>
+            <div class="powered-by">
+                <img src="../images/icon_control_small.png" border="0" />
+                <span>By ICON CONTROLS</span>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <header>
+                <div class="hamburger">
+                    <a id="nav-toggle" href="#"><span></span></a>
+                </div>
+                <div class="tas-logo">Pocket <span>HMI</span></div>
+                <div class="indian-oil-logo">
+                    <img src="../images/indianoil_logo.png" border="0" />
+                    <!--<img src="../images/icon-control.png" border="0" /> -->
+                </div>
+            </header>
+            <div class="container-fluid content-wrapper">
+                <div class="row">
+                    <div class="col-lg-12 no-padding">
+                        <div class="waitpage" id="waitpage">
+                            <div class="overlay-wait"></div>
+                            <div class="waitpage-box">
+                                <img src="../images/loader.gif" border="0" />
+                                <!-- <i class="fa fa-refresh fa-spin fa-3x fa-fw margin-bottom"></i> -->
+                                <span>Please wait...</span>
+                                <!--<p>
+                                    <img alt="(Loading)" src="~/Content/images/loading.gif">
+                                    <span>Please Wait...</span>
+                                </p>-->
+                            </div>
+                        </div>
+                        <div id="dvContent" class="content">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- Alerts Dismissable -->
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-ok"></span>
+        <span id="success">You successfully read this important alert message.</span>
+    </div>
+    <div class="alert alert-info alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-info-sign"></span>
+        <span id="info">This needs attention, but it's not super important.</span>
+    </div>
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-remove-circle"></span>
+        <span id="warning">Better check yourself, you're not looking too good.</span>
+    </div>
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span id="danger">Change a few things up and try submitting again.</span>
+    </div>
+
+    <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel">Cancel Confirmation.</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to cancel?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirmOK">Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel">Delete Confirmation.</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to Delete?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirmDelete">Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myConfirmLabel">Confirmation.</h3>
+                </div>
+                <div class="modal-body" id="myConfirmMsg">
+                    <p>Are you sure ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnConfirmOK">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnConfirmCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel"></h3>
+                </div>
+                <div class="modal-body" id="myModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAutoAssign" style="display:none;">Auto Assign</button>
+                    <button type="button" class="btn btn-primary" id="btnOK">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myPasswordLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myPasswordLabel">Confirm Password</h3>
+                </div>
+                <div class="modal-body row" id="myPasswordBody">
+                    <div class="col-lg-8">
+                        <form id="frmLoginPwd" role="form" class="form-fields">
+                            <div class="fields form-group col-lg-12">
+                                <label>LoginID:</label><input type="text" placeholder="Enter Login ID" id="Pwd_txtLoginID" name="LoginID" class="form-control" style="width:95%;" autocomplete="on" value="@Session[clsConstants.LoginID]">
+                            </div>
+                            <div class="fields form-group col-lg-12">
+                                <label>Password:</label><input type="password" placeholder="Enter the Password" id="Pwd_txtPassword" name="password" value="" class="form-control" style="width:95%;">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnPwdOK">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="opcMsgModal" tabindex="-1" role="dialog" aria-labelledby="opcMsgLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="opcMsgLabel">Message</h3>
+                </div>
+                <div class="modal-body emergency-wrapper ESDModal">
+                    <span class="danger"></span>
+                    <p id="opcMsgModalMsg"></p>
+                    <div class="emer-option">
+                        <div class="col-lg-6 text-center">
+                            <input type="radio" id="rdMockDrill" name="emrgoption" value="Mock Drill" class="MOCK_DRILL_CHK" /><label>Mock Drill</label>
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input type="radio" id="rdActualESD" name="emrgoption" value="Actual Emergency" checked="checked" /> <label>Actual Emergency</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body OPCModal">
+                    <p id="opcMsgModalMsg"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnConfirmESD">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="~/Scripts/echarts.js"></script>
+    <script src="~/Scripts/lib/timer.jquery.js"></script>
+    <script src="~/Scripts/lib/StatusTicker.js"></script>
+    <script src="~/Scripts/PageJS/Home/VerifyPwd.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#nav-toggle").on('click', function (e) {
+                $("#wrapper").toggleClass("toggle");
+                $(this).toggleClass('active');
+            });
+
+            //SideNav Mobile
+            $('#sideNavMenuCont > ul > li > a').click(function () {
+                $('#sideNavMenuCont ul li').removeClass('active');
+                $('#sideNavMenuCont ul li ul').slideUp('fast');
+                $(this).closest('li').addClass('active');
+                var checkElement = $(this).next();
+                if ((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+                    $(this).closest('li').removeClass('active');
+                    checkElement.slideUp('fast');
+                }
+                if ((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+                    $('#cssmenu ul ul:visible').slideUp('normal');
+                    checkElement.slideDown('fast');
+                }
+                if ($(this).closest('li').find('ul').children().length == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+
+            // Closing Sidenav after clicking on menu item
+            $('#sideNavMenuCont > ul > li > ul > li').click(function () {
+                $('#wrapper').removeClass('toggle');
+                $('.hamburger #nav-toggle').removeClass('active');
+            });
+
+            // configure for module loader
+            require.config({
+                paths: {
+                    echarts: '../../../../Scripts'
+                }
+            });
+            SetDefaultRows();
+
+            if ($(".modal-dialog").hasClass('chartModalDialog') == false) {
+                $(".modal-dialog").css('top', (($(window).height() - 400) / 2));
+            }
+            else {
+                $(".modal-dialog").css('top', (($(window).height() - 680) / 2));
+            }
+
+
+            var strPrimarySrv;
+            var strBackupSrv;
+
+            $.ajax({
+                url: "/Home/GetServers",
+                type: "GET",
+                datatype: "json",
+                cache: false,
+                success: function (result) {
+                    $.each(result, function (i, obj) {
+                        if (i == 0) {
+                            strPrimarySrv = obj.DeviceName;
+                        }
+                        else if (i == 1) {
+                            strBackupSrv = obj.DeviceName;
+                        }
+                    });
+                    var strHost = window.location.hostname;
+                    if (strHost.toLowerCase() != strPrimarySrv.toLowerCase()) {
+                        strBackupSrv = strPrimarySrv;
+                        strPrimarySrv = strHost;
+                    }
+                    $.ajaxSetup({
+                        global: true,
+                        timeout: 150000,
+                        error: function (jqXHR, exception) {
+                            console.log(jqXHR.status);
+                            if (iGblPrevStatus == 412) {
+                                return false;
+                            }
+                            iGblPrevStatus = jqXHR.status;
+                            if (jqXHR.status === 0) {
+                                //alert('Not connect.\n Verify Network.');
+                                window.location = "http://" + strBackupSrv;
+                            } else if (jqXHR.status == 401) {
+
+                            } else if (jqXHR.status == 404) {
+                                //alert('Requested page not found. [404]');
+                                window.location = "http://" + strBackupSrv;
+                            } else if (jqXHR.status == 500) {
+                                //alert('Internal Server Error [500].');
+                            } else if (exception === 'parsererror') {
+                                //alert('Requested JSON parse failed.');
+                            } else if (exception === 'timeout') {
+                                window.location = "http://" + strBackupSrv;
+                            } else if (exception === 'abort') {
+                                //alert('Ajax request aborted.');
+                            }
+                            else if (jqXHR.status === 412) {
+                                // Session TimeOut
+                                console.log('ajax-412 - Session TimeOut');
+                                window.location.href = "/Home/GoToHome";
+                            } else {
+                                //alert('Uncaught Error.\n' + jqXHR.responseText);
+                            }
+                        },
+                    });
+                }
+            });
+
+            GetStatusBarAck();
+
+            $(document).ajaxStart(function () {
+                onBeginAjax();
+            });
+            $(document).ajaxStop(function () {
+                if ($('#dvLoadSummary').length <= 0 && $('#dvTimer').length > 0) {
+                    $('#dvTimer').timer('pause');
+                }
+                onCompleteAjax();
+            });
+
+            $('.navbar-nav li').on('click', function () {
+                $('.navbar-nav li').removeClass('active');
+                $(this).addClass('active');
+                clearTimeout(gblTimeout);
+            });
+
+            $('#sideNavMenuCont li li').on('click', function () {
+                clearTimeout(gblTimeout);
+            });
+
+            $('ul.dropdown-menu li a').on('click', function () {
+                opc.server.removeFromGroup(opcPageName);
+                opc.server.removeFromGroup(opcPageName1);
+                opcPageName = ""; opcPageName1 = "";
+                $(window).unbind('orientationchange');
+            });
+            OpenDashboardView('@Session[clsConstants.UserID]');
+            //OpenGantryViewHMI();
+            //OpenLoadSummaryMenu();
+            //OpenBayViewHMI();
+            //OpenTanksViewHMI();
+            //OpenBGViewHMI();
+            //OpenMOVsViewHMI();
+            //OpenPumpsViewHMI();
+            //OpenESDViewHMI();
+            //OpenUPSViewHMI();
+            //OpenPLCViewHMI();
+            //OpenEthernetViewHMI();
+            //OpenFireAlarmViewHMI();
+            //OpenDatabaseStatusViewHMI();
+            //OpenLegendsViewHMI();
+            //OpenViewTrends();
+
+            $('#chartModal').on('hidden.bs.modal', function () {
+                $('.chartModal-chart').hide();
+            })
+
+            $(function () {
+                setInterval(function () { CallGlobalRefreshFunctions(); }, 40000);
+            });
+
+            //$('#dtpChartFrom').Datetimepicker({
+            //    format: 'D-MMM-YY HH:mm',
+            //    autoclose: true,
+            //    pickerPosition: "bottom-left",
+            //}).on("changeDate", function (e) {
+            //    var TimeZoned = new Date(e.Date.setTime(e.Date.getTime() + (e.Date.getTimezoneOffset() * 60000)));
+            //    $('#dtpChartFrom').Datetimepicker('setDate', TimeZoned);
+            //    $('#dtpChartFrom').parent().removeClass('has-error').addClass('has-success');
+            //    $('#dtpChartFrom').parent().children("small").hide();
+            //    $('#dtpChartFrom').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+            //});
+
+            //$('#dtpChartTo').Datetimepicker({
+            //    format: 'D-MMM-YY HH:mm',
+            //    autoclose: true,
+            //    pickerPosition: "bottom-left",
+            //}).on("changeDate", function (e) {
+            //    var TimeZoned = new Date(e.Date.setTime(e.Date.getTime() + (e.Date.getTimezoneOffset() * 60000)));
+            //    $('#dtpChartTo').Datetimepicker('setDate', TimeZoned);
+            //    $('#dtpChartTo').parent().removeClass('has-error').addClass('has-success');
+            //    $('#dtpChartTo').parent().children("small").hide();
+            //    $('#dtpChartTo').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+            //});
+
+        });
+    </script>
+</body>
+
+</html>

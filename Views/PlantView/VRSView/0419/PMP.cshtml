@@ -1,0 +1,574 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+<style>
+    .toggle-wrapper .toggle.btn {
+        width: 50px !important;
+        height: 25px !important;
+        min-width: 50px;
+        min-height: 25px;
+    }
+
+    .toggle-wrapper .toggle-group label {
+        top: -4px;
+    }
+
+    .toggle-wrapper .btn.btn-primary {
+        left: -4px;
+    }
+</style>
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">PUMP</h3>
+        </div>
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">VACUUM PUMP</h3>
+        </div>
+    </div>
+    <div class="security-system-container m-t-40">
+        <div class="row">
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">P-11</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P11 Existing',this, 'P11_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn P11_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Stop Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P11_TRA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P11 Stop delay time (sec)',this, 'P11_TRA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Start Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P11_TRM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P11 Start delay time (sec)',this, 'P11_TRM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Run Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P11_TDM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P11 Time appears run conflict (sec)',this, 'P11_TDM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Stop Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P11_TDA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P11 Time appears stop conflict (sec)',this, 'P11_TDA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">P-12</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P12 Existing',this, 'P12_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn P12_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Stop Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P12_TRA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P12 Stop delay time (sec)',this, 'P12_TRA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Start Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P12_TRM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P12 Start delay time (sec)',this, 'P12_TRM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Run Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P12_TDM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P12 Time appears run conflict (sec)',this, 'P12_TDM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Stop Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P12_TDA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P12 Time appears stop conflict (sec)',this, 'P12_TDA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">P-21</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P21 Existing',this, 'P21_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn P21_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Stop Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P21_TRA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P21 Stop delay time (sec)',this, 'P21_TRA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Start Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P21_TRM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P21 Start delay time (sec)',this, 'P21_TRM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Run Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P21_TDM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P21 Time appears run conflict (sec)',this, 'P21_TDM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Stop Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P21_TDA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P21 Time appears stop conflict (sec)',this, 'P21_TDA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Minimum speed (%)',this, 'SR20_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Maximum speed (%)',this, 'SR20_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">P-22</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P22 Existing',this, 'P22_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn P22_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Stop Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P22_TRA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P22 Stop delay time (sec)',this, 'P22_TRA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Start Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P22_TRM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P22 Start delay time (sec)',this, 'P22_TRM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Run Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P22_TDM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P22 Time appears run conflict (sec)',this, 'P22_TDM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Stop Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P22_TDA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P22 Time appears stop conflict (sec)',this, 'P22_TDA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Minimum speed (%)',this, 'SR20_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Maximum speed (%)',this, 'SR20_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">SR-10 (P-11,P-12)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Existing',this, 'SR10_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn SR10_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Regulation Order (m3/h)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_CR" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Regulation order (m3/h)',this, 'SR10_CR', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Proportional Gain</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_GP" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Proportional Gain',this, 'SR10_GP', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Dead Band</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_BM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Dead Band',this, 'SR10_BM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">SR-20 (P-21,P-22)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Existing',this, 'SR20_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn SR20_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Regulation Order (m3/h)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_CR" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Regulation order (m3/h)',this, 'SR20_CR', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Proportional Gain</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_GP" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Proportional Gain',this, 'SR20_GP', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Dead Band</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_BM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Dead Band',this, 'SR20_BM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Minimum speed (%)',this, 'SR20_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR20_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR20 Maximum speed (%)',this, 'SR20_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">V-41</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P41 Existing',this, 'P41_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn P41_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Stop Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P41_TRA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P41 Stop delay time (sec)',this, 'P41_TRA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Start Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P41_TRM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P41 Start delay time (sec)',this, 'P41_TRM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Run Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P41_TDM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P41 Time appears run conflict (sec)',this, 'P41_TDM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Stop Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P41_TDA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P41 Time appears stop conflict (sec)',this, 'P41_TDA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Max speed (%)',this, 'SR40_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Min speed (%)',this, 'SR40_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">V-42</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P42 Existing',this, 'P42_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn P42_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Stop Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P42_TRA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P42 Stop delay time (sec)',this, 'P42_TRA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Start Delay Time (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P42_TRM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P42 Start delay time (sec)',this, 'P42_TRM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Run Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P42_TDM" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P42 Time appears run conflict (sec)',this, 'P42_TDM', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Appears Stop Conflict (sec)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input P42_TDA" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: P42 Time appears stop conflict (sec)',this, 'P42_TDA', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Max speed (%)',this, 'SR40_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Min speed (%)',this, 'SR40_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">VACUUM GROUP (V41-V42-V43)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Number Authorise</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: V4X Number authorise',this, 'V4X_NV', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn V4X_NV" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Strat Delay Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input V4X_TS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: V4X Start delay time',this, 'V4X_TS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">SR-40 (V-41,V-42)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Existing',this, 'SR40_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn SR40_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_IAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 increment ACC',this, 'SR40_IAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_VMAX" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Max speed (%)',this, 'SR40_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Speed (%)</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input SR40_VMIN" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR40 Min speed (%)',this, 'SR40_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "VRS_SetPoints";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

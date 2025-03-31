@@ -1,0 +1,82 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    List<int> lstTankIDs = Model.Select(x => (x.TankID ?? 0)).Distinct().ToList();
+    List<tblTank> lstTanks = ViewBag.lstTanks;
+}
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black;">Steam Control - Temp Transmitters &amp; Control Valve</h3>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 40px;">
+        @for (int i = 0; i < lstTankIDs.Count();)
+        {
+            int itake = 19;
+            <div class="col-lg-4">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" style="width: 23%">Tank No</th>
+                            <th class="text-center bg-color" style="width: 8%">Temp</th>
+                            <th class="text-center bg-color" style="width: 15%">Hi-Set Point</th>
+                            <th class="text-center bg-color" style="width: 8%">Hi Alrm</th>
+                            <th class="text-center bg-color" style="width: 15%">Lo Set-Point</th>
+                            <th class="text-center bg-color" style="width: 8%">Lo Alrm</th>
+                            <th class="text-center bg-color" style="width: 15%">TT Set Point</th>
+                            <th class="text-center bg-color" style="width: 8%">TCV % Open</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            List<int> lstDevs = lstTankIDs.Skip(i).Take(itake).ToList();
+                            foreach (int iTankID in lstDevs)
+                            {
+                                tblDeviceMaster oTT = Model.Where(x => x.DeviceID == 18 && x.TankID == iTankID).FirstOrDefault();
+                                tblDeviceMaster oTCV = Model.Where(x => x.DeviceID == 24 && x.TankID == iTankID).FirstOrDefault();
+                                string strTankNames = string.Join(",", lstTanks.Where(x => x.SecGaugeType == (oTT.UniqueID + "," + oTCV.UniqueID)).Select(y => y.TankName));
+                                strTankNames = string.IsNullOrWhiteSpace(strTankNames) ? "" : "," + strTankNames;
+                                if (oTT != null && oTCV != null)
+                                {
+                                    <tr>
+                                        @*<td>@oTT.DeviceName</td>
+                                            <td>@oTCV.DeviceName</td>*@
+                                        <td>@(oTT.TankID == null ? "" : oTT.tblTank.TankName+ strTankNames)</td>
+                                        <td class="@(oTT.TagPrefix)_VALUE get-hover" onclick="OpenChartModal('@(oTT.TagPrefix)_VALUE', '@oTT.PageName'); cancelBubble(event);"></td>
+                                        <td>
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(oTT.TagPrefix)_MAX_SP" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 100%;" value="@(oTT.TagPrefix)_MAX_SP">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update TT Max SetPoint: @(oTT.DeviceName)',this, '@(oTT.TagPrefix)_MAX_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                        </td>
+                                        <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="@(oTT.TagPrefix)_MAX_ALRM"></span></span></td>
+                                        <td>
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(oTT.TagPrefix)_MIN_SP" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 100%;" value="@(oTT.TagPrefix)_MIN_SP">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update TT Min SetPoint: @(oTT.DeviceName)',this, '@(oTT.TagPrefix)_MIN_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                        </td>
+                                        <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="@(oTT.TagPrefix)_MIN_ALRM"></span></span></td>
+                                        <td>
+                                            <input type="number" step="0.01" min=0 readonly class="editable-input @(oTT.TagPrefix)_TEMP_SP" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 100%;" value="@(oTT.TagPrefix)_TEMP_SP">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update TT SetPoint for TCV: @(oTT.DeviceName)',this, '@(oTT.TagPrefix)_TEMP_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                        </td>
+                                        <td class="@(oTCV.TagPrefix)_PER_OPN"></td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+                                i = i + itake;
+                            }
+    </div>
+</div>
+
+
+<script src="~/Scripts/PageJS/PlantView/DeviceView/TcvTempTable/Index.js"></script>

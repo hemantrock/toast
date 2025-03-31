@@ -1,0 +1,107 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblMOVMaster
+@{
+    ViewBag.Title = "Plant View - POV Details View";
+    Layout = null;
+}
+<div class="modal-dialog modal-pvalve">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header" id="POVModalLabel">
+            <div><h3 class='modal-title'>@Model.MovName</h3></div>
+            <div style='border:0px;'><h3 class='modal-title'>@Model.tblMOVType.MOVType : @Model.tblMOVLine.Line</h3></div>
+            <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+        </div>
+        <div class="modal-body clearfix">
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-01 open-mov-btn @(Model.TagPrefix+"_OPN_CMD")" href="javascript:void(0);" onclick="ValidateOpenCloseValve(this,'@(Model.MovName)', '@(Model.TagPrefix+"_OPN_CMD")','POV','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>
+                    @*<a class="push-btn-01 close-mov-btn @(Model.TagPrefix+"_CLS_CMD")" href="javascript:void(0);" onclick="ValidateOpenCloseValve(this,'@(Model.MovName)', '@(Model.TagPrefix+"_CLS_CMD")','POV','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>*@
+                </div>
+                <div class="mov-valve-info-container">
+                    <div class="col-lg-6 no-padd">
+                        @{ 
+
+                        }
+                        <div class="pvalve-model-large @(Model.TagPrefix+"_IMG_OPN_FB")  @(Model.TagPrefix+"_IMG_CLS_FB") pvalve_opn_false pvalve_cls_false">
+
+                        </div>
+                        <span class="mov-valve-icons local-indicator LOCREM_MOV_08 locrem_mov_false"></span>
+                        <span class="mov-valve-icons remote-indicator REMOTE_IMG_MOV_08 remote_img_mov_false"></span>
+                        <span class="mov-valve-icons stop-indicator STOP_IMG_MOV_08 stop_img_mov_false"></span>
+                        <span class="mov-valve-icons auto-indicator AUTOMAN_MOV_08 automan_mov_false" onclick="OpenAutoManModal(this, 'hdnTankAutoMan_202A', 'MOV_08', 'MOV_AUTOMAN', 'AUTOMAN_MOV_08','1', 'admin', 'Admin'); cancelBubble(event);"></span>
+                        <span class="mov-valve-icons manual-indicator AUTOMAN_MOV_08 automan_mov_true" onclick="OpenAutoManModal(this, 'hdnTankAutoMan_202A','MOV_08', 'MOV_AUTOMAN', 'AUTOMAN_MOV_08','1', 'admin', 'Admin'); cancelBubble(event);"></span>
+
+                    </div>
+
+                    <div class="col-lg-6">
+
+                        <table class="app-tbl" style="position: relative; top: 20px;">
+                            <tbody>
+                                <tr>
+                                    <td class="lbl">Open Feedback</td>
+                                    <td>
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Model.TagPrefix+"_OPN_FB") "></span>
+                                        </span>  
+                                    </td>
+                                </tr>
+                                <tr class="even">
+                                    <td class="lbl">Close Feedback</td>
+                                    <td>
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Model.TagPrefix+"_CLS_FB") "></span>
+                                        </span>  
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">Fail to Open</td>
+                                    <td>
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Model.TagPrefix+"_FTO_FB") "></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="even">
+                                    <td class="lbl">Fail to Close</td>
+                                    <td>
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Model.TagPrefix+"_FTC_FB") "></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="mov-valve-info-wrapper valve-info-wrapper" style="display: none;">
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Open Feedback</span>
+                                <span class="circle-cont">
+                                    <span class="@(Model.TagPrefix+"_OPN_FB") "></span>
+                                </span>              
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Close Feedback</span>
+                                <span class="circle-cont">
+                                    <span class="@(Model.TagPrefix+"_CLS_FB") "></span>
+                                </span>  
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Fail to Open</span>
+                                <span class="circle-cont">
+                                    <span class="@(Model.TagPrefix+"_FTO_FB") "></span>
+                                </span>
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Fail to Close</span>
+                                <span class="circle-cont">
+                                    <span class="@(Model.TagPrefix+"_FTC_FB") "></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

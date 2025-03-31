@@ -1,0 +1,84 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - POV Details View";
+    Layout = null;
+    string ValveName = ViewBag.Name;
+    string ValveTagPrefix = ViewBag.TagPrefix;
+}
+<style>
+    .pvalve-model-large.sts_1, .pvalve-model-large.sts_5 {
+        background-image: url("../../../Images/Valves/POV/pobv_open.png") !important;
+    }
+
+    .pvalve-model-large.sts_2, .pvalve-model-large.sts_6 {
+        background-image: url("../../../Images/Valves/POV/pobv_close.png") !important;
+    }
+
+</style>
+<div class="modal-dialog modal-pvalve">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header" id="POVModalLabel">
+            <div><h3 class='modal-title'>@ValveName</h3></div>
+            <div style='border:0px;'><h3 class='modal-title'></h3></div>
+            <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+        </div>
+        <div class="modal-body clearfix">
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn @(ValveTagPrefix+"_OPN_CMD")" href="javascript:void(0);" onclick="SetProcessValue('Open/Close Command to MOV','Set Reset Open Command to Valve: @ValveName',this, '@(ValveTagPrefix+"_OPN_CMD")','')" data-opcvalue="">OPEN</a>
+                    @*<a class="push-btn-01 close-mov-btn @(ValveTagPrefix+"_CLS_CMD")" href="javascript:void(0);" onclick="ValidateOpenCloseValve(this,'@(ValveName)', '@(ValveTagPrefix+"_CLS_CMD")','POV','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>*@
+                </div>
+                <div class="mov-valve-info-container">
+                    <div class="col-lg-12 no-padd">
+                        <div class="pvalve-model-large  @(ValveTagPrefix+"_OPN_IMG")  @(ValveTagPrefix+"_CLS_IMG") @(ValveTagPrefix+"_STATUS") ">
+                        </div>
+                        <span class="mov-valve-icons local-indicator LOCREM_MOV_08 locrem_mov_false"></span>
+                        <span class="mov-valve-icons remote-indicator REMOTE_IMG_MOV_08 remote_img_mov_false"></span>
+                        <span class="mov-valve-icons stop-indicator STOP_IMG_MOV_08 stop_img_mov_false"></span>
+                        <span class="mov-valve-icons auto-indicator AUTOMAN_MOV_08 automan_mov_false" onclick="OpenAutoManModal(this, 'hdnTankAutoMan_202A', 'MOV_08', 'MOV_AUTOMAN', 'AUTOMAN_MOV_08','1', 'admin', 'Admin'); cancelBubble(event);"></span>
+                        <span class="mov-valve-icons manual-indicator AUTOMAN_MOV_08 automan_mov_true" onclick="OpenAutoManModal(this, 'hdnTankAutoMan_202A','MOV_08', 'MOV_AUTOMAN', 'AUTOMAN_MOV_08','1', 'admin', 'Admin'); cancelBubble(event);"></span>
+
+                    </div>
+                    <div class="col-lg-6 hide">
+                        <table class="app-tbl" style="position: relative; top: 20px;">
+                            <tbody>
+                                <tr>
+                                    <td class="lbl">Open Feedback</td>
+                                    <td>
+                                        <span class="circle-cont-sm">
+                                            <span class="@(ValveTagPrefix+"_OPN_FB") "></span>
+                                        </span>  
+                                    </td>
+                                </tr>
+                                <tr class="even">
+                                    <td class="lbl">Close Feedback</td>
+                                    <td>
+                                        <span class="circle-cont-sm">
+                                            <span class="@(ValveTagPrefix+"_CLS_FB") "></span>
+                                        </span>  
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="mov-valve-info-wrapper valve-info-wrapper" style="display: none;">
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Open Feedback</span>
+                                <span class="circle-cont">
+                                    <span class="@(ValveTagPrefix+"_OPN_FB") "></span>
+                                </span>              
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Close Feedback</span>
+                                <span class="circle-cont">
+                                    <span class="@(ValveTagPrefix+"_CLS_FB") "></span>
+                                </span>  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

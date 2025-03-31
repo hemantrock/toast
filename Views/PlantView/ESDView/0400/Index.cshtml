@@ -1,0 +1,178 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - ESD Status View";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">ESD Status View</h3>
+
+    </div>
+</div>
+<div class="esd-view-container">
+    <div class="row m-t-40">
+        <div class="col-lg-5">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center header-main" colspan="2">ESD INPUTS</th></tr>
+                    <tr>
+                        <th class="text-left header-col">ESD Push Button Location</th>
+                        <th class="text-center header-col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="30%" class="lbl bold">ESD from Control Room</td>
+                        <td width="10%"><span class="alert-cont-md"><span class="ESD_CR"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD from TLF Area</td>
+                        <td><span class="alert-cont-md"><span class="ESD_GANTRY"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD from Terminal Manager Room</td>
+                        <td width="10%"><span class="alert-cont-md"><span class="ESD_TERM_MNGR"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD Pump House ESD</td>
+                        <td><span class="alert-cont-md"><span class="ESD_PH"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD from Security Room</td>
+                        <td><span class="alert-cont-md"><span class="ESD_SECURITY"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD from Tank Farm near Tank 201A</td>
+                        <td><span class="alert-cont-md"><span class="ESD_TK201A"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD from Drum Filling Plant</td>
+                        <td><span class="alert-cont-md"><span class="ESD_DRMFLNG"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">ESD from HMI</td>
+                        <td><span class="alert-cont-md"><span class="SOFT_ESD"></span></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-lg-1">
+        </div>
+        <div class="col-lg-5">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center header-main" colspan="2">POWER CUT-OFFs</th></tr>
+                    <tr>
+                        <th class="text-left header-col">Location</th>
+                        <th class="text-center header-col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="30%" class="lbl bold">Power Cutoff to TLF Gantry</td>
+                        <td width="10%"><span class="alert-cont-md"><span class="PWR_OFF_GANTRY"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">Power Cutoff to Radar Gauge</td>
+                        <td><span class="alert-cont-md"><span class="PWR_OFF_PROCESS_RDR"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">Power Cutoff to Pumps</td>
+                        <td width="10%"><span class="alert-cont-md"><span class="PWR_OFF_PUMPS"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">Power Cutoff to MOV Distribution Panel</td>
+                        <td><span class="alert-cont-md"><span class="PWR_OFF_MOV_PANEL"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">Power Cutoff Hardwired Panel Indication</td>
+                        <td><span class="alert-cont-md"><span class="PWR_OFF_HWP_LAMP"></span></span></td>
+                    </tr>
+                    <tr>
+                        <td class="lbl bold">Hooter Alarm</td>
+                        <td><span class="alert-cont-md"><span class="HOOTER_ACTIVATED"></span></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="row m-t-20">
+        <div class="col-lg-6 col-sm-6">
+            <div class="esd-timer-block esd-mockdrill-block">
+                <div class="timer-lbl">ESD Active:</div>
+                <div class="timer-val" style="min-width: 70px;">
+                    <span class="alert-cont-md">
+                        <span class="PROCESS_ESD"></span>
+                    </span>
+                    
+                </div>
+                <div class="timer-lbl">Power ESD:</div>
+                <div class="timer-val" style="min-width: 70px;">
+                    <span class="alert-cont-md">
+                        <span class="PWR_OFF_HWP_LAMP"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-6 text-right esd-timer-wrapper">
+            <div class="esd-timer-block">
+                <div class="timer-lbl">Time Lapsed (Sec):</div>
+                <div class="timer-val ESD_POW_TIME_REM" style="min-width: 85px;"></div>
+
+
+                <div class="timer-lbl">Set Time (msec):</div>
+                <div class="timer-val" style="padding-left: 16px; padding-top: 13px;">
+                    <input type="number" min=0 readonly class="editable-input ESD_TIMER" ondblclick="this.readOnly='';"
+                           style="border: 0px; width: 70%" value="ESD_TIMER">
+                    <span class="glyphicon glyphicon-upload cursor-point" onclick="SetProcessValue('Update ESD Timer', 'Update ESD Timer from TOAST', this, 'ESD_TIMER', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row m-t-20">
+    <div class="col-lg-8 text-left esd-action-btn">
+        <div class="esd-timer-block esd-mockdrill-block">
+            <div class="timer-lbl"><span class="glyphicon glyphicon-bookmark">  </span>Mock Drill</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: 01',this, 'SIREN01_MOCK_DRILL', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_MOCK_DRILL" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+            </div>
+            <div class="timer-lbl"><span class="glyphicon glyphicon-flash"></span>Disaster</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: 01',this, 'SIREN01_DISASTER', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_DISASTER" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+            </div>
+            <div class="timer-lbl"><span class="glyphicon glyphicon-refresh"></span>All Clear</div>
+            <div class="timer-val" style="min-width: 30px;">
+                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to All Clear Mode','Siren: 01',this, 'SIREN01_RESET', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                    <input id="toggle-maintainence-mode" class="on-off-btn SIREN01_RESET" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                </div>
+                @*<a href="javascript:void(0)" class="push-btn-01 SIREN01_RESET" tooltips center-align" onclick="SetProcessValue('Reset ESD','Reset ESD from TOAST',this, 'ESD_RESET', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">Reset</a>*@
+            </div>
+        </div>
+
+
+        @*<a role="button" class="btn btn-primary" href="#" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: Siren01',this, 'SIREN01_MOCK_DRILL', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-bookmark">  </span>Mock Drill
+            </a>
+            <a role="button" class="btn btn-primary" href="#" onclick="cancelBubble(event);SetProcessValue('Set Siren to Emergency Mode','Siren: Siren01',this, 'SIREN01_EMERGENCY', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-warning-sign"></span>Emergency
+            </a>
+            <a role="button" class="btn btn-primary" href="#" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: Siren01',this, 'SIREN01_DISASTER', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-flash">  </span>Disaster
+            </a>
+            <a role="button" class="btn btn-primary" href="#" onclick="SetProcessValue('Reset ESD','Reset ESD from TOAST',this, 'ESD_RESET', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                <span class="glyphicon glyphicon-refresh">  </span>System Reset
+            </a>*@
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/ESDView/Index.js"></script>

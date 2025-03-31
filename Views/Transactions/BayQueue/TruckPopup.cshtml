@@ -1,0 +1,119 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblLoadDetail>
+@{
+    Layout = null;
+    //float width = 94 / (Model.Count() == 0 ? 1 : Model.Count());
+    double CompWidth;
+    double total = Convert.ToDouble(Model.Sum(x => x.PresetQty));
+    int NoOfComps = Model.Count();
+    double width = (99 - NoOfComps) / (total == 0 ? (99 - NoOfComps) : total);
+    tblLoadMaster mas = (Model.FirstOrDefault() != null ? Model.FirstOrDefault().tblLoadMaster : null);
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+}
+
+@if (mas != null)
+{
+	<div class="truck-container @CustName @Application" style="position:relative;">
+		<div class="bay-truck-fill-container">
+			<div>
+				@foreach (tblLoadDetail itm in Model)
+				{
+					CompWidth = Convert.ToDouble(width * itm.PresetQty);
+
+					<div class="box" style="width:@CompWidth%">
+						<div>
+							<div class="fill" style="background-color: @itm.tblProduct.ProductColor ; height:@((((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.AdditiveQty1 ?? 0) + (itm.PrevAdditiveQty1 ?? 0) + (itm.AdditiveQty2 ?? 0) + (itm.PrevAdditiveQty2 ?? 0) + (itm.EthBlendingQtyGrs ?? 0 ) + (itm.PrevBlendQty ?? 0)) / itm.PresetQty) * 100)%;">
+							</div>
+							<div class="hsd-lbl text-center">@itm.tblProduct.ProdNameShort</div>
+							<div class="hsd-ltr text-center">@((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty ?? 0))</div>
+							<div class="hsd-ltr text-center">@Math.Floor((((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty ?? 0)) / (itm.PresetQty??10000)) * 100)%</div>
+						</div>
+
+					</div>
+				}
+			</div>
+		</div>
+
+
+
+
+
+	</div>
+
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+		<tr>
+			<td width="49%" valign="top">
+				<table width="100%" border="1" class="truck-detail-info">
+					<tr>
+						<td class="truck-detail-info-head" width="50%">Truck No.</td>
+						<td width="50%">@mas.tblTruckMaster.TruckNumber</td>
+
+
+					</tr>
+					<tr>
+						<td class="truck-detail-info-head">Card No.</td>
+						<td>@(mas.tblCard == null ? 0 : mas.tblCard.CardNumber)</td>
+					</tr>
+					<tr>
+						<td class="truck-detail-info-head">FAN No</td>
+						<td>@(mas.LoadID)</td>
+					</tr>
+				</table>
+			</td>
+			<td width="2%;">&nbsp;</td>
+			<td width="49%;"  valign="top" align="right">
+				<table width="100%" border="1" class="truck-detail-tbl">
+					<thead>
+						<tr>
+							<th>Comp</th>
+							<th>Preset Qty</th>
+							@if (mas.tblLoadDetails.FirstOrDefault().tblProduct.tblUOMMaster.UOM.ToUpper() == "LTR")
+								{
+								<th>Base Product</th>
+								<th>Additive1</th>
+								<th>Additive2</th>
+								<th>Eth Blending</th>
+							}
+							else
+							{
+								<th style="display:none;"></th>
+								<th style="display:none;"></th>
+								<th style="display:none;"></th>
+								<th style="display:none;"></th>
+							}
+							<th>Total Filled</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						@foreach (tblLoadDetail itm in Model)
+							{
+							<tr>
+								<td class="truck-detail-row-heading">@itm.CompNo</td>
+								<td>@itm.PresetQty</td>
+								@if (mas.tblLoadDetails.FirstOrDefault().tblProduct.tblUOMMaster.UOM.ToUpper() == "LTR")
+							    {
+									<td>@((itm.BaseProdQtyGrs) ?? 0 + (itm.PrevBaseQty ?? 0))</td>
+									<td>@((itm.AdditiveQty1 ?? 0) + (itm.PrevAdditiveQty1 ?? 0))</td>
+									<td>@((itm.AdditiveQty2 ?? 0) + (itm.PrevAdditiveQty2 ?? 0))</td>
+									<td>@((itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty ?? 0))</td>
+								}
+								else
+								{
+									<td style="display:none;"></td>
+									<td style="display:none;"></td>
+									<td style="display:none;"></td>
+									<td style="display:none;"></td>
+								}
+								<td>@((itm.BaseProdQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBlendQty ?? 0))</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</table>
+}

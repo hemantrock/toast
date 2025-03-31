@@ -1,0 +1,39 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@model List<TOAST.Data.ViewModels.VDUDisplayTruck>
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12 grid-header-container">
+        <h3 class="grid-header">VDU Display</h3>
+        <table id="tblVDUDisplay" class="table">
+            <thead>
+                <tr>
+                    <th>Truck No.</th>
+                    <th>Status Desc</th>
+                    <th>Bay Id</th>
+                    <th>Customer Name</th>
+                    <th>Status Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (VDUDisplayTruck itm in Model)
+                {
+                    <tr>
+                        <td>@itm.TruckNumber</td>
+                        <td>@itm.Status</td>
+                        <td>@itm.BayID</td>
+                        <td>@itm.Customer</td>
+                        <td>@itm.ShortStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/VDUDisplay.js"></script>

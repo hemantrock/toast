@@ -1,0 +1,61 @@
+﻿@using TOAST.Data.Model;
+@model List<tblFASMaster>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    Layout = null;
+}
+
+<div class="col-xs-12">
+
+    <div class="row">
+        <h2>FIRE ALARM</h2>
+    </div>
+
+    <div class="firealarm-view-container">
+        <div class="toggle-menu-container">
+
+            @{
+                foreach (string fas in Model.GroupBy(item => item.tblFASLocation.LocationName).Select(group => new {loc = group.Key, Count = group.Count()}).OrderByDescending(x=>x.Count).ThenBy(x=>x.loc).Distinct().Select(x=>x.loc).ToList())
+                {
+                    <div class="menu-item">
+                        @fas<i class="fa fa-plus-circle"></i>
+                    </div>
+                    <div class="menu-content">
+                        <table class="table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>#</th>
+                                    <th>Alarm</th>
+                                    <th>Trouble</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (tblFASMaster item in Model.Where(x => x.tblFASLocation.LocationName.ToUpper() == fas.ToUpper()).OrderBy(x => x.Type).ThenBy(x => x.ItemID).ToList())
+                                {
+                                    string Device = item.Item.Substring(0, 1) + "_" + (item.ItemID ?? 0).ToString("0#");
+                                    <tr data-uniqueid="@item.UniqueID">
+                                        <td>@item.Type</td>
+                                        <td class="text-center" data-serialno="@item.SerialNo">@item.ItemID</td>
+                                        <td>
+                                            <span class="circle-cont">
+                                                <span class="@(Device)_FAULT"></span>
+                                            </span>
+
+                                        </td>
+                                        <td>
+                                            <span class="circle-cont">
+                                                <span class="@(Device)_TRBL"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/MobilePageJS/PlantView/FireAlarmView/Index.js"></script>

@@ -1,0 +1,88 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblRFIDMaster
+@{
+    ViewBag.Title = "Edit RFID";
+    Layout = null;
+    List<tblRFIDType> ddlRFTypes = ViewBag.ddlRFIDTypes;
+    List<tblRFIDStatusMaster> ddlRFStatus = ViewBag.ddlRFIDStatus;
+}
+
+<h2 class="headingPage">
+    Edit RFID Details
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-4 col-md-6 col-sm-6" style="display:none;">
+                <input id="hdnIdKey" type="hidden" value="@Model.UniqueID">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>RF TagID</label>
+                    <input type="text" class="form-control" placeholder="RFID Tag ID" autocomplete="off" id="txtRFTagID" value="@Model.TagID" name="TagID" disabled />
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>EPC ID</label>
+                    <input type="text" class="form-control" placeholder="EPC ID" id="txtEPC_Code" autocomplete="off" value="@Model.EPC_Code" name="EPC_Code" />
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>User Data</label>
+                    <input type="text" class="form-control" placeholder="User Data" autocomplete="off" id="txtUser_Data"  value="@Model.User_Data" name="User_Data" />
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 ">
+                <div class="fields form-group">
+                    <label>Type</label>
+                    <select class="form-control" id="ddlRFIDType" name="RFIDType">
+                        @{
+                            if (Model.Type == null)
+                            {
+                                <option></option>
+                            }
+                            foreach (tblRFIDType rtyp in ddlRFTypes)
+                            {
+                                string strSelection = (Model.Type == rtyp.TypeID ? "selected" : "");
+                                <option @strSelection value="@rtyp.TypeID">@(rtyp.TypeDesc)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3 ">
+                <div class="fields form-group">
+                    <label>Status</label>
+                    <select class="form-control" id="ddlRFIDStatus" name="RFIDStatus" disabled>
+                        @{
+                            if (Model.Status == null)
+                            {
+                                <option></option>
+                            }
+                            foreach (tblRFIDStatusMaster rSts in ddlRFStatus)
+                            {
+                                string strSelection = (Model.Type == rSts.Status ? "selected" : "");
+                                <option @strSelection value="@rSts.Status">@(rSts.StatusDesc)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>*@
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateRFID();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/RFID/RFID.js"></script>
+<script>
+    $(document).ready(function () {
+        @*LoadDDLRFIDType(@Model.Type);
+        LoadDDLRFIDStatus(@Model.Status);*@
+    });
+</script>

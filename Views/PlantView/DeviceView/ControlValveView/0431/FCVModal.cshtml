@@ -1,0 +1,875 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - Control Valve Details View";
+    Layout = null;
+    string DeviceName = ViewBag.Name;
+    string DeviceTagPrefix = ViewBag.TagPrefix;
+}
+
+<div class="modal-dialog modal-pvalve" style="width: 620px; height: 465px;">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header ui-draggable-handle" id="POVModalLabel">
+            <div><h3 class="modal-title">PCV XXXX</h3></div>
+            <div style="border:0px;"><h3 class="modal-title">Details Here</h3></div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
+        <div class="modal-body clearfix">
+            <div class="mov-valve-popup">
+                <div class="feedback-row hide">
+                    <a class="push-btn-02 open-mov-btn FCV01_OPN_CMD" href="javascript:void(0);" onclick="SetProcessValue('Open/Close Command to MOV','Set Reset Open Command to Valve: CV 1023',this, 'FCV01_OPN_CMD','')" data-opcvalue="">OPEN</a>
+                </div>
+                <div id="svgContent" class="" style="width: 600px; height: 430px; position: relative;">
+                    @*style="width: 392px ;height: 274px;"*@
+                    <!--SVGStart-->
+                    <svg id="422_DEF_PLANT" data-name="a_422_DEF_PLANT" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 399.89809 281.20382">
+                        <defs>
+                            <style>
+                                .cls-1, .cls-30, .cls-74, .cls-83, .cls-84, .cls-85, .cls-86 {
+                                    fill: none;
+                                }
+
+                                .cls-2 {
+                                    fill: #f20f0f;
+                                }
+
+                                .cls-3 {
+                                    font-size: 6.61852px;
+                                }
+
+                                .cls-24, .cls-3, .cls-81 {
+                                    fill: #fff;
+                                }
+
+                                .cls-3, .cls-5, .cls-82 {
+                                    font-family: Arial-BoldMT, Arial;
+                                    font-weight: 700;
+                                }
+
+                                .cls-4 {
+                                    fill: #74e83d;
+                                    stroke: #009245;
+                                    stroke-width: 0.2px;
+                                }
+
+                                .cls-4, .cls-74, .cls-80, .cls-83, .cls-84, .cls-85, .cls-86 {
+                                    stroke-miterlimit: 10;
+                                }
+
+                                .cls-5 {
+                                    font-size: 7.64851px;
+                                    fill: #ff0;
+                                }
+
+                                .cls-6 {
+                                    fill: #970000;
+                                }
+
+                                .cls-7 {
+                                    clip-path: url(#clip-path);
+                                }
+
+                                .cls-8 {
+                                    fill: url(#linear-gradient);
+                                }
+
+                                .cls-9 {
+                                    clip-path: url(#clip-path-2);
+                                }
+
+                                .cls-10 {
+                                    fill: url(#linear-gradient-2);
+                                }
+
+                                .cls-11 {
+                                    clip-path: url(#clip-path-3);
+                                }
+
+                                .cls-12 {
+                                    fill: url(#linear-gradient-3);
+                                }
+
+                                .cls-13 {
+                                    clip-path: url(#clip-path-4);
+                                }
+
+                                .cls-14 {
+                                    fill: url(#linear-gradient-4);
+                                }
+
+                                .cls-15 {
+                                    clip-path: url(#clip-path-5);
+                                }
+
+                                .cls-16 {
+                                    fill: url(#linear-gradient-5);
+                                }
+
+                                .cls-17 {
+                                    clip-path: url(#clip-path-6);
+                                }
+
+                                .cls-18 {
+                                    fill: url(#radial-gradient);
+                                }
+
+                                .cls-19 {
+                                    clip-path: url(#clip-path-7);
+                                }
+
+                                .cls-20 {
+                                    fill: url(#linear-gradient-6);
+                                }
+
+                                .cls-21 {
+                                    fill: #fc0000;
+                                }
+
+                                .cls-22 {
+                                    fill: #ff3131;
+                                }
+
+                                .cls-23 {
+                                    fill: #ca0000;
+                                }
+
+                                .cls-25 {
+                                    clip-path: url(#clip-path-8);
+                                }
+
+                                .cls-26 {
+                                    fill: url(#linear-gradient-7);
+                                }
+
+                                .cls-27 {
+                                    clip-path: url(#clip-path-9);
+                                }
+
+                                .cls-28 {
+                                    fill: #310000;
+                                }
+
+                                .cls-29 {
+                                    fill: #650000;
+                                }
+
+                                .cls-30 {
+                                    stroke: #4c4c4c;
+                                    stroke-miterlimit: 2.27556;
+                                    stroke-width: 0.14222px;
+                                }
+
+                                .cls-31 {
+                                    fill: #ff5353;
+                                }
+
+                                .cls-32 {
+                                    fill: #ff4545;
+                                }
+
+                                .cls-33 {
+                                    fill: #717171;
+                                }
+
+                                .cls-34 {
+                                    clip-path: url(#clip-path-10);
+                                }
+
+                                .cls-35 {
+                                    fill: url(#linear-gradient-8);
+                                }
+
+                                .cls-36 {
+                                    clip-path: url(#clip-path-11);
+                                }
+
+                                .cls-37 {
+                                    fill: url(#linear-gradient-9);
+                                }
+
+                                .cls-38 {
+                                    clip-path: url(#clip-path-12);
+                                }
+
+                                .cls-39 {
+                                    fill: url(#linear-gradient-10);
+                                }
+
+                                .cls-40 {
+                                    clip-path: url(#clip-path-13);
+                                }
+
+                                .cls-41 {
+                                    fill: url(#linear-gradient-11);
+                                }
+
+                                .cls-42 {
+                                    clip-path: url(#clip-path-14);
+                                }
+
+                                .cls-43 {
+                                    fill: url(#linear-gradient-12);
+                                }
+
+                                .cls-44 {
+                                    clip-path: url(#clip-path-15);
+                                }
+
+                                .cls-45 {
+                                    fill: url(#radial-gradient-2);
+                                }
+
+                                .cls-46 {
+                                    clip-path: url(#clip-path-16);
+                                }
+
+                                .cls-47 {
+                                    fill: url(#linear-gradient-13);
+                                }
+
+                                .cls-48 {
+                                    fill: #bebebe;
+                                }
+
+                                .cls-49 {
+                                    fill: #ccc;
+                                }
+
+                                .cls-50 {
+                                    fill: #989898;
+                                }
+
+                                .cls-51 {
+                                    clip-path: url(#clip-path-17);
+                                }
+
+                                .cls-52 {
+                                    fill: url(#linear-gradient-14);
+                                }
+
+                                .cls-53 {
+                                    clip-path: url(#clip-path-18);
+                                }
+
+                                .cls-54 {
+                                    fill: #252525;
+                                }
+
+                                .cls-55 {
+                                    fill: #4c4c4c;
+                                }
+
+                                .cls-56 {
+                                    fill: #d4d4d4;
+                                }
+
+                                .cls-57 {
+                                    fill: #d1d1d1;
+                                }
+
+                                .cls-58 {
+                                    fill: #009700;
+                                }
+
+                                .cls-59 {
+                                    fill: url(#linear-gradient-15);
+                                }
+
+                                .cls-60 {
+                                    fill: url(#linear-gradient-16);
+                                }
+
+                                .cls-61 {
+                                    fill: url(#linear-gradient-17);
+                                }
+
+                                .cls-62 {
+                                    fill: url(#linear-gradient-18);
+                                }
+
+                                .cls-63 {
+                                    fill: url(#linear-gradient-19);
+                                }
+
+                                .cls-64 {
+                                    fill: url(#radial-gradient-3);
+                                }
+
+                                .cls-65 {
+                                    fill: url(#linear-gradient-20);
+                                }
+
+                                .cls-66 {
+                                    fill: #00fc00;
+                                }
+
+                                .cls-67 {
+                                    fill: #31ff31;
+                                }
+
+                                .cls-68 {
+                                    fill: #00ca00;
+                                }
+
+                                .cls-69 {
+                                    fill: url(#linear-gradient-21);
+                                }
+
+                                .cls-70 {
+                                    fill: #003100;
+                                }
+
+                                .cls-71 {
+                                    fill: #006500;
+                                }
+
+                                .cls-72 {
+                                    fill: #53ff53;
+                                }
+
+                                .cls-73 {
+                                    fill: #45ff45;
+                                }
+
+                                .cls-74 {
+                                    stroke: #1b1464;
+                                    stroke-width: 0.54463px;
+                                }
+
+                                .cls-75, .cls-82 {
+                                    font-size: 12px;
+                                }
+
+                                .cls-75, .cls-81 {
+                                    font-family: ArialMT, Arial;
+                                }
+
+                                .cls-76 {
+                                    letter-spacing: -0.01807em;
+                                }
+
+                                .cls-77 {
+                                    letter-spacing: -0.03711em;
+                                }
+
+                                .cls-78 {
+                                    letter-spacing: -0.07422em;
+                                }
+
+                                .cls-79 {
+                                    letter-spacing: -0.05518em;
+                                }
+
+                                .cls-80 {
+                                    stroke: blue;
+                                    stroke-width: 0.53593px;
+                                    opacity: 0.75;
+                                }
+
+                                .cls-81 {
+                                    font-size: 8.12684px;
+                                }
+
+                                .cls-82 {
+                                    fill: lime;
+                                }
+
+                                .cls-83, .cls-84, .cls-85, .cls-86 {
+                                    stroke: #fbb03b;
+                                }
+
+                                .cls-83 {
+                                    stroke-width: 2px;
+                                }
+
+                                .cls-84 {
+                                    stroke-width: 1.55429px;
+                                }
+
+                                .cls-85 {
+                                    stroke-width: 1.55104px;
+                                }
+
+                                .cls-86 {
+                                    stroke-width: 1.00195px;
+                                }
+
+                                .cls-87 {
+                                    letter-spacing: -0.11084em;
+                                }
+                            </style>
+                            <clipPath id="clip-path">
+                                <polygon class="cls-1" points="22.329 53.172 33.968 51.699 33.968 60.924 22.329 59.331 22.329 53.172" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient" x1="8129.65581" y1="7650.6284" x2="8130.65582" y2="7650.6284" gradientTransform="translate(-70548.80876 75056.90364) rotate(-90) scale(9.22499)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#b90000" />
+                                <stop offset="0.45" stop-color="#ffd6d6" />
+                                <stop offset="0.57" stop-color="#ffb1b1" />
+                                <stop offset="0.77" stop-color="#ff6565" />
+                                <stop offset="1" stop-color="#b90000" />
+                            </linearGradient>
+                            <clipPath id="clip-path-2">
+                                <rect class="cls-1" x="33.82443" y="48.62407" width="3.01113" height="15.37479" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-2" x1="7785.94288" y1="7988.99456" x2="7786.94287" y2="7988.99456" gradientTransform="translate(-122795.61172 119773.01721) rotate(-90) scale(15.37502)" xlink:href="#linear-gradient" />
+                            <clipPath id="clip-path-3">
+                                <polygon class="cls-1" points="11.093 51.699 21.525 51.699 22.55 53.172 22.55 59.387 21.525 60.924 11.093 60.924 11.093 51.699" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-3" x1="8129.65581" y1="7650.6291" x2="8130.65582" y2="7650.6291" gradientTransform="translate(-70560.14209 75056.90364) rotate(-90) scale(9.22499)" xlink:href="#linear-gradient" />
+                            <clipPath id="clip-path-4">
+                                <rect class="cls-1" x="9.93166" y="50.16121" width="1.34315" height="12.29995" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-4" x1="7914.83505" y1="7862.10759" x2="7915.83505" y2="7862.10759" gradientTransform="translate(-96693.34809 97414.96043) rotate(-90) scale(12.3)" xlink:href="#linear-gradient" />
+                            <clipPath id="clip-path-5">
+                                <rect class="cls-1" x="7.23911" y="48.62407" width="3.01113" height="15.37479" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-5" x1="7785.94288" y1="7988.99465" x2="7786.94287" y2="7988.99465" gradientTransform="translate(-122822.19839 119773.01721) rotate(-90) scale(15.37502)" xlink:href="#linear-gradient" />
+                            <clipPath id="clip-path-6">
+                                <polygon class="cls-1" points="21.525 51.699 22.55 53.172 22.55 59.387 21.525 60.924 21.525 51.699" />
+                            </clipPath>
+                            <radialGradient id="radial-gradient" cx="4892.75949" cy="6081.16028" r="0.99997" gradientTransform="translate(-16034.77329 -19900.53313) scale(3.28175)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#ffd6d6" />
+                                <stop offset="0.17" stop-color="#fbb" />
+                                <stop offset="0.48" stop-color="#ff6f6f" />
+                                <stop offset="0.91" stop-color="#f60000" />
+                                <stop offset="1" stop-color="#db0000" />
+                            </radialGradient>
+                            <clipPath id="clip-path-7">
+                                <path class="cls-1" d="M15.31051,48.17579v3.52313s-.00171,1.47342,2.13561,1.47342c2.02865,0,2.02865-1.47342,2.02865-1.47342V48.17579Z" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-6" x1="5396.69576" y1="6593.14072" x2="5397.69613" y2="6593.14072" gradientTransform="translate(-22458.89335 -27406.04834) scale(4.16444)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#900" />
+                                <stop offset="0.52" stop-color="#ff7b7b" />
+                                <stop offset="1" stop-color="#ca0000" />
+                            </linearGradient>
+                            <clipPath id="clip-path-8">
+                                <rect class="cls-1" x="13.77337" y="22.55076" width="7.23911" height="1.53771" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-7" x1="6192.48774" y1="7401.5234" x2="6193.48777" y2="7401.5234" gradientTransform="translate(-44812.92482 -53555.44705) scale(7.23888)" xlink:href="#linear-gradient-6" />
+                            <clipPath id="clip-path-9">
+                                <rect class="cls-1" width="36.83556" height="64" />
+                            </clipPath>
+                            <clipPath id="clip-path-10">
+                                <polygon class="cls-1" points="23 52.63 35 51.111 35 60.623 23 58.98 23 52.63" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-8" x1="8129.8382" y1="7650.71178" x2="8130.81381" y2="7650.71178" gradientTransform="translate(-70548.72653 75057.66213) rotate(-90) scale(9.22499)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#8b8b8b" />
+                                <stop offset="0.45" stop-color="#f5f5f5" />
+                                <stop offset="0.57" stop-color="#ebebeb" />
+                                <stop offset="0.77" stop-color="#d9d9d9" />
+                                <stop offset="1" stop-color="#8b8b8b" />
+                            </linearGradient>
+                            <clipPath id="clip-path-11">
+                                <rect class="cls-1" x="34" y="48" width="3" height="15" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-9" x1="7786.09007" y1="7989.00027" x2="7787.06568" y2="7989.00027" gradientTransform="translate(-122795.52949 119774.28137) rotate(-90) scale(15.37502)" xlink:href="#linear-gradient-8" />
+                            <clipPath id="clip-path-12">
+                                <polygon class="cls-1" points="12 51 22.016 51 23 52.437 23 58.5 22.016 60 12 60 12 51" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-10" x1="8129.8382" y1="7650.69371" x2="8130.81381" y2="7650.69371" gradientTransform="translate(-70560.05986 75057.66213) rotate(-90) scale(9.22499)" xlink:href="#linear-gradient-8" />
+                            <clipPath id="clip-path-13">
+                                <rect class="cls-1" x="11" y="50" width="1" height="12" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-11" x1="7914.95477" y1="7862.17381" x2="7915.93038" y2="7862.17381" gradientTransform="translate(-96693.26586 97415.97175) rotate(-90) scale(12.3)" xlink:href="#linear-gradient-8" />
+                            <clipPath id="clip-path-14">
+                                <rect class="cls-1" x="8" y="48" width="3" height="15" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-12" x1="7786.09007" y1="7989.03843" x2="7787.06568" y2="7989.03843" gradientTransform="translate(-122822.11616 119774.28137) rotate(-90) scale(15.37502)" xlink:href="#linear-gradient-8" />
+                            <clipPath id="clip-path-15">
+                                <polygon class="cls-1" points="22 51.367 23 52.805 23 58.867 22 60.366 22 51.367" />
+                            </clipPath>
+                            <radialGradient id="radial-gradient-2" cx="4892.95755" cy="6080.91301" r="0.97557" gradientTransform="translate(-16034.9609 -19900.53313) scale(3.28175)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#f5f5f5" />
+                                <stop offset="0.17" stop-color="#eee" />
+                                <stop offset="0.48" stop-color="#dbdbdb" />
+                                <stop offset="0.91" stop-color="#b9b9b9" />
+                                <stop offset="1" stop-color="#a4a4a4" />
+                            </radialGradient>
+                            <clipPath id="clip-path-16">
+                                <path class="cls-1" d="M16,48c-1.3328,6.61417,5.18339,6.4802,4,0Z" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-13" x1="5396.92421" y1="6593.09892" x2="5397.88473" y2="6593.09892" gradientTransform="translate(-22459.15354 -27406.04834) scale(4.16444)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#737373" />
+                                <stop offset="0.52" stop-color="#dedede" />
+                                <stop offset="1" stop-color="#989898" />
+                            </linearGradient>
+                            <clipPath id="clip-path-17">
+                                <rect class="cls-1" x="14" y="22" width="7" height="2" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-14" x1="6192.58991" y1="7401.47925" x2="6193.55691" y2="7401.47925" gradientTransform="translate(-44813.43779 -53555.44704) scale(7.23888)" xlink:href="#linear-gradient-13" />
+                            <clipPath id="clip-path-18">
+                                <rect class="cls-1" width="37" height="64" />
+                            </clipPath>
+                            <linearGradient id="linear-gradient-15" x1="8129.65581" y1="7650.6284" x2="8130.65582" y2="7650.6284" gradientTransform="translate(-70548.80876 75056.90364) rotate(-90) scale(9.22499)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#00b900" />
+                                <stop offset="0.45" stop-color="#d6ffd6" />
+                                <stop offset="0.57" stop-color="#b1ffb1" />
+                                <stop offset="0.77" stop-color="#65ff65" />
+                                <stop offset="1" stop-color="#00b900" />
+                            </linearGradient>
+                            <linearGradient id="linear-gradient-16" x1="7785.94288" y1="7988.99456" x2="7786.94287" y2="7988.99456" gradientTransform="translate(-122795.61172 119773.01721) rotate(-90) scale(15.37502)" xlink:href="#linear-gradient-15" />
+                            <linearGradient id="linear-gradient-17" x1="8129.65581" y1="7650.6291" x2="8130.65582" y2="7650.6291" gradientTransform="translate(-70560.14209 75056.90364) rotate(-90) scale(9.22499)" xlink:href="#linear-gradient-15" />
+                            <linearGradient id="linear-gradient-18" x1="7914.83505" y1="7862.10759" x2="7915.83505" y2="7862.10759" gradientTransform="translate(-96693.34809 97414.96043) rotate(-90) scale(12.3)" xlink:href="#linear-gradient-15" />
+                            <linearGradient id="linear-gradient-19" x1="7785.94288" y1="7988.99465" x2="7786.94287" y2="7988.99465" gradientTransform="translate(-122822.19839 119773.01721) rotate(-90) scale(15.37502)" xlink:href="#linear-gradient-15" />
+                            <radialGradient id="radial-gradient-3" cx="4892.75949" cy="6081.16028" r="0.99997" gradientTransform="translate(-16034.77329 -19900.53313) scale(3.28175)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#d6ffd6" />
+                                <stop offset="0.17" stop-color="#bfb" />
+                                <stop offset="0.48" stop-color="#6fff6f" />
+                                <stop offset="0.91" stop-color="#00f600" />
+                                <stop offset="1" stop-color="#00db00" />
+                            </radialGradient>
+                            <linearGradient id="linear-gradient-20" x1="5396.69576" y1="6593.14072" x2="5397.69613" y2="6593.14072" gradientTransform="translate(-22458.89335 -27406.04834) scale(4.16444)" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#090" />
+                                <stop offset="0.52" stop-color="#7bff7b" />
+                                <stop offset="1" stop-color="#00ca00" />
+                            </linearGradient>
+                            <linearGradient id="linear-gradient-21" x1="6192.48774" y1="7401.5234" x2="6193.48777" y2="7401.5234" gradientTransform="translate(-44812.92482 -53555.44705) scale(7.23888)" xlink:href="#linear-gradient-20" />
+                            <symbol id="pcv_opn_img_true" data-name="pcv_opn_img_true" viewBox="0 0 36.836 64">
+                                <g id="Group_5" data-name="Group 5">
+                                    <rect class="cls-58" x="14.09365" y="3.80018" width="6.59854" height="4.40092" />
+                                    <rect class="cls-58" x="14.60622" y="7.86887" width="5.57341" height="1.66002" />
+                                    <rect class="cls-58" x="13.77337" y="0.00114" width="7.23911" height="4.0357" />
+                                </g>
+                                <g id="Group_Port2" data-name="Group Port2">
+                                    <g class="cls-7">
+                                        <rect class="cls-59" x="22.32946" y="51.69892" width="11.63833" height="9.2251" />
+                                    </g>
+                                    <g class="cls-9">
+                                        <rect class="cls-60" x="33.82443" y="48.62407" width="3.01113" height="15.37479" />
+                                    </g>
+                                </g>
+                                <g id="Group_Port1" data-name="Group Port1">
+                                    <g class="cls-11">
+                                        <rect class="cls-61" x="11.09333" y="51.69892" width="11.45685" height="9.2251" />
+                                    </g>
+                                    <g class="cls-13">
+                                        <rect class="cls-62" x="9.93166" y="50.16121" width="1.34315" height="12.29995" />
+                                    </g>
+                                    <g class="cls-15">
+                                        <rect class="cls-63" x="7.23911" y="48.62407" width="3.01113" height="15.37479" />
+                                    </g>
+                                    <g class="cls-17">
+                                        <rect class="cls-64" x="21.52505" y="51.69892" width="1.02514" height="9.2251" />
+                                    </g>
+                                    <g class="cls-19">
+                                        <rect class="cls-65" x="15.3088" y="48.17579" width="4.16597" height="4.99655" />
+                                    </g>
+                                </g>
+                                <g id="Group_4" data-name="Group 4">
+                                    <rect class="cls-58" x="10.25024" y="45.74094" width="14.35022" height="1.53771" />
+                                    <rect class="cls-66" x="13.26137" y="45.10037" width="8.26368" height="3.07428" />
+                                    <rect class="cls-67" x="21.52505" y="19.98848" width="2.05028" height="27.67474" />
+                                    <rect class="cls-67" x="15.82308" y="19.98848" width="3.20341" height="21.26791" />
+                                    <rect class="cls-67" x="11.27481" y="19.98848" width="1.98599" height="27.67474" />
+                                    <rect class="cls-68" x="14.79851" y="41.25639" width="5.18884" height="3.33027" />
+                                    <rect class="cls-24" x="15.31051" y="44.5878" width="4.16484" height="0.51257" />
+                                    <g class="cls-25">
+                                        <rect class="cls-69" x="13.77337" y="22.55076" width="7.23911" height="1.53771" />
+                                    </g>
+                                </g>
+                                <g id="Group_Hose" data-name="Group Hose">
+                                    <g class="cls-27">
+                                        <path class="cls-68" d="M7.75168,18.011a4.582,4.582,0,0,0-2.69028.85618A9.21282,9.21282,0,0,0,2.2528,22.235,16.75222,16.75222,0,0,0,.64853,27.09959,23.64454,23.64454,0,0,0,.32028,30.815H.83285A20.86484,20.86484,0,0,1,2.762,22.63381c2.37056-4.59605,4.98972-4.10908,4.98972-4.10908Z" />
+                                    </g>
+                                </g>
+                                <g id="Group_3" data-name="Group 3">
+                                    <rect class="cls-68" x="1.98599" y="27.09959" width="30.8133" height="2.02069" />
+                                    <rect class="cls-70" x="1.98599" y="34.9787" width="30.8133" height="2.75456" />
+                                    <rect class="cls-71" x="1.98599" y="28.57302" width="30.8133" height="6.91826" />
+                                    <rect class="cls-71" x="7.75168" y="17.68221" width="0.96028" height="0.96085" />
+                                    <polygon class="cls-70" points="0 30.815 0 32.993 1.986 32.993 1.986 31.775 0.961 31.775 0.961 30.815 0 30.815" />
+                                </g>
+                                <g id="Group_2" data-name="Group 2">
+                                    <rect class="cls-70" x="7.75168" y="24.60103" width="19.34677" height="15.24679" />
+                                    <rect class="cls-68" x="8.26368" y="25.04932" width="18.32221" height="14.2848" />
+                                    <rect class="cls-30" x="13.77337" y="29.4053" width="7.23911" height="5.57341" />
+                                </g>
+                                <g id="Group_1" data-name="Group 1">
+                                    <rect class="cls-71" x="22.22933" y="19.6682" width="3.20341" height="1.53771" />
+                                    <polygon class="cls-72" points="5.381 14.287 5.51 12.749 7.239 12.749 8.264 9.226 26.585 9.226 27.61 12.749 29.084 12.749 29.468 14.287 5.381 14.287" />
+                                    <rect class="cls-66" x="11.27481" y="12.1088" width="2.30628" height="0.64057" />
+                                    <rect class="cls-66" x="21.2042" y="12.1088" width="2.37056" height="0.64057" />
+                                    <rect class="cls-66" x="26.58532" y="12.1088" width="2.37056" height="0.64057" />
+                                    <rect class="cls-66" x="5.82997" y="12.1088" width="2.43371" height="0.64057" />
+                                    <polygon class="cls-58" points="17.296 21.014 15.311 20.757 13.261 20.502 11.275 20.244 9.225 19.989 9.097 19.989 8.264 18.323 7.687 16.465 7.367 15.824 7.239 15.761 5.061 15.761 5.381 14.287 29.469 14.287 29.596 15.761 29.34 15.761 27.61 15.761 27.483 15.824 26.778 17.49 26.137 19.347 25.689 19.989 23.575 20.244 21.525 20.502 19.475 20.757 17.873 20.95 17.296 21.014" />
+                                    <polygon class="cls-73" points="27.931 12.749 27.418 8.906 25.881 8.906 25.881 12.749 27.931 12.749" />
+                                    <polygon class="cls-73" points="16.272 12.749 16.656 8.906 18.193 8.906 18.513 12.749 16.272 12.749" />
+                                    <polygon class="cls-73" points="6.855 12.749 7.367 8.906 8.905 8.906 8.905 12.749 6.855 12.749" />
+                                </g>
+                            </symbol>
+                            <symbol id="pcv_cls_img_true" data-name="pcv_cls_img_true" viewBox="0 0 36.836 64">
+                                <g id="Group_5-2" data-name="Group 5">
+                                    <rect class="cls-6" x="14.09365" y="3.80018" width="6.59854" height="4.40092" />
+                                    <rect class="cls-6" x="14.60622" y="7.86887" width="5.57341" height="1.66002" />
+                                    <rect class="cls-6" x="13.77337" y="0.00114" width="7.23911" height="4.0357" />
+                                </g>
+                                <g id="Group_Port2-2" data-name="Group Port2">
+                                    <g class="cls-7">
+                                        <rect class="cls-8" x="22.32946" y="51.69892" width="11.63833" height="9.2251" />
+                                    </g>
+                                    <g class="cls-9">
+                                        <rect class="cls-10" x="33.82443" y="48.62407" width="3.01113" height="15.37479" />
+                                    </g>
+                                </g>
+                                <g id="Group_Port1-2" data-name="Group Port1">
+                                    <g class="cls-11">
+                                        <rect class="cls-12" x="11.09333" y="51.69892" width="11.45685" height="9.2251" />
+                                    </g>
+                                    <g class="cls-13">
+                                        <rect class="cls-14" x="9.93166" y="50.16121" width="1.34315" height="12.29995" />
+                                    </g>
+                                    <g class="cls-15">
+                                        <rect class="cls-16" x="7.23911" y="48.62407" width="3.01113" height="15.37479" />
+                                    </g>
+                                    <g class="cls-17">
+                                        <rect class="cls-18" x="21.52505" y="51.69892" width="1.02514" height="9.2251" />
+                                    </g>
+                                    <g class="cls-19">
+                                        <rect class="cls-20" x="15.3088" y="48.17579" width="4.16597" height="4.99655" />
+                                    </g>
+                                </g>
+                                <g id="Group_4-2" data-name="Group 4">
+                                    <rect class="cls-6" x="10.25024" y="45.74094" width="14.35022" height="1.53771" />
+                                    <rect class="cls-21" x="13.26137" y="45.10037" width="8.26368" height="3.07428" />
+                                    <rect class="cls-22" x="21.52505" y="19.98848" width="2.05028" height="27.67474" />
+                                    <rect class="cls-22" x="15.82308" y="19.98848" width="3.20341" height="21.26791" />
+                                    <rect class="cls-22" x="11.27481" y="19.98848" width="1.98599" height="27.67474" />
+                                    <rect class="cls-23" x="14.79851" y="41.25639" width="5.18884" height="3.33027" />
+                                    <rect class="cls-24" x="15.31051" y="44.5878" width="4.16484" height="0.51257" />
+                                    <g class="cls-25">
+                                        <rect class="cls-26" x="13.77337" y="22.55076" width="7.23911" height="1.53771" />
+                                    </g>
+                                </g>
+                                <g id="Group_Hose-2" data-name="Group Hose">
+                                    <g class="cls-27">
+                                        <path class="cls-23" d="M7.75168,18.011a4.582,4.582,0,0,0-2.69028.85618A9.21282,9.21282,0,0,0,2.2528,22.235,16.75222,16.75222,0,0,0,.64853,27.09959,23.64454,23.64454,0,0,0,.32028,30.815H.83285A20.86484,20.86484,0,0,1,2.762,22.63381c2.37056-4.59605,4.98972-4.10908,4.98972-4.10908Z" />
+                                    </g>
+                                </g>
+                                <g id="Group_3-2" data-name="Group 3">
+                                    <rect class="cls-23" x="1.98599" y="27.09959" width="30.8133" height="2.02069" />
+                                    <rect class="cls-28" x="1.98599" y="34.9787" width="30.8133" height="2.75456" />
+                                    <rect class="cls-29" x="1.98599" y="28.57302" width="30.8133" height="6.91826" />
+                                    <rect class="cls-29" x="7.75168" y="17.68221" width="0.96028" height="0.96085" />
+                                    <polygon class="cls-28" points="0 30.815 0 32.993 1.986 32.993 1.986 31.775 0.961 31.775 0.961 30.815 0 30.815" />
+                                </g>
+                                <g id="Group_2-2" data-name="Group 2">
+                                    <rect class="cls-28" x="7.75168" y="24.60103" width="19.34677" height="15.24679" />
+                                    <rect class="cls-23" x="8.26368" y="25.04932" width="18.32221" height="14.2848" />
+                                    <rect class="cls-30" x="13.77337" y="29.4053" width="7.23911" height="5.57341" />
+                                </g>
+                                <g id="Group_1-2" data-name="Group 1">
+                                    <rect class="cls-29" x="22.22933" y="19.6682" width="3.20341" height="1.53771" />
+                                    <polygon class="cls-31" points="5.381 14.287 5.51 12.749 7.239 12.749 8.264 9.226 26.585 9.226 27.61 12.749 29.084 12.749 29.468 14.287 5.381 14.287" />
+                                    <rect class="cls-21" x="11.27481" y="12.1088" width="2.30628" height="0.64057" />
+                                    <rect class="cls-21" x="21.2042" y="12.1088" width="2.37056" height="0.64057" />
+                                    <rect class="cls-21" x="26.58532" y="12.1088" width="2.37056" height="0.64057" />
+                                    <rect class="cls-21" x="5.82997" y="12.1088" width="2.43371" height="0.64057" />
+                                    <polygon class="cls-6" points="17.296 21.014 15.311 20.757 13.261 20.502 11.275 20.244 9.225 19.989 9.097 19.989 8.264 18.323 7.687 16.465 7.367 15.824 7.239 15.761 5.061 15.761 5.381 14.287 29.469 14.287 29.596 15.761 29.34 15.761 27.61 15.761 27.483 15.824 26.778 17.49 26.137 19.347 25.689 19.989 23.575 20.244 21.525 20.502 19.475 20.757 17.873 20.95 17.296 21.014" />
+                                    <polygon class="cls-32" points="27.931 12.749 27.418 8.906 25.881 8.906 25.881 12.749 27.931 12.749" />
+                                    <polygon class="cls-32" points="16.272 12.749 16.656 8.906 18.193 8.906 18.513 12.749 16.272 12.749" />
+                                    <polygon class="cls-32" points="6.855 12.749 7.367 8.906 8.905 8.906 8.905 12.749 6.855 12.749" />
+                                </g>
+                            </symbol>
+                            <symbol id="pcv_general" data-name="pcv_general" viewBox="0 0 37 64">
+                                <g id="Group_5-3" data-name="Group 5">
+                                    <rect class="cls-33" x="14" y="4" width="7" height="4" />
+                                    <rect class="cls-33" x="15" y="7" width="6" height="2" />
+                                    <rect class="cls-33" x="14" width="7" height="4" />
+                                </g>
+                                <g id="Group_Port2-3" data-name="Group Port2">
+                                    <g class="cls-34">
+                                        <rect class="cls-35" x="23" y="51" width="12" height="9" />
+                                    </g>
+                                    <g class="cls-36">
+                                        <rect class="cls-37" x="34" y="48" width="3" height="15" />
+                                    </g>
+                                </g>
+                                <g id="Group_Port1-3" data-name="Group Port1">
+                                    <g class="cls-38">
+                                        <rect class="cls-39" x="12" y="51" width="11" height="9" />
+                                    </g>
+                                    <g class="cls-40">
+                                        <rect class="cls-41" x="11" y="50" width="1" height="12" />
+                                    </g>
+                                    <g class="cls-42">
+                                        <rect class="cls-43" x="8" y="48" width="3" height="15" />
+                                    </g>
+                                    <g class="cls-44">
+                                        <rect class="cls-45" x="22" y="51" width="1" height="9" />
+                                    </g>
+                                    <g class="cls-46">
+                                        <rect class="cls-47" x="16" y="48" width="4" height="5" />
+                                    </g>
+                                </g>
+                                <g id="Group_4-3" data-name="Group 4">
+                                    <rect class="cls-33" x="11" y="45" width="14" height="2" />
+                                    <rect class="cls-48" x="14" y="45" width="8" height="3" />
+                                    <rect class="cls-49" x="22" y="19" width="2" height="28" />
+                                    <rect class="cls-49" x="16" y="20" width="3" height="21" />
+                                    <rect class="cls-49" x="12" y="19" width="2" height="28" />
+                                    <rect class="cls-50" x="15" y="41" width="5" height="3" />
+                                    <rect class="cls-24" x="16" y="44" width="4" height="1" />
+                                    <g class="cls-51">
+                                        <rect class="cls-52" x="14" y="22" width="7" height="2" />
+                                    </g>
+                                </g>
+                                <g id="Group_Hose-3" data-name="Group Hose">
+                                    <g class="cls-53">
+                                        <path class="cls-50" d="M8,17.196C5.46116,17.14168.52805,21.17953.5686,30h.51257C.23563,28.37655,4.4426,16.46127,8,17.70972Z" />
+                                    </g>
+                                </g>
+                                <g id="Group_3-3" data-name="Group 3">
+                                    <rect class="cls-50" x="2" y="27" width="31" height="2" />
+                                    <rect class="cls-54" x="2" y="34" width="31" height="3" />
+                                    <rect class="cls-55" x="2" y="28" width="31" height="7" />
+                                    <rect class="cls-55" x="8" y="17" width="1" height="1" />
+                                    <polygon class="cls-54" points="2 30 2 32 3 32 3 31 3 31 3 30 2 30" />
+                                </g>
+                                <g id="Group_2-3" data-name="Group 2">
+                                    <rect class="cls-54" x="8" y="24" width="19" height="15" />
+                                    <rect class="cls-50" x="9" y="25" width="18" height="14" />
+                                    <rect class="cls-30" x="14" y="29" width="7" height="6" />
+                                </g>
+                                <g id="Group_1-3" data-name="Group 1">
+                                    <rect class="cls-55" x="23" y="19" width="3" height="2" />
+                                    <polygon class="cls-56" points="5.916 14 6.045 13 7.774 13 8.799 9 27.12 9 28.146 13 29.619 13 30.004 14 5.916 14" />
+                                    <rect class="cls-48" x="12" y="11" width="2" height="1" />
+                                    <rect class="cls-48" x="22" y="11" width="2" height="1" />
+                                    <rect class="cls-48" x="27" y="11" width="2" height="1" />
+                                    <rect class="cls-48" x="7" y="11" width="2" height="1" />
+                                    <path class="cls-33" d="M17.88521,19.96932C15.96392,19.7372,13.49449,19.37811,10.1274,19a34.80008,34.80008,0,0,1-1.63616-3.94026A19.52667,19.52667,0,0,0,5.596,15l.32028-1h24.0879l.12743,1a23.26325,23.26325,0,0,0-2.60916.05974c-.49691.75256-.57416,2.16252-1.69753,3.94026C23.97038,19.21286,21.03334,19.60938,17.88521,19.96932Z" />
+                                    <polygon class="cls-57" points="28.134 12 27.6 8 26 8 26 12 28.134 12" />
+                                    <polygon class="cls-57" points="16.761 12 17.161 8 18.761 8 19.094 12 16.761 12" />
+                                    <polygon class="cls-57" points="6.866 12 7.4 8 9 8 9 12 6.866 12" />
+                                </g>
+                            </symbol>
+                            <symbol id="alrm_alert_false" data-name="alrm_alert_false" viewBox="0 0 7.12 7.12">
+                                <circle id="ALRM_FALSE" class="cls-4" cx="3.55996" cy="3.55996" r="3.45996" />
+                            </symbol>
+                            <symbol id="alrm_alert_true" data-name="alrm_alert_true" viewBox="0 0 6.92 9.441">
+                                <g id="ALRM_TRUE">
+                                    <circle class="cls-2" cx="3.45996" cy="3.85669" r="3.45996" />
+                                    <text class="cls-5" transform="translate(2.25293 6.56152)">!</text>
+                                </g>
+                            </symbol>
+                            <symbol id="alrm_alert_bad" data-name="alrm_alert_bad" viewBox="0 0 6.92 8.271">
+                                <g id="ALRM_BAD">
+                                    <circle class="cls-2" cx="3.45996" cy="3.45996" r="3.45996" />
+                                    <text class="cls-3" transform="translate(1.24121 5.68311) scale(1.09717 1)">?</text>
+                                </g>
+                            </symbol>
+                        </defs>
+                        <title>431_PCV</title>
+                        <rect class="cls-74" x="4.12739" y="3.29299" width="391.30333" height="273.32484" />
+                        <g id="PCV1001A_PRS_SKID">
+                            <use width="36.83556" height="64" transform="translate(32.10898 15.42544)" xlink:href="#pcv_opn_img_true" />
+                            <use width="36.83556" height="64" transform="translate(32.10898 15.42544)" xlink:href="#pcv_cls_img_true" />
+                            <use width="37" height="64" transform="translate(32.10898 15.42544)" xlink:href="#pcv_general" />
+                        </g>
+                        <text class="cls-75" transform="translate(20.63697 105.74782)">PID S<tspan class="cls-76" x="31.3418" y="0">P</tspan></text>
+                        <text class="cls-75" transform="translate(193.15925 54.16023)">Proportional</text>
+                        <text class="cls-75" transform="translate(225.55394 32.7549)">PID Parameters</text>
+                        <text class="cls-75" transform="translate(26.47948 191.96616)">Position<tspan class="cls-76" x="42.69141" y="0"> </tspan><tspan class="cls-77" x="45.80859" y="0">T</tspan><tspan x="52.69336" y="0">ransmitter</tspan></text>
+                        <text class="cls-75" transform="translate(17.45498 214.9677)">Txr <tspan class="cls-78" x="20.66016" y="0">V</tspan><tspan x="27.77344" y="0">alue</tspan></text>
+                        <text class="cls-75" transform="translate(17.45498 237.89764)">High<tspan class="cls-79" x="24.67969" y="0"> </tspan><tspan x="27.35156" y="0">Alarm</tspan></text>
+                        <text class="cls-75" transform="translate(234.37216 191.96623)">Hydraulic Pressure<tspan class="cls-76" x="101.36719" y="0"> </tspan><tspan x="104.48438" y="0">Txr</tspan></text>
+                        <g id="PIT-1016">
+                            <path class="cls-80" d="M137.89752,97.32057v10.53512c0,.56864-.34494,1.03059-.766,1.03059H68.66091c-.42132,0-.76339-.462-.76339-1.03059V97.32057c0-.57249.34207-1.03429.76339-1.03429h68.47057C137.55258,96.28628,137.89752,96.74808,137.89752,97.32057Z" />
+                            <text id="kg_cm_" data-name="kg/cm²" class="cls-81" transform="translate(110.32078 105.74801)"><tspan xml:space="preserve"> kg/cm²</tspan></text>
+                            <text id="PIT1016_VALUE" class="cls-82" transform="translate(104.89109 107.09469)">?</text>
+                        </g>
+                        <text class="cls-75" transform="translate(20.50019 130.85517)">PID PV</text>
+                        <g id="PIT-1016-2" data-name="PIT-1016">
+                            <path class="cls-80" d="M137.76074,122.42793v10.53512c0,.56863-.345,1.03058-.766,1.03058H68.52413c-.42132,0-.76339-.462-.76339-1.03058V122.42793c0-.5725.34207-1.0343.76339-1.0343H136.9947C137.41579,121.39363,137.76074,121.85543,137.76074,122.42793Z" />
+                            <text id="kg_cm_2" data-name="kg/cm²" class="cls-81" transform="translate(110.184 130.85536)"><tspan xml:space="preserve"> kg/cm²</tspan></text>
+                            <text id="PIT1016_VALUE-2" data-name="PIT1016_VALUE" class="cls-82" transform="translate(104.75431 132.20204)">?</text>
+                        </g>
+                        <g id="PIT-1016-3" data-name="PIT-1016">
+                            <path class="cls-80" d="M147.33067,45.93972V56.47484c0,.56864-.345,1.03059-.766,1.03059H78.09405c-.42132,0-.76338-.46195-.76338-1.03059V45.93972c0-.5725.34206-1.03429.76338-1.03429h68.47058C146.98572,44.90543,147.33067,45.36722,147.33067,45.93972Z" />
+                            <text id="kg_cm_3" data-name="kg/cm²" class="cls-81" transform="translate(128.3311 54.36715)"><tspan xml:space="preserve"> %</tspan></text>
+                            <text id="PIT1016_VALUE-3" data-name="PIT1016_VALUE" class="cls-82" transform="translate(114.32426 55.71383)">?</text>
+                        </g>
+                        <g id="PIT-1016-4" data-name="PIT-1016">
+                            <path class="cls-80" d="M148.9745,205.19356v10.53512c0,.56864-.345,1.03059-.766,1.03059H79.73789c-.42132,0-.76339-.46195-.76339-1.03059V205.19356c0-.5725.34207-1.03429.76339-1.03429h68.47057C148.62955,204.15927,148.9745,204.62106,148.9745,205.19356Z" />
+                            <text id="kg_cm_4" data-name="kg/cm²" class="cls-81" transform="translate(129.97496 213.62098)"><tspan xml:space="preserve"> %</tspan></text>
+                            <text id="PIT1016_VALUE-4" data-name="PIT1016_VALUE" class="cls-82" transform="translate(115.96812 214.96766)">?</text>
+                        </g>
+                        <text class="cls-75" transform="translate(222.90719 214.96731)">Txr <tspan class="cls-78" x="20.66016" y="0">V</tspan><tspan x="27.77344" y="0">alue</tspan></text>
+                        <g id="PIT-1016-5" data-name="PIT-1016">
+                            <path class="cls-80" d="M354.42673,205.19356v10.53512c0,.56864-.345,1.03059-.766,1.03059H285.19012c-.42132,0-.76339-.46195-.76339-1.03059V205.19356c0-.5725.34207-1.03429.76339-1.03429h68.47057C354.08178,204.15927,354.42673,204.62106,354.42673,205.19356Z" />
+                            <text id="kg_cm_5" data-name="kg/cm²" class="cls-81" transform="translate(335.42717 213.62098)"><tspan xml:space="preserve"> %</tspan></text>
+                            <text id="PIT1016_VALUE-5" data-name="PIT1016_VALUE" class="cls-82" transform="translate(321.42033 214.96766)">?</text>
+                        </g>
+                        <text class="cls-75" transform="translate(14.87301 155.9621)">Inuse P<tspan class="cls-76" x="40.69336" y="0">T</tspan></text>
+                        <g id="PIT-1016-6" data-name="PIT-1016">
+                            <path class="cls-80" d="M136.261,147.53486V158.07c0,.56864-.345,1.03058-.766,1.03058H67.02434c-.42132,0-.76339-.46194-.76339-1.03058V147.53486c0-.5725.34207-1.0343.76339-1.0343h68.47057C135.916,146.50056,136.261,146.96236,136.261,147.53486Z" />
+                            <text id="PIT1016_VALUE-6" data-name="PIT1016_VALUE" class="cls-82" transform="translate(103.2545 157.30897)">?</text>
+                        </g>
+                        <g id="PIT-1016-7" data-name="PIT-1016">
+                            <path class="cls-80" d="M343.78979,45.34613V55.88125c0,.56864-.34494,1.03058-.766,1.03058H274.55318c-.42132,0-.76339-.46194-.76339-1.03058V45.34613c0-.5725.34207-1.0343.76339-1.0343h68.47057C343.44485,44.31183,343.78979,44.77363,343.78979,45.34613Z" />
+                            <text id="PIT1016_VALUE-7" data-name="PIT1016_VALUE" class="cls-82" transform="translate(310.78331 55.12027)">?</text>
+                        </g>
+                        <text class="cls-75" transform="translate(193.15939 75.25284)">Integral</text>
+                        <g id="PIT-1016-8" data-name="PIT-1016">
+                            <path class="cls-80" d="M343.78993,66.43872V76.97384c0,.56864-.345,1.03058-.766,1.03058H274.55332c-.42132,0-.76339-.46194-.76339-1.03058V66.43872c0-.5725.34207-1.0343.76339-1.0343h68.47057C343.445,65.40442,343.78993,65.86622,343.78993,66.43872Z" />
+                            <text id="PIT1016_VALUE-8" data-name="PIT1016_VALUE" class="cls-82" transform="translate(310.78346 76.21284)">?</text>
+                        </g>
+                        <text class="cls-75" transform="translate(193.15904 96.55289)">Derivative</text>
+                        <g id="PIT-1016-9" data-name="PIT-1016">
+                            <path class="cls-80" d="M343.78958,87.73877V98.27389c0,.56864-.34495,1.03059-.766,1.03059H274.553c-.42132,0-.76339-.462-.76339-1.03059V87.73877c0-.5725.34207-1.03429.76339-1.03429h68.47057C343.44463,86.70448,343.78958,87.16627,343.78958,87.73877Z" />
+                            <text id="PIT1016_VALUE-9" data-name="PIT1016_VALUE" class="cls-82" transform="translate(310.78309 97.51289)">?</text>
+                        </g>
+                        <rect class="cls-83" x="160.47451" y="14.68222" width="227.92357" height="95.79828" />
+                        <rect class="cls-84" x="9.42984" y="176.46154" width="378.96824" height="95.11174" />
+                        <g>
+                            <use width="7.11992" height="7.11992" transform="translate(87.20281 229.67288) scale(1.41171 1.40441)" xlink:href="#alrm_alert_false" />
+                            <use width="6.91992" height="9.44092" transform="translate(87.22844 229.0582) scale(1.4451 1.44805)" xlink:href="#alrm_alert_true" />
+                            <use width="6.91992" height="8.27051" transform="translate(87.20297 229.63268) scale(1.45247 1.45169)" xlink:href="#alrm_alert_bad" />
+                        </g>
+                        <line class="cls-83" x1="9.42984" y1="198.19748" x2="388.39808" y2="198.19748" />
+                        <line class="cls-85" x1="160.47451" y1="143.10035" x2="388.39808" y2="143.10035" />
+                        <line class="cls-83" x1="9.42984" y1="222.04462" x2="388.39808" y2="222.04462" />
+                        <line class="cls-86" x1="193.03497" y1="271.57322" x2="193.03497" y2="176.46148" />
+                        <line class="cls-83" x1="9.42984" y1="244.97455" x2="388.39808" y2="244.97455" />
+                        <text class="cls-75" transform="translate(17.45498 259.45178)">Low<tspan class="cls-79" x="22.01367" y="0"> </tspan><tspan x="24.68555" y="0">Alarm</tspan></text>
+                        <g>
+                            <use width="7.11992" height="7.11992" transform="translate(87.20281 251.22702) scale(1.41171 1.40441)" xlink:href="#alrm_alert_false" />
+                            <use width="6.91992" height="9.44092" transform="translate(87.22844 250.61234) scale(1.4451 1.44805)" xlink:href="#alrm_alert_true" />
+                            <use width="6.91992" height="8.27051" transform="translate(87.20297 251.18682) scale(1.45247 1.45169)" xlink:href="#alrm_alert_bad" />
+                        </g>
+                        <text class="cls-75" transform="translate(226.57599 237.89947)">High<tspan class="cls-79" x="24.67969" y="0"> </tspan><tspan x="27.35156" y="0">Alarm</tspan></text>
+                        <g>
+                            <use width="7.11992" height="7.11992" transform="translate(296.32383 229.6747) scale(1.41171 1.40441)" xlink:href="#alrm_alert_false" />
+                            <use width="6.91992" height="9.44092" transform="translate(296.34946 229.06002) scale(1.4451 1.44805)" xlink:href="#alrm_alert_true" />
+                            <use width="6.91992" height="8.27051" transform="translate(296.32399 229.63451) scale(1.45247 1.45169)" xlink:href="#alrm_alert_bad" />
+                        </g>
+                        <text class="cls-75" transform="translate(226.57599 259.4536)">Low<tspan class="cls-79" x="22.01367" y="0"> </tspan><tspan x="24.68555" y="0">Alarm</tspan></text>
+                        <g>
+                            <use width="7.11992" height="7.11992" transform="translate(296.32383 251.22884) scale(1.41171 1.40441)" xlink:href="#alrm_alert_false" />
+                            <use width="6.91992" height="9.44092" transform="translate(296.34946 250.61416) scale(1.4451 1.44805)" xlink:href="#alrm_alert_true" />
+                            <use width="6.91992" height="8.27051" transform="translate(296.32399 251.18865) scale(1.45247 1.45169)" xlink:href="#alrm_alert_bad" />
+                        </g>
+                        <text class="cls-75" transform="translate(165.4104 132.77119)">Hydraulic Oil<tspan class="cls-76" x="68.01563" y="0"> </tspan><tspan class="cls-87" x="71.13281" y="0">T</tspan><tspan x="77.13281" y="0">ank Level Low</tspan></text>
+                        <rect class="cls-83" x="160.47451" y="118.11217" width="227.92357" height="51.9768" />
+                        <g>
+                            <use width="7.11992" height="7.11992" transform="translate(351.66921 124.36295) scale(1.41171 1.40441)" xlink:href="#alrm_alert_false" />
+                            <use width="6.91992" height="9.44092" transform="translate(351.69485 123.74826) scale(1.4451 1.44805)" xlink:href="#alrm_alert_true" />
+                            <use width="6.91992" height="8.27051" transform="translate(351.66937 124.32275) scale(1.45247 1.45169)" xlink:href="#alrm_alert_bad" />
+                        </g>
+                        <text class="cls-75" transform="translate(165.41024 159.77024)">Hydraulic System<tspan class="cls-76" x="93.35742" y="0"> </tspan><tspan class="cls-77" x="96.47461" y="0">T</tspan><tspan x="103.35938" y="0">rouble</tspan></text>
+                        <g>
+                            <use width="7.11992" height="7.11992" transform="translate(351.66906 151.36199) scale(1.41171 1.40441)" xlink:href="#alrm_alert_false" />
+                            <use width="6.91992" height="9.44092" transform="translate(351.69469 150.74731) scale(1.4451 1.44805)" xlink:href="#alrm_alert_true" />
+                            <use width="6.91992" height="8.27051" transform="translate(351.66922 151.3218) scale(1.45247 1.45169)" xlink:href="#alrm_alert_bad" />
+                        </g>
+                    </svg>
+
+                    <!--SVGEnd-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //svgOnPageLoad();
+</script>

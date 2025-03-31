@@ -1,0 +1,71 @@
+﻿
+@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Device Table View";
+    Layout = null;
+    List<tblDeviceMaster> lstDevices = Model.Where(x => x.Visible).OrderBy(x => x.DeviceID).ToList();
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    string PageNames = @String.Join(",", lstDevices.Select(x => x.PageName).Distinct());
+    int NoOfRows = ViewBag.Rows;
+}
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black; top: -7px;">@String.Join(", ", lstDevices.Select(x => x.tblDeviceType.DeviceTypeDesc).Distinct())</h3>
+        </div>
+    </div>
+    <div class="security-system-container m-t-10">
+        <div class="row first">
+            @{
+                if (lstDevices.Count() > 0)
+                {
+                    decimal icols = Math.Ceiling((decimal)lstDevices.Count() / NoOfRows);
+                    decimal Width = Math.Min(6, Math.Round((decimal)(12 / icols)));
+                    string strLoHide = "hide";
+                    if (DeviceTags.Any(x => x.TagName.EndsWith("_ALRM_L"))) { strLoHide = ""; }
+                    for (int j = 0; j < icols; j = j + 1)
+                    {
+                        <div class="col-lg-@Width">
+                            <table class="table-striped app-tbl">
+                                <thead>
+                                    @*<tr><th class="text-center bg-color" colspan="10" style="font-size: 22px;">@lstDevices[j].tblDeviceType.DeviceTypeDesc</th></tr>*@
+                                    <tr>
+                                        <th class="text-center bg-color" style="width: 18%">Device</th>
+                                        <th class="text-center bg-color" style="width: 72%">Desc</th>
+                                        <th class="text-center bg-color" style="width: 10%">Sts</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = j * NoOfRows; i < ((j + 1) * NoOfRows); i = i + 1)
+                                    {
+                                        if (i >= lstDevices.Count()) { break; }
+
+                                        tblDeviceMaster Device = lstDevices[i];
+                                        tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (Device.TagPrefix + "_STATUS") || (x.TagName == Device.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());
+                                        <tr>
+                                            @*<td class="get-hover" onclick="OpenDeviceModal(@Device.UniqueID,'@Device.PageName')">@Device.DeviceName</td>*@
+                                            <td class="">@Device.DeviceName</td>
+                                            <td class="">@Device.DeviceDesc</td>
+                                            <td><span class="@(Device.TagPrefix + "_STATUS") @(Device.TagPrefix + "_ALARM")"></span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@PageNames';
+        InitConn(opcPageName,10);
+        createTooltip();
+        opc.server.readPageTags(opcPageName);
+    });
+</script>

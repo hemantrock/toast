@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta http-equiv="PRAGMA" content="CACHE">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bay Queue List</title>
+    <link href="Content/images/favicon.ico" rel="shortcut icon">
+
+    <!--CSS-->
+    <link href="Content/css/bootstrap.min.css" rel="stylesheet">
+    <link href="Content/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="Content/css/tooltipster.css" rel="stylesheet" />
+    <link href="Content/css/style.css" rel="stylesheet">
+
+    <!--JQuery Lib-->
+    <script src="Scripts/js/jQuery/jquery-3.1.1.min.js"></script>
+    <script src="Scripts/js/jquery/jquery-ui.js"></script>
+    <script src="Scripts/js/bootstrap/bootstrap.min.js"></script>
+    <script src="Scripts/lib/jquery.tooltipster.min.js"></script>
+    <script src="Scripts/lib/notify.min.js"></script>
+    <script src="Scripts/script.js"></script>
+
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="waitpage" id="waitpage" style="display: none;">
+                <div class="waitpage-box">
+                    <p>
+                        <img alt="(Loading)" src="Content/images/loading.gif">
+                        <span>Please Wait...</span>
+                    </p>
+                </div>
+            </div>
+            <div id="dvContent" class="content">
+            </div>
+        </div>
+    </div>
+    <script src="Scripts/lib/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //var strPrimarySrv;
+            //var strBackupSrv;
+
+            //$.ajax({
+            //    url: "/Home/GetServers",
+            //    type: "GET",
+            //    datatype: "json",
+            //    cache: false,
+            //    success: function (result) {
+            //        $.each(result, function (i, obj) {
+            //            if (i == 0) {
+            //                strPrimarySrv = obj.DeviceName;
+            //            }
+            //            else if (i == 1) {
+            //                strBackupSrv = obj.DeviceName;
+            //            }
+            //        });
+
+            //        var strHost = window.location.hostname;
+
+            //        if (strHost.toLowerCase() != strPrimarySrv.toLowerCase()) {
+            //            strBackupSrv = strPrimarySrv;
+            //            strPrimarySrv = strHost;
+            //        }
+
+            //        $.ajaxSetup({
+            //            global: true,
+            //            timeout: 150000,
+            //            error: function (jqXHR, exception) {
+            //                if (jqXHR.status === 0) {
+            //                    window.location = "http://" + strBackupSrv;
+            //                } else if (jqXHR.status == 401) {
+            //                } else if (jqXHR.status == 404) {
+            //                    window.location = "http://" + strBackupSrv;
+            //                } else if (jqXHR.status == 500) {
+            //                } else if (exception === 'parsererror') {
+            //                } else if (exception === 'timeout') {
+            //                    window.location = "http://" + strBackupSrv;
+            //                } else if (exception === 'abort') {
+            //                } else {
+            //                }
+            //            }
+            //        });
+            //    }
+            //});
+
+            setTimeout(function () {
+                OpenBQDTVDirect();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

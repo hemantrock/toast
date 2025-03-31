@@ -1,0 +1,40 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTankStatu
+@{
+    ViewBag.Title = "Edit TankStatus";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit TankStatus
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <input id="hdnIdKey" type="hidden" value="@Model.StatusID">
+                    <div class="fields form-group">
+                     <label>STATUS</label>
+                        <input id="txtStatus" name="Status" type="text" placeholder="Status" class="form-control" value="@Model.StatusDesc">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                       <label>SHORT NAME</label>
+                         <input id="txtShortName" name="shortName" type="text" placeholder="Mode Short Name" class="form-control" value="@Model.StatusShortLetter">
+                    </div>
+                </div>
+            </div>
+
+             
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTankStatus();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/TankStatus/TankStatus.js"></script>

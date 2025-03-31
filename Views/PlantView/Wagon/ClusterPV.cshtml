@@ -1,0 +1,158 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model  tblClusterMaster
+@{
+    tblClusterMaster oCls = Model;
+    List<tblWLoadRakeDetail> lstRakeDet = ViewBag.ClusterRakes;
+    bool ViewSteps = false; //Convert.ToBoolean(ViewBag.StepDetail);
+}
+
+@{
+    <div class="row m-t-40">
+        <div class="tab-container pump-view-tab-container" style="position: relative;z-index: 5;">
+            @{
+                //List<byte> lstSpurBCU = oCls.tblWagonBCUMasters.Select(x => x.UniqueID).ToList();
+                List<tblWagonBCUMaster> lstSpurBCU = oCls.tblWagonBCUMasters.ToList();
+                foreach (tblWagonBCUMaster wBCU in lstSpurBCU)
+                {
+                    string sProdShort = ""; string sLoadSpot = ""; string sRakeName = ""; string sFillClass = "";
+                    string DefProd = wBCU.tblWBCUArmProducts.FirstOrDefault().tblProduct.ProdNameShort;
+                    tblWagonBCUArmBatch Batch = wBCU.tblWagonBCUArmBatches.FirstOrDefault();
+                    tblWLoadRakeDetail RakeBatch = (Batch.tblWLoadRakeDetail ?? new tblWLoadRakeDetail());
+                    if (RakeBatch.ProductID != null) { sProdShort = RakeBatch.tblProduct.ProdNameShort; }
+                    if (RakeBatch.LoadSpotID != null) { sLoadSpot = ((int)RakeBatch.tblLoadSpotMaster.LoadSpotNo).ToString("00"); }
+                    if (RakeBatch.WagonUnqID != null) { sRakeName = RakeBatch.tblWagonMaster.WagonNo; }
+                    string strLSPrefix = wBCU.TagPrefix + "_LS" + sLoadSpot; string strLOCREMTag = wBCU.TagPrefix + "_LOCREM";
+                    if ((RakeBatch.LoadStatusID ?? 4) != 4) { sFillClass = (strLSPrefix + "_QTY_CN01"); }
+                    double Filled = (RakeBatch.DeliveredQtyGrs ?? 0) + (RakeBatch.PrevQtyGrs ?? 0) + (RakeBatch.TopUpQty ?? 0);
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <div class="cluster-col" style="margin-top:0px">
+                            <div class="contrec-head">
+                                <h4 style="top: -45px; font-size: 25px; left: -15px ">@wBCU.BCUName (@DefProd)<span style="left: auto; right: 0px; top: 0px;" class="clickable control-icon @(strLOCREMTag)" onclick="OpenWagonBCULocRemModal('@strLOCREMTag', '@wBCU.UniqueID','Change BC Local /Remote','BCU: @(wBCU.BCUName)-@DefProd'); cancelBubble(event);" data-opcvalue="False"></span></h4>
+                                @* code by hemant *@
+                                @*<img src="~/Images/Contrec-SA.png" alt="" />
+                                <span style="position: absolute; top: -18px; width: 195px; left: 7px; text-align: left; font-size: 22px;" class="batch-cont-detail @(wBCU.TagPrefix + "_MSG")"></span>
+                                @if (ViewSteps){<div style="position: absolute; top: 114px; width: 225px; text-align: left; left: 45px; font-size: 12px;" class="@(wBCU.TagPrefix + "_STEP")">Step Sequence</div>}*@
+                                <!-- Calculator Screen -->
+                                <div class='display backlight'>
+                                    <div  class='calculatorcontent @(wBCU.TagPrefix + "_MSG")'></div>
+                                </div>
+
+                                @if (ViewSteps)
+                                {
+                                    <div class='display backlight'>
+                                        <div  class='calculatorcontent @(wBCU.TagPrefix + "_STEP")'></div>
+                                    </div>
+                                }
+                                @* code by hemant *@
+
+
+                            </div>
+                            <table class="table table-bordered">
+                                <tr class="hide">
+                                    <td>Totalizer</td>
+                                    <td colspan="2" class="BC_MTR_TOT_CN01_@wBCU.TagPrefix"></td>
+                                </tr>
+                                <tr>
+                                    <td width="25%" class="bold">Pri.Con</td>
+                                    <td width="25%"><span class="circle-cont-sm"><span class="@(wBCU.TagPrefix)_CONN01"></span></span></td>
+                                    <td width="25%" class="bold">Sec.Con</td>
+                                    <td width="25%"><span class="circle-cont-sm"><span class="@(wBCU.TagPrefix)_CONN02"></span></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bold">Earth</td>
+                                    <td><span class="circle-cont-sm"><span class="@(wBCU.TagPrefix)_ER"></span></span></td>
+                                    <td class="bold">ESD</td>
+                                    <td><span class="circle-cont-sm"><span class="@(wBCU.TagPrefix)_ESD"></span></span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="bold">Wagon</td>
+                                    <td colspan="2" class="text-center">@sRakeName</td>
+                                </tr>
+                                <tr>
+                                    <td class="bold">SeqNo</td>
+                                    <td class="text-center">@(((int)RakeBatch.WagonSeqNo).ToString("00"))</td>
+                                    <td class="bold">Spot</td>
+                                    <td class="text-center">@sLoadSpot</td>
+                                </tr>
+                                <tr>
+                                    <td class="bold">Preset</td>
+                                    <td>@(RakeBatch.PresetQty)</td>
+                                    <td class="bold">Filled</td>
+                                    <td class="@sFillClass">@Filled</td>
+                                </tr>
+                                @*<tr>
+                                        <td class="bold">Prod</td>
+                                        <td class="text-center">@wBCU.tblWBCUArmProducts.FirstOrDefault().tblProduct.ProdNameShort</td>
+                                        <td class="bold">Flow</td>
+                                        <td class="get-hover @(wBCU.TagPrefix + "_FLOWRATE_CN01")" onclick="OpenChartModal('@(wBCU.TagPrefix + "_FLOWRATE_CN01")','@wBCU.PageName')"></td>
+                                    </tr>*@
+                                <tr>
+                                    <td class="bold">Pmp.Dmd</td>
+                                    <td width="25%"><span class="circle-cont-sm"><span class="@(wBCU.TagPrefix)_PD"></span></span></td>
+                                    <td class="bold">Flow</td>
+                                    <td class="get-hover @(wBCU.TagPrefix + "_FLOWRATE_CN01")" onclick="OpenChartModal('@(wBCU.TagPrefix + "_FLOWRATE_CN01")','@wBCU.PageName')"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        @{
+            List<byte> ClustBCUs = lstSpurBCU.Select(x => x.UniqueID).ToList();
+            List<tblWLoadRakeDetail> ClustWagons = lstRakeDet.Where(x => ClustBCUs.Contains(x.tblLoadSpotMaster.BCU_ID ?? 0)).ToList();
+            foreach (tblWLoadRakeDetail wag in ClustWagons)
+            {
+                string sPreset = (wag.PresetQty ?? 0).ToString();
+                if (wag.WagonStatusID == 1914) { sPreset = "SICK"; }
+                tblWagonBCUMaster wBcu = wag.tblLoadSpotMaster.tblWagonBCUArmBatch.tblWagonBCUMaster;
+                tblWagonBCUArmBatch Batch = wag.tblWagonBCUArmBatches.FirstOrDefault();
+                double Delivered = (wag.DeliveredQtyGrs ?? 0) + (wag.PrevQtyGrs ?? 0) + (wag.TopUpQty ?? 0) - (wag.DecantedQty ?? 0);
+                double sPer = ((wag.PresetQty ?? 0) > 0 ? (Math.Round((Delivered * 100 / (wag.PresetQty ?? 1)), 2)) : 0);
+                string ColorCode = wag.tblProduct.ProductColor; string sFillClass = "";
+                string sLoadSpot = ((int)wag.tblLoadSpotMaster.LoadSpotNo).ToString("00");
+                string strLSPrefix = wBcu.TagPrefix + "_LS" + sLoadSpot;
+                if (Batch == null) { strLSPrefix = ""; }
+                if ((wag.LoadStatusID ?? 4) != 4) { sFillClass = (strLSPrefix + "_QTY_CN01"); }
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="relative-tank" style="top: -20px;">
+                        <div class="bay-truck-fill-container">
+                            <div class="truck-fill-wrapper" id="truckFillWrapper"></div>
+                            <div class="bay-truck-fill fill_@(strLSPrefix)" style="height: @Math.Round((Delivered * 100 / (wag.PresetQty ?? 1)), 0)%;background-color:@ColorCode;"></div>
+                            <table class="bay-truck-fill-tbl">
+                                <tbody>
+                                    <tr>
+                                        <td><span>@wag.tblProduct.ProdNameShort</span><span>&nbsp;&nbsp;&nbsp;LS-@sLoadSpot</span></td>
+                                    </tr>
+                                    <tr class="hide">
+                                        <td>PrevQty</td>
+                                        <td class="PREV_QTY_@(strLSPrefix)">@(wag.PrevQtyGrs ?? 0)</td>
+                                    </tr>
+                                    <tr class="hide">
+                                        <td>FilledQty</td>
+                                        <td class="FILL_QTY_@(strLSPrefix) @sFillClass">@(wag.DeliveredQtyGrs??0)</td>
+                                    </tr>
+                                    <tr>
+                                        <td title="Total Qty"><span class="EFF_QTY_@(strLSPrefix)">@Delivered</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="PRESET_@strLSPrefix"><span>@sPreset</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="percentage @(oCls.ClusterName.Replace("-", "_"))" data-id="@strLSPrefix">@sPer%</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <img src="~/Images/amt-tank-wagon.svg" alt="Tank Wagon" />
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
+@*<script src="~/Scripts/PageJS/PlantView/Wagon/ClusterBCUs.js"></script>*@

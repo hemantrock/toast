@@ -1,0 +1,178 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblICONCustomer
+@{
+    ViewBag.Title = "TOAST";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Wev View -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOAST</title>
+    <link href="~/Content/images/favicon.ico" rel="shortcut icon">
+    <link href="~/Content/css/bootstrap.css" rel="stylesheet">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/bootstrapValidator.css" rel="stylesheet" />
+    <script src="~/Scripts/js/jquery/jquery.min.js"></script>
+    <script src="~/Scripts/js/jquery/jquery-ui.min.js"></script>
+    <script src="~/Scripts/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/bootstrap/bootstrapValidator.min.js"></script>
+    <script src="~/Scripts/lib/notify.min.js"></script>
+    <script src="~/Scripts/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+
+</head>
+<body class="homeBody">    
+    <div class="gms-bar hide">
+        <div class="col-lg-2 client-logo @Model.CustomerNameShort"></div>
+        <div class="col-lg-8 text-center icon-control-text">@Html.Raw(Model.SolutionHTML)</div>
+        <div class="col-lg-2 right logo"><div class="icon-control-logo "></div></div>
+    </div>    
+    <div class="container">
+        <!--<div class="row intro">
+            <div class="col-lg-12">
+                <h3 class="description col-lg-offset-3 col-lg-6"></h3>
+            </div>
+        </div>-->
+        <div class="row flex-row heightVH login-panel">
+            <div class="col-lg-12 col-xs-12 flex-row flex-direction">
+
+                <div class="col-md-4 col-xs-12">
+                    <div class="login-form-wrapper">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <img src="~/Images/icon_control_small.png" />
+                                        <strong> WELCOME TO TOAST</strong>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="center-block">
+                                            <h3>Please Sign In</h3>
+                                        </div>
+                                        <form id="frmLogin" role="form" class="form-fields" autocomplete="off">
+                                            <div class="input-effect form-group">
+                                                <span class="glyphicon glyphicon-user input-icon" aria-hidden="true"></span>
+                                                <input class="effect-18" type="text" id="txtLoginID" name="LoginID" value="" autocomplete="off">
+                                                <label>User Id</label>
+                                                <span class="focus-border"></span>
+                                            </div>
+
+                                            <div class="input-effect password form-group">
+                                                <span class="glyphicon glyphicon-lock input-icon" aria-hidden="true"></span>
+                                                <input class="effect-18" type="password" id="txtPassword" name="password" value=""
+                                                       onfocus="disableautocompletion(this.id);getFocus(this.id);" onblur="disableautocompletion(this.id);"
+                                                       oncopy="return false" onpaste="return false" onkeypress="return disableCtrlKeyCombination(event);"
+                                                       onkeydown="return disableCtrlKeyCombination(event);" autocomplete="off">
+                                                <span id="loginpageicon" class="glyphicon glyphicon-eye-close showPass" onclick="passHideShow(this)" aria-hidden="true"></span>
+                                                <label>Password</label>
+                                                <span class="focus-border"></span>
+                                            </div>
+
+                                            <div class="col-lg-12 text-right">
+                                                <a id="loginButton" role="button" class="btn btn-primary" href="#" onclick="AuthenticateUser();">
+                                                    <span class="glyphicon glyphicon-check"></span>Login
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-xs-12">
+                    <div class="home-bg @Model.CustomerNameShort @Model.Application"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Alerts Dismissable -->
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-ok"></span>
+        <span id="success">You successfully read this important alert message.</span>
+    </div>
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span id="warning">Better check yourself, you're not looking too good.</span>
+    </div>
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span id="danger">Change a few things up and try submitting again.</span>
+    </div>
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myConfirmLabel">Confirmation.</h3>
+                </div>
+                <div class="modal-body" id="myConfirmMsg">
+                    <p>Are you sure ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnConfirmOK">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnConfirmCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#txtPassword ").on("copy cut paste drop", function () {
+                return false;
+            });
+            window.localStorage.removeItem("isWelcomeLoader");
+            $("#loginpageicon").hover(
+                function () {
+                    passHideShow(this); // On mouse enter
+                }, 
+                function () {
+                    passHideShow(this); // On mouse leave
+                }
+            );
+        });
+        function passHideShow(e) {
+            var x = document.getElementById("txtPassword");
+            if (x.type === "password") {
+                x.type = "text";
+                $(e).removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open');
+            } else {
+                x.type = "password";
+                $(e).addClass('glyphicon-eye-close').removeClass('glyphicon-eye-open');
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        /*
+            Login input box animation.
+        */
+
+        $(window).on('load', function () {
+            $(".input-effect input").val("");
+
+            $(".input-effect input").focusout(function () {
+                if ($(this).val() != "") {
+                    $(this).addClass("has-content");
+                } else {
+                    $(this).removeClass("has-content");
+                }
+            })
+        });
+    </script>
+
+    <script src="~/Scripts/PageJS/Home/Index.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+
+<form id="FormBU" role="form" class="form-fields">
+    @*<div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="fields form-group ui-widget">
+                <label>Truck Number</label>
+                <input type="text" id="txtTruck" name="TruckNumber" class="form-control" />
+            </div>
+        </div>
+    </div>*@ 
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="fields form-group ui-widget">
+                <label for="lblTruck">Select Truck:</label>
+                <select id="ddlTruck" value="" class="form-control"></select>
+            </div>
+        </div>
+    </div>   
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="fields form-group ui-widget">
+                <label>Reason for Manual Entry</label>
+                <input type="text" id="txtRemarks" autocomplete="off" name="Remarks" class="form-control" />
+            </div>
+        </div>
+    </div>   
+</form>
+<script>
+    var ddlTruckOptions = "";
+    $(document).ready(function () {
+        //AutoComplete($("#txtTruck"), "TruckNumber", "TTQueue");
+        $('#FormBU').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                TruckNumber: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Field is required'
+                        },
+                    }
+                },
+                Remarks: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Field is required'
+                        },
+                    }
+                },
+            },
+            errorPlacement: function (error, element) {
+                error.insertAfter('.form-group');
+            },
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+
+        $.ajax({
+            url: "/TruckMasters/TruckNumbersTTQueueDD",
+            type: "GET",
+            datatype: "json",
+            cache: false,
+            async: false,
+            success: function (result) {
+                ddlTruckOptions = result;
+                $('#ddlTruck option').remove();
+                var r = "";
+                r = "<option value=0>--Select Truck--</option>";
+                $('#ddlTruck').append(r);
+                $.each(ddlTruckOptions, function (i, obj) {
+                    r = "<option value=" + obj.TruckID + ">" + obj.TruckNumer + "</option>";
+                    $('#ddlTruck').append(r);
+                });
+            }
+        });
+    });
+
+</script>

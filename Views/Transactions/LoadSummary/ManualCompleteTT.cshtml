@@ -1,0 +1,164 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Truck Regularize";
+    tblLoadStatu ChamberCompStatus = ViewBag.ChamberCompStatus;
+    tblTruckStatu TTCompStatus = ViewBag.TTCompStatus;
+    List<tblTank> lstTanks = ViewBag.lstTanks;
+    Layout = null;
+    string Label = Model.PurposeID == 2 ? "Decanted Qty" : "Filled Qty";
+}
+<style>
+    table.dataTable tbody tr td input[type="text"], input[type="number"] {
+        font-family: Verdana;
+        font-size: 12px;
+    }
+</style>
+<div class="col-lg-12 col-md-12 form-container" style="padding: 0em 0.5em">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input type="text" id="txtTruck" name="TruckNumber" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <table id="tblLoadDetails" class="table">
+                    <thead>
+                        <tr>
+                            <th class="hidden">Select</th>
+                            <th>Comp No</th>
+                            <th>Product</th>
+                            <th>Load Status</th>
+                            <th>New Load Status</th>
+                            <th style="text-align:center">Preset Qty</th>
+                            <th class="hidden" style="text-align:center">Totz. Start</th>
+                            <th class="hidden" style="text-align:center">Totz. End</th>
+                            <th style="text-align:center">@Label</th>
+                            <th style="text-align:center">Avg Temp (ºC)</th>
+                            <th style="text-align:center">Avg Obs Density (Kg/m³)</th>
+                            <th style="text-align:center">Avg Density at 15º (Kg/m³)</th>
+                            <th>Tank</th>
+                            <th style="display:none">UOM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (tblLoadDetail itm in Model.tblLoadDetails)
+                            {
+                                double DeliveredQty = (itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0);
+                                double PreviousQty = (itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0);
+
+                                <tr id="@itm.CompNo">
+                                    <td class="hidden">
+                                        <input name="chkSelect" type="checkbox" checked="checked" class="hidden" id="@itm.CompNo" onchange="EnableCols(this,'@itm.CompNo')" />
+                                    </td>
+                                    <td>@itm.CompNo</td>
+                                    <td>@itm.tblProduct.ProductName</td>
+                                    <td>@itm.tblLoadStatu.LoadStatusDesc</td>
+                                    <td>
+                                        <select name="ActualLoadStatus" id="ddlLoadDetails_@itm.CompNo" data-id="@itm.LoadStatus.Value" class="form-control" disabled>
+                                            <option value="@ChamberCompStatus.LoadStatusID" selected="selected">@ChamberCompStatus.LoadStatusDesc</option>
+                                        </select>
+                                    </td>
+                                    <td id="txtPreset_@itm.CompNo">@itm.PresetQty</td>
+                                    <td class="hidden">
+                                        <input name="AccumulatedStart" id="txtAccStart_@itm.CompNo" placeholder="Start" class="form-control hide" value="@(itm.BaseProductAccumulatedStart)" onkeypress="return isDecimalKey(event)" onkeyup="UpdateFilled(@itm.CompNo)" />
+                                    </td>
+                                    <td class="hidden">
+                                        <input name="AccumulatedComplete" id="txtAccEnd_@itm.CompNo" placeholder="End" class="form-control hide" value="@(itm.BaseProductAccumulatedComplete)" onkeypress="return isDecimalKey(event)" onkeyup="UpdateFilled(@itm.CompNo)" />
+                                    </td>
+                                    <td>
+                                        <input name="BaseProdQtyGrs" type="number" step="0.1" min="0" max="@(itm.PresetQty*1.005)" autocomplete="off" id="txtFilled_@itm.CompNo" placeholder="@(DeliveredQty + PreviousQty)" class="form-control" value="@(DeliveredQty + PreviousQty)" onkeypress="return isDecimalKey(event)" />
+                                    </td>
+                                    <td><input name="TempAvg" id="txtAvgTemp_@itm.CompNo" placeholder="xx.x" autocomplete="off" class="form-control" value="@itm.TempAvg" onkeypress="return isDecimalKey(event)" type="text" /></td>
+                                    <td><input name="DensityAvg" placeholder="xxx.x" autocomplete="off" id="txtAvgDens_@itm.CompNo" class="form-control" value="@itm.DensityAvg" onkeypress="return isDecimalKey(event)" type="text" /></td>
+                                    <td><input name="DensityAvgAt15" id="txtDens15_@itm.CompNo" class="form-control" placeholder="xxx.x" autocomplete="off" value="@itm.DensityAvgAt15" onkeypress="return isDecimalKey(event)" type="text" /></td>
+                                    <td>
+                                        <select name="TankNo" id="ddlTankNo_@itm.CompNo" data-id="@itm.TankID" class="form-control">
+                                            <option value="0" @((itm.TankID ?? 0) == 0 ? "selected" : "")>Tank No</option>
+                                            @{
+                                                //List<int> lstBaseProdID = itm.tblProduct.tblProductComponents.OrderByDescending(y => y.CompPercent).Select(x => x.BaseProductID ?? 0).ToList();
+                                                int BaseProdID = itm.tblProduct.tblProductComponents.OrderByDescending(y => y.CompPercent).Select(x => x.BaseProductID ?? 0).FirstOrDefault();
+                                                List<tblTank> lstProdMapTanks = lstTanks.Where(x => x.tblTankProductMaps.Select(y => y.ProductID).Contains(BaseProdID)).ToList();
+                                                List<tblTank> lstBaseTanks = lstTanks.Where(x => x.ProductID==BaseProdID).ToList();
+                                                List<tblTank> lstProdTanks = lstProdMapTanks.Concat(lstBaseTanks).Distinct().ToList();
+                                                foreach (tblTank tnk in lstProdTanks)
+                                                {
+                                                    <option value="@tnk.UniqueID" @(tnk.UniqueID == (itm.TankID ?? 0) ? "selected" : "")>@tnk.TankName (@tnk.tblProduct.ProdNameShort)</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td style="display:none" id="txtUOM_@itm.CompNo">@itm.tblProduct.UomID</td>
+                                </tr>
+                                                }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row m-t-10">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>CurrentTruck Status</label>
+                    <input type="text" id="txtTruckStatus" name="TruckStatus" value="@Model.tblTruckStatu.TruckStatusDesc" class="form-control" data-id="@Model.TruckStatus.Value" disabled />
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>New Truck Status</label>
+                    <select id="ddl_ActualTruckStatus" name="ActualTruckStatus" class="form-control" disabled>
+                        <option value="@TTCompStatus.TruckStatus" selected="selected">@TTCompStatus.TruckStatusDesc</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="fields form-group">
+                    <label>Remarks</label>
+                    <input type="text" id="txtRemarks" name="Remarks" maxlength="50" autocomplete="off" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    Purpose = '@Model.PurposeID';
+
+    $(document).ready(function () {
+        $('#tblLoadDetails').dataTable({
+            "iDisplayLength": iGblNoRows - 7,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": false,
+            "bStateSave": false,
+            "bInfo": true,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "0%" },                           //Select
+                    { sWidth: "4%", 'sClass': 'text-center' },  //CompNo
+                    { sWidth: "8%" },                           //ProductName
+                    { sWidth: "13%" },                          //LoadStatus
+                    { sWidth: "13%" },                          //NewLoadStatus
+                    { sWidth: "8%" },                           //PresetQty
+                    { sWidth: "0%" },                           //Totz.Start
+                    { sWidth: "0%" },                           //Totz.End
+                    { sWidth: "8%" },                           //Qty
+                    { sWidth: "7%" },                           //AvgTemp
+                    { sWidth: "8%" },                           //AvgObsDens
+                    { sWidth: "8%" },                           //Density@15
+                    { sWidth: "13%" },                          //Tank
+                    { sWidth: "0%" },                           //UOM
+                ],
+            "bAutoWidth": false,
+        });
+    });
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/TTManualComplete.js"></script>

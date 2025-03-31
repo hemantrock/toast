@@ -1,0 +1,26 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+
+<div class="col-lg-12">
+    <div id="TruckAssigmentOptions" onclick="$('#dvTimer').timer('pause');  $('#dvTimer').timer('remove');"></div>
+</div>
+<div id="jqxULSgrid" class="jqx-tbl-container">
+</div>
+
+<div class="row" id="dvTruckDetails">
+</div>
+<div id="jqxgridULSummary" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/Funcs.js"></script>
+<script src="~/Scripts/PageJS/Transactions/UnLoadSummary/UnLoadIndex.js"></script>
+<script src="~/Scripts/PageJS/Transactions/UnLoadSummary/LPG/UnLoadTblWght.js"></script>

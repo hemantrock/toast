@@ -1,0 +1,225 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Invoice Manual Post";
+    List<tblTank> lstTanks = ViewBag.lstTanks;
+    Layout = null;
+    string Label = Model.PurposeID == 2 ? "Decanted Qty" : "Filled Qty";
+    List<tblBaseDensityTemp> lstProdDens = ViewBag.lstProdDens;
+    double? DensTol = (ViewBag.DensTol??3);
+}
+<style>
+    table.dataTable tbody tr td input[type="text"], input[type="number"] {
+        font-family: Verdana;
+        font-size: 12px;
+    }
+</style>
+<div class="modal-dialog" style="width:900px">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myModalLabel">Manual Post Invoice</h3>
+        </div>
+        <div class="modal-body" id="myModalBody">
+            <div class="col-lg-12 col-md-12 form-container" style="padding: 0em 0.5em">
+                <form id="FormBU" role="form" class="form-fields">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="fields form-group">
+                                <label>Truck Number</label>
+                                <input type="text" id="txtTruck" name="TruckNumber" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table id="tblLoadDetails" class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="hidden">Select</th>
+                                        <th>Chamber No</th>
+                                        <th style="display:none">Component No</th>
+                                        <th>Base Product</th>
+                                        <th style="text-align:center">Preset Qty</th>
+                                        <th style="text-align:center">@Label</th>
+                                        @*<th style="text-align:center">TopUp</th>
+                                            <th style="text-align:center">Decanted</th>*@
+                                        <th style="text-align:center">Avg Temp (ºC)</th>
+                                        <th style="text-align:center">Avg Obs Density (Kg/m³)</th>
+                                        <th style="text-align:center">15°C Density (Kg/m³)</th>
+                                        <th style="text-align:center">BaseLine Density 15°C (Kg/m³)</th>
+                                        <th style="text-align:center">Tank</th>
+                                        <th style="display:none">UOM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (tblLoadDetailComponent itm in Model.tblLoadDetailComponents)
+                                        {
+                                            string densBkgrndCol = ""; string tankBkgrndCol = "";
+                                            tblLoadDetail loadDet = Model.tblLoadDetails.Where(x => x.CompNo == itm.ChamberNo).FirstOrDefault();
+                                            tblBaseDensityTemp ProdDens = (lstProdDens.Where(x => x.ProductID == itm.BaseProdID).FirstOrDefault() ?? new tblBaseDensityTemp());
+                                            if (Math.Abs((itm.DensityAvgAt15 ?? 0) - (ProdDens.Density ?? 0)) > DensTol) { densBkgrndCol = "background-color: orangered;"; }
+                                            if ((itm.TankID ?? 0) == 0 && @itm.ComponentID!=2) { tankBkgrndCol = "background-color: orangered;"; }
+                                            <tr id="@itm.ChamberNo">
+                                                <td class="hidden">
+                                                    <input name="chkSelect" type="checkbox" checked="checked" class="hidden" id="@itm.ChamberNo" CompID="@itm.ComponentID" onchange="EnableCols(this,'@itm.ChamberNo')" />
+                                                </td>
+                                                <td>@itm.ChamberNo</td>
+                                                <td style="display:none">@itm.ComponentID</td>
+                                                <td>@itm.tblProduct.ProductName</td>
+                                                <td id="txtPreset_@itm.ChamberNo">@itm.PresetQty</td>
+                                                <td id="txtFilled_@(itm.ChamberNo)_@(itm.ComponentID)">@((itm.DeliveredQtyGrs??0)+(itm.PrevFilledQty??0)+(itm.TopUpQty??0)-(itm.DecantedQty??0))</td>
+                                                @*<td><input name="DeliveredQtyGrs" type="number" step="0.1" min="0" max="@(itm.PresetQty*1.005)" autocomplete="off" id="txtFilled_@(itm.ChamberNo)_@(itm.ComponentID)" placeholder="@((itm.DeliveredQtyGrs??0)+(itm.PrevFilledQty??0)+(itm.TopUpQty??0)-(itm.DecantedQty??0))" class="form-control" value="@((itm.DeliveredQtyGrs??0)+(itm.PrevFilledQty??0)))" onkeypress="return isDecimalKey(event)" disabled /></td>*@
+                                                @*<td><input name="TopUpQty" type="number" step="0.1" min="0" max="@(itm.TopUpQty)" autocomplete="off" id="txtTopUpQty_@(itm.ChamberNo)_@(itm.ComponentID)" placeholder="@(itm.TopUpQty)" class="form-control" value="@(itm.TopUpQty)" onkeypress="return isDecimalKey(event)" /></td>
+                                                    <td><input name="DecantedQty" type="number" step="0.1" min="0" max="@(itm.DecantedQty)" autocomplete="off" id="txtDecantedQty_@(itm.ChamberNo)_@(itm.ComponentID)" placeholder="@(itm.DecantedQty)" class="form-control" value="@(itm.DecantedQty)" onkeypress="return isDecimalKey(event)" /></td>*@
+                                                <td><input name="TempAvg" id="txtAvgTemp_@(itm.ChamberNo)_@(itm.ComponentID)" placeholder="xx.x" autocomplete="off" class="form-control" value="@itm.TempAvg" type="number" pattern="^[+-]? \d+(,\d{2})?" onkeyup="UpdateStdDens('@(itm.ChamberNo)','@(itm.ComponentID)')" /></td>
+                                                <td><input name="DensityAvg" placeholder="xxx.x" autocomplete="off" id="txtAvgDens_@(itm.ChamberNo)_@(itm.ComponentID)" class="form-control" value="@itm.DensityAvg" type="number" pattern="^[+-]? \d+(,\d{2})?" onkeyup="UpdateStdDens('@(itm.ChamberNo)','@(itm.ComponentID)')" /></td>
+                                                <td id="txtAvgDens15_@(itm.ChamberNo)_@(itm.ComponentID)" style="text-align:center;@densBkgrndCol">@itm.DensityAvgAt15</td>
+                                                <td id="txtBaseline_@(itm.ChamberNo)_@(itm.ComponentID)" style="text-align:center">@ProdDens.Density</td>
+                                                <td>
+                                                    <select name="TankNo" id="ddlTankNo_@(itm.ChamberNo)_@(itm.ComponentID)" data-id="@itm.TankID" class="form-control" style="text-align:left;@tankBkgrndCol" onchange="CheckTankStatus('@(itm.ChamberNo)','@(itm.ComponentID)')">
+                                                        <option value="0" @((itm.TankID ?? 0) == 0 ? "selected" : "") style="background-color:red">Tank No</option>
+                                                        @{
+                                                            List<tblTank> lstSelTanks = lstTanks.Where(x => (x.ProductID == (itm.BaseProdID ?? 0)) || (x.ProductID == loadDet.ProductID)).Distinct().ToList();
+                                                            //--Used in 2409 -- List<tblTank> lstSelTanks = lstTanks.Where(x => (x.tblProduct.ProdGroupID == itm.tblProduct.ProdGroupID)).Distinct().ToList();
+                                                            foreach (tblTank tnk in lstSelTanks)
+                                                            {
+                                                                <option value="@tnk.UniqueID" @(tnk.UniqueID == (itm.TankID ?? 0) ? "selected" : "")>@tnk.TankName (@tnk.tblProduct.ProdNameShort)</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td style="display:none" id="txtUOM_@itm.ChamberNo">@itm.tblProduct.UomID</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row m-t-20">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="fields form-group">
+                                <label>Remarks</label>
+                                <input type="text" id="txtRemarks" name="Remarks" maxlength="50" autocomplete="off" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnDecantPost" onclick="UpdatePostManualInvoice('@Model.LoadID')"><span class="glyphicon glyphicon-saved"></span>Save & Post to SAP</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>Cancel</button>
+        </div>
+    </div>
+</div>
+<script>
+    Purpose = '@Model.PurposeID';
+    var DensTol = '@DensTol';
+$(document).ready(function () {
+    $('#tblLoadDetails').dataTable({
+        "iDisplayLength": iGblNoRows - 7,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bPaginate": false,
+        "bStateSave": false,
+        "bInfo": true,
+        "bSort": false,
+        "aoColumns":
+            [
+                { sWidth: "0%" },                           //Select
+                { sWidth: "4%", 'sClass': 'text-center' },  //CompNo
+                { sWidth: "0%" },                           //ComponentNo
+                { sWidth: "8%" },                           //ProductName
+                { sWidth: "8%" },                           //PresetQty
+                { sWidth: "8%" },                           //Qty
+                { sWidth: "7%" },                           //AvgTemp
+                { sWidth: "8%" },                           //AvgObsDens
+                { sWidth: "8%" },                           //AvgDens15
+                { sWidth: "8%" },                           //BaseLineDens
+                { sWidth: "13%" },                          //Tank
+                { sWidth: "0%" },                           //UOM
+            ],
+        "bAutoWidth": false,
+    });
+});
+
+function UpdatePostManualInvoice(LoadID) {
+    var objLoadMaster = {
+        'LoadID': LoadID,
+    };
+
+    var objLoadDetailComps = [];
+
+    $("input[name='chkSelect']").each(function () {
+        var ChamberNo = $(this).attr('id');
+        var CompID = $(this).attr('compid');
+        var obj = {
+            'LoadID': LoadID,
+            'ChamberNo': ChamberNo,
+            'ComponentID': CompID,
+            'DeliveredQtyGrs': Number($('#txtFilled_' + ChamberNo + '_' + CompID).text()),
+            'TopUpQty': Number($('#txtTopUpQty_' + ChamberNo + '_' + CompID).val()),
+            'DecantedQty': Number($('#txtDecantedQty_' + ChamberNo + '_' + CompID).val()),
+            'TempAvg': Number($('#txtAvgTemp_' + ChamberNo + '_' + CompID).val()),
+            'DensityAvg': Number($('#txtAvgDens_' + ChamberNo + '_' + CompID).val()),
+            'TankID': $('#ddlTankNo_' + ChamberNo + '_' + CompID).val(),
+        };
+        objLoadDetailComps.push(obj);
+    });
+    alertDismissable('success', 'Manual Load Data Posting, Please wait...');
+    $.ajax({
+        url: "/LoadSummary/ManualInvoicePostDo",
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ objLoadMaster: objLoadMaster, objLoadDetailComps: objLoadDetailComps, strRemarks: $('#txtRemarks').val() }),
+        cache: false,
+        success: function (result) {
+            alertDismissable(result.strType, result.strMessage);
+            if (result.blnStatus == true) {
+                $('#EmptyModal').modal('hide');
+                OpenLoadSummaryMenu();
+            }
+        }
+    });
+    ret = true;
+    return ret;
+    }
+
+function UpdateStdDens(chamberNo, compID) {
+    var ObsTemp = parseFloat($('#txtAvgTemp_' + chamberNo + '_' + compID).val());
+    var ObsDens = parseFloat($('#txtAvgDens_' + chamberNo + '_' + compID).val());
+    var BaseDens = parseFloat($('#txtBaseline_' + chamberNo + '_' + compID).text());
+    $.ajax({
+        url: "/BaselineDensTemp/GetStdDensity?ObsTemp=" + ObsTemp + "&ObsDensity=" + ObsDens,
+        type: 'GET',
+        async: true,
+        contentType: 'application/json; charset=utf-8',
+        success: function (result) {
+            $('#txtAvgDens15_' + chamberNo + '_' + compID).text(result);
+            var StdDens = Number(result);
+            var DensDiff = Math.round(Math.abs(StdDens - BaseDens),2);
+            console.log('Diff:' + StdDens + '-' + BaseDens + ':' + DensDiff);
+            if (DensDiff > DensTol) {
+                $('#txtAvgDens15_' + chamberNo + '_' + compID).css('background-color', 'orangered');
+            } else {
+                $('#txtAvgDens15_' + chamberNo + '_' + compID).css('background-color', '');
+            }
+        }
+    });
+    }
+
+    function CheckTankStatus(chamberNo, compID) {
+        var ele = $('#ddlTankNo_' + chamberNo + '_' + compID);
+        var TankID = Number(ele.val());
+        console.log('ddlTankNo_' + chamberNo + '_' + compID + '; TankID: ' + TankID);
+        if (TankID == 0) {
+            ele.css('background-color', 'orangered');
+        } else {
+            ele.css('background-color', '');
+        }
+    }
+</script>
+@*<script src="~/Scripts/PageJS/Transactions/LoadSummary/TTManualComplete.js"></script>*@

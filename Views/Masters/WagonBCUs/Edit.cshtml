@@ -1,0 +1,74 @@
+﻿@using TOAST.Data.Model;
+@using System.Linq;
+@model TOAST.Data.Model.tblWagonBCUMaster
+@{
+    ViewBag.Title = "Edit Wagon Batch Controller";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Wagon Batch Controller
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-2 col-md-6 col-sm-12 hide">
+                <div class="fields form-group">
+                    <label>Wagon BCU ID</label>
+                    <input id="txtBcuID" name="BcuID" value="@Model.UniqueID" type="text" placeholder="" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-12">
+                <div class="fields form-group">
+                    <label>Wagon BCU Name</label>
+                    <input id="txtBCName" name="BCName" value="@Model.BCUName" type="text" placeholder="Batch Controller Name (3-30 Chars)" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-12">
+                <div class="fields form-group">
+                    <label>Product</label>
+                    <input id="txtProduct" name="LoopNo" value="@Model.tblWBCUArmProducts.FirstOrDefault().tblProduct.ProdNameShort" type="text" placeholder="Product" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkRITAvailable" name="RITAvailable" type="checkbox" @(Model.RITAvailable ? "checked" : "") class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="RIT Available" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkEarthBypass" name="EarthBypass" type="checkbox" @(Model.EarthBypass ? "checked" : "") class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Earth Bypass" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkESDBypass" name="ESDBypass" type="checkbox" @(Model.ESDBypass ? "checked" : "") class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Earth Bypass" disabled>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkBCUEnable" name="BCUEnable" type="checkbox" @((Model.Enabled ?? false) ? "checked" : "") class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Wagon BCU Enabled" disabled>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateWagonBCU();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/WagonBCUs/WagonBCUs.js"></script>

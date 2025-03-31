@@ -1,0 +1,68 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblLoadMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+
+}
+
+<div class="row" id="dvLoadSummary">
+    <div class="col-lg-12">
+        <div id="TruckAssigmentOptions" onclick="$('#dvTimer').timer('pause');  $('#dvTimer').timer('remove');"></div>
+    </div>
+    <div class="col-lg-12 grid-header-container">
+        <h3 class="grid-header">Load Summary</h3>
+        <table id="tblLoadMaster" class="table">
+            <thead>
+                <tr>
+                    <th>LoadID</th>
+                    <th>TT Reg. Date</th>
+                    <th>Truck No.</th>
+                    <th>Truck Status</th>
+                    <th>Product</th>
+                    <th>Bay#</th>
+                    <th>Card#</th>
+                    <th>Card IssueTime</th>
+                    <th>TT Time</th>
+                    <th>Gate Entry</th>
+                    <th>Loading Start</th>
+                    <th>Invoice Print</th>
+                    <th>ShipmentNo</th>
+                </tr>
+            </thead>
+            <tbody id="tblLoadSummaryBody">
+                @foreach (tblLoadMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="ShowTruckDetails(this, @itm.LoadID);">
+                        <td>@itm.LoadID</td>
+                        <td>@(itm.RegDate.HasValue ? itm.RegDate.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                        <td>@itm.tblTruckMaster.TruckNumber.Trim().ToUpper()</td>
+                        <td class="truckStatus"> @itm.tblTruckStatu.TruckStatusDesc</td>
+                        <td>@(String.Join(", ", itm.tblLoadDetails.Select(x=>x.tblProduct.ProdNameShort).Distinct()))</td>
+                        <td>@(String.Join(", ", itm.tblLoadDetails.Select(x=>String.Format("{0:00}", x.BayID)).Distinct()))</td>
+                        <td>@(itm.CardID == null ? "" : itm.tblCard.CardNumber.ToString())</td>
+                        <td>@(itm.CardReAuthorizeTime.HasValue ? itm.CardReAuthorizeTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                        <td>
+                            @{
+                                if (! (itm.TruckStatus == 120 || itm.TruckStatus == 901 || itm.TruckStatus == 962))
+                                {
+                                    @((Math.Floor((System.DateTime.Now - (itm.CardReAuthorizeTime.HasValue ? itm.CardReAuthorizeTime.Value : System.DateTime.Now)).TotalSeconds) / 60).ToString("#0") + "m  " + ((System.DateTime.Now - (itm.CardReAuthorizeTime.HasValue ? itm.CardReAuthorizeTime.Value : System.DateTime.Now)).TotalSeconds % 60).ToString("#0") + "s");
+                                }
+                            }
+                        </td>
+                        <td>@(itm.EntryGateTime.HasValue ? itm.EntryGateTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                        <td>@(itm.tblLoadDetails.FirstOrDefault().LoadingStartTime.HasValue ? itm.tblLoadDetails.FirstOrDefault().LoadingStartTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                        <td>@(itm.ReportPrintedDateTime.HasValue ? itm.ReportPrintedDateTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                        <td>@itm.ShipmentNo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" id="dvTruckDetails">
+</div>
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>	
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/Index.js"></script>

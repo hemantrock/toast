@@ -1,0 +1,82 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Wagon Summary";
+    List<tblWLoadRakeDetail> lstwLRakes = ViewBag.lstLoadRakes;
+    List<tblWLoadRakeMaster> lstMast = lstwLRakes.Select(x => x.tblWLoadRakeMaster).Distinct().ToList();
+    Layout = null; long[] NewActiveIDs = lstMast.Select(x => x.WLoadID).ToArray();
+    int grps = 2; float width = 100;
+    int grpSize = (int)Math.Ceiling((decimal)lstwLRakes.Count / grps);
+}
+<style>
+    .waitpage {
+        display: none !important;
+    }
+
+    table.app-tbl tbody tr td {
+        height: 28px;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-3">
+        <h3 class="grid-headerplant" style="color:black">Wagon Summary</h3>
+    </div>
+    <div class="col-lg-3">
+        <div class="relative excelUpload">
+            <div class="relative form-group">
+                @*<input type="file" class="hiddenfile" accept=".xlsx, .xls, .csv" onchange="return fileValidation(this)" />*@
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="far fa-file-excel"></i></div>
+                    <input type="file" class="form-control" id="excelfile" accept=".xlsx,.xls" placeholder="Choose file">
+                    <div class="input-group-addon btn btn-primary" onclick="UploadExcel()">Upload Excel file</div>
+                </div>
+            </div>
+            <span class="error hide">Invalid file type</span>
+        </div>
+    </div>
+    <div class="col-lg-6" style="margin-top: -5px;">
+        <table class="wagsum-tbl">
+            @{
+                List<int> lstProdIDs = lstwLRakes.Where(x=>x.WagonStatusID!=1914).Select(x => (x.ProductID ?? 0)).Distinct().ToList();
+                if (lstProdIDs.Count() > 0) { width = 100 / (lstProdIDs.Count() * 4); }
+                <thead>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach (int prodID in lstProdIDs)
+                        {
+                            tblProduct Prod = lstwLRakes.Where(x => x.ProductID == prodID).FirstOrDefault().tblProduct;
+                            <td rowspan="2" class="bg-color" style="background-color:@Prod.ProductColor" width="@width%">@Prod.ProdNameShort</td>
+                            <td class="bg-color" style="background-color:@Prod.ProductColor" width="@width%">Demand</td>
+                            <td class="bg-color" style="background-color:@Prod.ProductColor" width="@width%">Pressure</td>
+                            <td class="bg-color" style="background-color:@Prod.ProductColor" width="@width%">SetPoint</td>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (int prodID in lstProdIDs)
+                        {
+                            tblProduct Prod = lstwLRakes.Where(x => x.ProductID == prodID).FirstOrDefault().tblProduct;
+                            @*<td>@Prod.ProdNameShort</td>*@
+                            <td class="@(Prod.ProdNameShort+"_TWL_PMP_DEMAND") tooltips" title="Pump Demand" width="@width%"></td>
+                            <td class="@("PT_"+Prod.ProdNameShort.Replace("RFMT","SKO")+"_HDR_TWL_VALUE") tooltips" title="Current Header Pressure" width="@width%"></td>
+                            <td class="@("VFD_"+Prod.ProdNameShort.Replace("HSD","HSD01")+"_TWL_PT_SP") tooltips" title="Set Pressure" width="@width%"></td>
+                        }
+                    </tr>
+                </tbody>
+            }
+        </table>
+    </div>
+</div>
+
+<div id="TWTable">
+
+</div>
+<script>
+    var myarray = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(NewActiveIDs));
+    if (jQuery.inArray(activeRakeID, myarray) == -1) { activeRakeID = myarray[0]; }
+    opcPageName = "HeaderView2[1-4]";
+    InitConn(opcPageName, 0);
+    createTooltip();
+    opc.server.readPageTags(opcPageName);
+</script>
+<script src="~/Scripts/PageJS/Wagon/Summary/TWSummary.js"></script>

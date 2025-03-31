@@ -1,0 +1,44 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTankDataArchive>
+@{
+    Layout = null;
+}
+<div class="col-lg-12">
+    <h3 class="grid-header">TANK DETAILS</h3>
+    <table id="tblTanks" class="table">
+        <thead>
+            <tr>
+                <th style="display:none;">TankId</th>
+                <th>DATE TIME</th>
+                <th>TANK NAME</th>
+                <th>SAP TANK NO</th>
+                <th>PRODUCT NAME</th>
+                <th>TANK MODE</th>
+                <th>LEVEL</th>
+                <th>DENSITY</th>
+                <th>MATL.TEMP.</th>
+                <th>PRESSURE</th>
+                <th>POST STATUS</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblTankDataArchive itm in Model)
+            {
+                <tr>
+                    <td style="display:none;">@itm.TankID</td>
+                    <td>@itm.DataTimeStamp.ToString("dd-MMM HH:mm")</td>
+                    <td>@itm.tblTank.TankName</td>
+                    <td>@itm.tblTank.SAPTankNo</td>
+                    <td>@itm.tblTank.tblProduct.ProductName</td>
+                    <td>@(itm.tblTanksMode != null ? itm.tblTanksMode.ModeDesc : "")</td>
+                    <td>@itm.ProductLevel</td>
+                    <td>@itm.DensityStd</td>
+                    <td>@itm.TempProduct</td>
+                    <td>@itm.Pressure</td>
+                    <td>@(itm.tblTFMSPostStatu != null ? itm.tblTFMSPostStatu.PostStatusDesc : "")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/PageJS/TFMS/TankArchive/TankData.js"></script>

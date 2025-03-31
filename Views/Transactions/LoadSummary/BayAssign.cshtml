@@ -1,0 +1,138 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+@model List<TOAST.Data.Model.tblLoadDetail>
+@{
+    ViewBag.Title = "Bay Assign";
+    Layout = null;
+    List<BayLoadingPoint> lstProdLPs =  ViewBag.ProdLPs;
+}
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/LoadDDLAvlBay.js"></script>
+<div class="row">
+    <div class="col-lg-12">
+        <table id="tblSelectedLoad">
+            <thead>
+                <tr>
+                    <th style="display:none">LoadID</th>
+                    <th>Truck Number</th>
+                    <th>Card Number</th>
+                    <th>Truck Status</th>
+                    <th>Card Issue Time</th>
+                    <th>FAN No.</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    tblLoadMaster obj = Model.FirstOrDefault().tblLoadMaster;
+                    if (obj != null)
+                    {
+                        <tr class="selected-row">
+                            <td style="display:none">@obj.LoadID</td>
+                            <td>@obj.tblTruckMaster.TruckNumber</td>
+                            @if (obj.tblCard != null)
+                            {
+                                <td>@obj.tblCard.CardNumber</td>
+                            }
+                            else
+                            {
+                                <td>&nbsp;</td>
+                            }
+                            <td>@obj.tblTruckStatu.TruckStatusDesc</td>
+                            <td>@(obj.CardIssueTime == null ? "" : obj.CardIssueTime.Value.ToString("dd-MMM-yyyy hh:mm:ss tt"))</td>
+                            <td>@obj.tblLoadDetails.FirstOrDefault().FanSlipNo</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="col-lg-12">
+        <table id="tblCompStatus" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Gantry No</th>
+                    <th>Bay No.</th>
+                    <th>Loading Point No.</th>
+                    <th>Compartment No.</th>
+                    <th>Product Code</th>
+                    <th>Product Description</th>
+                    <th>Preset Quantity</th>
+                    <th>Filled Quantity</th>
+                    <th>Load Status</th>
+                    <th>Assign Bay</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (tblLoadDetail itm in Model)
+                    {
+                        <tr>
+                            <td style="display:none;"></td>
+                            <td>@itm.BayID</td>
+                            <td>@itm.LoadingPointNo</td>
+                            <td>@itm.CompNo</td>
+                            <td>@itm.tblProduct.ProductCode</td>
+                            <td>@itm.tblProduct.ProductName</td>
+                            <td>@itm.PresetQty</td>
+                            <td>@((itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0))</td>
+                            <td>@itm.tblLoadStatu.LoadStatusDesc</td>
+                            <td>
+                                <select id="ddlAssignBay_@itm.CompNo" data-refid="@itm.CompNo" name="AssignBay" onchange="UpdateBaySelection(this)">
+                                    <option selected="selected" value=0>Assign Bay</option>
+                                    @foreach (BayLoadingPoint BLP in lstProdLPs.Where(x=>x.CompNo==itm.CompNo))
+                                    {
+                                        <option bayid="@BLP.BayID" value="@BLP.LoadingPointNo">@BLP.LPDesc</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-lg-2 col-md-2 col-sm-2 checkbox-field">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <input id="chkQueueJump" name="QueueJump" type="checkbox" class="form-control">
+            </span>
+            <input type="text" class="form-control" value="Queue Jump" disabled>
+        </div>
+    </div>
+    @{
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field hide">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input id="chkMixedBay" name="MixedBay" type="checkbox" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Allow Mixed Bay using 1 LP" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input id="chkDiffBay" name="DiffBay" type="checkbox" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Allow Different Bays For Mixed Load" disabled>
+                </div>
+            </div>
+    }
+    <div class="col-lg-3 text-right pad-top-19">
+        <a id="btnAutoAssignBay" role="button" class="btn btn-primary" href="#" onclick="AutoAssignBay('@Model.FirstOrDefault().LoadID')">
+            <span class="glyphicon glyphicon-play"></span>Auto Assign Bay
+        </a>
+        <a id="btnAssignBay" role="button" class="btn btn-primary" href="#" onclick="AssignAvlBay('@Model.FirstOrDefault().LoadID')">
+            <span class="glyphicon glyphicon-hand-right"></span>Manual Assign Bay
+        </a>
+
+    </div>
+
+</div>
+<script>
+    Purpose = '@Model.FirstOrDefault().tblLoadMaster.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/BayAssign.js"></script>

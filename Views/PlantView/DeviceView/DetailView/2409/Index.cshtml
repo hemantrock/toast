@@ -1,0 +1,81 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Device Detail View";
+    Layout = null;
+    List<tblTagMaster> DevTags = ViewBag.DevTags;
+    string stropcPages = String.Join(",", Model.Select(x => x.PageName).Distinct());
+}
+<style>
+    .device-container .device-box {
+        width: 194px;
+        min-height: 265px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">@string.Join(", ", Model.Select(x=>x.tblDeviceType.DeviceTypeDesc).Distinct()) View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="device-container col-lg-12 m-t-10">
+        @{
+            foreach (tblDeviceMaster Device in Model)
+            {
+                string DevName = Device.TagPrefix;
+                string DeviceType = Device.tblDeviceType.DeviceName.ToLower().Replace(" ","-");
+                string ProdNameShort = "";
+                string strUOM = "Status "; string strTag = Device.TagPrefix + "_STATUS";
+                tblTagMaster DevValTag = DevTags.Where(x => x.TagName == Device.TagPrefix + "_VALUE").FirstOrDefault();
+                if (DevValTag != null && DevValTag.UnitId!=null) { strUOM = "Value ("+DevValTag.tblUOMMaster.UOM+")"; strTag = Device.TagPrefix + "_VALUE"; }
+                if (Device.HeaderID != null) { ProdNameShort = Device.tblHeadersMaster.tblProduct.ProdNameShort; }
+                else if (Device.TankID != null) { ProdNameShort = Device.tblTank.tblProduct.ProdNameShort; }
+                <div class="device-box @DeviceType-wrapper">
+                    <div class="device-header">
+                        <span class="h-col h-full" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                    </div>
+                    <div class="device-block"style="padding:0 0;">
+                        <div class="device @DeviceType @(Device.TagPrefix + "_IMG")">
+                            <span class="maintainence-mode-icon @(DevName + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl">Location</td>
+                                    <td class="tbl-val">@Device.DeviceDesc.Replace("Flow Switch at ","")</td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">@strUOM</td>
+                                    <td class="tbl-val tooltips" title="@Device.DeviceDesc">
+                                        <span class="alert-cont-md">
+                                            <span class="@(strTag)"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@stropcPages';
+        InitConn(opcPageName, 0);
+        $('.nav-tabs a:first').tab('show');
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

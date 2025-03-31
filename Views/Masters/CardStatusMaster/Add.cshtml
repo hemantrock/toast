@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Add CardStatusMaster";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a new CardStatusMaster
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>STATUS</label>
+                        <input id="txtStatus" name="Status" type="text" placeholder="Status" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveCardStatusMaster();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/CardStatusMaster/CardStatusMaster.js"></script>

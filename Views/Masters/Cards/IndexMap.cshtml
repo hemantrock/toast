@@ -1,0 +1,142 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblACUMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    List<tblTruckMaster> lstTTs = ViewBag.lstTTs;
+    List<tblCard> lstCards = ViewBag.lstCards;
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Card Readers | Card Truck Mapping</h3>
+    </div>
+</div>
+<div class="row m-t-10">
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <h3 class="grid-header" style="color:black"></h3>
+        <table id="tblCardReader" class="table">
+            <thead>
+                <tr>
+                    <th>Data Source</th>
+                    <th>Card Reader</th>
+                    <th>Pri.</th>
+                    <th>Sec.</th>
+                    <th>Card Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblACUMaster itm in Model.Where(x => (x.LogicAction ?? "").ToUpper() == "BAYCARD"))
+                {
+                    <tr id="@itm.AcuID">
+                        <td>@itm.tblDataSourceMaster.DSName</td>
+                        <td>@itm.ACUDesc</td>
+                        <td>
+                            <div class="circle-cont-xsm">
+                                <span class="@(itm.TagPrefix??"")_CONN01"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="circle-cont-xsm">
+                                <span class="@(itm.TagPrefix??"")_CONN02"></span>
+                            </div>
+                        </td>
+                        <td class="@((itm.TagPrefix??"")+ "_CARD")"></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row m-t-40">
+    <div class="col-lg-2" style="width: 11%;">
+        <select id="TruckMap" class="js-basic-single" data-placeholder="Select TT" data-allow-clear="true" data-width="95%">
+            <option></option>
+            @foreach (tblTruckMaster TTMast in (lstTTs??new List<tblTruckMaster>() ))
+            {
+                <option value="@TTMast.TruckID">@TTMast.TruckNumber</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-1">
+        <select id="CardMap" class="js-basic-single" data-placeholder="Select Card" data-allow-clear="true" data-width="95%">
+            <option></option>
+            @foreach (tblCard card in (lstCards ?? new List<tblCard>()))
+            {
+                <option value="@card.UniqueID">@card.CardNumber</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-1 text-right">
+        <div class="fields form-group pull-right">
+            <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="TruckCardFastMap()" style="padding: 3px 6px;"><span class="glyphicon glyphicon-plus"></span>Map Truck Card</a>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        opcPageName = 'ACUView.*';
+        InitConn(opcPageName, 50);
+        opc.server.readPageTags(opcPageName);
+
+        $('.js-basic-single').each(function () {
+            $(this).select2();
+        });
+
+        $('#tblCardReader').dataTable({
+            "iDisplayLength": iGblNoRows,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": false,
+            "bInfo": false,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "25%" },
+                    { sWidth: "26%" },
+                    { sWidth: "12%" },
+                    { sWidth: "12%" },
+                    { sWidth: "25%" },
+                ],
+            "bAutoWidth": false,
+        });
+    });
+
+
+    function TruckCardFastMap() {
+        var activityName = "Map Truck with Card";
+        var activityDetail = "Truck No: " + $('#CardMap').select2('data')[0].text + " Card No: " + $('#CardMap').select2('data')[0].text;
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/ValidateRequiredTrnPwd?activityName=" + activityName,
+            cache: false,
+            success: function (result) {
+                if (result.blnStatus != 'undefined' && result.blnStatus == false) {
+                    TruckCardFastMapDo();
+                }
+                else {
+                    ShowPasswordModalForReqTrn(activityName + " : Requires Transaction Password", function () { TruckCardFastMapDo(); }, activityName, activityDetail);
+                }
+            }
+        });
+    }
+    function TruckCardFastMapDo() {
+        var CardID = $('#CardMap').val();
+        var TruckID = $('#TruckMap').val();
+        $.ajax({
+            url: "/Cards/MapCardTruck",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ TruckID: TruckID, CardID: CardID }),
+            cache: false,
+            success: function (result) {
+                alertDismissable(result.strType, result.strMessage);
+                if (result.blnStatus == true) {
+
+                }
+            }
+        });
+    }
+
+</script>

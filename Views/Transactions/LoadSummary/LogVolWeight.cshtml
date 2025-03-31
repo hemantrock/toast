@@ -1,0 +1,219 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Log Weight";
+    List<tblWeightBridgeMaster> WBs = ViewBag.WBs;
+    string DefaultWB = ViewBag.DefaultWB;
+    List<tblDropdownValue> Reasons = ViewBag.ManualEntryReasons;
+    tblWeightBridgeMaster MatchedWB = WBs.Where(x => x.WBName.ToUpper() == DefaultWB).FirstOrDefault();
+    tblWeightBridgeMaster TareWB = WBs.Where(x => x.WBID == Model.TareWeighBridgeID).FirstOrDefault();
+    string SOUoM = (Model.tblLoadDetails.FirstOrDefault().SOUom == null ? Model.tblLoadDetails.FirstOrDefault().tblProduct.tblUOMMaster.UOM : Model.tblLoadDetails.FirstOrDefault().tblUOMMaster.UOM) ;
+    Layout = null;
+}
+    
+<div class="row">
+    <div class="col-lg-8 grid-header-container">
+        <h3 class="grid-header">Log Weight - Truck Details</h3>
+        <table id="tblTruckMaster" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">TruckStatusId</th>
+                    <th>FAN ID</th>
+                    <th>Shipment#</th>
+                    <th>Truck Number</th>
+                    <th>Status</th>
+                    <th>@(clsConfig.ERPName) Tare Wt. (Kg)</th>
+                    <th>Actual Tare Wt. (Kg)</th>
+                    <th>Actual Gross Wt. (Kg)</th>
+                    <th>Max TT Wt. (Kg)</th>
+                    <th>To Fill Qty (@SOUoM)</th>
+                    <th>Filled Qty (@SOUoM)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="display:none;">@Model.TruckStatus.Value    </td>
+                    <td>@Model.tblLoadDetails.FirstOrDefault().FanSlipNo    </td>
+                    <td>@Model.ShipmentNo    </td>
+                    <td>@Model.tblTruckMaster.TruckNumber    </td>
+                    <td>@Model.tblTruckStatu.TruckStatusDesc    </td>
+                    <td>@Model.tblTruckMaster.PrintedTareWeight    </td>
+                    <td>@(Model.WeightBeforeLoading ?? 0)    </td>
+                    <td>@(Model.WeightAfterLoading ?? 0)    </td>
+                    <td>@Model.tblTruckMaster.MaxWeight    </td>
+                    <td>@Model.tblLoadDetails.Select(x => (x.SOQty??x.PresetQty ?? 0)).Sum()    </td>
+                    @if (Model.tblLoadDetails.FirstOrDefault().tblProduct.UomID != 2)
+                    {
+                        <td>@Model.tblLoadDetails.Select(x => ((x.BaseProdQtyGrs ?? 0) + (x.EthBlendingQtyGrs ?? 0))*((x.DensityAvg??(double)x.tblProduct.Density))).Sum()</td>
+                    }
+                    else
+                    {
+                        <td>@Model.tblLoadDetails.Select(x => ((x.BaseProdQtyGrs ?? 0) + (x.EthBlendingQtyGrs ?? 0))).Sum()</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-1 marg-top-1em">
+        &nbsp;
+    </div>
+    @{
+        if((clsConfig.WB_ENTRY_CCTV_IP!="" && (Model.TruckStatus.Value == 216 || Model.TruckStatus.Value == 905)) || (clsConfig.WB_EXIT_CCTV_IP!="" && (Model.TruckStatus.Value == 424 || Model.TruckStatus.Value == 908)))
+       {
+        <div class="col-lg-5 marg-top-1em" id="dvLeftVideo">
+        </div>
+        <div class="col-lg-5 marg-top-1em" id="dvRightImage">
+        </div>
+        }
+    }
+    <div class="col-lg-8 col-md-8 form-container pad-top-19">
+        <form id="FormLog" role="form" class="form-fields">
+            <div class="row">
+                @if (Model.TruckStatus.Value == 424 || Model.TruckStatus.Value == 908)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="fields form-group">
+                            <label>Gross Weight</label>
+                            <input id="txtGrossWeight" name="GrossWeight" type="text" placeholder="Gross Weight" class="form-control" onkeypress="return isNumber(event)" value="@Model.WeightAfterLoading" disabled>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-3" style="display:none;">
+                        <div class="fields form-group">
+                            <label>Gross Weight</label>
+                            <input id="txtGrossWeight" name="GrossWeight" type="text" placeholder="Gross Weight" class="form-control" onkeypress="return isNumber(event)" value="@Model.WeightAfterLoading" disabled>
+                        </div>
+                    </div>
+                }
+
+                @if (Model.TruckStatus.Value == 216 || Model.TruckStatus.Value == 905)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="fields form-group">
+                            <label>Tare Weight</label>
+                            <input id="txtTareWeight" name="TareWeight" autocomplete="off" type="text" placeholder="Tare Weight" class="form-control" onkeypress="return isNumber(event)" value="@Model.WeightBeforeLoading" disabled>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-3" style="display:none;">
+                        <div class="fields form-group">
+                            <label>Tare Weight</label>
+                            <input id="txtTareWeight" name="TareWeight" autocomplete="off" type="text" placeholder="Tare Weight" class="form-control" onkeypress="return isNumber(event)" value="@Model.WeightBeforeLoading" disabled>
+                        </div>
+                    </div>
+                }
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Net Weight</label>
+                        <input id="txtNetWeight" name="NetWeight" type="text" autocomplete="off" placeholder="Net Weight" class="form-control" value="@(((Model.WeightAfterLoading ?? 0) - (Model.WeightBeforeLoading ?? 0)) >= 0 ? (Model.WeightAfterLoading ?? 0) - (Model.WeightBeforeLoading ?? 0) : 0)" disabled>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Bridge Type</label>
+                        @if (Model.TruckStatus.Value == 424 || Model.TruckStatus.Value == 908)
+                        {
+                            <select id="ddlBridgeType" name="BridgeType" class="form-control" disabled>
+                                @if (Model.TareWeighBridgeID !=null)
+                                {
+                                    <option value="@TareWB.WBID" selected>@TareWB.WBName</option>
+                                }
+                                else
+                                {
+                                    <option value="@MatchedWB.WBID" selected>@MatchedWB.WBName</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <select id="ddlBridgeType" name="BridgeType" class="form-control">
+                            @foreach (tblWeightBridgeMaster WB in WBs)
+                            {
+                                if (MatchedWB!=null && WB.WBID == MatchedWB.WBID)
+                                {
+                                    <option value="@WB.WBID" selected>@WB.WBName</option>
+                                }
+                                else
+                                {
+                                    <option value="@WB.WBID">@WB.WBName</option>
+                                }
+                            }
+                            </select>
+                        }
+                    </div>
+                </div>
+
+                @if ((Model.ReasonID != 0 && Model.ReasonID != null))
+                {
+                    <div id="dvManualEntry" class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="fields form-group">
+                            <label>Reason for Manual Entry</label>
+                            <select id="ddlManualEntry" name="ManualEntry" data-refid="@Model.ReasonID" class="form-control">
+                                @foreach (tblDropdownValue item in Reasons)
+                                {
+                                    if (item.UniqueID == Model.ReasonID)
+                                    {
+                                        <option selected value="@item.UniqueID">@item.ddlValues</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.UniqueID">@item.ddlValues</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="dvManualEntry" class="col-lg-3 col-md-3 col-sm-3" style="display:none;">
+                        <div class="fields form-group">
+                            <label>Reason for Manual Entry</label>
+                            <select id="ddlManualEntry" name="ManualEntry" class="form-control">
+                                @foreach (tblDropdownValue item in Reasons)
+                                {
+                                    <option value="@item.UniqueID">@item.ddlValues</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-12 text-right">
+        @if (Model.TruckStatus.Value == 216 || Model.TruckStatus.Value == 905)
+        {
+            <a id="btnTareWeight" role="button" class="btn btn-primary" href="#" onclick="GetWeightFromWB('Tare')">
+                <span class="glyphicon glyphicon-download-alt"></span>Refresh Tare Weight
+            </a>
+        }
+        else if (Model.TruckStatus.Value == 424 || Model.TruckStatus.Value == 908)
+        {
+            <a id="btnTareWeight" role="button" class="btn btn-primary" href="#" onclick="GetWeightFromWB('Gross')">
+                <span class="glyphicon glyphicon-download-alt"></span>Refresh Gross Weight
+            </a>
+        }
+        <a id="btnValidate" role="button" class="btn btn-primary" href="#" onclick="ValidateWeight('@Model.LoadID')">
+            <span class="glyphicon glyphicon-ok"></span>Validate & Save
+        </a>
+        <a id="btnManualEntry" role="button" class="btn btn-primary" href="#" onclick="ManualWeightEntry()" data-caption="Enable Manual Entry">
+            <span class="glyphicon glyphicon-pencil"></span>Enable Manual Entry
+        </a>
+        <a id="btnClose" role="button" class="btn btn-primary" href="#" onclick="OpenLoadSummaryMenu()">
+            <span class="glyphicon glyphicon-remove"></span>Close
+        </a>
+    </div>
+</div>
+<script>
+    Purpose = '@Model.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/LogWeight.js"></script>

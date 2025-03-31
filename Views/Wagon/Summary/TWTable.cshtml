@@ -1,0 +1,179 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Wagon Summary";
+    List<tblWLoadRakeDetail> lstwLRakes = ViewBag.lstLoadRakes;
+    List<tblWLoadRakeMaster> lstMast = lstwLRakes.Select(x => x.tblWLoadRakeMaster).Distinct().ToList();
+    Layout = null; long[] NewActiveIDs = lstMast.Select(x => x.WLoadID).ToArray();
+    int grps = 2;
+    int grpSize = (int)Math.Ceiling((decimal)lstwLRakes.Count / grps);
+}
+<div class="row">
+    @{
+        <div class="col-lg-6">
+            <table class="table-striped app-tbl">
+                <thead>
+                    @*<tr><th class="text-center bg-color" colspan="10" style="font-size: 22px;">Wagon Summary</th></tr>*@
+                    <tr>
+                        <th class="text-center bg-color" style="width: 5%">Spur</th>
+                        <th class="text-center bg-color" style="width: 7%">LoadID</th>
+                        <th class="text-center bg-color" style="width: 17%">Placement Time</th>
+                        <th class="text-center bg-color" style="width: 14%">ShipmentNo</th>
+                        <th class="text-center bg-color" style="width: 17%">TAS Rake No</th>
+                        <th class="text-center bg-color" style="width: 12%">Ref Sheet</th>
+                        <th class="text-center bg-color" style="width: 23%">Destination</th>
+                        <th class="text-center bg-color" style="width: 5%">Exit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblWLoadRakeMaster train in lstMast.Where(x => x.SpurID == 1))
+                    {
+                        <tr class="clickable" onclick="ShowWagonRakes(this,@train.WLoadID);">
+                            <td class="text-center">@train.tblSpurMaster.SpurNo</td>
+                            <td class="text-center">@train.WLoadID</td>
+                            <td class="text-center">@((train.RakePlacementDT ?? new DateTime()).ToString("dd-MMM-yyyy HH:mm"))</td>
+                            <td class="text-center">@train.ShipmentNo</td>
+                            <td class="text-center">@train.TASRakeNo</td>
+                            <td class="text-center">@train.RefSheet</td>
+                            <td class="text-center">@train.LoadedFor.Substring(0, Math.Min(train.LoadedFor.Length, 20))</td>
+                            <td class="clickable text-center" onclick="cancelBubble(event);ExitRake(this,@train.WLoadID);">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <table class="table-striped app-tbl">
+                <thead>
+                    @*<tr><th class="text-center bg-color" colspan="10" style="font-size: 22px;">Wagon Summary</th></tr>*@
+                    <tr>
+                        <th class="text-center bg-color" style="width: 5%">Spur</th>
+                        <th class="text-center bg-color" style="width: 7%">LoadID</th>
+                        <th class="text-center bg-color" style="width: 18%">Placement Time</th>
+                        <th class="text-center bg-color" style="width: 14%">ShipmentNo</th>
+                        <th class="text-center bg-color" style="width: 18%">TAS Rake No</th>
+                        <th class="text-center bg-color" style="width: 12%">Ref Sheet</th>
+                        <th class="text-center bg-color" style="width: 20%">Destination</th>
+                        <th class="text-center bg-color" style="width: 6%">Exit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblWLoadRakeMaster train in lstMast.Where(x => x.SpurID == 2))
+                    {
+                        <tr class="clickable" onclick="ShowWagonRakes(this,@train.WLoadID);">
+                            <td class="text-center">@train.tblSpurMaster.SpurNo</td>
+                            <td class="text-center">@train.WLoadID</td>
+                            <td class="text-center">@((train.RakePlacementDT??new DateTime()).ToString("dd-MMM-yyyy HH:mm"))</td>
+                            <td class="text-center">@train.ShipmentNo</td>
+                            <td class="text-center">@train.TASRakeNo</td>
+                            <td class="text-center">@train.RefSheet</td>
+                            <td class="text-center">@train.LoadedFor.Substring(0, Math.Min(train.LoadedFor.Length, 20))</td>
+                            <td class="clickable text-center" onclick="cancelBubble(event);ExitRake(this,@train.WLoadID);">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<div class="row m-t-10" id="wDetail">
+    @{
+        foreach (Int64 wloadID in lstMast.Select(x => x.WLoadID).Distinct())
+        {
+            string strDisp = "none";
+            if (lstMast[0].WLoadID == wloadID) { strDisp = "block"; }
+            <div class="wload" id="@wloadID" style="display:@strDisp">
+                @{
+                    List<tblWLoadRakeDetail> lstRakes = lstwLRakes.Where(x => x.WLoadID == wloadID).ToList();
+                    grpSize = (int)Math.Ceiling((decimal)lstRakes.Count() / grps);
+                }
+                @for (int i = 0; i < grps; i++)
+                {
+                    <div class="col-lg-@(12/grps)">
+                        <table class="table-striped app-tbl" id="tblWLDetail">
+                            <thead>
+                                @*<tr><th class="text-center bg-color" colspan="10" style="font-size: 22px;">Wagon Summary</th></tr>*@
+                                <tr>
+                                    <th class="text-center bg-color" style="width: 4%">Seq</th>
+                                    <th class="text-center bg-color" style="width: 12%">WagonNo</th>
+                                    <th class="text-center bg-color" style="width: 10.5%">Wag. Status</th>
+                                    <th class="text-center bg-color" style="width: 8%">Product</th>
+                                    <th class="text-center bg-color" style="width: 7%">Cluster</th>
+                                    <th class="text-center bg-color" style="width: 5%">Spot</th>
+                                    <th class="text-center bg-color" style="width: 8%">Preset</th>
+                                    <th class="text-center bg-color" style="width: 8%">Filled</th>
+                                    <th class="text-center bg-color" style="width: 8%">Fill%</th>
+                                    <th class="text-center bg-color" style="width: 11%">Fill Status</th>
+                                    <th class="text-center bg-color" style="width: 5.5%">Flow</th>
+                                    <th class="text-center bg-color" style="width: 6.5%">Start</th>
+                                    <th class="text-center bg-color" style="width: 6.5%">End</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int j = i * grpSize; j < (i + 1) * grpSize; j++)
+                                {
+                                    if (j >= lstRakes.Count) { break; }
+                                    tblWLoadRakeDetail rake = lstRakes[j]; int iSpurNo = 1;
+                                    double Delivered = rake.tblWLoadRakeComponents.Select(x => (x.DeliveredQtyGrs ?? 0) + (x.PrevQtyGrs ?? 0) + (x.TopUpQty ?? 0) - (x.DecantedQty ?? 0)).Sum();
+                                    string sLoadSpotNo = ""; string sClusterNo = ""; string sRef = ""; string sFillStart = ""; string sFillEnd = ""; string sFlowRate = "";
+                                    if (rake.LoadSpotID != null && rake.tblLoadSpotMaster != null)
+                                    {
+                                        iSpurNo = (rake.tblLoadSpotMaster.tblWagonBCUArmBatch.tblWagonBCUMaster.tblClusterMaster.tblSpurMaster.SpurNo ?? 0);
+                                        sClusterNo = (rake.tblLoadSpotMaster.tblWagonBCUArmBatch.tblWagonBCUMaster.tblClusterMaster.ClusterNo).ToString("0#");
+                                        sLoadSpotNo = (rake.tblLoadSpotMaster.LoadSpotNo ?? 0).ToString("0#");
+                                        sRef = "S" + iSpurNo.ToString("0#") + "-C" + sClusterNo;
+                                    }
+                                    if (rake.FillingStartTime != null)
+                                    {
+                                        sFillStart = (rake.FillingStartTime ?? new DateTime()).ToString("HH:mm");
+                                    }
+                                    if (rake.FillingEndTime != null)
+                                    {
+                                        sFillEnd = (rake.FillingEndTime ?? new DateTime()).ToString("HH:mm");
+                                    }
+                                    else if (rake.FillingStartTime != null && rake.ERPChamberNo > 3)
+                                    {
+                                        //sFillEnd = "E" + System.DateTime.Now.AddMinutes(((rake.PresetQty ?? 0) - Delivered) / (double)(rake.ERPChamberNo ?? 1100)).ToString("HH:mm");
+                                        double dMins = ((rake.PresetQty ?? 0) - Delivered) / (double)(rake.ERPChamberNo ?? 1100);
+                                        if (dMins > 0)
+                                        {
+                                            if (dMins < 1) { sFillEnd = Math.Round(dMins * 60, 0).ToString("#0#s"); }
+                                            else
+                                            {
+                                                sFillEnd = Math.Round(dMins, 0).ToString("#0#m");
+                                            }
+                                            sFlowRate = rake.ERPChamberNo.ToString();
+                                        }
+                                    }
+                                    <tr class="clickable" onclick="ShowWagonDetails(this,'@rake.tblWagonMaster.WagonNo',@rake.WLoadID,@rake.WagonSeqNo);">
+                                        <td class="text-center">@rake.WagonSeqNo</td>
+                                        <td>@rake.tblWagonMaster.WagonNo</td>
+                                        <td>@rake.tblTruckStatu.TruckDescShort</td>
+                                        <td class="text-center">@rake.tblProduct.ProdNameShort</td>
+                                        <td class="text-center get-hover" onclick=" cancelBubble(event); OpenClusterBCU('@iSpurNo', '@sRef');">@sClusterNo</td>
+                                        <td class="text-center">@sLoadSpotNo</td>
+                                        <td class="text-center">@rake.PresetQty</td>
+                                        <td class="text-center">@Math.Round(Delivered, 0)</td>
+                                        <td class="text-center">@((rake.PresetQty ?? 0) > 0 ? Math.Round((Delivered * 100 / (rake.PresetQty ?? 1)), 1) : 0)%</td>
+                                        <td class="text-center">@rake.tblLoadStatu.LoadStatusDesc</td>
+                                        <td class="text-center">@sFlowRate</td>
+                                        <td class="text-center">@sFillStart</td>
+                                        <td class="text-center">@sFillEnd</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+<script>
+    var myarray = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(NewActiveIDs));
+    if (jQuery.inArray(activeRakeID, myarray) == -1) { activeRakeID = myarray[0]; }
+</script>

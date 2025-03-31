@@ -1,0 +1,85 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    List<tblWeightBridgeMaster> lstWBData = ViewBag.lstWBs;
+    string strPage = String.Join(",", lstWBData.Select(x => x.tblACUMaster.PageName));
+}
+
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Weigh Bridge Data</h3>
+    </div>
+</div>
+<div id="dvContent" class="content tt-queue-container m-t-40">
+    <div class="row">
+
+
+        @{
+            foreach (tblWeightBridgeMaster oWB in lstWBData)
+            {
+                <div class="col-lg-3 text-right">
+                    <table class="detail-tbl padd-t-10">
+                        <tr>
+                            <td colspan="3" class="val bold text-center weighbridgeHead" style="padding-right: 10px;">@oWB.WBName</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <img class="max-size-img" src="~/Images/weighbridge.svg" alt="weighbridge" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl bold" width="35%">Card Conn Status&nbsp;&nbsp;</td>
+                            <td class="val">
+                                <span class="circle-cont-sm">
+                                    <span class="@((oWB.tblACUMaster.TagPrefix??oWB.TagPrefix) + "_CONN01")"></span>
+                                </span>
+                            </td>
+                            <td class="val">
+                                <span class="circle-cont-sm">
+                                    <span class="@((oWB.tblACUMaster.TagPrefix??oWB.TagPrefix) + "_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl bold" width="35%">Current Weight&nbsp;&nbsp;</td>
+                            <td colspan="2" class="val text-left" width="65%"><span class="@(oWB.TagPrefix + "_CURR_WEIGHT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="lbl bold" width="35%">Truck No:&nbsp;&nbsp;</td>
+                            <td colspan="2" class="val text-left" width="65%"><span class="@(oWB.TagPrefix + "_TRUCK_NO")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="lbl bold" width="35%">Card No:&nbsp;&nbsp;</td>
+                            @*<td colspan="2" class="val text-left" width="65%"><span class="@(oWB.TagPrefix + "_CARD")"></span></td>*@
+                            <td colspan="2" class="val text-left" width="65%">
+                                <input id="spnCardNumber" type="number" min=1 readonly class="editable-input @(oWB.TagPrefix + "_CARD")" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('@(oWB.TagPrefix + "_CARD")','@(oWB.TagPrefix + "_GLYPH")')" onfocus="updateGlyphButton('@(oWB.TagPrefix + "_CARD")','@(oWB.TagPrefix + "_GLYPH")')"
+                                       style="border: 0px;width: 80%;" value="">
+                                <span class="glyphicon glyphicon-upload hide" id="@(oWB.TagPrefix + "_GLYPH")" onclick="SetCardNo('Force TTRS Card No','Force TTRS Card  at TT Reporting','@(oWB.TagPrefix + "_CARD")','@(oWB.TagPrefix + "_GLYPH")','@oWB.tblACUMaster.SlaveID','@oWB.tblACUMaster.DSID')" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="lbl bold" width="35%">Msg:&nbsp;&nbsp;</td>
+                            <td colspan="2" class="val text-left" width="65%" height="60"><span class="@(oWB.TagPrefix + "_MSG")"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            }
+        }
+
+    </div>
+</div>
+
+<script>
+    opcPageName = '@strPage'
+    InitConn(opcPageName, 0);
+    opc.server.readPageTags(opcPageName);
+    //createTooltip();
+</script>

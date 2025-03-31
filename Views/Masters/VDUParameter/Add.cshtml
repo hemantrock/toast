@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Add VDUParameter";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a new VDUParameter
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3 ">
+                    <div class="fields form-group">
+                        <label>Parameter Id</label>
+                        <input type="text" class="form-control" placeholder="Parameter Id" id="txtParameterId" name="ParameterId" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" placeholder="Parameter Description" id="txtParameterDesc" value="" name="VDUParameterSerial" disabled />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>Value</label>
+                        <input type="text" class="form-control" placeholder="Value" id="txtParameterValue" value="" name="VDUParameterSerial" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveVDUParameter();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/VDUParameter/VDUParameter.js"></script>

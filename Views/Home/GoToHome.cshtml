@@ -1,0 +1,33 @@
+﻿@using TOAST.Shared;
+@{
+    ViewBag.Title = "TOAST";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOAST</title>
+    <link href="~/Content/images/favicon.ico" rel="shortcut icon">
+    <link href="~/Content/css/bootstrap.css" rel="stylesheet">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <script src="~/Scripts/js/jquery/jquery.min.js"></script>
+    <script src="~/Scripts/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/Scripts/lib/notify.min.js"></script>
+    <script src="~/Scripts/Script.js"></script>
+</head>
+<body>
+    <div>
+        <h2 class="text-center">
+            Session ended. Redirecting to Login page
+        </h2>
+    </div>
+    <script>
+        $(document).ready(function () {
+            window.location.href = "/Home/Index";
+        });
+    </script>
+</body>
+</html>

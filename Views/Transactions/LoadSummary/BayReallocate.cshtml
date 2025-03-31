@@ -1,0 +1,157 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadDetail>
+@{
+    ViewBag.Title = "Bay Reallocation";
+    Layout = null;
+}
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/LoadDDLAvlBay.js"></script>
+
+<div id="header" style="background-color:#FFA500;">
+    <b>Selected Truck Details</b>
+</div>
+
+<div class="col-xs-offset-4">
+    @foreach (tblLoadDetail itm in Model)
+    {
+        <div style="background-color:#000000; width:600px;" class="col-lg-4">
+            <div style="color:White" class="text-left">
+                <div style="color:White" class="text-left">
+                    <b>
+                        Truck No: @itm.tblLoadMaster.tblTruckMaster.TruckNumber &nbsp; &nbsp;
+                        Card No: @itm.tblLoadMaster.CardID &nbsp; &nbsp;
+                        Load ID : <label id="lblLoadID"> @itm.LoadID </label>
+                    </b>
+                </div>
+            </div>
+        </div>
+        break;
+    }
+</div>
+<div class="col-xs-offset-3">
+
+
+    <div class="col-lg-8">
+        <div style="background-color:#ffffff;height:70px;width:700px;float:none;">
+
+            <table id="tblBayReallocationStatus" width="1000" border="1">
+                <tr style="color:red;">
+                    <td width="100" align="left" valign="top">FAN Number</td>
+                    <td width="250" align="left" valign="top">Customer Name</td>
+                    <td width="75" align="left" valign="top">Destination</td>
+                    <td width="75" align="left" valign="top">Product Code</td>
+                    <td width="75" align="left" valign="top">Product Description</td>
+                    <td width="50" align="left" valign="top">Quantity</td>
+
+                </tr>
+                @foreach (tblLoadDetail itm in Model)
+                {
+                    <tr class="clickable">
+                        <td style="display:none">@itm.LoadID</td>
+                        <td width="100" align="left" valign="top">@itm.FanSlipNo</td>
+                        <td width="250" align="left" valign="top">@itm.tblCustomer.</td>
+                        <td width="75" align="left" valign="top">@itm.tblDestination.DestinationDesc</td>
+                        <td width="75" align="left" valign="top">@itm.tblProduct.ProductCode</td>
+                        <td width="75" align="left" valign="top">@itm.tblProduct.ProductDescription</td>
+                        <td width="50" align="left" valign="top">@itm.PresetQty</td>
+                    </tr>
+                    break;
+                }
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="col-xs-offset-2">
+    <div class="col-lg-10">
+        <table id="tblCompStatus" class="table">
+            <thead>
+                <tr>
+                    <th>Sl.No.</th>
+                    <th>Compartment No.</th>
+                    <th>Compartment Capacity</th>
+                    <th>Product Code</th>
+                    <th>Product Description</th>
+                    <th>Preset Quantity</th>
+                    <th>Filled Quantity</th>
+                    <th>Current Bay</th>
+                    <th>Available Bay</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+
+
+                @foreach (tblLoadDetail itm in Model)
+                {
+
+                    <tr class="clickable" @*onmousedown="LoadDDLAvlBay(@itm.ProductID)"*@>
+                        <td style="display:none">@itm.LoadID</td>
+                        <td>@itm.CompNo</td>
+                        <td>@itm.CompNo</td>
+                        <td>HOLD</td>
+                        <td>@itm.tblProduct.ProductCode</td>
+                        <td>@itm.tblProduct.ProductDescription</td>
+                        <td>@itm.PresetQty</td>
+                        <td>@((itm.BaseProdQtyGrs??0) + (itm.EthBlendingQtyGrs??0))</td>
+                        <td>@itm.BayID</td>
+                        <td>
+                            @if (itm.PresetQty == ((itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0)))
+                            {
+                                <div class="col-lg-12 col-md-12 col-sm-12" @*onmousedown="LoadDDLAvlBay(@itm.ProductID)"*@>
+                                    <div class="fields form-group">
+                                        <select class="form-control" id="ddlAvlBay_@itm.CompNo" name="AvlBay" disabled></select>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            { <div class="col-lg-12 col-md-12 col-sm-12" @*onmousedown="LoadDDLAvlBay(@itm.ProductID)"*@>
+                                <div class="fields form-group">
+                                    <select class="form-control" id="ddlAvlBay_@itm.CompNo" name="AvlBay"></select>
+
+                                </div>
+                            </div>
+                            }
+                            <script> LoadDDLAvlBay('#ddlAvlBay_@itm.CompNo', '@itm.ProductID', '@itm.BayID') </script>
+
+                        </td>
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+<div class="col-xs-offset-1 col-lg-2 col-md-2 form-container">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <input id="txtIdKey" type="text" @*value="@Model.RecordID"*@>
+        </div>
+    </form>
+</div>
+
+<div class="col-lg-2 text-right">
+    @foreach (tblLoadDetail itm in Model)
+    {
+        <a id="btnAssignBay" role="button" class="btn btn-primary" href="#" onclick="ReAllocatedBay('@itm.LoadID')">
+            <span class="glyphicon glyphicon-calendar"></span>Reallocate Bay
+        </a> break;
+    }
+
+</div>
+
+<div class="col-lg-2 btn-lg-2 text-left">
+    <a id="btnReallocateBay" role="button" class="btn btn-primary" href="#" onclick="RePrintFAN();">
+        <span class="glyphicon glyphicon-calendar"></span>RePrint FAN
+    </a>
+</div>
+<script>
+    Purpose = '@Model.FirstOrDefault().tblLoadMaster.PurposeID';
+</script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/BayReallocate_Index.js"></script>

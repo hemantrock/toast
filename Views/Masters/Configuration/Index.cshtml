@@ -1,0 +1,46 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblConfigMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    @*<div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddConfiguration()">
+            <span class="glyphicon glyphicon-plus"></span>NEW CONFIG VARIABLE
+        </a>
+    </div>*@
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Configuration Master</h3>
+        <table id="tblConfiguration" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">ID</th>
+                    <th>Parameter Group</th>
+                    <th>Parameter Name</th>
+                    <th>Parameter Description</th>
+                    <th>Parameter Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblConfigMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.UniqueID);">
+                        <td style="display:none;">@itm.UniqueID</td>
+                        <td>@itm.ParameterGroup</td>
+                        <td>@itm.ParameterName</td>
+                        <td>@itm.ParameterDesc</td>
+                        <td>@itm.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*<div id="jqxgrid" class="jqx-tbl-container">
+</div>*@	
+
+<script src="~/Scripts/PageJS/Masters/Configuration/Index.js"></script>

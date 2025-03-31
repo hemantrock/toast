@@ -1,0 +1,66 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblConfigMaster
+@{
+    ViewBag.Title = "Edit Configuration";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Configuration
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <input id="hdnIdKey" type="hidden" value="@Model.UniqueID">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PARAMETER GROUP</label>
+                        <input id="txtParameterGroup" name="ParameterGroup" type="text" placeholder="Parameter Group (<50 Chars)" class="form-control" value="@Model.ParameterGroup" disabled="disabled">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PARAMETER NAME</label>
+                        <input id="txtConfigurationName" name="ConfigurationName" type="text" placeholder="Parameter Name (3-30 Chars)" class="form-control" value="@Model.ParameterName" disabled="disabled">
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PARAMETER VALUE</label>
+                        @{
+                            string value = Model.Value;
+                            if (string.IsNullOrEmpty(Model.ListOfValues))
+                            {
+                                <input id="txtConfigurationValue" name="ConfigurationValue" type="text" autocomplete="off" placeholder="Configuration Value" class="form-control" value="@Model.Value">
+                            }
+                            else
+                            {
+                                <select id="txtConfigurationValue" name="ConfigurationValue" class="form-control">
+                                    @foreach (string item in Model.ListOfValues.Split(new char[] { ';' }).ToList())
+                                    {
+                                        <option value="@item" @(value == item ? "selected" : "")>@item</option>
+                                    }
+                                </select>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>PARAMETER DESCRIPTION</label>
+                        <input id="txtConfigurationDesc" name="ConfigurationDesc" type="text" placeholder="Parameter Description (3-50 Chars)" class="form-control" value="@Model.ParameterDesc" disabled="disabled">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateConfiguration();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Configuration/Configuration.js"></script>

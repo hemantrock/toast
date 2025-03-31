@@ -1,0 +1,82 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTruckBypass
+@{
+    ViewBag.Title = "Edit Truck Bypass";
+    Layout = null;
+    List<tblTruckMaster> ddlTrucks = ViewBag.ddlTrucks;
+    var BypassStartDate = (Model.StartTime != null ? Convert.ToDateTime(Model.StartTime).ToString("dd-MMM-yy HH:mm") : string.Empty);
+    var BypassEndDate = (Model.EndTime!=null?Convert.ToDateTime(Model.EndTime).ToString("dd-MMM-yy HH:mm"):string.Empty);
+}
+<h2 class="headingPage">
+    Edit Cards
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4" style="display:none;">
+                    <input id="hdnIdKey" type="hidden" value="@Model.UniqueID">
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="fields form-group">
+                        <label>TRUCK NUMBER</label>
+                        <select id="ddlTrucks" class="js-basic-single" data-placeholder="Select a Truck" name="TruckNumber" data-allow-clear="true" data-width="100%">
+                            @{
+                                if (Model.TruckID == 0)
+                                {
+                                    <option></option>
+                                }
+                                foreach (tblTruckMaster Trk in ddlTrucks)
+                                {
+                                    string strSelection = (Model.TruckID == Trk.TruckID ? "selected" : "");
+                                    <option @strSelection value="@Trk.TruckID">@(Trk.TruckNumber)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 ">
+                    <div class="fields form-group">
+                        <label>STAGE</label>
+                        <select class="form-control" id="ddlStage" name="stage" onchange="LoadBypassOptions()">
+                            @{
+                                <option @(Model.Stage == "R1" ? "selected" : "") value="R1">R1</option>
+                                <option @(Model.Stage == "R2" ? "selected" : "") value="R2">R2</option>
+                                <option @(Model.Stage == "R3" ? "selected" : "") value="R3">R3</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 ">
+                    <div class="fields form-group">
+                        <label>TYPE</label>
+                        <select class="form-control" id="ddlType" name="Type">
+                            <option @(Model.Type == "Biometric" ? "selected" : "") value="Biometric">Biometric</option>
+                            <option @(Model.Type == "VTS" ? "selected" : "") value="VTS">VTS/Geofencing</option>
+                            <option @(Model.Type == "EMLock" ? "selected" : "") value="EMLock">EMLock</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="fields form-group">
+                        <label>START DATE TIME</label>
+                        <input id="dtpBypassStartDate" name="BypassStartDate" type="text" placeholder="Bypass Start Date (dd-MMM-yyyy)" class="form-control" autocomplete="off" value="@BypassStartDate">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="fields form-group">
+                        <label>END DATE TIME</label>
+                        <input id="dtpBypassEndDate" name="BypassEndDate" type="text" placeholder="Bypass End Date (dd-MMM-yyyy)" class="form-control" autocomplete="off" value="@BypassEndDate">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTTBypass();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/TTBypass/TTBypass.js"></script>

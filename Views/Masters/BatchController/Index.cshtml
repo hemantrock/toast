@@ -1,0 +1,60 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblBatchController>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddBatchController()">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW BATCH CONTROLLER
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Batch Controller Master</h3>
+        <table id="tblBatchController" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>BCNo</th>
+                    <th>BCName</th>
+                    <th>BCMake</th>
+                    <th>Model</th>
+                    <th>Firmware</th>
+                    <th>LoopNo</th>
+                    <th>AddressID</th>
+                    <th>TotalArms</th>
+                    <th>LRC Name</th>               
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblBatchController itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.BCNo);">
+                        <td style="display:none;">@itm.BCNo</td>
+                        <td>@itm.BCNo</td>
+                        <td>@itm.BCName</td>
+                        <td>@(itm.tblBCMake==null?"":itm.tblBCMake.Make)</td>
+                        <td>@(itm.tblBCMake == null ? "" : itm.tblBCMake.Model)</td>
+                        <td>@(itm.tblBCMake == null ? "" : itm.tblBCMake.FirmwareVer)</td>
+                        <td>@itm.LoopNo</td>
+                        <td>@itm.SlaveID</td>
+                        <td>@itm.tblLoadingPointMasters.Count()</td>
+                        <td>&nbsp;</td>
+                        <td class="text-center"><span id="spanDelete_@itm.BCNo" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.BCNo"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>	
+
+
+<script src="~/Scripts/PageJS/Masters/BatchController/Index.js"></script>

@@ -1,0 +1,160 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadingPointMaster
+@{
+    ViewBag.Title = "Edit Bays";
+    Layout = null;
+    var batchList = ViewBag.batchList;
+    var ddlLoadDirs = ViewBag.ddlLoadDirs;
+    var ddlACUs = ViewBag.ddlACUs;
+    var ddlLoadPurpose = ViewBag.ddlLoadPurpose;
+    var ShowFlushing = (ViewBag.ShowFlushing == false ? "hide" : "");
+}
+
+<h2 class="headingPage">
+    Edit Loading Point
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Gantry No.</label>
+                    <input type="text" name="GantryNo" placeholder="Enter Gantry No (1-9)" id="txtGantryNo" value="@Model.tblBaysMaster.GantryNo" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Bay No.</label>
+                    <input type="text" class="form-control" placeholder="Enter Bay No (1-49)" id="txtBayNo" name="BayNo" value="@Model.BayID" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Loading Point No.</label>
+                    <input id="txtLoadingPoint" name="LoadingPoint" placeholder="Enter Loading Point No (1-99)" type="text" value="@Model.LoadingPointNo" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Arm No.</label>
+                    <select class="form-control" id="ddlArmNo" name="ArmNo" disabled>
+                        <option value=0>Select ARM No.</option>
+                        @if (Model.ArmNo == 1)
+                        {
+                            <option selected="selected" value=1>1</option>
+                            <option value=2>2</option>
+                        }
+                        else
+                        {
+                            <option value=1>1</option>
+                            <option selected="selected" value=2>2</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Batch Controller No.</label>
+                    <select class="form-control" id="ddlBcNo" name="BCNo" disabled>
+                        <option value="" selected="selected">Please Select BC No</option>
+                        @foreach (var data in batchList)
+                        {
+                            if (@Model.BCNumber == @data.BCNo)
+                            {
+                                <option value="@data.BCNo" selected="selected">@data.BCName</option>
+                            }
+                            else
+                            {
+                                <option value="@data.BCNo">@data.BCName</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Loading Type</label>
+                    <select class="form-control" id="ddlLoadingType" name="LoadingType">
+                        <option value="0" selected="selected">Select Loading Type</option>
+                        @foreach (var Dir in ddlLoadDirs)
+                        {
+                            if (Model.DirectionID == @Dir.UniqueID)
+                            {
+                                <option value="@Dir.UniqueID" selected="selected">@Dir.LoadDirection</option>
+                            }
+                            else
+                            {
+                                <option value="@Dir.UniqueID">@Dir.LoadDirection</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Loading Purpose</label>
+                    <select class="form-control" id="ddlLoadingPurpose" name="LoadingPurpose" disabled>
+                        <option value="0" selected="selected">Select Loading Purpose</option>
+                        @foreach (var Purp in ddlLoadPurpose)
+                        {
+                            if (Model.PurposeID == @Purp.UniqueID)
+                            {
+                                <option value="@Purp.UniqueID" selected="selected">@Purp.LoadPurposeDesc</option>
+                            }
+                            else
+                            {
+                                <option value="@Purp.UniqueID">@Purp.LoadPurposeDesc</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Remarks (if any)</label>
+                    <input id="txtRemarks" name="Remarks" placeholder="Enter LP disable Remarks" type="text" value="@Model.Remarks" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkLpEnable" onclick="AskBayReAllocation();" name="LpEnable" type="checkbox" @(Model.LPEnable == true ? "checked" : "") class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Loading Point Enabled" disabled>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field @ShowFlushing">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkToDoFlushing" name="ToDoFlushing" type="checkbox" checked="@(Model.ToDoFlushing)" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Flushing Enabled on LP" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkLAPSBypass" name="LAPSBypass" type="checkbox" checked="@(Model.IsLAPSBypassed)" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Arm Position Sensor Bypass" disabled>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateBays();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/LPMaster/LPMaster.js"></script>
+<script>
+    $(document).ready(function () {
+        @*LoadDDLACUNo('@Model.AcuID');*@
+        @*LoadDDLProduct($('#ddlProduct'),'@Model.ProductID');*@
+        @*LoadDDLLoadingType(@Model.DirectionID);*@
+        @*LoadDDLArmNo(@Model.ArmNo);*@
+    });
+</script>

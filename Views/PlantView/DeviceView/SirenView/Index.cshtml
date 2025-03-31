@@ -1,0 +1,126 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Sirens View";
+    Layout = null;
+}
+<style>
+    table.app-tbl tbody tr td {
+        padding: 20px 5px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Siren View</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="siren-container col-lg-12 m-t-40">
+        @{
+            foreach (tblDeviceMaster Device in Model)
+            {
+                string DevName = Device.tblDeviceType.DevicePrefix + string.Format("{0:00}", Device.TypeSeqNo);
+                <div class="device-box pressure-transmeter-wrapper">
+                    <div class="device-header">
+                        <span class="h-col h-full" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                    </div>
+                    <div class="device-block">
+                        <div class="siren-block @(DevName + "_ACTIVE_IMG")">
+                            <span class="maintainence-mode-icon @(DevName + "_MAINT")"></span>
+                            <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(DevName + "_LOCREM")"></span>
+                            <span style="display:none" title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(DevName + "_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Siren', 'Device: @DevName', '@(DevName + "_AUTOMAN")', '@(DevName + "_LOCREM")', 'TAG_AUTOMAN' , 'SirenView', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl" width="50%">Status</td>
+                                    <td class="tbl-val" width="50%">
+                                        <span class="circle-cont-sm">
+                                            <span class="tooltips @(DevName + "_ACTIVE")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Disaster</td>
+                                    <td class="tbl-val">
+                                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Disaster Mode','Siren: @DevName',this, '@(DevName+"_DISASTER")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <input id="toggle-maintainence-mode" class="on-off-btn @(DevName+"_DISASTER")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Fire</td>
+                                    <td class="tbl-val">
+                                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Emergency Mode','Siren: @DevName',this, '@(DevName+"_EMERGENCY")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <input id="toggle-maintainence-mode" class="on-off-btn @(DevName+"_EMERGENCY")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Test</td>
+                                    <td class="tbl-val">
+                                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to Mock Drill Mode','Siren: @DevName',this, '@(DevName+"_MOCK_DRILL")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <input id="toggle-maintainence-mode" class="on-off-btn @(DevName+"_MOCK_DRILL")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">All Clear</td>
+                                    <td class="tbl-val">
+                                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Siren to All Clear Mode','Siren: @DevName',this, '@(DevName+"_RESET")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <input id="toggle-maintainence-mode" class="on-off-btn @(DevName+"_ALL_CLEAR") @(DevName+"_RESET")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                        </div>
+                                    </td>
+                                    @*<td class="rel padd-20">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(DevName+"_RESET") tooltips center-align" onclick="SetProcessValue('Reset ESD','Reset ESD from TOAST',this, 'ESD_RESET', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">Reset</a>
+                                        </td>*@
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            }
+        }
+        @*      <div class="device-box pressure-transmeter-wrapper">*@
+        <div class="m-t-10">
+            <div class="col-lg-4">
+                <table class="table-striped app-tbl" style="margin-left: 30px;">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="2" style="font-size: 22px; background-color: crimson;">SIREN CODES</th></tr>
+                        <tr>
+                            <th class="text-center bg-color" style="width: 20%; font-size: 20px;">Event</th>
+                            <th class="text-center bg-color" style="width: 80%; font-size: 20px;">Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Fire Siren</td>
+                            <td class=""><span class="">Wailing Siren for 2 Mins</span></td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Disaster Siren</td>
+                            <td class=""><span class="">Wailing Siren for 2 Mins + 1 Min Gap + Wailing Siren for 2 Mins + 1 Min Gap + Wailing Siren for 2 Mins</span></td>
+                        </tr>
+                        <tr>
+                            <td class="bold">All Clear Siren</td>
+                            <td class=""><span class="">Straight run Siren for 2 Mins atleast once a week.</span></td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Test Siren</td>
+                            <td class=""><span class="">Straight run Siren for 2 Mins atleast once a week.</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/DeviceView/SirenView/Index.js"></script>

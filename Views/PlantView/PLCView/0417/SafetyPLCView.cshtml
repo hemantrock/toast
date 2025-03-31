@@ -1,0 +1,104 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblPLCConfig>
+@{
+    ViewBag.Title = "Plant View - PLC View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Safety PLC View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing">
+        <div class="col-lg-12 plc-box" style="width: 1120px;">
+            @{
+                List<tblPLCConfig> lstController = Model.Where(x => x.RowNo==0 && x.MasterItemID == null).ToList();
+                for (int i = 0; i < lstController.Count; i++)
+                {
+                    string Prefix = lstController[i].TagPrefix;
+                    <div class="col-lg-6 plc-block plc-block-@(i + 1)">
+                        @{
+                            List<tblPLCConfig> lstRHCM = Model.Where(x => (x.MasterItemID ?? 0) == lstController[i].UniqueID || x.UniqueID == lstController[i].UniqueID).OrderBy(x => x.SeqNo).ToList();
+                            for (int j = 0; j < lstRHCM.Count(); j++)
+                            {
+                                List<string> lstDevTags = lstRHCM[j].TagPrefix.Split(',').ToList();
+                                List<string> lstDevClass = lstRHCM[j].ClassName.Split(',').ToList();
+                                string RHCMPrefix = lstRHCM[j].TagPrefix.Replace(",", " "); // RHCM -> Rack & Host Communication Modules
+                                <div class="item-block tooltips @lstRHCM[j].ClassName.Replace(","," ")" title="@(lstRHCM[j].ItemName+ ": " + lstRHCM[j].ItemDesc)">
+                                    <span class="plc-lbl">@lstRHCM[j].ItemName</span>
+                                    <div class="plc-bg @lstDevTags[0] @lstDevClass[0]" style="background-size: contain;">
+                                        <table>
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                @if (lstDevClass[0].Contains("cpuht"))
+                                                {
+                                                    <tr>
+                                                        <td width="20%" class="circle-cont-xsm"><span class="PLC_RING"></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="20%" class="circle-cont-xsm"><span class="PLC_RED"></span></td>
+                                                    </tr>
+                                                }
+                                                @for (int d = 1; d < lstDevTags.Count; d++)
+                                                {
+
+                                                    <tr>
+                                                        @{
+                                                            string cls = "";
+                                                            if (d + 1 <= lstDevClass.Count) { cls = lstDevClass[d]; }
+                                                            <td width="20%" class="circle-cont-xsm"><span class="@lstDevTags[d] @cls"></span></td>
+                                                        }
+                                                    </tr>
+                                                            }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                                            }
+                        }
+                        <span class="plc-type @Prefix"></span>
+                    </div>
+                                                            }
+            }
+
+            <div class="row">
+                @{
+                    List<short> Nodes = Model.Where(x => x.RowNo != 0).Select(x => x.RowNo ?? 0).Distinct().OrderBy(x => x).ToList();
+                    if (Nodes != null && Nodes.Count() > 0)
+                    {
+                        int iNode = 0;
+                        foreach (short NodeNo in Nodes)
+                        {
+                            int itop = 45 + iNode * 5;
+                            <div class="row">
+                                <div class="plc-block-rack line-@(iNode+1)" style="top:@(itop)px">
+                                    @{
+                                        List<tblPLCConfig> Cards = Model.Where(x => (x.RowNo) == NodeNo).OrderBy(x => x.SeqNo).ToList();
+                                        for (int l = 0; l < Cards.Count(); l++)
+                                        {
+                                            string IOCardPrefix = String.Format(@Cards[l].TagPrefix, (iNode + 1).ToString("00"), (l + 1).ToString("00"));
+                                            <div class="item-center-block tooltips" title="@(Cards[l].ItemName+ ": " + Cards[l].ItemDesc)"><span class="plc-lbl">@Cards[l].ItemName</span><span class="rack-bg @(IOCardPrefix+"_ERR") @Cards[l].ClassName"></span></div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                                                iNode = iNode + 1;
+                                            }
+                                        }
+                                        <div style="height:130px"></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="~/Scripts/PageJS/PlantView/PLCView/Index.js"></script>

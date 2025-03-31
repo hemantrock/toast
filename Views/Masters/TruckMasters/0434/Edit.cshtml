@@ -1,0 +1,270 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTruckMaster
+@{
+    ViewBag.Title = "Edit Trucks";
+    List<tblLoadDirection> ddlLoadDirs = ViewBag.ddlLoadDirs;
+    List<tblTransporter> ddlTransporters = ViewBag.ddlTransporters;
+    List<tblTruckTypeMaster> ddlTypes = ViewBag.ddlTypes;
+    bool DisAllowCardEdit = !(ViewBag.AllowCardEdit);
+    string strDisabled = ((DisAllowCardEdit && Model.CardID != null)?"disabled":"");
+    tblACSUser objDriver = new tblACSUser();
+    string DisplayName = "";
+    if (Model.tblACSUsers.FirstOrDefault() != null)
+    {
+        objDriver = Model.tblACSUsers.FirstOrDefault();
+        DisplayName = (objDriver.UserName ?? "").Trim() + " (" + (objDriver.ReferenceCode ?? "").ToString() + ")";
+        //ddlTransporters = ddlTransporters.OrderBy(x => x.TransporterDesc).ToList();
+    }
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Trucks
+</h2>
+<div class="row">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="col-lg-12 col-md-12 form-container">
+            <div class="col-lg-3 col-md-3 col-sm-3" style="display:none;">
+                <input id="hdnIdKey" type="hidden" value="@Model.TruckID">
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input type="text" name="TruckNumber" id="txtTruckNumber" class="form-control" value="@Model.TruckNumber">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>No of Compartments</label>
+                    <input id="txtCompartments" name="Compartments" type="text" placeholder="No of Compartments (1-8)" class="form-control" value="@Model.TotalNoOfComp" onchange="changeCompartmentNo('#tblTruckDetails')">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Printed Tare Weight (kg)</label>
+                    <input id="txtTareWeight" name="TareWeight" type="text" placeholder="Printed Tare Weight" class="form-control" value="@Model.PrintedTareWeight">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Transporter</label>
+                    <select id="ddlTransporters" class="js-basic-single" data-placeholder="Select a Transporter" data-allow-clear="true">
+                        @{
+                            if (Model.TransporterID == null)
+                            {
+                                <option></option>
+                            }
+                            foreach (tblTransporter Tptr in ddlTransporters)
+                            {
+                                string strSelection = (Model.TransporterID == Tptr.UniqueID ? "selected" : "");
+                                <option @strSelection value="@Tptr.UniqueID">@(Tptr.TransporterDesc) - @(Tptr.TransporterCode)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 form-container">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Average Tare Weight (kg) (UPDATES AFTER NEW LOAD RECEIPT)</label>
+                    <input id="txtAvgTareWeight" name="AvgTareWeight" type="text" placeholder="Rolling Average Tare Weight" class="form-control" value="@(Model.TareWeightAvg??0)" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Loading Type</label>
+                    <select class="form-control" id="ddlLoadingType" name="ddlLoadingType">
+                        <option value="0">Select Loading Type</option>
+                        @foreach (tblLoadDirection Dir in ddlLoadDirs)
+                        {
+                            if (Dir.UniqueID != Model.LoadDirectionID)
+                            {
+                                <option value="@Dir.UniqueID">@Dir.LoadDirection</option>
+                            }
+                            else
+                            {
+                                <option value="@Dir.UniqueID" selected="selected">@Dir.LoadDirection</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="fields form-group">
+                <label>Explosive License No</label>
+                <input id="txtExplosiveLisc" name="ExplosiveLisc" type="text" placeholder="Explosive License No" class="form-control" value="@Model.ExplosiveLisc">
+            </div>
+        </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Explosive License Exp Date</label>
+                    <input id="dtpExplosiveLiscExpDate" name="ExplosiveLiscExpDate" type="text" placeholder="License Exp Date" value="@(Model.ExplosiveLiscExpDate == null ? "" : Model.ExplosiveLiscExpDate.Value.ToString("dd-MMM-yy"))" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="fields form-group">
+                <label>Calibration Certificate No</label>
+                <input id="txtCalibrationCertNo" name="CalibrationCertNo" value="@Model.CalibrationLiscNo" type="text" placeholder="Calibration Certificate No" class="form-control">
+            </div>
+        </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Calibration Exp Date</label>
+                    <input id="dtpCalibrationLiscExpDate" name="CalibrationLiscExpDate" value="@(Model.CalibrationExpDate == null ? "" : Model.CalibrationExpDate.Value.ToString("dd-MMM-yy"))" type="text" placeholder="Calibration Exp Date" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>License Exp Date</label>
+                    <input id="dtpLicenseExpiryDate" name="LicenseExpiryDate" value="@(Model.LicenseExpiryDate == null ? "" : Model.LicenseExpiryDate.Value.ToString("dd-MMM-yy"))" type="text" placeholder="License Exp Date" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="fields form-group">
+                <label>Truck Registartion No</label>
+                <input id="txtRegistrationNo" name="RegistrationNo" type="text" value="@Model.RegistrationNo" placeholder="Truck Registration No" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="fields form-group">
+                <label>Truck Registartion Date</label>
+                <input id="dtpRegistrationDate" name="RegistrationDate" type="text" value="@(Model.RegistrationDate == null ? "" : Model.RegistrationDate.Value.ToString("dd-MMM-yyyy"))" placeholder="Registration Date" class="form-control">
+            </div>
+        </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Max Weight</label>
+                    <input id="txtMaxWeight" name="MaxWeight" type="text" value="@Model.MaxWeight" placeholder="Max Weight" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="fields form-group">
+                <label>Max Volume</label>
+                <input id="txtMaxVolume" name="MaxVolume" type="text" value="@Model.MaxVolume" placeholder="Max Volume" class="form-control">
+            </div>
+        </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Truck Type</label>
+                    <select class="form-control" id="ddlTruckType" name="TruckType">
+                        <option value="0">Select Truck Type</option>
+                        @foreach (tblTruckTypeMaster Type in ddlTypes)
+                        {
+                            if (Type.TypeID != Model.TruckTypeID)
+                            {
+                                <option value="@Type.TypeID">@Type.TypeDesc</option>
+                            }
+                            else
+                            {
+                                <option value="@Type.TypeID" selected="selected">@Type.TypeDesc</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group ui-widget">
+                    <label>Card ID</label>
+                    <input id="txtCardID" name="CardID" type="text" value="@Convert.ToString(Model.CardID==null?"":Model.tblCard.CardNumber.ToString())" data-key-value="@Convert.ToString(Model.CardID??0)" placeholder="Card ID" @strDisabled class="form-control truck-card-edit-input-width">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group ui-widget">
+                    <label>RF EPC ID</label>
+                    <input id="txtRFID" name="RFID" type="text" placeholder="RFID" value="@(Model.tblRFIDMaster!=null?Model.tblRFIDMaster.EPC_Code:"")" data-key-value="@Model.RFID" class="form-control" @strDisabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>CCOE Weight (Kg)</label>
+                    <input id="txtCCOEWeight" name="CCOEWeight" type="text" value="@Model.CCOEWeight" placeholder="CCOE Weight" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+            <div class="input input-group">
+                <span class="input-group-addon">
+                    <input id="chkIsBlackListed" name="IsBlackListed" checked="@(Model.IsBlackListed??false)" type="checkbox" class="form-control">
+                </span>
+                <input type="text" class="form-control" value="Is BlackListed" disabled>
+            </div>
+        </div>*@
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group ui-widget">
+                    <label>TT Driver</label>
+                    <input id="txtACSUserID" disabled name="UserID" type="text" value="@DisplayName" data-key-value="@Convert.ToString(objDriver.UniqueID)" placeholder="Driver Name" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="checkbox checkbox-align">
+                    <label>
+                        <input id="chkIsBlackListed" name="IsBlackListed" checked="@(Model.IsBlackListed??false)" type="checkbox" class="check">  Is BlackListed
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 form-container">
+            <table id="tblTruckDetails" class="table">
+                <thead>
+                    <tr>
+                        <th style="display:none;">Id</th>
+                        <th>COMPARTMENT No.</th>
+                        <th>CAPACITY</th>
+                        @*<th>PRODUCT</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 1; i <= 8; i++)
+                        {
+                            tblTruckDetail obj = Model.tblTruckDetails.Where(x => x.CompNo == i).SingleOrDefault();
+                            if (obj != null)
+                            {
+                                <tr id="row_@i" style="display:none;">
+                                    <td style="display:none;">@i</td>
+                                    <td><input id="txtCompartmentNo_@i" name="compartmentno" readonly type="text" placeholder="Compartment No" class="form-control" value="@i"></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><input id="txtCapacity_@i" name="Capacity" type="text" placeholder="Capacity" class="form-control" value="@(obj.Capacity??0)"></div></td>
+                                    @*<td><div class="fields form-group" style="margin: 0;"><select id="ddlProduct_@i" name="ddlProduct" class="form-control"></select></div></td>*@
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="row_@i" style="display:none;">
+                                    <td style="display:none;">@i</td>
+                                    <td><input id="txtCompartmentNo_@i" name="compartmentno" readonly type="text" placeholder="Compartment No" class="form-control" value="@i"></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><input id="txtCapacity_@i" name="Capacity" type="text" placeholder="Capacity" class="form-control" value=""></div></td>
+                                    @*<td><div class="fields form-group" style="margin: 0;"><select id="ddlProduct_@i" name="ddlProduct" class="form-control"></select></div></td>*@
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6" id="dvTruckWghtHistory">
+
+        </div>
+    </form>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTruckMasters();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/TruckMasters/Trucks.js"></script>
+<script>
+    $(document).ready(function () {
+
+        AutoComplete($("#txtCardID"), "Cards", "TruckMaster");
+        AutoComplete($("#txtACSUserID"), "TTDriver", "TruckMaster");
+        AutoComplete($("#txtRFID"), "RFID", "TruckMaster");
+
+        changeCompartmentNo('#tblTruckDetails');
+        GetTruckWghtHistory('@(Model.TruckID)');
+
+    });
+</script>

@@ -1,0 +1,238 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblPump
+@{
+    ViewBag.Title = "Plant View - Pump View";
+    Layout = null;
+    string PumpName = Model.EquipmentName;
+    List<tblPump> SameGrpPumps = ViewBag.SameGrpPumps;
+    string servicecls = "";
+    if (Model.tblPumpService.Service.ToUpper().Contains("JOCKEY"))
+    {
+        servicecls = "jcy";
+    }
+    else if (Model.tblPumpService.Service.ToUpper().Contains("FIRE"))
+    {
+        servicecls = "fwp";
+    }
+    else
+    {
+        servicecls = Model.tblPumpService.TagPrefix.ToLower();
+    }
+    string PumpId;
+    List<tblPumpService> PumpsServices = ViewBag.PumpsServices;
+    PumpId = Model.TagPrefix;
+}
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 550px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@Model.EquipmentName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@Model.tblProduct.ProductName</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                @{
+                    string strSameGrpPumpsPrtyTags = String.Join(",", SameGrpPumps.Select(x => (x.TagPrefix + "_PRIORITY_DDL")).ToList());
+                }
+                <input type="hidden" id="SameGrpPumpsPrtyTags" value="@(strSameGrpPumpsPrtyTags)" />
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row">
+                        <a class="push-btn-02 pump-start-btn @(PumpId+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PumpId+"_START")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                        <a class="push-btn-02 pump-stop-btn @(PumpId+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PumpId+"_STOP")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump">
+                                <span class="maintainence-mode-icon @(PumpId+"_MAINT")"></span>
+                                <div class="machine-wrapper pump-modal-img">
+                                    <div class="">
+                                        <div title="No Feedback" data-tooltip-attr="PMP*" class="tooltips pump-header @servicecls @(PumpId+"_RUN_IMG") @(PumpId+"_TRIP_IMG") @(PumpId+"_FAIL_IMG")"></div>
+                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips @(Model.tblPumpService.TagPrefix.ToLower()+"-ctrl") control-icon  @(PumpId+"_LOCREM")" onclick="OpenLocRemModal('@PumpName', 'PUMP_LOCREM', '@(PumpId+"_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips @(Model.tblPumpService.TagPrefix.ToLower()+"-ctrl") control-icon @(PumpId+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @Model.EquipmentName', '@(PumpId+"_AUTOMAN")', '@(PumpId+"_LOCREM")', 'TAG_AUTOMAN','@Model.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        @if (Model.PTAvailable)
+                                        {
+                                            <span class="percentage-fill-val get-hover" title="Please click to view trend" onclick="OpenChartModal('@(PumpId + "_PT")', '@("PumpsView" + Model.UniqueID.ToString("0#"))'); cancelBubble(event);">
+                                                <span class="pt-pump-val @(PumpId + "_PT")"></span><br />Kg/cm²
+                                            </span>
+                                        }
+                                        <span class="sine-wave tooltips @(PumpId+"_ON_VFD")" title="Pump on VFD"></span>
+                                        <a class="push-btn-01 set @(PumpId+"_RESET_FAIL") tooltips" title="Reset Fault / Fail / Trip" onclick="SetProcessValue('Reset Pump Fail','Reset Fault/Fail/Trip: @PumpName',this, '@(PumpId+"_RESET_FAIL")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+                            <table class="detail-tbl">
+                                <tbody>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl"><span class="">Running Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="pump-househeader-info-val @(PumpId+"_RUN_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Maintainence Mode</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set PUMP Maintainence Mode','Set Pump to Maintainence Mode: @(PumpId)',this, '@(PumpId+"_MAINT")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <input id="toggle-maintainence-mode" class="on-off-btn @(PumpId+"_MAINT") " checked type="checkbox" data-opcvalue="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Local Permisive</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set PUMP Local Permisive','PUMP Local Permisive: @(PumpId)',this, '@(PumpId+"_LOC_PERM")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <input id="toggle-local-permissive" class="on-off-btn @(PumpId+"_LOC_PERM")" checked type="checkbox" data-opcvalue="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl" colspan="2">
+                                            <span class="v-align-sub">Priority: &nbsp;</span>
+                                            <select id="ddl@(PumpId)" class="prty_@servicecls @(PumpId)_PRIORITY_DDL">
+                                                <option value=0>-Select Priority-</option>
+                                                <option value=1>Main-01</option>
+                                                <option value=2>Main-02</option>
+                                                <option value=4>Standby-01</option>
+                                                <option value=8>Standby-02</option>
+                                            </select>
+                                            <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriorityDDL('@(PumpId+"_PRIORITY_DDL")','@servicecls','ddl@(PumpId)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                            @*<input type="number" min=1 readonly class="editable-input @(PumpId+"_PRIORITY")" ondblclick="this.readOnly='';"
+                                                       style="border: 0px; width: 65%;">
+                                                <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriority('@(PumpId+"_PRIORITY")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                            @*<span class="pump-househeader-info-val @(PumpId+"_PRIORITY")"></span>*@
+                                        </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl"></td>
+                                        <td class="detail-tbl-val text-center"></td>
+
+                                    </tr>
+                                    <tr class="odd" style="display:none">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="">Set Point<span class="unit-lbl"> (Kg/cm²)</span></span>
+                                        </td>
+                                        <td class="detail-tbl-val @(PumpId+"_SP_PT") clickable" style="text-align: center; font-weight: bold;" onclick="OpenSetPointModal('@PumpId','@(PumpId+"_SP_PT")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]');"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-12 pump-view-detail-container">
+                        <table class="detail-tbl">
+                            <tbody>
+                                <tr class="odd">
+                                    <td class="detail-tbl-lbl" title="Fail Feedback from Pump"><span>Fail Feedback</span></td>
+                                    <td class="detail-tbl-val">
+                                        <span title="Fail Feedback from Pump" class="alert-cont-md">
+                                            <span class="@(PumpId+"_FAIL_FB")"></span>
+                                        </span>
+                                    </td>
+                                    <td class="detail-tbl-lbl padd-l-15" title="Trip Feedback from Pump">Trip Feedback</td>
+                                    <td class="detail-tbl-val">
+
+                                        <span title="Trip Feedback from Pump" class="@(PumpId+"_TRIP_FB")"></span>
+                                    </td>
+                                </tr>
+                                @*<tr class="even">
+                                        <td class="detail-tbl-lbl" title="Local Control Station Stop">LCS Stop</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(PumpId+"_LCS_STOP")" title="Local Control Station Stop"></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl padd-l-15" title="Local Push Button Station Stop">LPB Stop</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(PumpId+"_LPB_STOP")" title="Local Push Button Station Stop"></span>
+                                            </span>
+                                        </td>
+                                    </tr>*@
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-lg-12 no-padd pump-run-hr-block">
+                        <div class="pump-timer-block">
+
+                            <div class="col-lg-5 no-padd-left">
+                                <label>Run Hours: &nbsp;</label>
+                                <span class="pump-timer @(PumpId + "_RUN_HRS")">
+                                    <span class="@(PumpId + "_RUN_HRS_HH")"></span>:<span class="@(PumpId + "_RUN_HRS_MM")"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <a class="push-btn pump-timer-reset-btn" href="javascript:void(0);" onclick="PumpRunHrsReset('@PumpName',this, '@(PumpId + "_RESET_RUN_HRS")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')">Reset</a>
+                            </div>
+                            <div class="col-lg-5 no-padd-left">
+                                <hr class="devider vertical" />
+                                <select id="ddlService" class="form-control">
+                                    @foreach (tblPumpService data in (PumpsServices ?? Enumerable.Empty<tblPumpService>()))
+                                    {
+                                        if (data.Service.ToUpper() == Model.tblPumpService.Service.ToUpper())
+                                        {
+                                            <option value="@data.UniqueID" selected>@data.Service</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@data.UniqueID">@data.Service</option>
+                                        }
+                                    }
+                                </select>
+
+                                <a class="push-btn set" href="javascript:void(0);" onclick="SetPumpService('@Model.UniqueID','@Session[clsConstants.UserID]')" data-opcvalue="">SET</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+
+    //$('[data-tooltip-attr]').on('mouseover', function () {
+    //    var classes = $(this).attr("class");
+    //    var val = $(this).attr('data-tooltip-attr').toLowerCase();
+    //    var cl = [];
+    //    if (classes != null && classes != 'undefined' && classes.length > 0 && val != undefined) {
+    //        cl = classes.split(" ");
+    //        for (var i = 0; i < cl.length; i++) {
+    //            if (cl[i].indexOf(val) >= 0) {
+    //                
+    //                $(this).tooltipster('content', tooltipArr[0][cl[i]]);
+    //                console.log('Class: ' + val);
+    //            }
+    //        }
+    //    }
+    //if ($(this).hasClass('automan_new_true')) {
+    //    console.log('automan_new_true');
+
+
+    //} else if ($(this).hasClass('automan_new_false')) {
+    //    console.log('automan_new_false');
+    //    $(this).tooltipster('content', tooltipArr[0]['automan_new_false']);
+    //}
+
+    //});
+
+</script>
+
+

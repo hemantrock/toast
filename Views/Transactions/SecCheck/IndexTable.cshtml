@@ -1,0 +1,27 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    string strStage = ViewBag.Parameter;
+}
+<h3 class="grid-header" style="color: black;font-size: 22px;">Security Check-@strStage</h3>
+<table id="tblSecCheck" class="table">
+    <thead>
+        <tr>
+            <th style="display:none;">ID</th>
+            <th>Truck Number</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (tblLoadMaster itm in Model)
+        {
+            <tr class="clickable" ondblclick="AddEditRecord(@itm.LoadID);">
+                <td style="display:none;">@itm.LoadID</td>
+                <td>@itm.tblTruckMaster.TruckNumber</td>
+                <td>@itm.tblTruckStatu.TruckStatusDesc</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,96 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTankDataArchive>
+@{
+    Layout = null;
+}
+<div class="col-lg-12" style="margin-top: -15px;">
+    <h3 class="grid-header">TANK DETAILS</h3>
+    <table id="tblTanks" class="table">
+        <thead>
+            <tr>
+                <th style="display:none;">TankId</th>
+                <th>Post</th>
+                <th>Dip DateTime</th>
+                <th>Tank Name</th>
+                <th>SAP Tank No</th>
+                <th>Product Name</th>
+                <th>Tank Mode</th>
+                <th>Pri.Level</th>
+                <th>Sec.Level</th>
+                <th>Obs. Density</th>
+                <th>Amb Temp.</th>
+                <th>Matl.Temp.</th>
+                <th>Sediment</th>
+                <th>Water Level (mm)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblTankDataArchive itm in Model)
+            {
+            <tr>
+                <td style="display:none;">@itm.TankID</td>
+                <td><input type="checkbox" name="chkTank" id="@itm.TankID" tnkName="@itm.tblTank.SAPTankNo" data-datetime="@itm.DataTimeStamp.ToString("dd-MMM-yyyy HH:mm:ss")"></td>
+                <td>@itm.DataTimeStamp.ToString("dd-MMM HH:mm")</td>
+                <td>@itm.tblTank.TankName</td>
+                <td>@itm.tblTank.SAPTankNo</td>
+                <td>@itm.tblTank.tblProduct.ProductName</td>
+                <td>@(itm.tblTanksMode != null ? itm.tblTanksMode.ModeDesc : "")</td>
+                <td>@itm.ProductLevel</td>
+                <td>@itm.SecondaryLevel</td>
+                <td>@itm.DensityAmb</td>
+                <td>@(itm.TempAmb ?? itm.TempProduct)</td>
+                <td>@itm.TempProduct</td>
+                <td>@itm.BaseSedimentWater</td>
+                <td>@itm.FreeWaterLevel</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="ManualPostTankData();"><span class="glyphicon glyphicon-floppy-disk"></span>POST</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script>
+    var oTable;
+
+    $(document).ready(function () {
+
+        $("#confirmOK").unbind('click');
+        $("#confirmOK").click(function () {
+            $(".modal-backdrop").slideUp('slow');
+            OpenTankManualPostMenu();
+            $('#cancelModal').modal('hide');
+        });
+
+        oTable = $('#tblTanks').dataTable({
+            "iDisplayLength": iGblNoRows-3,
+            "bLengthChange": false,
+            "bFilter": true,
+            "bPaginate": false,//true
+            "bSort": false,
+            "bInfo": true,
+            "aoColumns":
+                [
+                    { sWidth: "0%" },                               //TankId
+                    { sWidth: "5%", sClass: 'text-center' },        //POST
+                    { sWidth: "8%" },                               //DATE TIME
+                    { sWidth: "7%" },                               //TANK NAME
+                    { sWidth: "7%" },                               //SAP TANK NO
+                    { sWidth: "10%" },                              //PRODUCT NAME
+                    { sWidth: "10%" },                              //TANK MODE
+                    { sWidth: "6%" },                               //PRI.LEVEL
+                    { sWidth: "6%" },                               //SEC.LEVEL
+                    { sWidth: "6%" },                               //DENSITY
+                    { sWidth: "7%" },                               //TEMP
+                    { sWidth: "6%" },                               //MATL.TEMP.
+                    { sWidth: "6%" },                               //SEDIMENT WATER
+                    { sWidth: "8%" },                               //FREE WATER
+                ],
+            "bAutoWidth": false,
+        });
+    });
+</script>
+<script src="~/Scripts/PageJS/TFMS/TankManualPost/TankData.js"></script>

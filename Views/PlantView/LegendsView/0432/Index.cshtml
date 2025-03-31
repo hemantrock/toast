@@ -1,0 +1,762 @@
+﻿@using TOAST.Data.Model;
+@model List<tblTagMaster>
+@{
+    ViewBag.Title = "Plant View - Legends View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Legend</h3>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 content-top-spacing legend-wrapper">
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box remote-block">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Mode and Controls
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-sm-2 remote-item">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-local"></span>
+                        </div>
+                        <div class="legend-heading">Local</div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 remote-item">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-remote"></span>
+                        </div>
+                        <div class="legend-heading">Remote</div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 remote-item">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-stop"></span>
+                        </div>
+                        <div class="legend-heading">Stop-MOV</div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 remote-item">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-auto"></span>
+                        </div>
+                        <div class="legend-heading">Auto</div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 remote-item">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-manual"></span>
+                        </div>
+                        <div class="legend-heading">Manual</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box firewater-pump">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Fire Water Pump
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-firewater-pump-stop"></span>
+                        </div>
+                        <div class="legend-heading">Fail/Stop Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-firewater-pump-run"></span>
+                        </div>
+                        <div class="legend-heading">Run Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-firewater-pump-maint"></span>
+                        </div>
+                        <div class="legend-heading">Maint Mode</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-firewater-pump-trip"></span>
+                        </div>
+                        <div class="legend-heading">Trip Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    MOVS
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-mov-open"></span>
+                        </div>
+                        <div class="legend-heading">Open Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-mov-close"></span>
+                        </div>
+                        <div class="legend-heading">Close Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-mov-alarm"></span>
+                        </div>
+                        <div class="legend-heading">Genral Alarm</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-mov-no-feedback"></span>
+                        </div>
+                        <div class="legend-heading">No Fdbk</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box legend-pump-wrapper">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Pumps
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-pump-header-stop"></span>
+                        </div>
+                        <div class="legend-heading">Stop</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-pump-header-run"></span>
+                        </div>
+                        <div class="legend-heading">Run Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-pump-header-trip"></span>
+                        </div>
+                        <div class="legend-heading">Trip Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-pump-header-fail"></span>
+                        </div>
+                        <div class="legend-heading">Fail Fdbk</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    DG
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dgstop"></span>
+                        </div>
+                        <div class="legend-heading">Stop</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dgrun"></span>
+                        </div>
+                        <div class="legend-heading">Run Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dgtrip"></span>
+                        </div>
+                        <div class="legend-heading">Trip Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dgfail"></span>
+                        </div>
+                        <div class="legend-heading">Fail Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Others
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-lamp-true"></span>
+                        </div>
+                        <div class="legend-heading">Lamp On</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img lamp-off">
+                            <span class="legend-lamp-false"></span>
+                        </div>
+                        <div class="legend-heading">Lamp-off</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-ethernet-green"></span>
+                        </div>
+                        <div class="legend-heading">Eth-OK</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-ethernet-red"></span>
+                        </div>
+                        <div class="legend-heading">Eth-Fault</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="legend-main-box">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Alerts
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="alert_true"></span>
+                        </div>
+                        <div class="legend-heading">Alarm/Danger</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="alert_false"></span>
+                        </div>
+                        <div class="legend-heading">Healthy/Safe</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="alert_bad"></span>
+                        </div>
+                        <div class="legend-heading">No Signal</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 ">
+            <div class="legend-main-box">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Status
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="status_true"></span>
+                        </div>
+                        <div class="legend-heading">Feedback Available</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="status_false"></span>
+                        </div>
+                        <div class="legend-heading">No Feedback</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="circle-cont">
+                                <span class="status_bad"></span>
+                            </span>
+                        </div>
+                        <div class="legend-heading">No Signal</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-lg-3 col-md-3 col-sm-3 ">
+            <div class="legend-main-box">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    PNEUMATIC VALVES
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-bview-default"></span>
+                        </div>
+                        <div class="legend-heading">No Fdbk</div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-bview-open"></span>
+                        </div>
+                        <div class="legend-heading">Close Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-bview-cls"></span>
+                        </div>
+                        <div class="legend-heading">Open Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3 ">
+            <div class="legend-main-box fire-engine">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Fire Engine
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="oil-pressure"></span>
+                        </div>
+                        <div class="legend-heading">Lube Press Low</div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="temp-high"></span>
+                        </div>
+                        <div class="legend-heading">Temp High</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="overspeed"></span>
+                        </div>
+                        <div class="legend-heading">Over Speed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box rosov">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    ROSOVs
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-rosov-nofdbk"></span>
+                        </div>
+                        <div class="legend-heading">No Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-rosov-cls"></span>
+                        </div>
+                        <div class="legend-heading">Close Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-rosov-open"></span>
+                        </div>
+                        <div class="legend-heading">Open Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-rosov-alarm"></span>
+                        </div>
+                        <div class="legend-heading">Alarm Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box dbbv">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    DBBVs
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dbbv-bad"></span>
+                        </div>
+                        <div class="legend-heading">No Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dbbv-cls"></span>
+                        </div>
+                        <div class="legend-heading">Close Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dbbv-open"></span>
+                        </div>
+                        <div class="legend-heading">Open Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dbbv-alarm"></span>
+                        </div>
+                        <div class="legend-heading">Alarm Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-sm-4 ">
+            <div class="legend-main-box jocky-pump">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Jockey Pump
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-jockey-pump-stop"></span>
+                        </div>
+                        <div class="legend-heading">Stop/Fail Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-jockey-pump-run"></span>
+                        </div>
+                        <div class="legend-heading">Run Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-jockey-pump-maint"></span>
+                        </div>
+                        <div class="legend-heading">Maint Mode</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-jockey-pump-trip"></span>
+                        </div>
+                        <div class="legend-heading">Trip Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 col-md-8 col-sm-8">
+            <div class="legend-main-box bay-icons">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Bay Icons
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-massflow-meter"></span>
+                        </div>
+                        <div class="legend-heading">MFM</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-dcv"></span>
+                        </div>
+                        <div class="legend-heading">DCV</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-mbv"></span>
+                        </div>
+                        <div class="legend-heading">Ball Valve</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="legend-chart"></span>
+                        </div>
+                        <div class="legend-heading">Chart</div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="strainer"></span>
+                        </div>
+                        <div class="legend-heading">Strainer</div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="rtd"></span>
+                        </div>
+                        <div class="legend-heading">RTD</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-5 col-md-8 col-sm-8">
+            <div class="legend-main-box others">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Others
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="aop"></span>
+                        </div>
+                        <div class="legend-heading">VFT</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="radar-relay"></span>
+                        </div>
+                        <div class="legend-heading">Radar Relay</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="pt-img"></span>
+                        </div>
+                        <div class="legend-heading">Pressure Transmitor</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="densitomer"></span>
+                        </div>
+                        <div class="legend-heading">Densitomer</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <div class="legend-main-box legend-device">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    Dyke Valve
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="dyke-valve dyk_opn_img_true"></span>
+                        </div>
+                        <div class="legend-heading">Open Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="dyke-valve dyk_opn_img_false"></span>
+                        </div>
+                        <div class="legend-heading">Close Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="dyke-valve"></span>
+                        </div>
+                        <div class="legend-heading">No Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="legend-main-box legend-device">
+                <div class="col-lg-12 col-md-12 col-sm-12 legend-group-heading">
+                    TOBVs
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="tobv-valve tobv_opn_img_true"></span>
+                        </div>
+                        <div class="legend-heading">Open Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="tobv-valve tobv_cls_img_true"></span>
+                        </div>
+                        <div class="legend-heading">Close Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="tobv-valve tobv_alrm_img_true"></span>
+                        </div>
+                        <div class="legend-heading">Alarm Fdbk</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="legend-box">
+                        <div class="legend-img">
+                            <span class="tobv-valve"></span>
+                        </div>
+                        <div class="legend-heading">No Fdbk</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 hide">
+            <div class="legend-box">
+                <div class="legend-img">
+
+                </div>
+                <div class="legend-heading">Air Eliminator</div>
+            </div>
+        </div>
+        <div class="col-lg-2 hide">
+            <div class="legend-box">
+                <div class="legend-heading">PD Meter</div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-2 hide">
+            <div class="legend-box">
+                <div class="legend-img">
+
+                </div>
+                <div class="legend-heading">NRV</div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-2 col-md-1 col-sm-1 hide">
+            <div class="legend-box">
+                <div class="legend-heading">SOV</div>
+
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-1 col-sm-1 hide">
+            <div class="legend-box">
+                <div class="legend-heading">Strainer Cum Eliminator</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-1 col-sm-1 hide">
+            <div class="legend-box">
+                <div class="legend-heading">Turbine Flow Meter</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-1 col-sm-1 hide">
+            <div class="legend-box">
+                <div class="legend-heading">Strainer with DPG</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-1 col-sm-1 hide">
+            <div class="legend-box">
+                <div class="legend-heading">Pressure Txr</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-1 col-sm-1 hide">
+            <div class="legend-box">
+                <div class="legend-heading">Temp Txr</div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

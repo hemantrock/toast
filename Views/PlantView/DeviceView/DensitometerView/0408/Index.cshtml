@@ -1,0 +1,86 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Densitometer View";
+    Layout = null;
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Densitometer</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing ">
+        @{
+            <div class="densitometer-container col-lg-12 m-t-40">
+                @{
+                    List<tblDeviceMaster> lstDevices = Model.Where(x => x.HeaderID != null|| x.TankID!=null).ToList();
+                    foreach (tblDeviceMaster Device in lstDevices)
+                    {
+                        string DevPrefix = Device.TagPrefix;
+                        //string PriConn = "DENSPROBE_CONN01_S" + string.Format("{0:00}", Device.TypeSeqNo);
+                        //string SecConn = "DENSPROBE_CONN02_S" + string.Format("{0:00}", Device.TypeSeqNo);
+                        string PriConn = Device.TagPrefix + "_CONN01";
+                        string SecConn = Device.TagPrefix + "_CONN02";
+                        string ProdName = (Device.tblTank != null ? Device.tblTank.tblProduct.ProdNameShort : (Device.tblHeadersMaster != null ? Device.tblHeadersMaster.tblProduct.ProdNameShort : ""));
+                        <div class="device-box densitometer-wrapper">
+                            <div class="device-header">
+                                <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                                <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@ProdName</span>
+                            </div>
+                            <div class="device-block">
+                                <div class="device densitometer">
+                                    <span class="maintainence-mode-icon @(DevPrefix + "_MAINT")"></span>
+                                    <span class="action-icon remote-icon"></span>
+                                    <span class="action-icon local-icon"></span>
+                                    <span class="action-icon auto-icon"></span>
+                                    <span class="action-icon manual-icon"></span>
+                                </div>
+                            </div>
+
+                            <div class="device-detail">
+                                <table class="table-striped value-tbl w-100">
+                                    <tbody>
+                                        <tr class="hide">
+                                            <td class="tbl-lbl">Connections</td>
+                                            <td class="tbl-val">
+                                                <span class="circle-cont-sm">
+                                                    <span class="@PriConn"></span>
+                                                </span>
+                                            </td>
+                                            <td class="tbl-val">
+                                                <span class="circle-cont-sm">
+                                                    <span class="@SecConn"></span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl">Observed Density</td>
+                                            <td class="tbl-val @(DevPrefix.Replace("DM_","")+"_AMB_DENS")" colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl">Std Density</td>
+                                            <td class="tbl-val @(DevPrefix.Replace("DM_","")+"_STD_DENS")" colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tbl-lbl">Observed Temp</td>
+                                            <td class="tbl-val @(DevPrefix+"_OBS_TEMP")" colspan="2"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    }
+                }
+            </div>
+
+        }
+
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/DeviceView/DensitometerView/Index.js"></script>

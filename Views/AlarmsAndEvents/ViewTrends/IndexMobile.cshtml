@@ -1,0 +1,87 @@
+﻿@{
+    Layout = null;
+}
+<div class="col-xs-12" id="dvTrends">
+    <div class="row">
+        <h2>TRENDS<span id="headingTrends"></span></h2>
+    </div>
+    <div class="row" id="chartCriteria">
+        <form id="formTrends" role="form" class="form-fields">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>Trend Group</label>
+                        <select id="ddlTagGroup" name="TrendGroup" class="form-control" onchange="LoadTrendsTags()"></select>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>Tag</label>
+                        <select id="ddlTags" multiple="multiple" name="Tag" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group has-feedback">
+                        <label for="dtpChartFrom">From Date Time</label>
+                        <input type="text" class="form-control" placeholder="From DateTime" name="ChartFrom" id="dtpChartFrom" data-bv-field="ChartFrom" readonly>
+                        <i style="display: none;" class="form-control-feedback" data-bv-icon-for="ChartFrom"></i>
+                        <small style="display: none;" data-bv-validator="notEmpty" data-bv-validator-for="ChartFrom" class="help-block">From DateTime is required and cannot be empty</small>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group has-feedback">
+                        <label for="dtpChartTo">To Date Time</label>
+                        <input type="text" class="form-control" placeholder="To DateTime" name="ChartTo" id="dtpChartTo" data-bv-field="ChartTo" readonly>
+                        <i style="display: none;" class="form-control-feedback" data-bv-icon-for="ChartTo"></i>
+                        <small style="display: none;" data-bv-validator="notEmpty" data-bv-validator-for="ChartFrom" class="help-block">To DateTime is required and cannot be empty</small>
+                    </div>
+                </div>
+                @*<div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="fields form-group has-feedback">
+                            <label>Select Tags</label>
+                            <select id="ddlChartTags" data-placeholder="Choose Tags..." multiple style="width:550px;"></select>
+                        </div>
+                    </div>*@
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <button type="button" class="btn btn-primary col-lg-12" role="button" id="goButton" onclick="processChart()">
+                        <span class="glyphicon glyphicon-stats"></span> Show Trend
+                    </button>
+                    <a href="#" class="excel-icon" id="downloadTrends"></a>                    
+                </div>
+            </form>
+    </div>
+    <div id="chartBody" style="padding: 5px;display:none;" >
+        <div id="main" class="chartmodal-chart" style="height: 400px;min-width:360px;"></div>
+        <button type="button" class="btn btn-primary col-lg-12" role="button" id="goBack" onclick="showCriteria()">
+            <span class="glyphicon glyphicon-backward"></span> Show Critera
+        </button>
+        <a id="downloadTrends" class="excel-icon" href="#"></a>
+    </div>
+</div>
+
+<script src="~/Scripts/MobilePageJS/AlarmsAndEvents/ViewTrends/Index.js"></script>
+
+<script>
+    $('#dtpChartFrom').Datetimepicker({
+        format: 'D-MMM-YY HH:mm',
+        autoclose: true,
+        direction: "down",
+    }).on("changeDate", function (e) {
+        var TimeZoned = new Date(e.Date.setTime(e.Date.getTime() + (e.Date.getTimezoneOffset() * 60000)));
+        $('#dtpChartFrom').Datetimepicker('setDate', TimeZoned);
+        $('#dtpChartFrom').parent().removeClass('has-error').addClass('has-success');
+        $('#dtpChartFrom').parent().children("small").hide();
+        $('#dtpChartFrom').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+    });
+
+    $('#dtpChartTo').Datetimepicker({
+        format: 'D-MMM-YY HH:mm',
+        autoclose: true,
+        direction: "down",
+    }).on("changeDate", function (e) {
+        var TimeZoned = new Date(e.Date.setTime(e.Date.getTime() + (e.Date.getTimezoneOffset() * 60000)));
+        $('#dtpChartTo').Datetimepicker('setDate', TimeZoned);
+        $('#dtpChartTo').parent().removeClass('has-error').addClass('has-success');
+        $('#dtpChartTo').parent().children("small").hide();
+        $('#dtpChartTo').parent().children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
+    });
+</script>

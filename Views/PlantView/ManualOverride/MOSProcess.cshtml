@@ -1,0 +1,123 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@{
+    ViewBag.Title = "Plant View - Manual Override View";
+    List<tblTank> lstTanks = ViewBag.lstTanks;
+    List<tblMOVMaster> lstMOVs = ViewBag.lstMOVs;
+    List<tblDeviceMaster> lstProcessDev = ViewBag.lstProcessDevices;
+    List<tblDeviceMaster> lstSafetyDev = ViewBag.lstSafetyDevices;
+    List<tblTagMaster> lstProcessTags = ViewBag.lstProcessTags;
+    List<tblTagMaster> lstSafetyTags = ViewBag.lstSafetyTags;
+    //string ProcessPages = String.Join(",", lstProcessDev.Select(x => x.PageName).Distinct());
+    //string SafetyPages = String.Join(",", lstSafetyDev.Select(x => x.PageName).Distinct());
+    //string MOVPages = String.Join(",", lstMOVs.Select(x => x.PageName).Distinct());
+    //string TankPages = String.Join(",", lstTanks.Select(x => x.PageName).Distinct());
+    //string strPages = (ProcessPages + "," + MOVPages + "," + TankPages);
+    string strPages = "MOSProcessView";
+    //GAN_SHUT_BYPASS=false;MAIN_FE_REM_AUTO_BYPASS=false;TWO_FE_RUNNING_BYPASS=false;WATER_VOL_BELOW_MIN_BYPASS=false;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Manual Override Screen - Process </h3>
+    </div>
+</div>
+
+<div class="security-system-container m-t-40">
+    <div class="row first">
+        <div class="col-lg-2">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="3">Tank LoLo</th></tr>
+                    <tr>
+                        <th class="text-center" style="width: 35%">Tank Name</th>
+                        <th class="text-center tooltips" title="Status" style="width:35%">LoLoAlarm</th>
+                        <th class="text-center tooltips" title="Maint Mode" style="width: 30%">Bypass</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblTank Tank in lstTanks)
+                    {
+                        string TankPref = Tank.TagPrefix;
+                        <tr>
+                            <td class="">@Tank.TankName</td>
+                            <td><span class="alert-cont-md"><span class="@(TankPref+"_ALRM_LL")"><span class="alert-maint-mode @(TankPref+"_BYPASS_ALRM_LL")"></span></span></span></td>
+                            <td style="text-align: center;">
+                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Bypass Tank LL Alarm','Tank:@Tank.TankName',this, '@(TankPref+"_BYPASS_ALRM_LL")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                    <input id="toggle-maintainence-mode" class="on-off-btn @(TankPref+"_BYPASS_ALRM_LL")" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-2">
+            <table class="table-striped app-tbl">
+                <thead>
+                    <tr><th class="text-center bg-color" colspan="2">Pressure Txr</th></tr>
+                    <tr>
+                        <th class="text-center" style="width: 65%">Device Name</th>
+                        <th class="text-center tooltips" title="Maint Mode" style="width: 35%">Maint Mode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblDeviceMaster Device in lstProcessDev.Where(x => x.DeviceID == 3))
+                    {
+                        string DevPref = Device.TagPrefix;
+                        tblTagMaster BypassTag = lstProcessTags.Where(x => x.TagName == DevPref + "_MAINT").FirstOrDefault();
+                        if (BypassTag != null)
+                        {
+                            <tr>
+                                <td class="">@Device.DeviceName</td>
+                                <td style="text-align: center;">
+                                    <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('PT Maint Mode','@Device.DeviceName',this, '@(Device.TagPrefix)_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        <input id="toggle-maintainence-mode" class="on-off-btn @(BypassTag.TagName)" checked type="checkbox" data-opcvalue="">
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row m-t-20 second">
+        <div class="col-lg-6 fire-jocky-container">
+            <table class="">
+            </table>
+        </div>
+        <div class="col-lg-6" style="margin-top: -35px;">
+            <div class="row">
+                <div class="col-lg-6">
+                    <table class="table-striped app-tbl">
+                    </table>
+                    <table class="table-striped app-tbl">
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <table class="table-striped app-tbl">
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <table class="table-striped app-tbl m-t-10">
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <table class="table-striped app-tbl m-t-10">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        createTooltip();
+        if (opcStartDone == true) {
+            setTimeout(function () { opc.server.readPageTags(opcPageName); }, 3000);
+        }
+    });
+</script>

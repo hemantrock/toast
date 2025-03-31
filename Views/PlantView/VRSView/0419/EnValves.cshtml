@@ -1,0 +1,533 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+<style>
+    .toggle-wrapper .toggle.btn {
+        width: 50px !important;
+        height: 25px !important;
+        min-width: 50px;
+        min-height: 25px;
+    }
+
+    .toggle-wrapper .toggle-group label {
+        top: -4px;
+    }
+
+    .toggle-wrapper .btn.btn-primary {
+        left: -4px;
+    }
+</style>
+
+   <div id="dvContent" class="content">
+        <div class="row">
+            <div class="col-lg-6" align="center">
+                <h3 class="grid-headerplant" style="color:black">ELECTRO VALVES</h3>
+            </div>
+            <div class="col-lg-6" align="center">
+                <h3 class="grid-headerplant" style="color:black">OTHER VALVES</h3>
+            </div>
+        </div>
+        <div class="security-system-container m-t-40">
+            <div class="row">
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-401</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV401 Existing',this, 'EV401_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV401_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV401_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV401 Delay time start command',this, 'EV401_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV401_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV401 Delay time stop command',this, 'EV401_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-411</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV411 Existing',this, 'EV411_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV411_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV411_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV411 Delay time start command',this, 'EV411_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV411_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV411 Delay time stop command',this, 'EV411_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-421</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV421 Existing',this, 'EV421_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV421_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV421_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV421 Delay time start command',this, 'EV421_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV421_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV421 Delay time stop command',this, 'EV421_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-611</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV611 Existing',this, 'EV611_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV611_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV611_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV611 Delay time start command',this, 'EV611_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV611_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV611 Delay time stop command',this, 'EV611_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-612</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV612 Existing',this, 'EV612_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV612_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV612_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV612 Delay time start command',this, 'EV612_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV612_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV612 Delay time stop command',this, 'EV612_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-613</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV613 Existing',this, 'EV613_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV613_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV613_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV613 Delay time start command',this, 'EV613_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV613_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV613 Delay time stop command',this, 'EV613_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">EV-614</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV614 Existing',this, 'EV614_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn EV614_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Start Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV614_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV614 Delay time start command',this, 'EV614_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Stop Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input EV614_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: EV614 Delay time stop command',this, 'EV614_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">UV-101</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing Valve</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV101 Existing Valve',this, 'UV101_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV101_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Open command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV101_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV101 Delay time open command',this, 'UV101_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Close Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV101_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV101 Delay time close command',this, 'UV101_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Close Contact Disappear</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV101_TFDL" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV101 Time close contact disappear',this, 'UV101_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Open Switch Appears Time</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV101_TFAH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV101 Open switch appears time',this, 'UV101_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Open Contact Disappear</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Close Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time Fault Limit Switch</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">UV-102</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing Valve</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV102 Existing Valve',this, 'UV102_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV102_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Open command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV102_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV102 Delay time open command',this, 'UV102_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Close Command</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV102_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV102 Delay time close command',this, 'UV102_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Close Contact Disappear</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV102_TFDL" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV102 Time close contact disappear',this, 'UV102_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Open Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV102_TFAH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV102 Open switch appears time',this, 'UV102_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Open Contact Disappear</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Close Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time Fault Limit Switch</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">UV-201</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing Valve</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV201 Existing Valve',this, 'UV201_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV201_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Open command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV201_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV201 Delay time open command',this, 'UV201_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Close Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV201_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV201 Delay time close command',this, 'UV201_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Close Contact Disappear</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV201_TFDL" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV201 Time close contact disappear',this, 'UV201_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Open Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV201_TFAH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV201 Open switch appears time',this, 'UV201_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Open Contact Disappear</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Close Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time Fault Limit Switch</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">UV-202</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Existing Valve</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV202 Existing Valve',this, 'UV202_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV202_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Open command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV202_TRO" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV202 Delay time open command',this, 'UV202_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Delay Time Close Command</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV202_TRF" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV202 Delay time close command',this, 'UV202_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Close Contact Disappear</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV202_TFDL" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV202 Time close contact disappear',this, 'UV202_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Open Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input UV202_TFAH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV202 Open switch appears time',this, 'UV202_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Time Open Contact Disappear</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMIN" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Minimum speed (%)',this, 'SR10_VMIN', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Close Switch Appears Time</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Filtering Time Fault Limit Switch</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input SR10_VMAX" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: SR10 Maximum speed (%)',this, 'SR10_VMAX', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "VRS_SetPoints";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

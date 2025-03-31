@@ -1,0 +1,210 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model tblTruckMaster
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-8 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="fields form-group ui-widget">
+                    <label>Transporter</label>
+                    <input type="text" id="txtTransporter" name="Transporter" class="form-control" value="@Model.tblTransporter.TransporterDesc" data-key-value="@Model.tblTransporter.UniqueID" disabled />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8">
+                <div class="fields form-group">
+                    <label>Reason for Manual Entry</label>
+                    <input type="text" id="txtRemarks" name="Remarks" class="form-control" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <form id="FormManual" role="form" class="form-fields">
+            <table id="tblManualPrintUAN" class="table">
+                <thead>
+                    <tr>
+                        <th>Comp No.</th>
+                        <th>Customer Name</th>
+                        <th>Destination</th>
+                        <th>Product</th>
+                        <th>Capacity</th>
+                        <th>Quantity</th>
+                        <th>Loaded Density@15°C</th>
+                        <th>Loaded Temp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 0;
+                        foreach (tblTruckDetail item in Model.tblTruckDetails)
+                        {
+                            i = i + 1;
+                            <tr id="tr_@i">
+                                <td id="txtCompartmentNo_@i" class="CompartmentNo">@i</td>
+                                <td><input type="text" id="txtCustomer_@i" name="CustomerName"  placeholder="Enter Customer Name" class="form-control" /></td>
+                                <td><input type="text" id="txtDestination_@i" name="Destination" placeholder="Enter Destination"  class="form-control" /></td>
+                                <td>
+                                    <select class="form-control" id="ddlProduct_@i" name="Product" onchange='FillProductsBelow(this)'></select>
+                                </td>
+                                <td class="capacity" style="font-size:inherit">@item.Capacity</td>
+                                <td>
+                                    <input type="text" name="Quantity" disabled id="txtQuantity_@i" max="@(item.Capacity+1)" placeholder="Quantity" class="form-control" value="@item.Capacity">
+                                </td>
+                                <td>
+                                    <input type="text" name="InvoiceDensityAt15" id="txtStdDensity_@i" placeholder="Loaded Std. Density" class="form-control" onchange=FillItemsBelow('@i','txtStdDensity','InvoiceDensityAt15')>
+                                </td>
+                                <td>
+                                    <input type="text" name="InvoiceTemp" id="txtTemp_@i" placeholder="Loaded Temp" class="form-control"  onchange=FillItemsBelow('@i','txtTemp','InvoiceTemp')>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="GenerateManualUAN();"><span class="glyphicon glyphicon-floppy-saved"></span>REGISTER TT</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#saveButton').keypress(function (e) {
+            if (e.keyCode == 13 || e.which == 13 || e.keyCode == 32 || e.which == 32    ) {
+                GenerateManualFan();
+            }
+        });
+
+        $('#tblManualPrintUAN').dataTable({
+            "iDisplayLength": iGblNoRows - 7,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": false,
+            "bStateSave": false,
+            "bInfo": true,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "4%" },
+                    { sWidth: "28%" },
+                    { sWidth: "16%" },
+                    { sWidth: "12%" },
+                    { sWidth: "8%", 'sClass': 'text-center' },
+                    { sWidth: "8%", 'sClass': 'text-center' },
+                    { sWidth: "12%" },
+                    { sWidth: "12%" },
+                ],
+            "bAutoWidth": false,
+        });
+
+        $('#FormBU').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                Remarks: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Reason for Manual entry is required'
+                        },
+                        regexp: {
+                            regexp: "^[a-zA-Z0-9 ]*$",
+                            message: 'Remarks should be alphanumeric'
+                        },
+                    }
+                },
+            },
+            //    Remarks: {
+            //        validators: {
+            //            notEmpty: {
+            //                message: 'Reason for Manual entry is required'
+            //            },
+            //        }
+            //    },
+            //},
+            errorPlacement: function (error, element) {
+                error.insertAfter('.form-group');
+            },
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+
+        $('#FormManual').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                //'Quantity[]': {
+                //    validators: {
+                //        lessThan: {
+                //            message: 'Should be <= Capacity'
+                //        },
+                //        regexp: {
+                //            regexp: "^[0-9]*$",
+                //            message: 'Qty should be numeric'
+                //        },
+                //    }
+                //},
+            },
+            errorPlacement: function (error, element) {
+                error.insertAfter('.form-group');
+            },
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            }
+        });
+
+
+        var iComp = '@Model.TotalNoOfComp';
+
+        $.ajax({
+            url: "/Product/GetAvailableProducts",
+            type: "GET",
+            datatype: "json",
+            cache: false,
+            success: function (result) {
+                for (var i = 1; i <= iComp; i++) {
+                    $('#ddlProduct_' + i).html('');
+                    AutoComplete($("#txtCustomer_" + i), "Customers", "ManualLoad");
+                    AutoComplete($("#txtDestination_" + i), "Destination", "ManualLoad");
+                }
+                var r = "<option value=0>Select Product</option>";
+
+                for (var i = 1; i <= iComp; i++) {
+                    $('#ddlProduct_' + i).append(r);
+                }
+
+                $.each(result, function (i, objProduct) {
+                    r = "<option value=" + objProduct.ProductID + ">" + objProduct.ProductName + "</option>";
+                    for (var i = 1; i <= iComp; i++) {
+                        $('#ddlProduct_' + i).append(r);
+                    }
+                });
+            }
+        });
+    });
+</script>

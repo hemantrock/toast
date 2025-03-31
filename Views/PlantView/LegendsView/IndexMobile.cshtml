@@ -1,0 +1,402 @@
+﻿@using TOAST.Data.Model;
+@model List<tblTagMaster>
+@{
+    ViewBag.Title = "Plant View - Legends View";
+    Layout = null;
+}
+
+
+<div class="col-xs-12">
+    <div class="row">
+        <h2>LEGEND</h2>
+    </div>
+    <div class="row">
+        <div class="legend-wrapper">
+            <div class="toggle-menu-container">
+                    <div class="menu-item">Mode and Controls <i class="fa fa-plus-circle"></i></div>
+                    <div class="menu-content">
+                        <table>
+                            <tr>
+                                <td>
+                                <div class="legend-box">
+    <div class="legend-img">
+        <span class="legend-local"></span>
+    </div>
+    <div class="legend-heading">Local</div>
+</div>
+                                </td>
+                                <td>
+                                    <div class="legend-box">
+                                        <div class="legend-img">
+                                            <span class="legend-remote"></span>
+                                        </div>
+                                        <div class="legend-heading">Remote</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="legend-box">
+                                        <div class="legend-img">
+                                            <span class="legend-stop"></span>
+                                        </div>
+                                        <div class="legend-heading">Stop-MOV</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="legend-box">
+                                        <div class="legend-img">
+                                            <span class="legend-auto"></span>
+                                        </div>
+                                        <div class="legend-heading">Auto</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="legend-box">
+                                        <div class="legend-img">
+                                            <span class="legend-manual"></span>
+                                        </div>
+                                        <div class="legend-heading">Manual</div>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            
+                        </table>
+                    </div>
+
+                    <div class="menu-item"> Bay Icons <i class="fa fa-plus-circle"></i> </div>
+                <div class="menu-content">
+                     <table>
+                            <tr>
+                                <td>
+                                    <div class="legend-box">
+                                        <div class="legend-img">
+                                            <span class="legend-massflow-meter"></span>
+                                        </div>
+                                        <div class="legend-heading">MFM</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="legend-box">
+                                        <div class="legend-img">
+                                            <span class="legend-dcv"></span>
+                                        </div>
+                                        <div class="legend-heading">DCV</div>
+                                    </div>
+                                </td>
+                             </tr>
+                         <tr>
+                             <td>
+                                 <div class="legend-box">
+                                     <div class="legend-img">
+                                         <span class="legend-mbv"></span>
+                                     </div>
+                                     <div class="legend-heading">Ball Valve</div>
+                                 </div>
+                             </td>
+                             <td>
+                                 <div class="legend-box">
+                                     <div class="legend-img">
+                                         <span class="legend-chart"></span>
+                                     </div>
+                                     <div class="legend-heading">Chart</div>
+                                 </div>
+                             </td>
+                         </tr>
+                                
+                      </table>  
+                   
+                </div>
+
+                    <div class="menu-item"> MOVs <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content mov">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-mov-open"></span>
+                                    </div>
+                                    <div class="legend-heading">Open Feedback</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-mov-close"></span>
+                                    </div>
+                                    <div class="legend-heading">Close Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-mov-alarm"></span>
+                                    </div>
+                                    <div class="legend-heading">Genral Alarm</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-mov-no-feedback"></span>
+                                    </div>
+                                    <div class="legend-heading">No Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                    <div class="menu-item">Pumps <i class="fa fa-plus-circle"></i> </div>
+                <div class="menu-content pumps">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-pump-header-stop"></span>
+                                    </div>
+                                    <div class="legend-heading">Stop Feedback</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-pump-header-run"></span>
+                                    </div>
+                                    <div class="legend-heading">Run Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-pump-header-trip"></span>
+                                    </div>
+                                    <div class="legend-heading">Trip Feedback</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-pump-header-fail"></span>
+                                    </div>
+                                    <div class="legend-heading">Fail Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                    <div class="menu-item">DG <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content dg">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-dgstop"></span>
+                                    </div>
+                                    <div class="legend-heading">Stop Feedback</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-dgrun"></span>
+                                    </div>
+                                    <div class="legend-heading">Run Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-dgtrip"></span>
+                                    </div>
+                                    <div class="legend-heading">Trip Feedback</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-dgfail"></span>
+                                    </div>
+                                    <div class="legend-heading">Fail Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+                <div class="menu-item">Others <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content others">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-lamp-true"></span>
+                                    </div>
+                                    <div class="legend-heading">Bay Lamp On</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img lamp-off">
+                                        <span class="legend-lamp-false"></span>
+                                    </div>
+                                    <div class="legend-heading">Bay Lamp off</div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-ethernet-green"></span>
+                                    </div>
+                                    <div class="legend-heading">Ethernet OK</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-ethernet-red"></span>
+                                    </div>
+                                    <div class="legend-heading">Ethernet Fault</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="menu-item">Alarm <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content alarm">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="alert_true"></span>
+                                    </div>
+                                    <div class="legend-heading">Alarm/Danger</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="alert_false"></span>
+                                    </div>
+                                    <div class="legend-heading">Healthy/Safe</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="alert_bad"></span>
+                                    </div>
+                                    <div class="legend-heading">No Signal</div>
+                                </div>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="menu-item">Status <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content status">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="status_true"></span>
+                                    </div>
+                                    <div class="legend-heading">Feedback Rcvd.</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="status_false"></span>
+                                    </div>
+                                    <div class="legend-heading">No Feedback</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="status_bad"></span>
+                                    </div>
+                                    <div class="legend-heading">No Signal</div>
+                                </div>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="menu-item"> Bay Views <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content status">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-bview-default"></span>
+                                    </div>
+                                    <div class="legend-heading">No Fdbk</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-bview-open"></span>
+                                    </div>
+                                    <div class="legend-heading">Open Fdbk</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="legend-box">
+                                    <div class="legend-img">
+                                        <span class="legend-bview-cls"></span>
+                                    </div>
+                                    <div class="legend-heading">Close Fdbk</div>
+                                </div>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>

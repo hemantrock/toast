@@ -1,0 +1,197 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblMOVMaster
+@{
+    ViewBag.Title = "Plant View - MOV Details View";
+    Layout = null;
+    bool ShowConn = ViewBag.ShowMOVConn;
+    string MoVPrefix = (Model.TagPrefix + "_");
+    string TkPrefix = (Model.tblTank == null ? "" : Model.tblTank.TagPrefix + "_");
+}
+<div class="modal-dialog mov-modal" style="width: 480px;">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header">
+            <div class="mov-valve-popup-tank-name"><h3 class="modal-title" id="">@(Model.tblTank == null ? Model.Custom : Model.tblTank.TankName)</h3></div>
+            <div class="mov-valve-popup-receipt-name"><h3 class="modal-title" id="">@(Model.tblMOVLine == null ? Model.tblHeadersMaster.tblProduct.ProdNameShort : Model.tblMOVLine.Line)</h3></div>
+            <div class="mov-valve-popup-title" style="border-right: 0;">
+                <h3 class="modal-title" id="myMOVModalLabel">@Model.MovName</h3>
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <input type="hidden" id="hdnTankAutoMan_@(Model.tblTank==null? "" :Model.tblTank.TankName)" class="@(Model.tblTank==null? "" :Model.tblTank.TagPrefix)_AUTOMAN" />
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn @(MoVPrefix+"OPN_CMD")" href="javascript:void(0);" onclick="ValidateManualExecute('@(Model.TagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Open Command to MOV: @(Model.MovName)',this, '@(Model.TagPrefix)_OPN_CMD', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>
+                    <a class="push-btn-02 close-mov-btn @(MoVPrefix+"CLS_CMD")" href="javascript:void(0);" onclick="ValidateManualExecute('@(Model.TagPrefix)_AUTOMAN','Open/Close Command to MOV','Set Close Command to MOV: @(Model.MovName)',this, '@(Model.TagPrefix)_CLS_CMD', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>
+                </div>
+                <div class="mov-valve-info-container">
+                    <div class="col-lg-6">
+                        <div title="No Feedback" data-tooltip-attr="MOV*" class="tooltips mov-valve @(MoVPrefix+"COMM_FAIL_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG") @(MoVPrefix+"ALRM_IMG")">
+                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                            <span class="mov-valve-fill">
+                                <span class="fill-front"></span>
+                                <span class="fill-value percentage @(MoVPrefix+ "FILL")" data-id="@(MoVPrefix+ "PER_OPN")"></span>
+                            </span>
+                        </div>
+                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                        @*<span title="" data-tooltip-attr="REMOTE" class="tooltips control-icon @(MoVPrefix+"REMOTE_SELECT")"></span>
+                            <span title="" data-tooltip-attr="STOP" class="tooltips control-icon @(MoVPrefix+"STOP_SELECT")"></span>*@
+                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, '@(Model.tblTank == null ? "" : "hdnTankAutoMan_"+Model.tblTank.TankName)', '@Model.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                        <span class="percentage-open-lbl">Open: <span class="percentage-open-val"><span class="percentage-value per_opn_mov @(MoVPrefix+"PER_OPN")"></span>%&nbsp;&nbsp;-&nbsp;&nbsp;Torque: <span class="torque-value torque_mov @(MoVPrefix+"TORQUE")"></span>%</span></span>
+                    </div>
+
+                    <div class="col-lg-6 no-padd">
+                        <div class="mov-valve-info-wrapper">
+
+                            <table class="@(!ShowConn?"hide":"") detail-tbl">
+                                <tbody>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl" style="width:65%"><span class="">Open Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(MoVPrefix+"OPN_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(MoVPrefix+"FORCE_OPN_FB") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: auto; width: 25px; height: 25px;" title="Force Open Feedback"
+                                               onclick="SetProcessValue('Force Open/ Close FB MOV', 'Force Open Feedback of Valve @Model.MovName', this, '@(MoVPrefix+"FORCE_OPN_FB")','GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                <i class="fa fas fa-thumbtack" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">Close Feedback</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="@(MoVPrefix+"CLS_FB")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(MoVPrefix+"FORCE_CLS_FB") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: auto; width: 25px; height: 25px;" title="Force Close Feedback"
+                                               onclick="SetProcessValue('Force Open/ Close FB MOV', 'Force Close Feedback of Valve @Model.MovName', this, '@(MoVPrefix+"FORCE_CLS_FB")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"><i class="fa fas fa-thumbtack" style="vertical-align: text-top;" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    @*<tr class="odd">
+                                            <td class="detail-tbl-lbl">
+                                                <span class="v-align-sub">Maint. Mode</span>
+                                            </td>
+                                            <td class="detail-tbl-val" colspan="2">
+                                                <div class="toggle-wrapper" onclick="MaintainenceMode('@(Model.MovName)', this, '@(MoVPrefix+"MAINT_MODE")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]',event)">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn @(MoVPrefix+"MAINT_MODE")" checked type="checkbox">
+                                                </div>
+                                            </td>
+                                        </tr>*@
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="v-align-sub">% to open</span>
+                                        </td>
+                                        <td class="detail-tbl-val" colspan="2">
+                                            <input id="txtOpenPercent" type="number" min=1 readonly class="editable-input @(MoVPrefix+"SET_PER_OPEN")" ondblclick="this.readOnly='';" style="border: 0px; width: 65%;">
+                                            <span class="glyphicon glyphicon-upload" onclick="ValidateOpenPercent(this,'@(Model.MovName)', '@(MoVPrefix+"SET_PER_OPEN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <table class="detail-tbl conn-tbl">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" style="width:65%">Comm. Status</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(MoVPrefix+"COMM_FAIL")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="set-to-open" style="display:none">
+                            <label>% to open</label>
+                            <input id="txtOpenPercent1" type="text" placeholder="XX.X" min="0" max="100" class="@(MoVPrefix+"SET_PER_OPN")" />
+                            <a class="push-btn" href="javascript:void(0);" onclick="ValidateOpenPercent(this,'@(Model.MovName)', '@(MoVPrefix+"SET_PER_OPN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">SET</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mov-view-detail-container">
+                    <table class="detail-tbl">
+                        <tbody>
+                            <tr class="odd">
+                                <td class="detail-tbl-lbl tooltips" title="Red if the temperature of the motor windings rises above the thermostat trip value.">Thermostat tripped</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green if the temperature of the motor windings rises above the thermostat trip value."><span class="@(MoVPrefix+"THERM_TRIPPED")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Red when actuator remote control is not available. Monitor Relay status is a composite signal for several alarms, Local/ Local Stop selection">Monitor Relay</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green when actuator remote control is not available. Monitor Relay status is a composite signal for several alarms, Local/ Local Stop selection"><span class="@(MoVPrefix+"MONITOR_RELAY")"></span></span></td>
+                            </tr>
+                            <tr class="even">
+                                <td class="detail-tbl-lbl tooltips" title="Red if the actuator stops in mid travel when not expected to do so after receiving a command to move">Valve Obstructed</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green if the actuator stops in mid travel when not expected to do so after receiving a command to move"><span class="@(MoVPrefix+"OBSTRUCTED")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Red if the actuator is stationary at the end of travel and fails to move away from the seat of the valve.">Valve Jammed</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green if the actuator is stationary at the end of travel and fails to move away from the seat of the valve."><span class="@(MoVPrefix+"JAMMED")"></span></span></td>
+                            </tr>
+                            <tr class="odd">
+                                <td class="detail-tbl-lbl tooltips" title="Green when EEPROM Checksum fails">EEPROM Checksum Fail</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green when EEPROM Checksum fails"><span class="@(MoVPrefix+"EEPROM_FAIL")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Green when the Motion Inhibit Timer is active or the Interrupter Timer is active, or both are active">Valve inhibited by MIT</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green when the Motion Inhibit Timer is active or the Interrupter Timer is active, or both are active"><span class="@(MoVPrefix+"INHIBITED_BY_MIT")"></span></span></td>
+                            </tr>
+                            <tr class="even">
+                                <td class="detail-tbl-lbl tooltips" title="Green when the internal battery falls below a critical level">Battery Low</td>
+                                <td class="detail-tbl-val"><span class="tooltips alert-cont-md" title="Green when the internal battery falls below a critical level"><span class="@(MoVPrefix+"BATTERY_LOW")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Green if battery low/flat, valve / actuator / control alarm, valve jammed/obstructed, or monitor relay"><span>General Alarm</span></td>
+                                <td class="detail-tbl-val">
+                                    <span title="Green if battery low/flat, valve / actuator / control alarm, valve jammed/obstructed, or monitor relay" class="tooltips alert-cont-md"><span class="@(MoVPrefix+"GEN_ALRM")"></span></span>
+                                </td>
+                            </tr>
+                            <tr class="odd">
+                                <td class="detail-tbl-lbl tooltips" title="Green when a Position command is being actioned.">Position Control Enabled</td>
+                                <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Green when a Position command is being actioned."><span class="@(MoVPrefix+"POSITION_CONTROL")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Green if the actuator is moved by the handwheel away from the last position, will remain true until the actuator is moved electrically">Valve Moving by Hand</td>
+                                <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Green if the actuator is moved by the handwheel away from the last position, will remain true until the actuator is moved electrically"><span class="@(MoVPrefix+"BYHAND")"></span></span></td>
+                            </tr>
+                            <tr class="even">
+                                <td class="detail-tbl-lbl tooltips" title="Green whenever the actuator motor contactor used to drive the actuator in the closing direction is energised">Closing</td>
+                                <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Green whenever the actuator motor contactor used to drive the actuator in the closing direction is energised"><span class="@(MoVPrefix+"CLOSING")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="Green whenever the actuator motor contactor used to drive the actuator in the opening direction is energised">Opening</td>
+                                <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Green whenever the actuator motor contactor used to drive the actuator in the opening direction is energised"><span class="@(MoVPrefix+"OPENING")"></span></span></td>
+                            </tr>
+                            <tr class="odd">
+                                <td class="detail-tbl-lbl tooltips" title="Green whenever the actuator position is changing due to the motor running or if the output drive is moving">Actuator Moving</td>
+                                <td class="detail-tbl-val"><span title="Green whenever the actuator position is changing due to the motor running or if the output drive is moving" class="tooltips circle-cont-md"><span class="@(MoVPrefix+"ACT_MOVING")"></span></span></td>
+                                <td class="detail-tbl-lbl padd-l-15 tooltips" title="ESD Command Status on Actuator">ESD Command to MOV</td>
+                                <td class="detail-tbl-val">
+                                    <a href="javascript:void(0)" class="tooltips push-btn-01 @(MoVPrefix+"ESD_CMD")" style="position: absolute;top: 0; bottom: 0; margin: auto; left: 8px; width: 25px; height: 25px;" title="ESD Command on Actuator"
+                                   onclick="SetProcessValue('ESD Close MOV', 'ESD Close Actuator of Valve @Model.MovName', this, '@(MoVPrefix+"ESD_CMD")','GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                        @*<i class="fa fas fa-exclamation-triangle" style="vertical-align: text-top;" aria-hidden="true"></i>*@
+                                        <span style="position: relative;top: -3px;">Set</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            @*<tr class="even">
+                                    <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Primary Conn</td>
+                                    <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Status of Primary Connection"><span class="@("MOV_CONN01_S"+String.Format("{0:00}",Model.SlaveID))"></span></span></td>
+                                    <td class="detail-tbl-lbl padd-l-15 tooltips" title="Status of Secondary Connection">Secondary Conn</td>
+                                    <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Status of Secondary Connection"><span class="@("MOV_CONN02_S"+String.Format("{0:00}",Model.SlaveID))"></span></span></td>
+                            </tr>*@
+                            @*<tr class="even">
+                                    <td class="detail-tbl-lbl tooltips" title="Green when actuator three position (Remote/Local Stop/Local) selector is in the 'Remote' position">Remote Select</td>
+                                    <td class="detail-tbl-val"><span class="tooltips circle-cont-md" title="Green when actuator three position (Remote/Local Stop/Local) selector is in the 'Remote' position"><span class="@(MoVPrefix+"REMOTE_SELECT")"></span></span></td>
+                                    <td class="detail-tbl-lbl padd-l-15"></td>
+                                    <td class="detail-tbl-val"></td>
+                            </tr>*@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

@@ -1,0 +1,32 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+@*<h4 class="description col-lg-12 text-center">*@
+    @*<h3 class="description grid-headerplant" style="color:black;font-size: 30px;">MANUAL UAN (UNLOADING ADVICE NOTE)</h3>*@
+@*</h4>*@
+<h2 class="description text-center" style="color:black;font-size: 30px; text-decoration: underline;">
+    MANUAL UAN (UNLOADING ADVICE NOTE)
+</h2>
+
+<form id="FormBU" role="form" class="form-fields">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group ui-widget">
+                <label>Truck Number</label>
+                <input type="text" id="txtTruck" name="TruckNumber" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+    <div id="dvManualLoadDetails">
+    </div>
+</form>
+<script src="~/Scripts/PageJS/Transactions/ManualFAN/ManualUAN.js"></script>
+<script>
+    $(document).ready(function () {
+        AutoComplete($("#txtTruck"), "TruckNumber", "ManualLoad");
+    });
+</script>

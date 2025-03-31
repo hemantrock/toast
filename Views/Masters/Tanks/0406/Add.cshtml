@@ -1,0 +1,88 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Add Tank Master";
+    List<tblProduct> ddlProds = ViewBag.AllowedProds;
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a new Tank Master
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmTanks" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TANK NAME</label>
+                        <input id="txtTankName" name="TankName" type="text" placeholder="Tank Name (3-10 Chars)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>ERP TANK NO</label>
+                        <input id="txtSAPTankNo" name="SAPTankNo" type="text" placeholder="ERP Tank No (4 Chars)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TANK TYPE</label>
+                        <select class="form-control" id="ddlTankType" name="TankType"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>PRODUCT</label>
+                        <select class="form-control" id="ddlProduct" name="Product">
+                            <option value="0" selected="selected">Select Product</option>
+                            @foreach (tblProduct Prod in ddlProds)
+                            {
+                                <option value="@Prod.ProductID">@Prod.ProductName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                @*<div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Plant Code</label>
+                        <select class="form-control" id="ddlPlantCode" name="PlantCode"></select>
+                    </div>
+                </div>*@
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>DIP REFERENCE HEIGHT</label>
+                        <input id="txtDipReferenceHeight" name="DipReferenceHeight" type="text" placeholder="Dip Ref Height (Numeric) in mm" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>NOMINAL DIA (M)</label>
+                        <input id="txtNominalDia" name="NominalDia" type="text" placeholder="Nominal Dia (Numeric)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>MAXIMUM VOLUME </label>
+                        <input id="txtMaxVolume" name="MaxVolume" type="text" placeholder="Max Volume (Numeric) Ltrs" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveTanks();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/Tanks/Tanks.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadDDLTankType();       
+        LoadDDLProduct($('#ddlProduct'));
+        //LoadDDLPlantCode($('#ddlPlantCode'));
+    });
+</script>

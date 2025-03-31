@@ -1,0 +1,163 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<tblTank>
+@{
+    ViewBag.Title = "Plant View - Configured Set Points";
+    List<tblTank> lstTanks = Model.Where(x => !x.tblProduct.ProductDescription.ToUpper().Contains("WATER")).ToList();
+}
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">Configured Set Points</h3>
+        </div>
+    </div>
+    <div class="security-system-container m-t-40">
+        <div class="row">
+            <div class="col-lg-3">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="3">Pump Set Points</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 50%">PUMP</th>
+                            <th class="text-center" style="width: 25%">Set Value</th>
+                            <th class="text-center" style="width: 25%">Trip Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Jockey Pump (Kg/cm²)</td>
+                            <td class="text-center">7.5</td>
+                            <td class="text-center">9.5</td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Fire Engine - 01 (Kg/cm²)</td>
+                            <td class="text-center">7.5</td>
+                            <td class="text-center">-</td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Fire Engine - 02 (Kg/cm²)</td>
+                            <td class="text-center">7.5</td>
+                            <td class="text-center">-</td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Fire Engine - 03 (Kg/cm²)</td>
+                            <td class="text-center">7.5</td>
+                            <td class="text-center">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table-striped app-tbl m-t-40">
+                    <tbody>
+                        <tr>
+                            <td width="80%" class="bold">Power ESD Time (sec)</td>
+                            <td width="20%" class="text-center">120</td>
+                        </tr>
+                        <tr>
+                            <td width="80%" class="bold">Water Requirement as per OISD (KL)</td>
+                            <td width="20%" class="text-center">3200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-9">
+                <div class="col-lg-4">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr><th class="text-center bg-color" colspan="5">PRIMARY RADAR GAUGES</th></tr>
+                            <tr>
+                                <th class="text-center" style="width: 20%">TANK NO.</th>
+                                <th class="text-center" style="width: 20%">PRODUCT</th>
+                                <th class="text-center" style="width: 20%"> H  (mm)</th>
+                                <th class="text-center" style="width: 20%"> HH (mm)</th>
+                                <th class="text-center" style="width: 20%"> HHH (mm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (tblTank tnk in lstTanks)
+                            {
+                                <tr>
+                                    <td class="bold">@tnk.TankName</td>
+                                    <td class="bold">@tnk.tblProduct.ProdNameShort</td>
+                                    <td class="text-center @(tnk.TagPrefix + "_SP_H")"></td>
+                                    <td class="text-center @(tnk.TagPrefix + "_SP_HH")"></td>
+                                    <td class="text-center @(tnk.TagPrefix + "_SP_HHH")"></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+                @{
+                    List<tblTank> SecGaugeTanks = lstTanks.Where(x => x.TankType != 3 && !string.IsNullOrWhiteSpace(x.SecGaugeType)).ToList();
+                    if (SecGaugeTanks.Count() > 0)
+                    {
+                        <div class="col-lg-4">
+                            <table class="table-striped app-tbl m-t-10">
+                                <thead>
+                                    <tr><th class="text-center bg-color" colspan="3">SECONDARY RADAR GAUGES</th></tr>
+                                    <tr>
+                                        <th class="text-center" style="width: 40%">TANK NO.</th>
+                                        <th class="text-center" style="width: 30%">PRODUCT</th>
+                                        <th class="text-center" style="width: 30%"> HHH (mm)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (tblTank tnk in SecGaugeTanks)
+                                    {
+                                        <tr>
+                                            <td class="bold">@tnk.TankName</td>
+                                            <td class="bold">@tnk.tblProduct.ProdNameShort</td>
+                                            <td class="text-center @(tnk.TagPrefix + "_SP_HHH")"></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+                @{
+                    bool HasAOPS = lstTanks.SelectMany(x => x.tblDeviceMasters).Where(y => y.DeviceID == 1).Count() > 0;
+                    List<tblDeviceMaster> lstTankDevices = lstTanks.SelectMany(x => x.tblDeviceMasters).ToList();
+                    List<tblTank> lstAOPTanks = lstTankDevices.Where(x => x.DeviceID == 1 && x.TankID != null).Select(y => y.tblTank).ToList();
+                    if (lstAOPTanks.Count() > 0)
+
+                    {
+                        <div class="col-lg-4">
+                            <table class="table-striped app-tbl m-t-10">
+                                <thead>
+                                    <tr><th class="text-center bg-color" colspan="3">VFT</th></tr>
+                                    <tr>
+                                        <th class="text-center" style="width: 40%">TANK NO.</th>
+                                        <th class="text-center" style="width: 30%">PRODUCT</th>
+                                        <th class="text-center" style="width: 30%"> HHH (mm)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (tblTank tnk in lstTanks.Where(x => x.TankType != 3).ToList())
+                                    {
+                                        <tr>
+                                            <td class="bold">@tnk.TankName</td>
+                                            <td class="bold">@tnk.tblProduct.ProdNameShort</td>
+                                            <td class="text-center @(tnk.TagPrefix + "_SP_HHH")"></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "SetPointsView";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

@@ -1,0 +1,245 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblUserRoleMaster>
+
+@{
+    List<tblMenuConfig> ddlMenuOptions = ViewBag.ddlMenuOptions;
+    tblUser usr = ViewBag.objUsers;
+    List<int> lstUsrMenuIDs = usr.tblUserShortcuts.Select(x => x.MenuID).ToList();
+    Layout = null;
+}
+<style>
+        .dragging {
+            opacity: 0.5;
+        }
+</style>
+<div class="row permission-container">
+    <div class="col-lg-12 menuSelection">
+        <div class="col-lg-3 col-md-3">
+            <div class="fields form-group has-feedback">
+                <label for="txtTimeOut">Auto Logout Time (mins)</label>
+                <input type="text" id="txtTimeOut" class="form-control" value="@Session[clsConstants.InActivityTime]" />
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3">
+            <div class="fields form-group has-feedback">
+                <label for="ddlMenuOptions">Start Page</label>
+                <select id="ddlMenuOptions" class="js-basic-single" data-placeholder="Select a Start Page" data-allow-clear="true">
+                    @{
+                        if (usr.IMEI == null)
+                        {
+                            <option></option>
+                        }
+                        foreach (tblMenuConfig menu in ddlMenuOptions.OrderBy(x => x.MenuTitle))
+                        {
+                            string strSelection = (usr.IMEI == menu.JSFunction ? "selected" : "");
+                            <option @strSelection value="@menu.JSFunction">@(menu.MenuTitle)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <div class="fields form-group has-feedback">
+                <label for="ddlMenuShortcut">Shortcut Menu</label>
+                <div class="fields">
+                    <select id="ddlMenuShortcut" class="js-basic-multiple" data-placeholder="Select Shortcut Pages" data-allow-clear="true" multiple="multiple">
+                        @{
+                            foreach (tblMenuConfig menu in ddlMenuOptions.OrderBy(x => x.MenuTitle))
+                            {
+                                if (lstUsrMenuIDs.Contains(menu.UniqueID))
+                                {
+                                    <option selected value="@menu.UniqueID">@(menu.MenuTitle)</option>
+                                }
+                                else
+                                {
+                                    <option value="@menu.UniqueID">@(menu.MenuTitle)</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="fields">
+                @* <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="showUserOptions();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a> *@
+                <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateUserOptions(@usr.UserID);"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" id="dvMenuPermissions">
+
+    </div>
+    <div class="col-lg-6" id="dvActivityPermissions">
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.js-basic-single').select2();
+        $('.js-basic-multiple').select2();
+        $.ajax({
+            type: "GET",
+            url: "/Settings/GetPermissions",
+            cache: false,
+            success: function (result) {
+                $("#dvMenuPermissions").html(result[0]);
+                $("#dvActivityPermissions").html(result[1]);
+            }
+        });
+        $(".js-basic-multiple").on("select2:select", function (evt) {
+            var elm = evt.params.data.element;
+            $elm = $(elm);
+            $t = $(this);
+            $t.append($elm);
+            $t.trigger('change.select2');
+        });
+
+
+        @* custom code *@
+
+        let draggedItem = null;
+
+            $("#select2-ddlMenuShortcut-container li").on("dragstart", function (e) {
+                draggedItem = this;
+                $(this).addClass("dragging");
+                e.originalEvent.dataTransfer.effectAllowed = "move";
+            });
+
+            $("#select2-ddlMenuShortcut-container li").on("dragend", function () {
+                $(this).removeClass("dragging");
+            });
+
+            $("#select2-ddlMenuShortcut-container li").on("dragover", function (e) {
+                e.preventDefault();
+            });
+
+            $("#select2-ddlMenuShortcut-container li").on("drop", function (e) {
+                e.preventDefault();
+                if (draggedItem !== this) {
+                    let $list = $("#select2-ddlMenuShortcut-container");
+                    let $dragged = $(draggedItem);
+                    let $target = $(this);
+
+                    if ($dragged.index() > $target.index()) {
+                        $dragged.insertBefore($target);
+                    } else {
+                        $dragged.insertAfter($target);
+                    }
+                }
+            });
+            @* custom code *@
+    });
+
+    function showUserOptions(){
+        let orderedItems = [];
+        $("#select2-ddlMenuShortcut-container li").each(function (index) {
+            let spanElement = $(this).children("span");
+            let spanId = spanElement.attr("id");
+            if (spanId) {
+                let extractedNumber = spanId.match(/(\d+)$/)[0];
+                var obj = { 
+                    'MenuID': extractedNumber,
+                    'SeqNo': index+1,
+                };
+                orderedItems.push(obj);
+            }
+        });
+        console.log("Reordered List:", orderedItems);
+    }
+
+    function UpdateInActivityTime(UserID)
+    {
+        var activityName = "Update User Inactivity Time";
+        var activityDetail = 'User: @Session[clsConstants.UserName]';
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/ValidateRequiredTrnPwd?activityName=" + activityName + "&UserID=" + UserID,
+            cache: false,
+            success: function (result) {
+                if (result.blnStatus != 'undefined' && result.blnStatus == false) {
+                    if (result.strType == "danger") {
+                        alertDismissable(result.strType, result.strMessage); return;
+                    }
+                    else { UpdateInActivityTimeDo(); }
+                }
+                else {
+                    ShowPasswordModalForReqTrn(activityName + " : Requires Transaction Password", function (ApproverId) {
+                        UpdateInActivityTimeDo();
+                    }, activityName, activityDetail);
+                }
+            }
+        });
+    }
+
+    function UpdateInActivityTimeDo()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/Settings/UpdateInActivityTime?mins=" + $('#txtTimeOut').val(),
+            cache: false,
+            success: function (result) {
+                alertDismissable(result.strType, result.strMessage);
+            }
+        });
+    }
+
+    function UpdateUserOptions(UserID)
+    {
+        var activityName = "Update User Settings";
+        var activityDetail = 'User: @Session[clsConstants.UserName]';
+
+        $.ajax({
+            type: "GET",
+            url: "/Home/ValidateRequiredTrnPwd?activityName=" + activityName + "&UserID=" + UserID,
+            cache: false,
+            success: function (result) {
+                if (result.blnStatus != 'undefined' && result.blnStatus == false) {
+                    if (result.strType == "danger") {
+                        alertDismissable(result.strType, result.strMessage); return;
+                    }
+                    else { UpdateUserOptionsDo(UserID); }
+                }
+                else {
+                    ShowPasswordModalForReqTrn(activityName + " : Requires Transaction Password", function (ApproverId) { UpdateUserOptionsDo(UserID);}, activityName, activityDetail);
+                }
+            }
+        });
+    }
+
+    function UpdateUserOptionsDo(UserID) {
+        var objUsers = {
+            'UserID': UserID,
+            'IMEI': $('#ddlMenuOptions').val(),
+        }
+
+        var objShortMenu = [];
+        $('#ddlMenuShortcut').find(':selected').each(function (index, value) {
+            //console.log(index + ": " + $(value).val());
+            var obj = {
+                'UserID': UserID,
+                'MenuID': $(value).val(),
+                'SeqNo': index+1,
+            };
+            objShortMenu.push(obj);
+        });
+
+        $.ajax({
+            url: "/Settings/UpdateUserOption",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: JSON.stringify({ 'objUser': objUsers, 'lstUserShortMenu': objShortMenu, 'iInActMins': $('#txtTimeOut').val() }),
+            cache: false,
+            success: function (result) {
+                alertDismissable(result.strType, result.strMessage);
+                if (result.blnStatus) { setTimeout(function () { location.reload(); }, 1000);}
+            }
+        });
+    }
+</script>
+@* <script src="~/Scripts/js/Select2/drag-and-drop.js"></script> *@

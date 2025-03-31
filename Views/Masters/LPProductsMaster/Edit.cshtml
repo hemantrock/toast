@@ -1,0 +1,73 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadingPointProduct
+@{
+    ViewBag.Title = "Edit LP Product Master";
+    Layout = null;
+    string strLPNo = "LP:" + ((int)Model.tblLoadingPointMaster.LoadingPointNo).ToString("D2");
+    string strBayArm = "(Bay: " + @Model.tblLoadingPointMaster.tblBaysMaster.BayNum.ToString("00") + "- Arm:" + (((int)@Model.tblLoadingPointMaster.ArmNo).ToString("D2"));
+}
+
+<h2 class="headingPage">
+    Edit LP Product Master
+</h2>
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <input id="hdnIdKey" type="hidden" value="@Model.LoadingPointNo">
+    </div>
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>LP NO</label>
+                        <input id="txtLPNoData" name="LPNoData" type="text" placeholder="LP No" class="form-control" value="@strLPNo  @strBayArm" disabled>
+                        <input id="txtLPNo" name="LPNo" type="hidden" placeholder="LP No" class="form-control" value="@Model.LoadingPointNo" disabled>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PRODUCT </label>
+                        <select class="form-control" id="ddlProduct" name="Product" disabled>
+                            <option selected value="@Model.ProductID">@(Model.tblProduct.ProductCode.PadRight(12)+"-"+Model.tblProduct.ProductName)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Recipe No.</label>
+                        <input type="text" class="form-control" id="txtRecipeNo" name="RecipeNo" value="@Model.RecipeNo" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-6 checkbox-field">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            @if (Model.ProductStatus == true)
+                            {
+                                <input id="chkEnable" name="Enable" type="checkbox" checked="checked" class="form-control">
+                            }
+                            else
+                            {
+                                <input id="chkEnable" name="Enable" type="checkbox" class="form-control">
+                            }
+                        </span>
+                        <input type="text" class="form-control" value="PRODUCT ENABLED" disabled>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateLPProductsMaster();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/LPProductsMaster/LPProductsMaster.js"></script>
+<script>
+    $(document).ready(function () {
+        //LoadDDLProduct($('#ddlProduct'),'@Model.ProductID');
+    });
+</script>

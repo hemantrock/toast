@@ -1,0 +1,70 @@
+﻿@using TOAST.Data.Model;
+@model  List<TOAST.Data.Model.tblProduct>
+@{
+    ViewBag.Title = "Add Baseline Density & Temp";
+    Layout = null;
+    List<tblProduct> lstProd = Model;
+    int i = 0;
+}
+
+<h2 class="headingPage">
+    Add Baseline Temperature and Density
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-12 col-md-12 form-container">
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group" style="margin: 0;">
+                        <label>Baseline DateTime</label>
+                        <input type="text" class="form-control" id="dtpBaselineDT" value="@System.DateTime.Now.ToString("dd-MMM-yyyy HH:mm")" disabled name="BaselineDT" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 form-container">
+                <table id="tblBaseLineDetail" class="table">
+                    <thead>
+                        <tr>
+                            <th style="display:none;">Id</th>
+                            <th>PRODUCT</th>
+                            <th>Std Density (kg/m³) at 15°C</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (tblProduct prod in lstProd)
+                            {
+                                i = i + 1;
+                                tblProduct obj = prod;
+                                if (obj != null)
+                                {
+                                    <tr id="row_@i">
+                                        <td style="display:none;"><input id="txtProductID_@i" name="product" readonly type="text" value="@obj.ProductID" /></td>
+                                        <td class="product-name"><input id="chkSelected_@i" type="checkbox" class="form-control checkbox" />
+                                            <input id="txtProduct_@i" name="Product" readonly type="text" placeholder="Product" class="form-control" value="@obj.ProductName" />
+                                        </td>
+                                        <td>
+                                            <div class="fields form-group" style="margin: 0;">
+                                                <input id="txtDensity_@i" name="Density"  type="text" autocomplete="off" step="4" placeholder="@prod.StdDensity" class="form-control" onkeypress="return isDecimalKey(event)">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <input type="hidden" id="rowCount" value="@i" />
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveBaseDensTemp();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Transactions/BaseslineDensTemp/DensTemp.js"></script>
+

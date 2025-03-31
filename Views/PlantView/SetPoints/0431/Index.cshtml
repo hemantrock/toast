@@ -1,0 +1,1075 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<tblTank>
+@{
+    ViewBag.Title = "Plant View - Configured Set Points";
+}
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">Bypass / Maintenance Mode View</h3>
+        </div>
+    </div>
+    <div class="tab-wrapper w-100">
+        <div class="panel with-nav-tabs panel-default">
+            <div class="panel-heading">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#BGU" data-toggle="tab" style="font-size: 23px;">BGU</a></li>
+                    <li><a href="#AirSOV" data-toggle="tab" style="font-size: 23px;">DV Air Station</a></li>
+                    <li><a href="#ESD" data-toggle="tab" style="font-size: 23px;">ESD / HHH</a></li>
+                    <li><a href="#RecvSation" data-toggle="tab" style="font-size: 23px;">Receiving Station</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="BGU">
+                        <div class="row first">
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Zone-01 BGU-A at Unloading Platform Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN01_BGUA_MAINT',this,'ZN01_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN01_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-01 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN01_BGUB_MAINT',this,'ZN01_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN01_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-02 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN02_BGUA_MAINT',this,'ZN02_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN02_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-02 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN02_BGUB_MAINT',this,'ZN02_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN02_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-03 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN03_BGUA_MAINT',this,'ZN03_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN03_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-03 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN03_BGUB_MAINT',this,'ZN03_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN03_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-04 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN04_BGUA_MAINT',this,'ZN04_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN04_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-04 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN04_BGUB_MAINT',this,'ZN04_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN04_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-05 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN05_BGUA_MAINT',this,'ZN05_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN05_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-05 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN05_BGUB_MAINT',this,'ZN05_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN05_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-06 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN06_BGUA_MAINT',this,'ZN06_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN06_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-06 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN06_BGUB_MAINT',this,'ZN06_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN06_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-07 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN07_BGUA_MAINT',this,'ZN07_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN07_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-07 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN07_BGUB_MAINT',this,'ZN07_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN07_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-08 BGU-A at Empty Cum Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN08_BGUA_MAINT',this,'ZN08_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN08_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-08 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN08_BGUB_MAINT',this,'ZN08_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN08_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-09 BGU-A at Filled Cylinder Storage Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN09_BGUA_MAINT',this,'ZN09_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN09_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-09 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN09_BGUB_MAINT',this,'ZN09_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN09_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Zone-10 BGU-A at Filled Cylinder Storage Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN10_BGUA_MAINT',this,'ZN10_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN10_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-10 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN10_BGUB_MAINT',this,'ZN10_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN10_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-11 BGU-A at Filled Cylinder Storage Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN11_BGUA_MAINT',this,'ZN11_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN11_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-11 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN11_BGUB_MAINT',this,'ZN11_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN11_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-12 BGU-A at Filled Cylinder Storage Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN12_BGUA_MAINT',this,'ZN12_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN12_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-12 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN12_BGUB_MAINT',this,'ZN12_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN12_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-13 BGU-A at Cylinder Loading Platform Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN13_BGUA_MAINT',this,'ZN13_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN13_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-13 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN13_BGUB_MAINT',this,'ZN13_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN13_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-14 BGU-A at Part Of TT Gantry</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN14_BGUA_MAINT',this,'ZN14_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN14_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-14 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN14_BGUB_MAINT',this,'ZN14_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN14_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-15 BGU-A at Valve Changing Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN15_BGUA_MAINT',this,'ZN15_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN15_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-15 BGU-B at Valve Changing Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN15_BGUB_MAINT',this,'ZN15_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN15_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-15 BGU-C at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN15_BGUC_MAINT',this,'ZN15_BGUC_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN15_BGUC_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-16 BGU-A at Commercial Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN16_BGUA_MAINT',this,'ZN16_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN16_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-16 BGU-B at Commercial Filling Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN16_BGUB_MAINT',this,'ZN16_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN16_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-16 BGU-C at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN16_BGUC_MAINT',this,'ZN16_BGUC_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN16_BGUC_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-17 BGU-A at Cylinder Loading Platform Shed</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN17_BGUA_MAINT',this,'ZN17_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN17_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-17 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN17_BGUB_MAINT',this,'ZN17_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN17_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Zone-18 BGU-A at LPG/Propane Pump & Compressor House</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN18_BGUA_MAINT',this,'ZN18_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN18_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-18 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN18_BGUC_MAINT',this,'ZN18_BGUC_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN18_BGUC_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-19 BGU-A at Mounded Bullet</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN19_BGUA_MAINT',this,'ZN19_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN19_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-19 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN19_BGUB_MAINT',this,'ZN19_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN19_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-20 BGU-A at Receipt Station</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN20_BGUA_MAINT',this,'ZN20_BGUA_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN20_BGUA_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zone-20 BGU-B at Security Cabin</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN20_BGUB_MAINT',this,'ZN20_BGUB_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN20_BGUB_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="AirSOV">
+                        <div class="row first">
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-01</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN01_AIRSTN_SV_BYPASS',this,'ZN01_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN01_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-02</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN02_AIRSTN_SV_BYPASS',this,'ZN02_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN02_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-03</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN03_AIRSTN_SV_BYPASS',this,'ZN03_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN03_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-04</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN04_AIRSTN_SV_BYPASS',this,'ZN04_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN04_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-05</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN05_AIRSTN_SV_BYPASS',this,'ZN05_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN05_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-06</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN06_AIRSTN_SV_BYPASS',this,'ZN06_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN06_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-07</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN07_AIRSTN_SV_BYPASS',this,'ZN07_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN07_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-08</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN08_AIRSTN_SV_BYPASS',this,'ZN08_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN08_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-09</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN09_AIRSTN_SV_BYPASS',this,'ZN09_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN09_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-10</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN10_AIRSTN_SV_BYPASS',this,'ZN10_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN10_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-11</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN11_AIRSTN_SV_BYPASS',this,'ZN11_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN11_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-12</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN12_AIRSTN_SV_BYPASS',this,'ZN12_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN12_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-13</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN13_AIRSTN_SV_BYPASS',this,'ZN13_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN13_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-14</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN14B_AIRSTN_SV_BYPASS',this,'ZN14B_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN14B_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-15B</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN15B_AIRSTN_SV_BYPASS',this,'ZN15B_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN15B_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-16A</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN16A_AIRSTN_SV_BYPASS',this,'ZN16A_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN16A_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-17</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN17_AIRSTN_SV_BYPASS',this,'ZN17_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN17_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-18</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN18B_AIRSTN_SV_BYPASS',this,'ZN18B_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN18B_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-19</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN19_AIRSTN_SV_BYPASS',this,'ZN19_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN19_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline SOV HMI Bypass of Zone-20</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN20_AIRSTN_SV_BYPASS',this,'ZN20_AIRSTN_SV_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN20_AIRSTN_SV_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-01</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN01_PS_AIR_BYPASS',this,'ZN01_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN01_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-02</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN02_PS_AIR_BYPASS',this,'ZN02_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN02_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-03</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN03_PS_AIR_BYPASS',this,'ZN03_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN03_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-04</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN04_PS_AIR_BYPASS',this,'ZN04_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN04_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-05</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN05_PS_AIR_BYPASS',this,'ZN05_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN05_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-06</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN06_PS_AIR_BYPASS',this,'ZN06_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN06_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-07</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN07_PS_AIR_BYPASS',this,'ZN07_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN07_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-08</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN08_PS_AIR_BYPASS',this,'ZN08_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN08_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-09</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN09_PS_AIR_BYPASS',this,'ZN09_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN09_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-10</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN10_PS_AIR_BYPASS',this,'ZN10_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN10_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-11</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN11_PS_AIR_BYPASS',this,'ZN11_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN11_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-12</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN12_PS_AIR_BYPASS',this,'ZN12_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN12_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-13</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN13_PS_AIR_BYPASS',this,'ZN13_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN13_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-14</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN14B_PS_AIR_BYPASS',this,'ZN14B_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN14B_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-15</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN15B_PS_AIR_BYPASS',this,'ZN15B_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN15B_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-16</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN16A_PS_AIR_BYPASS',this,'ZN16A_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN16A_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-17</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN17_PS_AIR_BYPASS',this,'ZN17_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN17_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-18</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN18B_PS_AIR_BYPASS',this,'ZN18B_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN18B_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-19</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN19_PS_AIR_BYPASS',this,'ZN19_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN19_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Airline PS HMI Bypass of Zone-20</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ZN20_PS_AIR_BYPASS',this,'ZN20_PS_AIR_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ZN20_PS_AIR_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="ESD">
+                        <div class="row first">
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ESD PB At Receipt Station</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB01_MAINT',this,'ESD_PB01_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB01_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At Control Room</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB02_MAINT',this,'ESD_PB02_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB02_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At 24 Head Carousel</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB03_MAINT',this,'ESD_PB03_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB03_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At 48 Head Carousel</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB04_MAINT',this,'ESD_PB04_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB04_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At 12 Head Carousel</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB05_MAINT',this,'ESD_PB05_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB05_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At TT Gantry</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB06_MAINT',this,'ESD_PB06_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB06_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At LPG pump house & MSV</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB07_MAINT',this,'ESD_PB07_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB07_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ESD PB At Central Pipeline ESD</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: ESD_PB08_MAINT',this,'ESD_PB08_MAINT','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn ESD_PB08_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>HHH HMI Bypass of Bullet V-101A</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: MSV_101A_HLA_BYPASS',this,'MSV_101A_HLA_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn MSV_101A_HLA_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>HHH HMI Bypass of Bullet V-101B</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: MSV_101B_HLA_BYPASS',this,'MSV_101B_HLA_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn MSV_101B_HLA_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>HHH HMI Bypass of Bullet V-102A</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: MSV_102A_HLA_BYPASS',this,'MSV_102A_HLA_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn MSV_102A_HLA_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>HHH HMI Bypass of Bullet V-102B</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: MSV_102B_HLA_BYPASS',this,'MSV_102B_HLA_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn MSV_102B_HLA_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>HHH HMI Bypass of KOD-101</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: K101_DRUM_HLA_BYPASS',this,'K101_DRUM_HLA_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn K101_DRUM_HLA_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>HHH HMI Bypass of KOD-102</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: K102_DRUM_HLA_BYPASS',this,'K102_DRUM_HLA_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn K102_DRUM_HLA_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="RecvSation">
+                        <div class="row first">
+                            <div class="col-lg-4">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 85%">Description</th>
+                                            <th class="text-center bg-color" style="width: 15%">Maint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>PIT-1005A LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1005A_LL_BYPASS',this,'PIT1005A_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1005A_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1005B LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1005B_LL_BYPASS',this,'PIT1005B_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1005B_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1005C LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1005C_LL_BYPASS',this,'PIT1005C_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1005C_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1004 LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1004_LL_BYPASS',this,'PIT1004_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1004_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1032A HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1032A_HH_BYPASS',this,'PIT1032A_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1032A_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1032B HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1032B_HH_BYPASS',this,'PIT1032B_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1032B_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1032C HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1032C_HH_BYPASS',this,'PIT1032C_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1032C_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1032A LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1032A_LL_BYPASS',this,'PIT1032A_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1032A_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1032B LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1032B_LL_BYPASS',this,'PIT1032B_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1032B_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1032C LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1032C_LL_BYPASS',this,'PIT1032C_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1032C_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1035A HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1035A_HH_BYPASS',this,'PIT1035A_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1035A_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1035B HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1035B_HH_BYPASS',this,'PIT1035B_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1035B_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1035C HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1035C_HH_BYPASS',this,'PIT1035C_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1035C_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1027A LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1027A_LL_BYPASS',this,'PIT1027A_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1027A_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1027B LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1027B_LL_BYPASS',this,'PIT1027B_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1027B_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PIT-1027C LoLo Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: PIT1027C_LL_BYPASS',this,'PIT1027C_LL_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn PIT1027C_LL_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>DPT-1001 HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: DPT1001_HH_BYPASS',this,'DPT1001_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn DPT1001_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>  
+                                            <td>DPT-1002 HiHi Interlock HMI Bypass</td>
+                                            <td>
+                                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Safety Interlock','Tag: DPT1002_HH_BYPASS',this,'DPT1002_HH_BYPASS','TOGGLE')">
+                                                    <input id="toggle-maintainence-mode" class="on-off-btn DPT1002_HH_BYPASS" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "ESDView";
+        InitConn(opcPageName,0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

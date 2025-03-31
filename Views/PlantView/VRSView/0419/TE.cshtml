@@ -1,0 +1,452 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+<style>
+    .toggle-wrapper .toggle.btn {
+        width: 50px !important;
+        height: 25px !important;
+        min-width: 50px;
+        min-height: 25px;
+    }
+
+    .toggle-wrapper .toggle-group label {
+        top: -4px;
+    }
+
+    .toggle-wrapper .btn.btn-primary {
+        left: -4px;
+    }
+</style>
+
+<div id="dvContent" class="content">
+        <div class="row">
+            <div class="col-lg-12" align="center">
+                <h3 class="grid-headerplant" style="color:black">TEMERATURE ELEMENTS</h3>
+            </div>
+        </div>
+        <div class="security-system-container m-t-40">
+            <div class="row">
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-101</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE101 Measure existing',this, 'TE101_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE101_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                               <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE101_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE101 High High setting value',this, 'TE101_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE101_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE101 High setting value',this, 'TE101_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-201</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE201 Measure existing',this, 'TE201_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE201_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE201_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE201 High High setting value',this, 'TE201_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE201_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE201 High setting value',this, 'TE201_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-411</th>
+                            </tr>
+                        </thead>
+                     <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE411 Measure existing',this, 'TE411_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE411_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE411_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE411 High High setting value',this, 'TE411_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE411_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE411 High setting value',this, 'TE411_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-412</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE412 Measure existing',this, 'TE412_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE412_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE412_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE412 High High setting value',this, 'TE412_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE412_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE412 High setting value',this, 'TE412_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-421</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE421 Measure existing',this, 'TE421_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE421_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE421_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE421 High High setting value',this, 'TE421_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE421_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE421 High setting value',this, 'TE421_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-422</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE422 Measure existing',this, 'TE422_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE422_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE422_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE422 High High setting value',this, 'TE422_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE422_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE422 High setting value',this, 'TE422_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-511</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE511 Measure existing',this, 'TE511_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE511_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE511_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE511 High High setting value',this, 'TE511_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE511_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE511 High setting value',this, 'TE511_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-512</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE512 Measure existing',this, 'TE512_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE512_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE512_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE512 High High setting value',this, 'TE512_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE512_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE512 High setting value',this, 'TE512_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-513</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE513 Measure existing',this, 'TE513_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE513_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE513_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE513 High High setting value',this, 'TE513_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE513_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE513 High setting value',this, 'TE513_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-521</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE521 Measure existing',this, 'TE521_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE521_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE521_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE521 High High setting value',this, 'TE521_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE521_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE521 High setting value',this, 'TE521_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-522</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE522 Measure existing',this, 'TE522_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE522_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE522_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE522 High High setting value',this, 'TE522_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE522_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE522 High setting value',this, 'TE522_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-523</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE523 Measure existing',this, 'TE523_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE523_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE523_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE523 High High setting value',this, 'TE523_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE523_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE523 High setting value',this, 'TE523_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                    <table class="table-striped app-tbl m-t-10">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-color" colspan="3">TE-601</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">Measure Existing</td>
+                                <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE601 Measure existing',this, 'TE601_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn TE601_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High High Setting Value</td>
+                                <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE601_VSHH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE601 High High setting value',this, 'TE601_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="bold">High Setting Value</td>
+                                 <td width="20%">
+                                    <input type="number" step="0.01" min=0 readonly class="editable-input TE601_VSH" ondblclick="this.readOnly='';"style="border: 0px;width: 100%;" value="">
+                                    <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: TE601 High setting value',this, 'TE601_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "VRS_SetPoints";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

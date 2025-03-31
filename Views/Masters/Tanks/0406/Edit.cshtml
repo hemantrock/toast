@@ -1,0 +1,161 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTank
+@{
+    ViewBag.Title = "Edit Tank Master";
+    List<tblProduct> ddlProds = ViewBag.AllowedProds;
+    List<tblDropdownValue> ddlist = ViewBag.DropDownValues;
+    List<tblDropdownValue> ddlGaugeType = ddlist.Where(x => x.ddlType.ToUpper() == "LVLGAUGETYPE").OrderBy(x=>x.UniqueID).ToList();
+    List<tblTanksMode> ddlTankModes = ViewBag.lstTankModes;
+    Layout = null;
+}
+<h2 class="headingPage">
+    Edit Tank Master
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmTanks" role="form" class="form-fields">
+            <input id="hdnIdKey" type="hidden" value="@Model.UniqueID">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TANK NAME</label>
+                        <input id="txtTankName" name="TankName" type="text" placeholder="Tank Name (3-10 Chars)" class="form-control" value="@Model.TankName">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>ERP TANK NO</label>
+                        <input id="txtSAPTankNo" name="SAPTankNo" type="text" placeholder="ERP Tank No (4 Chars)" class="form-control" value="@Model.SAPTankNo">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TANK TYPE</label>
+                        <select class="form-control" id="ddlTankType" name="TankType"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>PRODUCT</label>
+                        <select class="form-control" id="ddlProduct" name="Product">
+                            <option value="0">Select Product</option>
+                            @foreach (tblProduct Prod in ddlProds)
+                            {
+                                if (Prod.ProductID != Model.ProductID)
+                                {
+                                    <option value="@Prod.ProductID">@Prod.ProductName</option>
+                                }
+                                else
+                                {
+                                    <option value="@Prod.ProductID" selected="selected">@Prod.ProductName</option>
+                                }
+                            }
+                        </select>
+
+                    </div>
+                </div>
+                @*<div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Plant Code</label>
+                        <select class="form-control" id="ddlPlantCode" name="PlantCode" ></select>
+                    </div>
+                </div>*@
+                <div class="hide col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Primary Gauge</label>
+                        <select class="form-control" id="ddlPrimaryGaugeType" name="PrimaryGaugeType">
+                            <option value="" ConnType="0">Select Primary Gauge</option>
+                            @foreach (tblDropdownValue data in ddlGaugeType)
+                            {
+                                if (Model.PrimaryGaugeType != data.ddlValues)
+                                {
+                                    <option value="@data.ddlValues">@data.ddlValues</option>
+                                }
+                                else
+                                {
+                                    <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="hide col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Secondary Gauge</label>
+                        <select class="form-control" id="ddlSecGaugeType" name="SecGaugeType">
+                            <option value="" ConnType="0">Select Secondary Gauge</option>
+                            @foreach (tblDropdownValue data in ddlGaugeType)
+                            {
+                                if (Model.SecGaugeType != data.ddlValues)
+                                {
+                                    <option value="@data.ddlValues">@data.ddlValues</option>
+                                }
+                                else
+                                {
+                                    <option value="@data.ddlValues" selected="selected">@data.ddlValues</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>DIP REFERENCE HEIGHT (CM)</label>
+                        <input id="txtDipReferenceHeight" name="DipReferenceHeight" type="text" placeholder="Dip Ref Height (Numeric) in mm" class="form-control" value="@Model.DipReferenceHeight">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>NOMINAL DIA (M)</label>
+                        <input id="txtNominalDia" name="NominalDia" type="text" placeholder="Nominal Dia (Numeric)" class="form-control" value="@Model.NominalDia">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Safe Filling Height</label>
+                        <input id="txtSafeFillingCapacity" name="SafeFillingCapacity" type="text" placeholder="Safe Filling Height (mm) (Numeric)" class="form-control" value="@Model.SafeFillingCapacity">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>MAXIMUM VOLUME</label>
+                        <input id="txtMaxVolume" name="MaxVolume" type="text" placeholder="Max Volume (Numeric) Ltrs" class="form-control" value="@Model.MaxVolume">
+                    </div>
+                </div>
+                <div class="hide col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>Tank Mode</label>
+                        <select class="form-control" id="ddlTankMode" name="TankMode">
+                            <option value="">Select Tank Mode</option>
+                            @foreach (tblTanksMode tnkMode in ddlTankModes)
+                            {
+                                if (Model.TankMode != tnkMode.ModeId)
+                                {
+                                    <option value="@tnkMode.ModeId">@tnkMode.ModeDesc</option>
+                                }
+                                else
+                                {
+                                    <option value="@tnkMode.ModeId" selected="selected">@tnkMode.ModeDesc</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTanks();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Tanks/Tanks.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadDDLTankType(@Model.TankType);
+        //LoadDDLProduct($('#ddlProduct'), '@Model.ProductID');
+        //LoadDDLPlantCode($('#ddlPlantCode'), '@Model.PlantCodeID');
+    });
+</script>

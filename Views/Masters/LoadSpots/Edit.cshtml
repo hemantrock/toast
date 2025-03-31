@@ -1,0 +1,85 @@
+﻿@using TOAST.Data.Model;
+@using System.Linq;
+@model TOAST.Data.Model.tblLoadSpotMaster
+@{
+    ViewBag.Title = "Edit Load Spot";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Wagon Load Spot
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="fields form-group">
+                    <label>LoadSpot ID</label>
+                    <input id="txtLSUniqueID" name="LSID" value="@Model.UniqueID" type="text" placeholder="Load Spot Unique ID" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="fields form-group">
+                    <label>Spur No</label>
+                    <input id="txtSpurNo" name="SpurNo" value="@Model.tblWagonBCUArmBatch.tblWagonBCUMaster.tblClusterMaster.tblSpurMaster.SpurNo" type="text" placeholder="Spur No" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="fields form-group">
+                    <label>Cluster No.</label>
+                    <input id="txtClusterNo" name="ClusterNo" value="@Model.tblWagonBCUArmBatch.tblWagonBCUMaster.tblClusterMaster.ClusterNo" type="text" placeholder="Loop Number" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="hide col-lg-3 col-md-4 col-sm-12">
+                <div class="fields form-group">
+                    <label>BCU No</label>
+                    <input id="txtBCUNo" name="ACUNo" value="@Model.tblWagonBCUArmBatch.tblWagonBCUMaster.BCUNo" type="text" placeholder="BCU Number" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="fields form-group">
+                    <label>Product</label>
+                    <input id="txtProductName" name="ProductName" value="@Model.tblWagonBCUArmBatch.tblWagonBCUMaster.tblWBCUArmProducts.FirstOrDefault().tblProduct.ProdNameShort" type="text" placeholder="Product Name" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="fields form-group">
+                    <label>Load Spot No</label>
+                    <input id="txtLoadSpotNo" name="LoadSpotNo" value="@Model.LoadSpotNo" type="text" placeholder="Load Spot No" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkLAPSBypass" name="LAPSBypass" type="checkbox" @(Model.LAPSBypass ? "checked" : "") class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="LAPS Bypass" disabled>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkOVSPBypass" name="OVSPBypass" type="checkbox" @(Model.OverspillBypass ? "checked" : "") class="form-control" disabled>
+                    </span>
+                    <input type="text" class="form-control" value="OverSpill Bypass">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-12 checkbox-field">
+                <div class="input-group fields form-group">
+                    <span class="input-group-addon">
+                        <input id="chkLSEnable" name="LSEnable" type="checkbox" @((Model.LSEnable??false) ? "checked" : "") class="form-control" disabled>
+                    </span>
+                    <input type="text" class="form-control" value="Load Spot Enabled">
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateLoadSpot();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/LoadSpots/LoadSpots.js"></script>

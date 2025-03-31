@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Plant View - Bay View";
+    Layout = null;
+}
+
+<div class="bay-view-wrapper">
+    <div class="heading-container col-xs-12 no-padding">
+        <div class="col-xs-5 no-padding">
+            <h1>BAY VIEW</h1>
+        </div>
+        <div class="col-xs-7 no-padding">
+            <div class="heading-right-container">
+                <label>GO : </label>
+                <select id='ddlBayView' onchange="ChangeBayView()">
+                    <option value="BAYVIEW01">Bay 1</option>
+                    <option value="BAYVIEW02">Bay 2</option>
+                    <option value="BAYVIEW03">Bay 3</option>
+                    <option value="BAYVIEW04">Bay 4</option>
+                    <option value="BAYVIEW05">Bay 5</option>
+                    <option value="BAYVIEW06">Bay 6</option>
+                    <option value="BAYVIEW07">Bay 7</option>
+                    <option value="BAYVIEW08">Bay 8</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dvBayView">
+
+</div>
+<script src="~/Scripts/MobilePageJS/PlantView/BayView/Index.js"></script>

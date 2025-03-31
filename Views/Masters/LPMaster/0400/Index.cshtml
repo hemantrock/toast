@@ -1,0 +1,13 @@
+﻿@{
+    bool? AllowCleanStart = ViewBag.AllowCleanStart;
+}
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/Masters/LPMaster/0400/Index.js"></script>
+<script>
+    @*GridWidth = '@(AllowCleanStart?"1511px":"1436px")';*@
+    HideCleanStart = @((!(AllowCleanStart??false)).ToString().ToLower());
+
+</script>

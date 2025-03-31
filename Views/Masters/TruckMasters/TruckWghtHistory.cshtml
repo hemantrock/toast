@@ -1,0 +1,55 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadMasterArchive>
+@{
+    Layout = null;
+}
+<h3 class="grid-header" style="color:black">Truck Weight History</h3>
+<table id="tblTruckWghtHistory" class="table">
+    <thead>
+        <tr>
+            <th>LoadID</th>
+            <th>ShipmentNo</th>
+            <th>SequenceNo</th>
+            <th>RegDate</th>
+            <th>Tare Weight</th>
+            <th>Gross Weight</th>
+            <th>Net Weight</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (tblLoadMasterArchive itm in Model)
+        {
+        <tr id="row_@itm.LoadID">
+            <td>@itm.LoadID</td>
+            <td>@itm.ShipmentNo</td>
+            <td>@itm.FANSlipNo</td>
+            <td>@((itm.RegDate??new DateTime()).ToString("dd-MMM-yyyy HH:mm:ss"))</td>
+            <td>@(itm.WeightBeforeLoading??0)</td>
+            <td>@(itm.WeightAfterLoading??0)</td>
+            <td>@((itm.WeightAfterLoading??0)- (itm.WeightBeforeLoading ?? 0))</td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $('#tblTruckWghtHistory').dataTable({
+        "iDisplayLength": iGblNoRows,
+        "bLengthChange": false,
+        "bFilter": true,
+        "bPaginate": false,
+        "bSort": false,
+        "bInfo": true,
+        "aoColumns":
+            [
+                { sWidth: "12%" },
+                { sWidth: "15%" },
+                { sWidth: "20%" },
+                { sWidth: "20%" },
+                { sWidth: "11%", 'sClass': 'text-center'  },
+                { sWidth: "11%", 'sClass': 'text-center'  },
+                { sWidth: "11%", 'sClass': 'text-center'  },
+            ],
+        "bAutoWidth": false,
+    });
+</script>
+

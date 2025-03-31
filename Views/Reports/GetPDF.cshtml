@@ -1,0 +1,5 @@
+﻿@using TOAST.Data.ViewModels;
+
+@*<iframe class="report-content" src='@Url.Action("ExportReportsToFile", "Reports", new { ReportId = Model.ReportId, FromDate = Model.FromDate, ToDate = Model.ToDate })' type="application/pdf"></iframe>*@
+@*<embed class="report-content" src="@Url.Action("ExportReportsToFile", "Reports")" onload="alert('event has been triggered');" type="application/pdf"></embed>*@
+<embed class="report-content" src="@Url.Action("ExportReportsToFile", "Reports")" style="background: transparent url('../../../Images/p-wait-animate.gif') no-repeat center;"  type="application/pdf"></embed>

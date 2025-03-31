@@ -1,0 +1,192 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblPLCConfig>
+@{
+    ViewBag.Title = "Plant View - Safety PLC View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Safety PLC View</h3>
+    </div>
+</div>
+
+<div class="row">
+        <div class="col-lg-12 content-top-spacing ">
+             
+            <div class="col-lg-12 plc-box safety-plc-box">
+                 
+                    @{
+                        List<tblPLCConfig> lstController = Model.Where(x => x.MasterItemID == null).ToList();
+                        for (int i = 0; i < lstController.Count; i++)
+                        {
+                            string Prefix = lstController[i].TagPrefix;
+                            <div class="plc-block plc-block-@(i + 1)">
+                                @{
+                                    List<tblPLCConfig> lstRHCM = Model.Where(x => (x.MasterItemID ?? 0) == lstController[i].UniqueID || x.UniqueID == lstController[i].UniqueID).OrderBy(x => x.SeqNo).ToList();
+                                    for (int j = 0; j < lstRHCM.Count(); j++)
+                                    {
+                                        string RHCMPrefix = lstRHCM[j].TagPrefix; // RHCM -> Rack & Host Communication Modules
+
+                                        <div class="item-block tooltips" title="@(lstRHCM[j].ItemName+ ": " + lstRHCM[j].ItemDesc)">
+                                            <span class="plc-lbl">@lstRHCM[j].ItemName</span>
+                                            <span class="plc-bg @(RHCMPrefix) @lstRHCM[j].ClassName"></span>
+
+                                            <table class="table-striped app-tbl @lstRHCM[j].ItemName">
+                                                <thead>
+                                                    <tr><th class="text-center bg-color" colspan="2">@lstController[i].ItemName</th></tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="lbl">Master</td>
+                                                        <td class="val"><span class="circle-cont-sm"><span class="@(Prefix)_MASTER"></span></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl">LANA</td>
+                                                        <td class="val"><span class="alert-cont-sm"><span class="@(Prefix)_LANA"></span></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl">LANB</td>
+                                                        <td class="val"><span class="alert-cont-sm"><span class="@(Prefix)_LANB"></span></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl">POWER</td>
+                                                        <td class="val"><span class="alert-cont-sm"><span class="@(Prefix)_POW"></span></span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    }
+                                }
+                                <span class="plc-type @Prefix"></span>
+                            </div>
+
+                            @*<span>&nbsp;&nbsp;&nbsp;</span>*@
+                        }
+                    }
+                    <div class="plc-tbl-cont">
+                        <table class="table-striped app-tbl m-t-10" style="width:60%">
+                            <thead>
+                                <tr><th class="text-center bg-color" colspan="2">SAFETY PLC POWER MODULES</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 01</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_01"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 02</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_02"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 03</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_03"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 04</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_04"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 05</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_05"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 06</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_06"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 07</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_07"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="80%" class="bold">Power Module - 08</td>
+                                    <td width="20%">
+                                        <span class="alert-cont-sm">
+                                            <span class="SFTY_POW_MOD_08"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row 11">
+                        @{
+                            List<string> Nodes = Model.Where(x => x.ItemType.ToUpper().Contains("NODE")).Select(x => x.ItemType).Distinct().ToList();
+                            if (Nodes != null && Nodes.Count() > 0)
+                            {
+                                int iNode = 0;
+                                foreach (string NodeName in Nodes)
+                                {
+                                    <div class="row">
+                                        <div class="plc-block-rack line-@(iNode+1)">
+
+                                            @{
+                                                List<tblPLCConfig> Node = Model.Where(x => x.ItemType == NodeName).OrderBy(x => x.SeqNo).ToList();
+                                                for (int k = 0; k < Node.Count(); k++)
+                                                {
+                                                    string ItemPrefix = String.Format(Node[k].TagPrefix, (iNode + 1).ToString("00"), (k + 1).ToString("00"));
+
+                                                    <div class="item-center-block @Node[k].ClassName tooltips" title="@(Node[k].ItemName + ": " + Node[k].ItemDesc)">
+                                                        <span class="plc-lbl">@Node[k].ItemName</span>
+                                                        <span class="rack-bg @(ItemPrefix+"") @Node[k].ClassName"></span>
+                                                        @*<img src="../../../Images/plc/@(lstRHCM[j].ItemName).jpg" />*@
+                                                    </div>
+                                                    List<tblPLCConfig> Cards = Model.Where(x => (x.MasterItemID ?? 0) == Node[k].UniqueID).OrderBy(x=>x.SeqNo).ToList();
+                                                    for (int l = 0; l < Cards.Count(); l++)
+                                                    {
+                                                        string IOCardPrefix = String.Format(@Cards[l].TagPrefix, (iNode + 1).ToString("00"), (l + 1).ToString("00"));
+                                                        <div class="item-center-block tooltips" title="@(Cards[l].ItemName+ ": " + Cards[l].ItemDesc)"><span class="plc-lbl">@Cards[l].ItemName</span><span class="rack-bg @(IOCardPrefix+"") @Cards[l].ClassName"></span></div>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                                    iNode = iNode + 1;
+                                                }
+                                            }
+                        }
+                    </div>
+
+                
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function () {
+        opcPageName = "SafetyPLCView";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

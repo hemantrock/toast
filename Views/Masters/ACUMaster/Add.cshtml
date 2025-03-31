@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Add ACU";
+    Layout = null;
+}
+
+<style>
+    
+</style>
+
+
+<h2 class="headingPage">
+    Create a new User
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                        <label>LoginID</label>
+                    <input type="text" autocomplete="off" name="LoginID" id="txtLoginID" placeholder="Enter Login ID" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>EmpId</label>
+                    <input id="txtEmpId" autocomplete="off" name="EmpId" type="text" placeholder="Emp-Id" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>FirstName</label>
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Enter First Name" id="txtFirstName" name="FirstName" />
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>MiddleName</label>
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Enter Middle Name" id="txtMiddleName" name="MiddleName" />
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Surname</label>
+                    <input id="txtSurname" autocomplete="off" name="Surname" type="text" placeholder="Enter Surname" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>User Role</label>
+                    <select class="form-control" id="ddlDesignation" name="Designation"></select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Company</label>
+                    <input id="txtCompany" autocomplete="off" name="Company" type="text" placeholder="Company Name" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Phone Number</label>
+                    <input id="txtPhoneNumber" autocomplete="off" name="PhoneNumber" type="text" placeholder="Phone Number"  class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>E-Mail</label>
+                    <input id="txtMailId" autocomplete="off" name="MailId" type="text" placeholder="Mail-Id"  class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>CardNumber</label>
+                    <input id="txtCardID" autocomplete="off" name="CardNumber" type="text" placeholder="Card Number" data-id="" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>CardAssignDate</label>
+                    <input id="dtpCardAssignDate" autocomplete="off" name="CardAssignDate" type="text" placeholder="Card Assign Date (dd-M-yyyy)" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>Account Valid Days</label>
+                    <input id="txtUserAccountValidityDays" autocomplete="off" name="UserAccountValidityDays" type="text" placeholder="Valid Days from Account creation"  class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>AccountCreationDate</label>
+                    <input id="dtpAccountCreationDate" name="AccountCreationDate" type="text" placeholder="Account Creation Date (dd-M-yyyy)" class="form-control">
+                </div>
+            </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input input-group">
+                    <span class="input-group-addon">
+                        <input id="chkCurrentStatus" autocomplete="off" name="Current Status" type="checkbox" checked="checked" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Enabled" disabled>
+                </div>
+            </div> 
+
+            <fieldset class="col-lg-4 col-md-6 col-sm-6 m-l-15">
+                <legend>Login Password</legend>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Login Password</label>
+                        <input type="password" autocomplete="off" name="LoginPassword" id="txtLoginPwd" placeholder="Enter Login Password" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Confirm Login Password</label>
+                        <input type="password" autocomplete="off" name="ConfirmLoginPassword" id="txtConfirmLoginPwd" placeholder="Re-Enten Login Password" class="form-control">
+                    </div>
+                </div>
+
+            </fieldset>	
+
+            <fieldset class="col-lg-4 col-md-6 col-sm-6 m-l-25">
+                <legend>Transaction Password</legend>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Txn Password</label>
+                        <input type="password" autocomplete="off" name="TxnPassword" id="txtTxnPwd" placeholder="Enter Txn Password" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>Confirm Txn Password</label>
+                        <input type="password" autocomplete="off" name="ConfirmTxnPassword" id="txtConfirmTxnPwd" placeholder="Re-Enter Txn Password" class="form-control">
+                    </div>
+                </div>
+            </fieldset>	
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveUsers();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Users/Users.js"></script>
+<script>
+    $(document).ready(function () {
+        AutoComplete($("#txtCardID"), "Cards", "TruckMaster");
+        LoadDDLDesignation($('#ddlDesignation'));
+    });
+</script>

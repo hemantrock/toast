@@ -1,0 +1,884 @@
+﻿@using TOAST.Business;
+@using TOAST.Data.Model;
+@using TOAST.Shared;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta http-equiv="PRAGMA" content="NO-CACHE">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOAST</title>
+    <link href="~/Content/images/favicon.ico" rel="shortcut icon">
+    @Styles.Render("~/Content/bundlecss")
+    @Scripts.Render("~/bundles/javascripts")
+    <link href="~/fonts/font-awesome-5.12.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/css/style.css" rel="stylesheet" />
+    <script src="~/Scripts/Script.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+        var opc = $.connection.opcServer;
+
+        function LRC_Changed(ActiveLRC) {
+            console.log("LRC changed to: " + ActiveLRC);
+            window.location.href = "/Home/GoToHome";
+            setTimeout(function () { alertDismissable("LRC has changed. Redirecting to " + ActiveLRC + ".....") }, 2000);
+            //window.location.href = "/Home/ClearUser";
+        }
+
+        opc.client.updateViewData = function (model, grpName) {
+            ShowOPCTagsinView(model, grpName);
+        }
+
+        opc.client.showAlertMsg = function (result) {
+            ShowAlertMsg(result);
+        }
+
+        opc.client.validateTanksModePermission = function (TankUnqId, TagName, UserID, result) {
+            ConfirmTankModeChange(TankUnqId, TagName, UserID, result);
+        }
+
+        opc.client.validateTankAutoManualPermission = function (TankUnqId, TagName, UserID, result) {
+            ConfirmTankAutoManualChange(TankUnqId, TagName, UserID, result);
+        }
+
+        opc.client.callJSFunction = function (funcName, param1, param2, param3, param4, param5) {
+            CallJSFunction(funcName, param1, param2, param3, param4, param5);
+        }
+
+        opc.client.callobjJSFunction = function (remScrObj) {
+            CallobjJSFunction(remScrObj);
+        }
+
+        $.connection.hub.start()
+            .done(function () {
+                opcStartDone = true;
+                console.log("Connected, transport = " + $.connection.hub.transport.name);
+                opc.server.readPageTags("1ST");
+            });
+
+        $.connection.hub.connectionSlow(function () {
+            alertDismissable("danger", "Connection Slow.");
+        });
+
+        var tryingToReconnect = false;
+
+        $.connection.hub.reconnecting(function () {
+            tryingToReconnect = true;
+            alertDismissable("danger", "Trying To Reconnect.");
+        });
+
+        $.connection.hub.reconnected(function () {
+            tryingToReconnect = false;
+            alertDismissable("danger", "Sever Reconnected.");
+        });
+
+        $.connection.hub.disconnected(function () {
+            //setTimeout(function () {
+            //    $.connection.hub.start();
+            //}, 5000);
+            //if (tryingToReconnect) {
+            //    alertDismissable("danger", "DisConnected trying to reconnect.");
+            //}
+            //else {
+            //    alertDismissable("danger", "Sever DisConnected.");
+            //    window.location.href = "/Home/GoToHome";
+            //}
+            alertDismissable("danger", "DisConnected Re-directing to Backup Server:" + strBackupSrv);
+            window.location = "http://" + strBackupSrv;
+        });
+
+        $.connection.hub.error(function (error) {
+            console.log('SignalR error: ' + error);
+            if (error.message.indexOf("closed") > 0) { window.location.href = "/Home/GoToHome"; }
+        });
+    </script>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader-txt">Welcome to TOAST</div>
+    </div>
+    <div class="gms-bar">
+        <div class="col-lg-2 client-logo @(clsConfig.CustomerName)"></div>
+        <div class="col-lg-8 text-center icon-control-text">@Html.Raw(clsConfig.SolName)</div>
+        <div class="col-lg-2 right logo"><div class="icon-control-logo"></div></div>
+    </div>
+    <div class="container-fluid parent">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid pad-0">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse pad-0" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        @{
+                            SharedBL objBL = new SharedBL(Convert.ToInt32(Session[clsConstants.UserID]));
+                            List<tblMenuConfig> lst = objBL.GetMenuList(Convert.ToBoolean(Session[clsConstants.IsMobile]));
+
+                            if (lst == null)
+                            {
+                                Response.Redirect("/Home/Index");
+                            }
+                            else
+                            {
+                                foreach (tblMenuConfig menu in lst.Where(x => x.MainMenuId == null))
+                                {
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="@menu.ToolTip">@menu.MenuTitle<span class="caret"></span></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            @foreach (tblMenuConfig subMenu in lst.Where(x => x.MainMenuId == menu.UniqueID))
+                                            {
+                                                <li id="submenu-@subMenu.UniqueID">
+                                                    <a onclick='@subMenu.JSFunction' title="@subMenu.ToolTip" class="dropdown-toggle" data-toggle="dropdown">
+                                                        <i class="@subMenu.glyphicon"></i>
+                                                        <span class="caret"></span>
+                                                        @subMenu.MenuTitle
+                                                    </a>
+                                                    @if (lst.Where(x => x.MainMenuId == subMenu.UniqueID).ToList().Count() > 0 && subMenu.MenuClientId != "mnuBayView_HMI")
+                                                    {
+                                                        <ul class="dropdown-submenu" role="menu">
+                                                            @foreach (tblMenuConfig subSubMenu in lst.Where(x => x.MainMenuId == subMenu.UniqueID))
+                                                            {
+                                                                <li><a herf="#" onclick='@subSubMenu.JSFunction'><i class="@subSubMenu.glyphicon"></i> @subSubMenu.MenuTitle</a></li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                    @if (subMenu.MenuClientId == "mnuBayView_HMI")
+                                                    {
+                                                        <ul class="dropdown-submenu" role="menu">
+                                                            @foreach (tblBaysMaster oBay in clsConfig.BayViewList)
+                                                            {
+                                                                <li><a herf="#" onclick="OpenBayViewHMIBasedOnSelectedBay('@oBay.BayID')"><i class="fa fa-street-view"></i>@oBay.BayName</a></li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                    <div class="menu-action">
+                        <ul>
+                            <li><span title="ESD Status" class="circle-cont-sm tooltips" style="top: 1px;"><span class="PROCESS_ESD alert_bad"></span></span></li>
+                            <li class="dashboard" title="Home"><span class="home glyphicon glyphicon-home" onclick="clearControlsSubscriptions(); OpenDashboardView('@Session[clsConstants.UserID]');" aria-hidden="true"></span></li>
+                            <li class="legend" title="Legends" onclick="OpenLegendsViewHMI()"><i class="fa fa-info"></i></li>
+                            <li class="settings" title="Settings"> <span aria-hidden="true" title="Settings" class="setting glyphicon glyphicon-cog" onclick="ShowUserSettings();"></span></li>
+                        </ul>
+                    </div>
+                    <!--User Profile section-->
+                    <div class="logout" id="Logout"><span class="user">@Convert.ToString(System.Web.HttpContext.Current.Session[clsConstants.UserName])</span><span id="userIcon" class="icon glyphicon glyphicon-user"></span></div>
+                    <div id="UserDetail">
+                        <span class="up-arrow"></span>
+                        <ul>
+                            <li>Master Server: <span class="userRole">@HttpContext.Current.ApplicationInstance.Server.MachineName</span></li>
+                            <li>Login: <span class="userRole">@HttpContext.Current.Session[clsConstants.LoginDateTime]</span></li>
+                            <li>Machine ID: <span class="userRole">@(HttpContext.Current.Session[clsConstants.MachineAddress])</span></li>
+                            <li>Signed in as: <span class="userRole">@Convert.ToString(System.Web.HttpContext.Current.Session[clsConstants.UserRole])</span></li>
+
+                        </ul>
+
+                        <!--<div class="role-bar">
+                            <a class="btn btn-primary" href="#" role="button" style="float:left;" onclick="ShowUserSettings();">Settings</a>
+                        </div>-->
+
+                        <div class="logoutBtnBar">
+                            <a class="btn btn-primary" href="#" role="button" style="float:left;" onclick="ChangePassword(@Convert.ToString(Session[clsConstants.UserID]));">Change Password</a>
+                            <a class="btn btn-primary" href="#" role="button" onclick="LogoutUser(false);">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="waitpage" id="waitpage" style="display: none;">
+                <div class="waitpage-box">
+                    <p>
+                        <img alt="(Loading)" src="~/Content/images/loading.gif">
+                        <span>Please Wait...</span>
+                    </p>
+                </div>
+            </div>
+            <div id="dvContent" class="content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <div id="msgBoard" class="msg-board">
+        <div id="StatusBar_Ack">
+            <ul id="StatusBar_Ack_List"></ul>
+            <div class="action">
+                <ul>
+                    <li><span title="Press for soft ESD" class="emergency-stop SOFT_ESD_BTN status_false tooltips" onclick="SoftESD('From TOAST',this, 'SOFT_ESD_BTN', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></span></li>
+                    <li><span class="hooter h-mute HOOTER_ACTIVATED_IMG status_false"><span title="Mute / Un-Mute Hooter" data-tooltip-attr="MUTE_HOOTER" class="MUTE_HOOTER tooltips muted_false" onclick="MuteHooter('Mute Hooter from TOAST',this, 'MUTE_HOOTER', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></span></span></li>
+                    <li><span title="Press to reset ESD" class="sys-reset ESD_RESET tooltips" onclick="SetProcessValue('Reset ESD','Reset ESD from TOAST',this, 'ESD_RESET', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></span></li>
+                    <li class="hide alert-action"><i class="fa fa-bell msg-alert-bell" aria-hidden="true"></i></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts Dismissable -->
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-ok"></span>
+        <span id="success">You successfully read this important alert message.</span>
+    </div>
+    <div class="alert alert-info alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-info-sign"></span>
+        <span id="info">This needs attention, but it's not super important.</span>
+    </div>
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-remove-circle"></span>
+        <span id="warning">Better check yourself, you're not looking too good.</span>
+    </div>
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close">&times;</button>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span id="danger">Change a few things up and try submitting again.</span>
+    </div>
+
+    <div class="modal fade" id="myTANKVIEWModal" tabindex="-1" role="dialog" aria-labelledby="myTANKVIEWModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+    </div>
+    <div class="modal fade ui-front" id="EmptyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+    </div>
+    <div class="modal fade" id="myMOVModal" tabindex="-1" role="dialog" aria-labelledby="myMOVModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+    </div>
+    <div class="modal fade" id="myPUMPModal" tabindex="-1" role="dialog" aria-labelledby="myPUMPModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="true">
+    </div>
+    <div class="modal fade" id="myPValveModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+    </div>
+
+    <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog" style="top:0px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel">Cancel Confirmation.</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to cancel?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirmOK">Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel">Delete Confirmation.</h3>
+                </div>
+                <div class="modal-body" id="myConfirmDelete">
+                    <p>Are you sure to Delete?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirmDelete">Yes</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myConfirmLabel">Confirmation.</h3>
+                </div>
+                <div class="modal-body" id="myConfirmMsg">
+                    <p>Are you sure ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnConfirmOK">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnConfirmCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade ui-front" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myModalLabel"></h3>
+                </div>
+                <div class="modal-body" id="myModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAutoAssign" style="display:none;">Auto Assign</button>
+                    <button type="button" class="btn btn-primary" id="btnOK">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="chartModal" tabindex="-1" role="dialog" aria-labelledby="chartModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog chartModalDialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="ChartClose();">&times;</button>
+                    <h3 class="modal-title" id="chartModalLabel">Chart</h3>
+                </div>
+                <div class="modal-body" id="chartModalBody" style="padding: 5px;">
+                    <div id="main" class="chartModal-chart"></div>
+                </div>
+                <div class="modal-footer" id="chartModalFooter" style="padding: 0px 20px 0px;">
+                    <div class="row">
+                        <input type="hidden" id="LastTime" />
+                        <input type="hidden" id="FirstInterval" />
+                        <input type="hidden" id="TimerInterval" />
+                        <table class="chart-detail-tbl">
+                            <tbody>
+                                <tr>
+                                    <td width="13%">
+                                        <div class="fields form-group has-feedback" style="text-align: left;">
+                                            <label class="detail-tbl-lbl" for="dtpChartFrom">From Date Time</label>
+                                            <input type="text" autocomplete="off" class="form-control" placeholder="From DateTime" name="ChartFrom" id="dtpChartFrom" data-bv-field="ChartFrom" style="padding-right: 5px;">
+                                            <i style="display: none;" class="form-control-feedback" data-bv-icon-for="ChartFrom"></i>
+                                            <small style="display: none;" data-bv-validator="notEmpty" data-bv-validator-for="ChartFrom" class="help-block">From DateTime is required and cannot be empty</small>
+                                        </div>
+                                    </td>
+                                    <td width="12%">
+                                        <div class="fields form-group has-feedback" style="text-align: left;">
+                                            <div class="input-group date">
+                                                <label for="dtpChartTo">To Date Time</label>
+                                                <input type="text" autocomplete="off" class="form-control" placeholder="To DateTime" name="ChartTo" id="dtpChartTo" data-bv-field="ChartTo" style="padding-right: 5px;">
+                                                <i style="display: none;" class="form-control-feedback" data-bv-icon-for="ChartTo"></i>
+                                                <small style="display: none;" data-bv-validator="notEmpty" data-bv-validator-for="ChartFrom" class="help-block">To DateTime is required and cannot be empty</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td width="50%" style="text-align: left;">
+                                        <div class="fields form-group has-feedback">
+                                            <label>Select Tags</label>
+                                            <select id="ddlChartTags" data-placeholder="Choose Tags..." multiple style="width:600px;"></select>
+                                        </div>
+                                    </td>
+                                    <td width="10%">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 checkbox-field tooltips" title="Click to Start Stop Live Trend Data" style="padding: 0px;">
+                                            <div class="input-group fields form-group" id="dvLiveData" style="margin: 0px;">
+                                                <span class="input-group-addon">
+                                                    <input id="chkLiveData" name="LiveData" type="checkbox" onchange="LiveDataClick();" class="form-control">
+                                                </span>
+                                                <input type="text" class="form-control" value="Live Data" disabled>
+                                                <input type="text" id="DataType" class="form-control hide" value="1" hidden>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td width="15%">
+                                        <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 3px;">
+                                            <div class="fields form-group">
+                                                <a href="#" class="btn btn-primary col-lg-9" role="button" id="goButton"><span class="glyphicon glyphicon-stats"></span>Show Trend</a>
+                                                <a href="#" class="excel-icon" id="downloadTrends"></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ValveAutoManModal" tabindex="-1" role="dialog" aria-labelledby="AutoManModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+        <div class="modal-dialog mode-control-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="AutoManLabel">Change Control</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="dvChangeAutoMan" class="automanual-popup">
+                        <span id="hdnAutoMan" data-opcvalue="" class="" style="display:none;"></span>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Current Control</th>
+                                    <th>New Control</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="pump-view-pump">
+                                    <td>
+                                        <div class="relative">
+                                            <span class="control-icon VALVE_AUTOMAN"></span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn automode VALVE_AUTOMAN" data-opcvalue="True">
+                                            AUTO MODE
+                                            <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn manualmode VALVE_AUTOMAN" data-opcvalue="True">
+                                            MANUAL MODE
+                                            <span class="mode-lbl-subtxt">All Operations (open, close etc) manually</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="relative">
+                                            <span class="control-icon new-mode VALVE_AUTOMAN"></span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn automode new-mode VALVE_AUTOMAN" data-opcvalue="True">
+                                            AUTO MODE
+                                            <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn manualmode new-mode VALVE_AUTOMAN" data-opcvalue="True">
+                                            MANUAL MODE
+                                            <span class="mode-lbl-subtxt">All Operations (open, close etc) manually</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAutoManOK">Set</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="TankAutoManModal" tabindex="-1" role="dialog" aria-labelledby="AutoManModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+        <div class="modal-dialog mode-control-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="AutoManLabel">Change Control</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="dvChangeAutoMan" class="automanual-popup">
+                        <span id="hdnAutoMan" data-opcvalue="" class="" style="display:none;"></span>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Current Control</th>
+                                    <th>New Control</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="relative">
+                                            <span class="control-icon TANK_AUTOMAN"></span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn automode TANK_AUTOMAN" data-opcvalue="True">
+                                            AUTO MODE
+                                            <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn manualmode TANK_AUTOMAN" data-opcvalue="True">
+                                            MANUAL MODE
+                                            <span class="mode-lbl-subtxt">All Operations  (open, close etc) manually</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="relative">
+                                            <span class="control-icon new-mode TANK_AUTOMAN"></span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn automode new-mode TANK_AUTOMAN" data-opcvalue="True">
+                                            AUTO MODE
+                                            <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn manualmode new-mode TANK_AUTOMAN" data-opcvalue="True">
+                                            MANUAL MODE
+                                            <span class="mode-lbl-subtxt">All Operations  (open, close etc) manually</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAutoManOK">Set</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="GenericAutoManModal" tabindex="-1" role="dialog" aria-labelledby="AutoManModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+        <div class="modal-dialog mode-control-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="AutoManLabel">Change Control</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="dvChangeAutoMan" class="automanual-popup">
+                        <span id="hdnAutoMan" data-opcvalue="" class="" style="display:none;"></span>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Current Control</th>
+                                    <th>New Control</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="pump-view-pump">
+                                    <td>
+                                        <div class="relative">
+                                            <span class="control-icon TAG_AUTOMAN"></span>
+                                            <span class="control-icon TAG_AUTOMAN"></span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn automode TAG_AUTOMAN" data-opcvalue="True">
+                                            AUTO MODE
+                                            <span class="mode-lbl-subtxt">Automatic operations (start, stop etc) as per logics</span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn manualmode TAG_AUTOMAN" data-opcvalue="True">
+                                            MANUAL MODE
+                                            <span class="mode-lbl-subtxt">All Operations (start, stop etc) manually</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="relative">
+                                            <span class="control-icon new-mode TAG_AUTOMAN"></span>
+                                            <span class="control-icon new-mode TAG_AUTOMAN"></span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn automode new-mode TAG_AUTOMAN" data-opcvalue="True">
+                                            AUTO MODE
+                                            <span class="mode-lbl-subtxt">Automatic operations (start, stop etc) as per logics</span>
+                                        </div>
+                                        <div class="mode-lbl mode-btn manualmode new-mode TAG_AUTOMAN" data-opcvalue="True">
+                                            MANUAL MODE
+                                            <span class="mode-lbl-subtxt">All Operations (start, stop etc) manually</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAutoManOK">Set</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="opcMsgModal" tabindex="-1" role="dialog" aria-labelledby="opcMsgLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="opcMsgLabel">Message</h3>
+                </div>
+                <div class="modal-body emergency-wrapper ESDModal">
+                    <span class="danger"></span>
+                    <p id="opcMsgModalMsg"></p>
+                    <div class="emer-option">
+                        <div class="col-lg-6 text-center">
+                            <input type="radio" id="rdMockDrill" name="emrgoption" value="Mock Drill" class="MOCK_DRILL_CHK" /><label>Mock Drill</label>
+                        </div>
+                        <div class="col-lg-6 text-center">
+                            <input type="radio" id="rdActualESD" name="emrgoption" value="Actual Emergency" checked="checked" /> <label>Actual Emergency</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body OPCModal">
+                    <p id="opcMsgModalMsg"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnConfirmESD">OK</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnConfirmCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ESDMsgModal" tabindex="-1" role="dialog" aria-labelledby="opcMsgLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+
+    </div>
+
+    <div class="modal fade" id="myPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myPasswordLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="myPasswordLabel">Confirm Password</h3>
+                </div>
+                <div class="modal-body row" id="myPasswordBody">
+                    <div class="col-lg-8">
+                        <form id="frmLoginPwd" role="form" class="form-fields">
+                            <div class="fields form-group col-lg-12">
+                                <label>LoginID:</label><input disabled type="text" placeholder="Enter Login ID" id="Pwd_txtLoginID" name="LoginID" class="form-control" style="width:95%;" autocomplete="on" value="@Session[clsConstants.LoginID]">
+                            </div>
+                            <div class="fields form-group col-lg-12">
+                                <label>Password:</label><input type="password" placeholder="Enter the Txn Password" id="Pwd_txtPassword" name="password" value="" class="form-control" style="width:95%;">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnPwdOK">OK</button>
+                    <button type="button" class="btn btn-primary" id="btnPwdCancel" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="msg-alert">
+        <h3>Alert Message</h3>
+        <i class="fa fa-times-circle close-msg-alert" aria-hidden="true"></i>
+        <ul>
+            @*<li data-attr="msg-1"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Message 1 <i class="fa fa-times-circle remove-msg-alert-icon" aria-hidden="true"></i></li>
+                <li data-attr="msg-2"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Message 2 <i class="fa fa-times-circle remove-msg-alert-icon" aria-hidden="true"></i></li>*@
+        </ul>
+    </div>
+    <audio id="audioAlert" type="audio/mp3" preload="auto" src="~/Content/sound/alert.mp3" autoplay="autoplay" autostart="1" muted="muted"></audio>
+    <audio id="audioBeep" type="audio/x-wav" preload="auto" src="~/Content/sound/beep.wav" autoplay="autoplay" autostart="1" muted="muted"></audio>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="~/Scripts/echarts.js"></script>
+    <script src="~/Scripts/lib/timer.jquery.js"></script>
+    <script src="~/Scripts/lib/StatusTicker.js"></script>
+    <script src="~/Scripts/PageJS/Home/VerifyPwd.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            //$(".fa-bell").click(function () {
+            //    $('.msg-alert').toggle(
+            //        function () {
+            //        $(this).animate({
+            //            'height': 'auto',
+            //            'opacity': '1'
+            //        }, 500);
+            //        },
+            //        function () {
+            //            $(this).animate({
+            //                'height': 'auto',
+            //                'opacity': '0'
+            //            }, 500);
+            //        };
+            //});
+            // configure for module loader
+
+            require.config({
+                paths: {
+                    echarts: '../../../../Scripts'
+                }
+            });
+            SetDefaultRows();
+
+            if ($(".modal-dialog").hasClass('chartModalDialog') == false) {
+                $(".modal-dialog").css('top', (($(window).height() - 400) / 2));
+            }
+            else {
+                $(".modal-dialog").css('top', (($(window).height() - 500) / 2));
+            }
+            $('.dropdown-submenu').parent().addClass('dropsubmenu');
+            $('.dropdown-submenu').hover(function () {
+                $(this).parent().addClass('hover');
+            }, function () {
+                $(this).parent().removeClass('hover');
+            })
+
+            //var strPrimarySrv;
+            //var strBackupSrv;
+
+            $.ajax({
+                url: "/Home/GetServers",
+                type: "GET",
+                datatype: "json",
+                cache: false,
+                success: function (result) {
+                    $.each(result, function (i, obj) {
+                        if (i == 0) {
+                            strPrimarySrv = obj.DeviceName;
+                        }
+                        else if (i == 1) {
+                            strBackupSrv = obj.DeviceName;
+                        }
+                    });
+                    var strHost = window.location.host;  //window.location.hostname
+                    if (strHost.toLowerCase() != strPrimarySrv.toLowerCase()) {
+                        strBackupSrv = strPrimarySrv;
+                        strPrimarySrv = strHost;
+                    }
+                    $.ajaxSetup({
+                        global: true,
+                        timeout: 150000,
+                        error: function (jqXHR, exception) {
+                            console.log(jqXHR.status);
+                            if (iGblPrevStatus == 412) {
+                                return false;
+                            }
+                            iGblPrevStatus = jqXHR.status;
+                            if (jqXHR.status === 0) {
+                                //alert('Not connect.\n Verify Network.');
+                                window.location = "http://" + strBackupSrv;
+                            } else if (jqXHR.status == 401) {
+                                console.log('401 - UnAuthorized - Relogin');
+                                LogoutUser(false);
+                            } else if (jqXHR.status == 404) {
+                                //alert('Requested page not found. [404]');
+                                window.location = "http://" + strBackupSrv;
+                            } else if (jqXHR.status == 500) {
+                                //alert('Internal Server Error [500].');
+                            } else if (exception === 'parsererror') {
+                                //alert('Requested JSON parse failed.');
+                            } else if (exception === 'timeout') {
+                                window.location = "http://" + strBackupSrv;
+                            } else if (exception === 'abort') {
+                                //alert('Ajax request aborted.');
+                            }
+                            else if (jqXHR.status === 412 || jqXHR.status === 503) {
+                                // Session TimeOut
+                                console.log('ajax-412 - Ajax TimeOut');
+                                window.location = "http://" + strBackupSrv;
+                                //window.location.href = "/Home/GoToHome"; - Removed this as it was connecting to same server.
+                            } else {
+                                //alert('Uncaught Error.\n' + jqXHR.responseText);
+                            }
+                        },
+                    });
+                }
+            });
+
+            GetStatusBarAck();
+
+            $(document).ajaxStart(function () {
+                onBeginAjax();
+            });
+            $(document).ajaxStop(function () {
+                //if ($('#dvLoadSummary').length <= 0 && $('#dvTimer').length > 0) {
+                //    $('#dvTimer').timer('pause');
+                //}
+                onCompleteAjax();
+            });
+
+            $('.navbar-nav li').on('click', function () {
+                $('.navbar-nav li').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            $('ul.dropdown-menu li a').on('click', function () {
+                clearControlsSubscriptions();
+            });
+
+            //Use the below for Startup Page:
+            //OpenReportsMenu();
+            OpenDashboardView('@Session[clsConstants.UserID]');
+            //OpenTankPnIDOption('14', 'ReceiptLine');
+            //OpenTestPage('Test02');
+            //OpenBaysMenu();
+            //OpenDayStartEndMenu();
+            //OpenTagEventsMenu();
+            //OpenGantryViewHMI();
+            //OpenTagsMasterMenu();
+            //OpenTruckMastersMenu();
+            //OpenLoadSummaryMenu();
+            //OpenMetersMasterMenu();
+            //OpenBayViewHMI();
+            //OpenBayViewHMIBasedOnSelectedBay('BAYVIEW01');
+            //OpenPLCTagsMenu();
+            //OpenAllTagsMenu();
+            //OpenTanksViewHMI();
+            //OpenBGViewHMI();
+            //OpenTTQueue();
+            //OpenReportsMenu();
+            //OpenMOVsViewHMI();
+            //OpenDBBVViewHMI();
+            //OpenPumpsViewHMI();
+            //OpenESDViewHMI();
+            //OpenSystemConfigViewHMI();
+            //OpenUPSViewHMI();
+            //OpenPLCViewHMI();
+            //OpenEthernetViewHMI();
+            //OpenFireAlarmViewHMI();
+            //OpenFireWaterSystemHMI();
+            //OpenVFDViewHMI();
+            //OpenBaseDensTemp();
+            //OpenDatabaseStatusViewHMI();
+            //OpenLegendsViewHMI();
+            //OpenViewTrends();
+            //OpenDSMenu();
+            //OpenProductMenu();
+            //OpenPiggingView();
+            //OpenSetPointsView();
+            //OpenSafetyPLCView();
+
+            $('#chartModal').on('hidden.bs.modal', function () {
+                $('.chartModal-chart').hide();
+            })
+
+            $(function () {
+                setInterval(function () { CallGlobalRefreshFunctions(); }, 40000);
+            });
+
+            $('#dtpChartFrom').datetimepicker({
+                format: 'D-MMM-YY HH:mm',
+                //debug: true
+            });
+
+            $('#dtpChartTo').datetimepicker({
+                format: 'D-MMM-YY HH:mm',
+                //debug: true
+            });
+
+            createTooltip();
+
+            // Need to remove after some time
+            setTimeout(function () {
+                
+                //removeMsgAlertItem($('[data-attr="msg-1"]'), false);
+            }, 5000);
+
+            if ($('.msg-alert ul li').length > 0) {
+                $('.alert-action .msg-alert-bell').addClass('has-alert-item');
+            }
+
+            $('.msg-alert-bell').click(function () {
+                showHideMsgAlert();
+            });
+            $('.close-msg-alert').click(function () {
+                showHideMsgAlert();
+            });
+
+            $('.remove-msg-alert-icon').click(function () {
+                removeMsgAlertItem($(this), true);
+                if ($('.msg-alert ul li').length < 1) {
+                    $('.alert-action .msg-alert-bell').removeClass('has-alert-item');
+                }
+            });
+
+            //Set Config Values in JS
+            ERPName = '@clsConfig.ERPName';
+            ProjNo = '@clsConfig.ProjPath';
+            TFMSLevelUnit = '@clsConfig.TFMSLevelUnit';
+            gblApplication = '@clsConfig.Application';
+            gblCustName = '@clsConfig.CustomerName';
+            CurrUserID = '@Session[clsConstants.UserID]';
+            VTickSpeed = 2000;
+            VTickPause = 3000;
+        });
+
+    </script>
+</body>
+</html>
+<style>
+    .pvalve-model-large.cls_img_true {
+        background-image: url(../../../Images/Valves/POV/pobv_open.png) !important;
+    }
+
+    .pvalve-model-large.opn_img_true {
+        background-image: url(../../../Images/Valves/POV/pobv_close.png) !important;
+    }
+</style>

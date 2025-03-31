@@ -1,0 +1,146 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - ESD Status View";
+    List<tblDeviceMaster> lstESD = Model.Where(x => x.DeviceID == 16).ToList();
+    List<string> SoftESDs = new List<string>() { "SOFT", "HMI" };
+}
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">ESD Status View</h3>
+    </div>
+</div>
+
+<div class="row m-t-40 esd-status-view-container">
+    <div class="col-lg-8">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr><th class="text-center header-main" colspan="8">EMERGENCY SHUTDOWN</th></tr>
+                <tr>
+                    <th class="text-left header-col">#</th>
+                    <th class="text-left header-col">ESD Push Button Location</th>
+                    <th class="header-col text-center">Maint Mode</th>
+                    <th class="text-center header-col">Status</th>
+                    <th class="text-left header-col">#</th>
+                    <th class="text-left header-col">ESD Push Button Location</th>
+                    <th class="header-col text-center">Maint Mode</th>
+                    <th class="text-center header-col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+
+                    for (int i = 0; i < lstESD.Count; i = i + 2)
+                    {
+                        <tr>
+                            <td width="5%" class="bold" style="text-align: center;">@lstESD[i].TypeSeqNo</td>
+                            <td width="25%" class="bold">@lstESD[i].DeviceDesc</td>
+                            <td width="10%" style="text-align: center;">
+                                <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button:@lstESD[i].DeviceName',this, '@(lstESD[i].TagPrefix)_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                    <input id="toggle-maintainence-mode" class="on-off-btn @(lstESD[i].TagPrefix)_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                </div>
+                            </td>
+                            <td width="10%"><span class="alert-cont-md"><span class="@lstESD[i].TagPrefix @(lstESD[i].TagPrefix)_STATUS"><span class="alert-maint-mode @(lstESD[i].TagPrefix)_MAINT"></span></span></span></td>
+
+                            @{ if (i + 1 >= lstESD.Count)
+                                {
+                                    <td width="5%" class="bold" style="text-align: center;"></td>
+                                    <td class="bold"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td></td>
+                                }
+                                else
+                                {
+
+                                    <td width="5%" class="bold" style="text-align: center;">@lstESD[i + 1].TypeSeqNo</td>
+                                    <td class="bold">@lstESD[i + 1].DeviceDesc</td>
+                                    <td style="text-align: center;">
+                                        <div class="toggle-wrapper float-r" onclick="cancelBubble(event);SetProcessValue('Set ESD PB to Maint Mode','ESD Push Button:@lstESD[i+1].DeviceName',this, '@(lstESD[i+1].TagPrefix)_MAINT', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                            <input id="toggle-maintainence-mode" class="on-off-btn @(lstESD[i+1].TagPrefix)_MAINT" data-on="On" data-off="Off" checked type="checkbox" data-opcvalue="">
+                                        </div>
+                                    </td>
+                                    <td><span class="alert-cont-md"><span class="@lstESD[i+1].TagPrefix @(lstESD[i+1].TagPrefix)_STATUS"><span class="alert-maint-mode @(lstESD[i+1].TagPrefix)_MAINT"></span></span></span></td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-lg-4">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr><th class="text-center header-main" colspan="2">Summary</th></tr>
+                <tr>
+                    <th class="text-left header-col">ESD Push Button Location</th>
+                    <th class="text-center header-col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bold">No of ESD PBs</td>
+                    <td><span class="alert-cont-md" style="font-weight: bolder;font-size: large;"><span>@lstESD.Where(x=> !(x.DeviceDesc.ToUpper().Contains("HMI") || x.DeviceDesc.ToUpper().Contains("SOFT"))).Count()</span></span></td>
+                </tr>
+                <tr>
+                    <td class="bold">Soft ESD from OIC  - 1 No.</td>
+                    <td><span class="alert-cont-md"><span class="SOFT_ESD"></span></span></td>
+                </tr>
+                <tr>
+                    <td class="bold">Central ESD</td>
+                    <td><span class="alert-cont-md"><span class="PROCESS_ESD"></span></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row m-t-20">
+    <div class="col-lg-6 col-sm-6">
+        <div class="esd-timer-block esd-mockdrill-block">
+            <div class="timer-lbl">ESD Active:</div>
+            <div class="timer-val" style="min-width: 70px;">
+                <span class="alert-cont-md">
+                    <span class="PROCESS_ESD"></span>
+                </span>
+            </div>
+            <div class="hide timer-lbl">Mock Drill:</div>
+            <div class="hide timer-val" style="min-width: 70px;">
+                <span class="alert-cont-md">
+                    <span class="IS_MOCK_DRILL_ESD"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-sm-6 text-right esd-timer-wrapper hide">
+        <div class="esd-timer-block">
+            <div class="timer-lbl">Time Lapsed (Sec):</div>
+            <div class="timer-val ESD_POW_TIME_REM" style="min-width: 85px;">?</div>
+
+            <div class="timer-lbl">Set Time (sec):</div>
+            <div class="timer-val" style="padding-left: 16px; padding-top: 13px;">
+                <span class="ESD_TIMER?">120 sec</span>
+                @*<input type="number" min=0 readonly class="editable-input ESD_TIMER" ondblclick="this.readOnly='';"
+                    style="border: 0px; width: 70%" value="ESD_TIMER">*@
+                <span style="display:none" class="glyphicon glyphicon-upload cursor-point" onclick="SetProcessValue('Update ESD Timer', 'Update ESD Timer from TOAST', this, 'ESD_TIMER', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                @*<input type="text" class="form-control ESD_TIME_ENTRY" placeholder="SS" id="txtESDTimeEntry">
+                    <div class="ack-alarm">
+                        <a class="push-btn" href="javascript:void(0);" onclick="SetProcessValue('Update ESD Timer', 'Update ESD Timer from TOAST', this, 'ESD_TIMER', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">Set Time</a>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row m-t-20">
+    <div class="col-lg-8 text-left esd-action-btn">
+        <div class="esd-timer-block esd-mockdrill-block">
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/ESDView/Index.js"></script>

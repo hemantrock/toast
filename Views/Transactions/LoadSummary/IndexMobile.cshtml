@@ -1,0 +1,81 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblLoadMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<div id="dvLoadSummary" class="load-summary-wrapper">
+    <div class="col-lg-12" style="display:none;">
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">LOAD SUMMARY</div>
+        <div class="panel-body">
+            <div class="search-container">
+                <input type="text" placeholder="Search Load Summary" id="txtSearchTable" />
+                <i class="fa fa-search"></i>
+            </div>
+            <div id="dvTable">
+                <table id="tblLoadMaster" class="responsive">
+                    <thead>
+                        <tr>
+                            <th>Truck No.</th>
+                            <th>Truck Status</th>
+                            <th>Product</th>
+                            <th>Bay#</th>
+                            <th>Card#</th>
+                            <th>TT Reg. Date</th>
+                            <th>Card IssueTime</th>
+                            <th>TT Time</th>
+                            <th>Gate Entry</th>
+                            <th>Loading Start</th>
+                            <th>Invoice Print</th>
+                            <th>ShipmentNo</th>
+                            <th>LoadID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblLoadSummaryBody">
+                        @foreach (tblLoadMaster itm in Model)
+                        {
+                            <tr class="clickable">
+                                <td>@itm.tblTruckMaster.TruckNumber.Trim().ToUpper()</td>
+                                <td class="truckStatus">@itm.tblTruckStatu.TruckStatusDesc</td>
+                                <td>@itm.tblLoadDetails.FirstOrDefault().tblProduct.ProdNameShort</td>
+                                <td>
+                                    @((itm.tblLoadDetails != null
+                                && itm.tblLoadDetails.FirstOrDefault().BayID != null)
+                                && itm.tblLoadDetails.FirstOrDefault().BayID.Value != 0 ? itm.tblLoadDetails.FirstOrDefault().BayID.Value.ToString("00") : "")
+                                </td>
+                                <td>@(itm.CardID == null ? "" : itm.tblCard.CardNumber.ToString())</td>
+                                <td>@(itm.Date.HasValue ? itm.Date.Value.ToString("dd-MMM HH:mm:ss") : "")</td>
+                                <td>@(itm.CardReAuthorizeTime.HasValue ? itm.CardReAuthorizeTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                                <td>
+                                    @{
+                                        double iSecs = 0;
+                                        if (itm.TruckStatus == 120 || itm.TruckStatus == 901 || itm.TruckStatus == 962)
+                                        {
+                                            iSecs = 0;
+                                        }
+                                        else
+                                        {
+                                            iSecs = (System.DateTime.Now - (itm.CardReAuthorizeTime.HasValue ? itm.CardReAuthorizeTime.Value : System.DateTime.Now)).TotalSeconds;
+                                            @((iSecs / 60).ToString("#0") + "m  " + (iSecs % 60).ToString("#0") + "s");
+                                        }
+                                    }
+                                </td>
+                                <td>@(itm.EntryGateTime.HasValue ? itm.EntryGateTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                                <td>@(itm.tblLoadDetails.FirstOrDefault().LoadingStartTime.HasValue ? itm.tblLoadDetails.FirstOrDefault().LoadingStartTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                                <td>@(itm.ReportPrintedDateTime.HasValue ? itm.ReportPrintedDateTime.Value.ToString("dd-MMM   HH:mm:ss") : "")</td>
+                                <td>@itm.ShipmentNo</td>
+                                <td>@itm.LoadID</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/Transactions/LoadSummary/Index.js"></script>

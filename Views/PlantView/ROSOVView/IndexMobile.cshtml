@@ -1,0 +1,182 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblTagPageLink>
+@{
+    ViewBag.Title = "Plant View - ESD View";
+    Layout = null;
+}
+
+<div class="col-xs-12">
+
+    <div class="row">
+        <h2>ESD VIEW</h2>
+    </div>
+    <div class="row">
+        <div class="esd-view-container">
+            <div class="toggle-menu-container">
+                <div class="menu-item">
+                    STATUS  <i class="fa fa-plus-circle"></i>
+                </div>
+                <div class="menu-content">
+                    <table class="tblesdStatus table table-bordered table-striped dataTable">
+                        <tbody>
+                            @foreach (tblTagPageLink obj in Model.Where(x => x.tblTagMaster.ReadWrite.ToUpper() == "R").ToList())
+                            {
+                                <tr>
+                                    <td class="lbl">@obj.tblTagMaster.TagDesc</td>
+                                    <td class="val">
+                                        <span class="circle-cont">
+                                            <span class="@obj.ControlName.Replace(".","_").ToUpper()"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="menu-item">POWER CUT OFF <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content">
+                    <table class="tblesdPowerCutOff table table-bordered table-striped dataTable">
+                        <tbody>
+                            @foreach (tblTagPageLink obj in Model.Where(x => x.tblTagMaster.ReadWrite.ToUpper() == "WR").ToList())
+                            {
+                                <tr>
+                                    <td class="lbl">@obj.tblTagMaster.TagDesc</td>
+                                    <td class="val">
+                                        <span class="circle-cont">
+                                            <span class="@obj.ControlName.Replace(".", "_").ToUpper()"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="menu-item">SUMMARY <i class="fa fa-plus-circle"></i></div>
+                <div class="menu-content">
+                     <table class="tblesdPowerCutOff table table-bordered table-striped dataTable">
+                         <tr>
+                             <td class="lbl">ESD Active</td>
+                             <td class="val">
+                                 <span class="circle-cont">
+                                     <span class="PROCESS_ESD" data-opcvalue="False"></span>
+                                 </span>
+                             </td>
+                         </tr>
+                         <tr>
+                             <td class="lbl">Mock Drill</td>
+                             <td class="val">
+                                 <span class="circle-cont">
+                                     <span class="IS_MOCK_DRILL_ESD" data-opcvalue="False"></span>
+                                 </span>
+                             </td>
+                         </tr>
+                         <tr>
+                             <td class="lbl">Power ESD</td>
+                             <td class="val">
+                                 <span class="circle-cont">
+                                     <span class="PWR_CUTOFF_HWP_IND_VALUE" data-opcvalue="False"></span>   
+                                 </span>
+                             </td>
+                         </tr>
+                         <tr>
+                             <td class="lbl">Time Lapsed(sec)</td>
+                             <td class="val timer-val">
+                                 <span class="TIME_OUT"></span>
+                             </td>
+                         </tr>
+                     </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">ESD View</h3>
+
+        </div>
+    </div>
+
+
+    <div class="row ">
+        <div class="col-lg-12 content-top-spacing">
+            <div class="col-lg-6">
+                <div class="box-container">
+                    <div class="box">
+                        <div class="box-head text-center">STATUS</div>
+                        @foreach (tblTagPageLink obj in Model.Where(x => x.tblTagMaster.ReadWrite.ToUpper() == "R").ToList())
+                        {
+                            <div class="box-row">
+                                <div class="tbl-lbl">@obj.tblTagMaster.TagDesc</div>
+                                <div class="tbl-val"><span class="@obj.ControlName.Replace(".","_").ToUpper()"></span></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="box-container">
+                    <div class="box">
+                        <div class="box-head text-center">POWER CUT OFF</div>
+                        @foreach (tblTagPageLink obj in Model.Where(x => x.tblTagMaster.ReadWrite.ToUpper() == "WR").ToList())
+                        {
+                            <div class="box-row">
+                                <div class="tbl-lbl">@obj.tblTagMaster.TagDesc</div>
+                                <div class="tbl-val"><span class="@obj.ControlName.Replace(".", "_").ToUpper()"></span></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-6 col-sm-6">
+            <div class="esd-timer-block esd-mockdrill-block">
+                <div class="timer-lbl">ESD Active:</div>
+                <div class="timer-val" style="min-width: 70px;">
+                    <span class="PROCESS_ESD" data-opcvalue="False"></span>
+                </div>
+                <div class="timer-lbl">Mock Drill:</div>
+                <div class="timer-val" style="min-width: 70px;">
+                    <span class="IS_MOCK_DRILL_ESD" data-opcvalue="False"></span>
+                </div>
+                <div class="timer-lbl">Power ESD:</div>
+                <div class="timer-val" style="min-width: 70px;">
+                    <span class="PWR_CUTOFF_HWP_IND_VALUE" data-opcvalue="False"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-6">
+            <div class="esd-timer-block">
+                <div class="timer-lbl">Time Lapsed (Sec):</div>
+                <div class="timer-val TIME_OUT" style="min-width: 85px;"></div>
+                @*<div class="timer-lbl">Time Remaining (Sec):</div>
+                <div class="timer-val TIME_OUT" style="min-width: 85px;"></div>*@
+
+                <div class="timer-lbl">Set Time (msec):</div>
+                <div class="timer-val" style="padding-left: 16px; padding-top: 13px;">
+                    <input type="text" class="form-control ESD_TIME_ENTRY" placeholder="SS" id="txtESDTimeEntry" />
+                    <div class="ack-alarm">
+                        <a class="push-btn" href="javascript:void(0);" onclick="ChangeESDTimeOut(this, 'ESD_TIME_ENTRY','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Set Time</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    -->
+
+    <script src="~/Scripts/MobilePageJS/PlantView/ESDView/Index.js"></script>

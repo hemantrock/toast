@@ -1,0 +1,104 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Device Detail Grouped View";
+    Layout = null;
+    List<string> Groups;
+    if (clsConfig.TanksGrouping.ToUpper() == "Type-Wise".ToUpper())
+    { Groups = Model.Where(x => x.tblTank.TankType != null && x.tblTank.tblProduct.Visible && x.tblTank.tblProduct.tblProductComponents.Count() == 1).Select(x => x.tblTank.tblTankType.TankType).Distinct().ToList(); }
+    else { Groups = Model.Where(x => x.tblTank.tblProduct != null && x.tblTank.tblProduct.Visible && x.tblTank.tblProduct.tblProductComponents.Count() == 1).OrderBy(x => x.tblTank.ProductID).Select(x => x.tblTank.tblProduct.ProdNameShort).Distinct().ToList(); }
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">@string.Join(", ", Model.Select(x=>x.tblDeviceType.DeviceTypeDesc)) View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 content-top-spacing ">
+        <div class="tab-wrapper w-100">
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        @{
+                            foreach (string prod in Groups)
+                            {
+                                <li><a href="#@prod" data-toggle="tab" style="font-size: 23px;">@prod</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        @{
+                            foreach (string prod in Groups)
+                            {
+                                List<tblDeviceMaster> lstDevices;
+                                if (clsConfig.TanksGrouping == "Type-Wise".ToUpper()) { lstDevices = Model.Where(x => x.tblTank.tblTankType.TankType == prod).ToList(); }
+                                else { lstDevices = Model.Where(x => x.tblTank.tblProduct.ProdNameShort == prod).ToList(); }
+                                <div class="tab-pane fade" id="@prod">
+                                    <div class="device-container col-lg-12">
+                                        @{
+                                            foreach (tblDeviceMaster Device in lstDevices)
+                                            {
+                                                string DevPrefix = Device.TagPrefix;
+                                                string DeviceType = Device.tblDeviceType.DeviceName.ToLower().Replace(" ", "-");
+                                                string DevTKPrefix = "";
+                                                if (Device.TankID != null) { DevTKPrefix = Device.tblTank.TagPrefix; }
+                                                string PriConn = Device.TagPrefix + "_CONN01";
+                                                string SecConn = Device.TagPrefix + "_CONN02"; ;
+                                                string ProdName = (Device.tblTank != null ? Device.tblTank.tblProduct.ProdNameShort : (Device.tblHeadersMaster != null ? Device.tblHeadersMaster.tblProduct.ProdNameShort : ""));
+                                                <div class="device-box @DeviceType-wrapper">
+                                                    <div class="device-header">
+                                                        <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                                                        <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@ProdName</span>
+                                                    </div>
+                                                    <div class="device-block">
+                                                        <div class="device @DeviceType">
+                                                            <span class="maintainence-mode-icon @(DevPrefix + "_MAINT")"></span>
+                                                            <span class="action-icon remote-icon"></span>
+                                                            <span class="action-icon local-icon"></span>
+                                                            <span class="action-icon auto-icon"></span>
+                                                            <span class="action-icon manual-icon"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="device-detail">
+                                                        <table class="table-striped value-tbl w-100">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="tbl-lbl">Description</td>
+                                                                    <td class="tbl-val">@(Device.DeviceDesc)</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="tbl-lbl">Status</td>
+                                                                    <td class="tbl-val @(DevPrefix + "_VALUE")"></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "DeviceView.*";
+        InitConn(opcPageName, 0);
+        $('.nav-tabs a:first').tab('show');
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>

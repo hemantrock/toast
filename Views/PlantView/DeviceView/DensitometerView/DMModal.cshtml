@@ -1,0 +1,151 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Density Meter View";
+    Layout = null;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    string TankName = "TankName"; string TankProd = "ProdName";
+    List<tblDeviceMaster> lstTankDevices = Model.Where(x => (x.TankID ?? 0) != 0).ToList();
+    if (lstTankDevices.Count() != 0)
+    {
+        TankName = ((Model.FirstOrDefault().TankID == null) ? (Model.FirstOrDefault().DeviceName) : (Model.FirstOrDefault().tblTank.TankName ?? ""));
+        TankProd = ((Model.FirstOrDefault().TankID == null) ? (Model.FirstOrDefault().DeviceDesc) : (Model.FirstOrDefault().tblDeviceType.DeviceName));
+    }
+    tblDeviceMaster TankProbe = lstTankDevices.Where(x => (x.TankID ?? 0) != 0).FirstOrDefault();
+}
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 550px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@TankName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@TankProd</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px; height:205px">
+                <div class="densitometer-container" style="margin:0px" ;>
+                    @{
+                        <div class="densitometer-container" style="margin:0px" ;>
+                            @{
+                                if (lstTankDevices.Count() == 0) { TankProd = "Density Meter"; }
+                                if (Model.Count > 1)
+                                {
+
+                                    <div class="device-box densitometer-wrapper col-lg-6" style="width: 255px;">
+                                        <div class="device-header">
+                                            <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@TankName</span>
+                                            <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@TankProd</span>
+                                        </div>
+                                        <div class="device-block">
+                                            <div class="device densitometer">
+                                                <span class="action-icon remote-icon"></span>
+                                                <span class="action-icon local-icon"></span>
+                                                <span class="action-icon auto-icon"></span>
+                                                <span class="action-icon manual-icon"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="device-detail col-lg-6">
+                                        <table class="table-striped app-tbl w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center bg-color tooltips" title="Postion of Sensor in Tank" style="width: 25%">Position</th>
+                                                    <th class="text-center bg-color tooltips" title="Kg/m³" style="width: 25%">Obs. Density</th>
+                                                    <th class="text-center bg-color tooltips" title="°C" style="width: 25%">Obs. Temp</th>
+                                                    <th class="text-center bg-color tooltips" title="Kg/m³" style="width: 25%">Std. Density</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    tblDeviceMaster AvgDev = Model.Where(x => x.TagPrefix.ToUpper().Contains("AVG")).FirstOrDefault();
+                                                    foreach (tblDeviceMaster Probe in Model.OrderByDescending(x => x.TagPrefix))
+                                                    {
+                                                        string Pos = TankName;
+                                                        if (Probe.DeviceDesc.ToUpper().Contains("TOP")) { Pos = "Top"; }
+                                                        if (Probe.DeviceDesc.ToUpper().Contains("MID")) { Pos = "Middle"; }
+                                                        if (Probe.DeviceDesc.ToUpper().Contains("BOT")) { Pos = "Bottom"; }
+                                                        if (Probe.DeviceDesc.ToUpper().Contains("AV")) { Pos = "Average"; }
+                                                        <tr>
+                                                            <td class="tbl-lbl">@Pos</td>
+                                                            <td class="tbl-val @(Probe.TagPrefix+"_AMB_DENSITY")"></td>
+                                                            <td class="tbl-val @(Probe.TagPrefix+"_OBS_TEMP")"></td>
+                                                            <td class="tbl-val @(Probe.TagPrefix+"_STD_DENSITY")"></td>
+                                                        </tr>
+                                                    }
+                                                    @*<tr>
+                                                        <td class="tbl-lbl">HiSetPoint</td>
+                                                        <td class="tbl-val @(AvgDev.TagPrefix+"_SP_HI")"></td>
+                                                        <td class="tbl-lbl">HiAlarm</td>
+                                                        <td class="tbl-val  @(AvgDev.TagPrefix+"_ALRM_HI")"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="tbl-lbl">LoSetPoint</td>
+                                                        <td class="tbl-val @(AvgDev.TagPrefix+"_SP_LO")"></td>
+                                                        <td class="tbl-lbl">LoAlarm</td>
+                                                        <td class="tbl-val  @(AvgDev.TagPrefix+"_ALRM_LO")"></td>
+                                                    </tr>*@
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="device-box densitometer-wrapper col-lg-5" style="margin:0px">
+                                                            <div class="device-header">
+                                                                <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@TankName</span>
+                                                                <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@TankProd</span>
+                                                            </div>
+                                                            <div class="device-block">
+                                                                <div class="device densitometer">
+                                                                    <span class="action-icon remote-icon"></span>
+                                                                    <span class="action-icon local-icon"></span>
+                                                                    <span class="action-icon auto-icon"></span>
+                                                                    <span class="action-icon manual-icon"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="device-detail col-lg-7">
+                                                            <table class="table-striped app-tbl w-100">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="text-center bg-color tooltips">Parameter</th>
+                                                                        <th class="text-center bg-color tooltips">Value</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @{
+                                                                        foreach (tblDeviceMaster Probe in Model.OrderByDescending(x => x.TagPrefix))
+                                                                        {
+                                                                            <tr>
+                                                                                <td class="tbl-lbl">Observed Density (Kg/m³)</td>
+                                                                                <td class="tbl-val @(Probe.TagPrefix+"_AMB_DENSITY")"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="tbl-lbl">Observed Temp (°C)</td>
+                                                                                <td class="tbl-val @(Probe.TagPrefix+"_OBS_TEMP")"></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="tbl-lbl">Standard Density (Kg/m³)</td>
+                                                                                <td class="tbl-val @(Probe.TagPrefix+"_STD_DENSITY")"></td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                                        }
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

@@ -1,0 +1,52 @@
+﻿@using TOAST.Data.Model;
+@model List<tblTagMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+<div class="modal fade" id="ForceTagModal" tabindex="-1" role="dialog" aria-labelledby="ForceTagModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Force Tag Value</h3>
+            </div>
+            <div class="modal-body">
+                <p>Tag Value to be Forced</p>
+                <div class="col-lg-12">
+                    <form role="form" class="form-inline">
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                            <label for="txtTagName">Tag Name</label>
+                            <input type="text" id="TagName" value="" class="form-control" disabled="disabled" />
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 checkbox-field">
+                            <div class="input input-group">
+                                <span class="input-group-addon">
+                                    <input id="chkTagForced" name="isTagForced" type="checkbox" class="form-control" onchange="EnablField(this, 'ForceTag')">
+                                </span>
+                                <input type="text" class="form-control" value="Forced" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                            <label for="txtForceTag">New Value:</label>
+                            <input type="text" id="ForceTag" value="" class="form-control" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var AllowForce = '@(ViewBag.AllowForce)';
+</script>
+<script src="~/Scripts/PageJS/Masters/TAG/Index.js"></script>

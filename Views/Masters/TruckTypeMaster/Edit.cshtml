@@ -1,0 +1,32 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTruckTypeMaster
+@{
+    ViewBag.Title = "Edit Truck Type Master";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Truck Type Master
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <input id="hdnIdKey" type="hidden" value="@Model.TypeID">
+                    <div class="fields form-group">
+                        <label>TRUCK TYPE</label>
+                        <input id="txtTruckType" name="TruckType" type="text" placeholder="Truck Type" class="form-control" value="@Model.TypeDesc">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTruckTypeMaster();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/TruckTypeMaster/TruckTypeMaster.js"></script>

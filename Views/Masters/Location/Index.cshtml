@@ -1,0 +1,38 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDestination>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddLocation();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW LOCATION
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">LOCATIONS</h3>
+        <table id="tblDestination" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>LOCATION NAME</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblDestination itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.LocationId);">
+                        <td style="display:none;">@itm.LocationId</td>
+                        <td>@itm.LocationDesc</td>
+                        <td class="text-center"><span id="spanDelete_@itm.LocationId" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.LocationId"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Location/Index.js"></script>

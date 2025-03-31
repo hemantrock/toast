@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<form id="FormTankManualPost" class="form-fields" role="form">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>From Date</label>
+                <input id="dtpFrom" autocomplete="off" name="FromDate" type="text" placeholder="From Date" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2" style="display:none;">
+            <div class="fields form-group">
+                <label>To Date</label>
+                <input id="dtpTo" autocomplete="off" name="ToDate" type="text" placeholder="To Date" class="form-control">
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Data Posted</label>
+                <select class="form-control" id="ddlPosted" name="Posted" disabled>
+                    <option value="ALL" disabled>ALL</option>
+                    <option value="POSTED" disabled>POSTED</option>
+                    <option value="NOTPOSTED" selected>NOT POSTED</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <div class="fields form-group">
+                <label>Dip Type To Post</label>
+                <select class="form-control" id="ddlDipType" name="DipType">
+                    <option value="">--Select Dip Type--</option>
+                    <option value="O">Opening</option>
+                    <option value="C">Closing</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 checkbox-field">
+            <div class="input-group fields form-group">
+                <span class="input-group-addon">
+                    <input id="chkSelect" name="LpEnable" type="checkbox" class="form-control" onclick="UpdateChecks()">
+                </span>
+                <input type="text" class="form-control" style="font-size: 15px;" value="Select All" disabled>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4" style="top:20px">
+            <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="ViewTankManualPost()"><span class="glyphicon glyphicon-print"></span>VIEW ARCHIVED DATA</a>
+        </div>
+    </div>
+</form>
+<div class="row" id="dvTankData">
+</div>
+<script src="~/Scripts/PageJS/TFMS/TankManualPost/Index.js"></script>

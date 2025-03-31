@@ -1,0 +1,92 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+
+@{
+    string vType = Model.tblMOVType.MOVType.ToLower();
+    ViewBag.Title = "Plant View - " + vType + " Details View";
+    Layout = null;
+    string MoVPrefix = (Model.TagPrefix + "_");
+    string TkPrefix = (Model.TankID == null ? "" : Model.tblTank.TagPrefix + "_");
+    var ValveDetails = (Model.tblTank == null ? Model.Custom : Model.tblTank.TankName);
+}
+<div class="modal-dialog @vType-modal" style="width: 400px;">
+    <div class="modal-content">
+        <div class="modal-header @vType-valve-popup-header">
+            <div class="@vType-valve-popup-tank-name" style="border-right: none;"><h3 class="modal-title" id="">@(Model.MovDescription)</h3></div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <input type="hidden" id="hdnTankAutoMan_@(Model.tblTank==null? "" :Model.tblTank.TankName)" class="@(TkPrefix+"AUTOMAN")" />
+            <div class="@vType-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn @(MoVPrefix+"OPN_CMD")" href="javascript:void(0);" onclick="SetProcessValue('Open/Close Command to SOV','SOV: @(Model.MovDescShort)',this, '@(MoVPrefix+"OPN_CMD")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">OPEN</a>
+                    @*<a class="push-btn-02  close-mov-btn @(MoVPrefix+"CLS_CMD")" href="javascript:void(0);" onclick="ValidateOpenClose('@ValveDetails', this, '@(MoVPrefix+"CLS_CMD")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>*@
+                </div>
+                <div class="@vType-valve-info-container">
+                    <div class="col-lg-4">
+                        <div title="No Status" style="left: -22px;" data-tooltip-attr="@vType.ToUpper()*" class="tooltips @vType-valve @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                        </div>
+                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon  @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, '@(Model.tblTank == null ? "" : "hdnTankAutoMan_"+Model.tblTank.TankName)', '@Model.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode @vType.ToUpper()'); cancelBubble(event);"></span>
+                    </div>
+                    <div class="col-lg-8 no-padd">
+                        <div class="@vType-valve-info-wrapper">
+                            <table class="detail-tbl table-striped" style="position: relative; top: -6px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl">Open FB</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(Model.TagPrefix+"_OPN_FB") "></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl">Close FB</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(Model.TagPrefix+"_CLS_FB") "></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl">LPBS Open</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(Model.TagPrefix+"_LPBS_OPN") "></span>
+                                            </span>
+                                        </td>
+                                        <td class="detail-tbl-lbl">LPBS Close</td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="@(Model.TagPrefix+"_LPBS_CLS") "></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl" colspan="2"><span class="">Fail to Open</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="alert-cont-md">
+                                                <span class="pump-househeader-info-val @(Model.TagPrefix+"_FAIL")"></span>
+                                            </span>
+                                        </td>
+                                        <td class="rel" style="width: 30px;">
+                                            <a href="javascript:void(0)" class="push-btn-01 @(Model.TagPrefix+"_RESET_FAIL") tooltips" style="position: absolute;top: 0; bottom: 0; margin: auto; left: 7px; top:-3px; width: 25px; height: 25px;" title="Reset Fail"
+                                               onclick="SetProcessValue('Reset Device Fail', 'Reset Valve fail: @Model.MovName', this, '@(Model.TagPrefix+"_RESET_FAIL")','GENERIC', '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )">
+                                                <i class="fa fas fa-retweet" style="vertical-align: text-top;" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    createTooltip();
+    //opc.server.readPageTags(opcPageName);
+</script>

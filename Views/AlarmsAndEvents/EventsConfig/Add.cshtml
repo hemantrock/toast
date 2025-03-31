@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Add Cards";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Add a New Event (based on OPC Tags)
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormTagEventConfig" role="form" class="form-fields">
+            <div class="col-lg-4 col-md-6 col-sm-6" style="display:none;">
+                <input id="hdnIdKey" type="hidden">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Tag Name</label>
+                    <select class="form-control" id="ddlTagName" name="TagName"></select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Limiter Name</label>
+                    <input class="form-control" id="txtLimiterName" placeholder="Enter Limiter Name" name="LimiterName">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Operator</label>
+                    <select class="form-control" id="ddlOperator" name="Operator">
+                        <option value=">">></option>
+                        <option value="=">=</option>
+                        <option value="<"><</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Compare Value</label>
+                    <input class="form-control" id="txtCompareValue" placeholder="Enter Value of Tag to Compare with" name="CompareValue">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Tag To Notify</label>
+                    <select class="form-control" id="ddlTagToNotify" name="TagToNotify"></select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>TagNotify Value</label>
+                    <input class="form-control" id="txtTagNotifyValue" placeholder="Enter Value to set the tag with" name="TagNotifyValue">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Event ID</label>
+                    <select class="form-control" id="ddlEventID" name="EventID">
+                        <option value="TagChangeEvent">TagChangeEvent</option>
+                        <option value="TagChangeAlarm">TagChangeAlarm</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveTagEventConfig();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/AlarmsAndEvents/EventsConfig/EventsConfig.js"></script>
+
+<script>
+    $(document).ready(function () {
+        LoadDDLTagName(0);
+        LoadDDLNotifyTagName(0);
+    });
+</script>

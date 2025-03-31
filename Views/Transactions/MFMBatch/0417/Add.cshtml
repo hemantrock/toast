@@ -1,0 +1,130 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Add Cards";
+    //List<tblProduct> ddlProds = ViewBag.AllowedProds;
+    List<tblSAPTASConfig> lstSAPConfs = ViewBag.SAPConfs;
+    List<tblTank> lstTanks = ViewBag.Tanks;
+    IEnumerable<tblDeviceMaster> lstMFMs = ViewBag.RecMFMs;
+    List<tblDropdownValue> ddlist = ViewBag.DropDownValues;
+    List<tblDropdownValue> ddlIssueReceipt = ddlist.Where(x => x.ddlType.ToUpper() == "IssueReceipt".ToUpper()).OrderBy(x => x.SNo).ToList();
+    List<tblDropdownValue> ddlSalePucTrfr = ddlist.Where(x => x.ddlType.ToUpper() == "SalePurTrfr".ToUpper()).OrderBy(x => x.SNo).ToList();
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a RECEIPT MFM Batch
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Issuing Plant Code</label>
+                        <input type="text" class="form-control" placeholder="Issuing Plant Code" id="txtIssuingPlantCode" name="IssuingPlantCode" maxlength="4" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Receiving Plant Code</label>
+                        <select class="form-control" id="ddlReceivingPlantCode" name="ReceivingPlantCode">
+                            <option value="0" selected="selected">--Select--</option>
+                            @foreach (tblSAPTASConfig conf in lstSAPConfs)
+                            {
+                                <option value="@conf.sPlantCode">@conf.sPlantCode</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                @*<div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>PRODUCT</label>
+                        <select class="form-control" id="ddlProduct" name="Product">
+                            <option value="0" selected="selected">Select Product</option>
+                            @foreach (tblProduct Prod in ddlProds)
+                            {
+                                <option value="@Prod.ProductID">@Prod.ProductName</option>
+                            }
+                        </select>
+                    </div>
+                </div>*@
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Issuing Storage Tank</label>
+                        <input type="text" class="form-control" placeholder="Issuing Storage Tank" id="txtIssuingStorageTank" name="IssuingStorageTank" maxlength="4" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Receiving Storage Tank</label>
+                        <select class="form-control" id="ddlReceivingStorageTank" name="ReceivingStorageTank">
+                            <option value="0" selected="selected">Select Tank</option>
+                            @foreach (tblTank tnk in lstTanks)
+                            {
+                                <option value="@tnk.UniqueID">@tnk.SAPTankNo (@tnk.tblProduct.ProdNameShort)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>MFM No</label>
+                        <select class="form-control" id="ddlMFMDevice" name="MFMDevice">
+                            <option value="0" selected="selected">Select MFM</option>
+                            @foreach (tblDeviceMaster mfm in lstMFMs)
+                            {
+                                <option value="@mfm.UniqueID">@mfm.DeviceName (@mfm.DeviceDesc)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Receipt / Issue</label>
+                        <select class="form-control" id="ddlReceiptIssue" name="ReceiptIssue">
+                            @*<option value="" selected="selected">-- Select --</option>
+                            @foreach (tblDropdownValue itm in ddlIssueReceipt)
+                            {
+                                <option value="@Convert.ToChar(itm.ddlID)">@itm.ddlValues</option>
+                            }*@
+                            <option value="R">Receipt</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Stock Transfer / OMC Sale Purchase</label>
+                        <select class="form-control" id="ddlStkTrOMC" name="StkTrOMC">
+                            @*<option value="" selected="selected">-- Select --</option>
+                            @foreach (tblDropdownValue itm in ddlSalePucTrfr)
+                            {
+                                <option value="@Convert.ToChar(itm.ddlID)">@itm.ddlValues</option>
+                            }*@
+                            <option value="S">Stock Transfer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Remarks</label>
+                        <input type="text" class="form-control" placeholder="Remarks" id="txtRemarks" name="Remarks" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveMFMBatch();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Transactions/MFMBatch/MFMBatch.js"></script>
+
+<script>
+
+</script>

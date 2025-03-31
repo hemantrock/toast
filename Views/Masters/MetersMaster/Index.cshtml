@@ -1,0 +1,73 @@
+﻿@model List<TOAST.Data.Model.tblMeterMaster>
+@{
+    var idCombination=string.Empty;
+    string jsPath = ViewBag.jsPath;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick='OpenAddMetersMaster()'>
+            <span class="glyphicon glyphicon-plus"></span>Create New Meters
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">Meters Master</h3>
+        <table id="tblMeterMaster" class="table">
+            <thead>
+                <tr>
+                    <th>LP No</th>
+                    <th>LP's Meter#/Comp#</th>
+                    <th>Product Name</th>
+                    <th>Meter Desc</th>
+                    <th>K-Fact Prog Code</th>
+                    <th>Slave ID</th>
+                    <th>Enabled</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in Model)
+                {
+                    var ActiveProduct = "";
+                    var LPP = data.tblLoadingPointMaster.tblLoadingPointProducts;
+                    if(LPP!=null)
+                    {
+                        var ActiveLP = LPP.Where(x => x.ProductStatus == true).FirstOrDefault();
+                        if (ActiveLP != null) { ActiveProduct = ActiveLP.tblProduct.ProductDescription; }
+                    }
+                    <tr class="clickable" onclick="EditRecord(@data.LPNo,@data.MeterCompNo);">
+                        <td>@data.LPNo</td>
+                        <td>@data.MeterCompNo</td>
+                        <td>@ActiveProduct</td>
+                        <td>@data.MeterDesc</td>
+                        <td>@data.BCKFactorPC</td>
+                        <td>@data.SlaveID</td>
+                        <td>
+                            @if (data.Enabled == true)
+                            {
+                                <text>Enabled</text>
+                            }
+                            else
+                            {
+                                <text>Disabled</text>
+                            }
+                        </td>
+                        <td class="text-center"><span id="spanDelete_@data.MeterCompNo" class="glyphicon glyphicon-remove clickable spanDelete" data-id='@data.LPNo,@data.MeterCompNo'></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+<script>
+    @*opcPageName = 'TankLiveData,@(String.Join(",",lstPages))';*@
+    var path = "../Scripts/PageJS/Masters/MetersMaster/" + '@(jsPath)' + "/Index.js";
+    $.getScript(path);
+</script>
+@*<script src="~/Scripts/PageJS/Masters/MetersMaster/Index.js"></script>*@
+
+

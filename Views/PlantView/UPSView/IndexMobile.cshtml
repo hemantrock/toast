@@ -1,0 +1,224 @@
+﻿@using TOAST.Data.Model;
+@model List<tblTagPageLink>
+@{
+    ViewBag.Title = "Plant View - UPS View";
+    Layout = null;
+}
+
+<div class="container-fluid content-wrapper">
+
+    <div class="row">
+        <h2>UPS VIEW</h2>
+    </div>
+
+    <div class="esd-view-container">
+        <div class="toggle-menu-container">
+            <div class="menu-item">
+                UPS  <i class="fa fa-plus-circle"></i>
+            </div>
+            <div class="menu-content">
+                <table class="table table-bordered table-striped dataTable">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_LOAD_ON_BYPASS_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>LOAD ON BYPASS</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="menu-item">UPS-01 <i class="fa fa-plus-circle"></i></div>
+            <div class="menu-content">
+                <table class="table table-bordered table-striped dataTable">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_1_BTRY_LOW_PRE_ALARM_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY LOW PRE-ALARM</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_1_INVERTER_FAULT_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY INVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_1_CONVERTER_FAULT_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY CONVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_1_RECTIFIER_FAIL_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY RECTIFIER FAIL</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_1_FAIL_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>UPS FAIL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="menu-item">UPS-02 <i class="fa fa-plus-circle"></i></div>
+            <div class="menu-content">
+                <table class="table table-bordered table-striped dataTable">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_2_BTRY_LOW_PRE_ALARM_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY LOW PRE-ALARM</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_2_INVERTER_FAULT_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY INVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_2_CONVERTER_FAULT_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY CONVERTER FAULT</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_2_RECTIFIER_FAIL_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>BATTERY RECTIFIER FAIL</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="circle-cont">
+                                    <span class="UPS_2_FAIL_VALUE"></span>
+                                </span>
+                            </td>
+                            <td>UPS FAIL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/MobilePageJS/PlantView/UPSView/Index.js"></script>
+
+<!--
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">UPS View</h3>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing">
+        <div class="col-lg-4">
+            <table class="ups-tbl">
+                <thead>
+                    <tr>
+                        <th colspan="2">UPS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width: 20%; text-align:center;"><span class="UPS_LOAD_ON_BYPASS_VALUE"></span></td>
+                        <td style="width: 80%;">LOAD ON BYPASS</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <table class="ups-tbl">
+                <thead>
+                    <tr>
+                        <th colspan="2">UPS-01</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_1_BTRY_LOW_PRE_ALARM_VALUE"></span></td>
+                        <td style="width: 80%;">BATTERY LOW PRE-ALARM</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_1_INVERTER_FAULT_VALUE"></span></td>
+                        <td>BATTERY INVERTER FAULT</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_1_CONVERTER_FAULT_VALUE"></span></td>
+                        <td>BATTERY CONVERTER FAULT</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_1_RECTIFIER_FAIL_VALUE"></span></td>
+                        <td>BATTERY RECTIFIER FAIL</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_1_FAIL_VALUE"></span></td>
+                        <td>UPS FAIL</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <table class="ups-tbl">
+                <thead>
+                    <tr>
+                        <th colspan="2">UPS-02</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_2_BTRY_LOW_PRE_ALARM_VALUE"></span></td>
+                        <td style="width: 80%;">BATTERY LOW PRE-ALARM</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_2_INVERTER_FAULT_VALUE"></span></td>
+                        <td>BATTERY INVERTER FAULT</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_2_CONVERTER_FAULT_VALUE"></span></td>
+                        <td>BATTERY CONVERTER FAULT</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_2_RECTIFIER_FAIL_VALUE"></span></td>
+                        <td>BATTERY RECTIFIER FAIL</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;text-align:center;"><span class="UPS_2_FAIL_VALUE"></span></td>
+                        <td>UPS FAIL</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/UPSView/Index.js"></script>
+-->

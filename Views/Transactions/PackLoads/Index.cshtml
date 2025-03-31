@@ -1,0 +1,30 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    byte iPurpose = ViewBag.Purpose;
+}
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+
+<div class="col-lg-12">
+    <div id="TruckAssigmentOptions" onclick="$('#dvTimer').timer('pause');  $('#dvTimer').timer('remove');"></div>
+</div>
+<div id="jqxPLTrksGrid" class="jqx-tbl-container">
+</div>
+
+<div class="row" id="dvTruckDetails">
+</div>
+<div id="jqxPLSummary" class="jqx-tbl-container">
+</div>
+
+<script>
+    Purpose = '@iPurpose';
+</script>
+<script src="~/Scripts/PageJS/Transactions/PackLoads/PackFuncs.js"></script>
+<script src="~/Scripts/PageJS/Transactions/PackLoads/PackIndex.js"></script>
+<script src="~/Scripts/PageJS/Transactions/PackLoads/TablePacks.js"></script>

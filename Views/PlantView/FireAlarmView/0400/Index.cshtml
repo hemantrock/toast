@@ -1,0 +1,58 @@
+﻿@using TOAST.Data.Model;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Fire Alarm</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 content-top-spacing">
+        @{
+            foreach (tblPlantLocation loc in Model.Select(x =>x.tblPlantLocation).Distinct().ToList())
+            {
+                <div class="col-lg-2">
+                    <div class="fire-alarm-container" style="margin-top:10px">
+                        <table class="detail-tbl">
+                            <thead>
+                                <tr><th class="fire-alarm-header" colspan="4"><span>@loc.LocationDesc</span></th></tr>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>#</th>
+                                    <th>Alarm</th>
+                                    <th>Trouble</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (tblDeviceMaster Dev in Model.Where(x => x.PlantLocID==loc.LocationID).OrderBy(x => x.DeviceID).ThenBy(x => x.TypeSeqNo).ToList())
+                                {
+                                    <tr data-uniqueid="@Dev.UniqueID">
+                                        <td class="padd-l-15">@Dev.tblDeviceType.DeviceName.Replace(" Detector","")</td>
+                                        <td class="text-center">@Dev.TypeSeqNo</td>
+                                        <td>
+                                            <span class="alert-cont-md">
+                                                <span class="@(Dev.TagPrefix)_FAULT"></span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="alert-cont-md">
+                                                <span class="@(Dev.TagPrefix)_TROUBLE"></span>
+                                            </span>
+                                            
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/FireAlarmView/Index.js"></script>

@@ -1,0 +1,273 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblDeviceMaster
+@{
+    ViewBag.Title = "Plant View - Heat Pump View";
+    Layout = null;
+    string DevName = Model.DeviceName;
+    List<tblDeviceMaster> SameGrpPumps = ViewBag.SameGrpDevices;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    List<tblTagPageLink> DevCtrls = DeviceTags.SelectMany(x => x.tblTagPageLinks).ToList();
+    string servicecls = Model.tblDeviceType.DevicePrefix.ToLower();
+    tblDeviceMaster oDevice = Model;
+    string DevTagPrefix = Model.TagPrefix;
+    List<tblPumpService> PumpsServices = ViewBag.PumpsServices;
+    List<tblPumpPriority> ddlPumpPriorities = ViewBag.PumpPriorities;
+}
+<div class="modal-dialog pump-view-modal">
+    <div class="modal-dialog" style="width: 1400px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@Model.DeviceName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@Model.DeviceDesc</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row hide">
+                        <a class="push-btn-02 pump-start-btn @(DevTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Heat Pump: @(Model.DeviceName)',this, '@(DevTagPrefix+"_START")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                        <a class="push-btn-02 pump-stop-btn @(DevTagPrefix+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Heat Pump: @(Model.DeviceName)',this, '@(DevTagPrefix+"_STOP")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-3">
+                            <div class="pump-view-pump @(oDevice.tblDeviceType.DevicePrefix.ToLower())-device" style="padding: 0px 0px;">
+                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(DevTagPrefix+"_LOCREM")"></span>
+                                <div title="Device has No Feedback" data-tooltip-attr="DEVICE*" class="tooltips @oDevice.tblDeviceType.DevicePrefix.ToLower() @(DevTagPrefix+"_COMP_RUN_IMG") @(DevTagPrefix+"_COMP_TRIP_IMG") @(DevTagPrefix+"_COMP_FAIL_IMG")" style="position: relative;left:10px;top:2px;margin: auto;">
+                                    <span class="maintainence-mode-icon @(DevTagPrefix+"_MAINT")"></span>
+                                </div>
+                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(DevTagPrefix+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @oDevice.DeviceName', '@(DevTagPrefix+"_AUTOMAN")', '@(DevTagPrefix+"_LOCREM")' , 'TAG_AUTOMAN' ,'@oDevice.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' ); cancelBubble(event);"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 no-padd">
+                                <table class="table-striped app-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="background-color: orangered;color: #fff;font-size: 17px;" colspan="8">@oDevice.tblDeviceType.DevicePrefix Alarms and Status</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center bg-color" style="width: 24%">Parameter</th>
+                                            <th class="text-center bg-color" style="width: 9%">Status</th>
+                                            <th class="text-center bg-color" style="width: 24%">Parameter</th>
+                                            <th class="text-center bg-color" style="width: 9%">Status</th>
+                                            <th class="text-center bg-color" style="width: 24%">Parameter</th>
+                                            <th class="text-center bg-color" style="width: 10%">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            List<tblTagPageLink> alarmCtrls = DevCtrls.Where(x => x.ControlType == 2 && (x.ClassName == "alert" || x.ClassName == "status")).OrderBy(y=>y.ClassName).ToList();
+                                            for (int i = 0; i < alarmCtrls.Count(); i = i + 3)
+                                            {
+                                                <tr>
+                                                    <td>@alarmCtrls[i].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                                                    <td><span class="detail-tbl-val"><span class="circle-cont"><span class="@(alarmCtrls[i].ControlName)"></span></span></span></td>
+                                                    @if (i + 1 >= alarmCtrls.Count())
+                                                    {
+                                            <td></td>
+                                            <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                                                    else
+                                                    {
+                                                        <td>@alarmCtrls[i + 1].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                                                        <td><span class="detail-tbl-val"><span class="circle-cont"><span class="@(alarmCtrls[i+1].ControlName)"></span></span></span></td>
+                                                    }
+                                                    @if (i + 2 >= alarmCtrls.Count())
+                                                    {
+                                                        <td></td>
+                                                        <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                                                    else
+                                                    {
+                                                        <td>@alarmCtrls[i + 2].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                                                        <td><span class="detail-tbl-val"><span class="circle-cont"><span class="@(alarmCtrls[i+2].ControlName)"></span></span></span></td>
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                        
+                                    </tbody>
+                                </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 pump-view-detail-container">
+                        @*<table class="table-striped app-tbl">
+        <thead>
+            <tr>
+                <th class="text-center" style="background-color: orangered;color: #fff;font-size: 17px;" colspan="8">@oDevice.tblDeviceType.DevicePrefix Alarms</th>
+            </tr>
+            <tr>
+                <th class="text-center bg-color" style="width: 18%">Parameter</th>
+                <th class="text-center bg-color" style="width: 7%">Status</th>
+                <th class="text-center bg-color" style="width: 18%">Parameter</th>
+                <th class="text-center bg-color" style="width: 7%">Status</th>
+                <th class="text-center bg-color" style="width: 18%">Parameter</th>
+                <th class="text-center bg-color" style="width: 7%">Status</th>
+                <th class="text-center bg-color" style="width: 18%">Parameter</th>
+                <th class="text-center bg-color" style="width: 7%">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                List<tblTagPageLink> alarmCtrls = DevCtrls.Where(x => x.ControlType == 2 && x.ClassName == "alert").ToList();
+                for (int i = 0; i < alarmCtrls.Count(); i = i + 4)
+                {
+                    <tr>
+                        <td>@alarmCtrls[i].tblTagMaster.TagDescShort.Replace(" : "+ DevName.ToUpper(), "")</td>
+                        <td><span class="detail-tbl-val"><span class="@(alarmCtrls[i].ControlName)"></span></span></td>
+                        @if (i + 1 >= alarmCtrls.Count()) {<td></td><td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                        else
+                        {
+                            <td>@alarmCtrls[i + 1].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                            <td><span class="detail-tbl-val"><span class="@(alarmCtrls[i+1].ControlName)"></span></span></td>
+                        }
+                        @if (i + 2 >= alarmCtrls.Count())
+                        {
+                        <td></td>
+                        <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                        else
+                        {
+                            <td>@alarmCtrls[i + 2].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                            <td><span class="detail-tbl-val"><span class="@(alarmCtrls[i+2].ControlName)"></span></span></td>
+                        }
+                        @if (i + 3 >= alarmCtrls.Count())
+                        {
+                            <td></td>
+                            <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                        else
+                        {
+                            <td>@alarmCtrls[i + 3].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                            <td><span class="detail-tbl-val"><span class="@(alarmCtrls[i+3].ControlName)"></span></span></td>
+                        }
+                    </tr>
+                }
+            }
+            <tr>
+                <th class="text-center" style="background-color: limegreen;color: #fff;font-size: 17px;" colspan="8">@oDevice.tblDeviceType.DevicePrefix Status</th>
+            </tr>
+            @{
+                List<tblTagPageLink> statusCtrls = DevCtrls.Where(x => x.ControlType == 2 && x.ClassName == "status").ToList();
+                for (int i = 0; i < statusCtrls.Count(); i = i + 4)
+                {
+                    <tr>
+                        <td>@statusCtrls[i].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                        <td><span class="detail-tbl-val"><span class="@(statusCtrls[i].ControlName)"></span></span></td>
+                        @if (i + 1 >= statusCtrls.Count())
+                        {
+                        <td></td>
+                        <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                        else
+                        {
+                            <td>@statusCtrls[i + 1].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                            <td><span class="detail-tbl-val"><span class="@(statusCtrls[i+1].ControlName)"></span></span></td>
+                        }
+                        @if (i + 2 >= statusCtrls.Count())
+                        {
+                            <td></td>
+                            <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                        else
+                        {
+                            <td>@statusCtrls[i + 2].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                            <td><span class="detail-tbl-val"><span class="@(statusCtrls[i+2].ControlName)"></span></span></td>
+                        }
+                        @if (i + 3 >= statusCtrls.Count())
+                        {
+                            <td></td>
+                            <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                        else
+                        {
+                            <td>@statusCtrls[i + 3].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "")</td>
+                            <td><span class="detail-tbl-val"><span class="@(statusCtrls[i+3].ControlName)"></span></span></td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>*@
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="background-color:dodgerblue;color: #fff;font-size: 17px;" colspan="8">@oDevice.tblDeviceType.DevicePrefix Signals</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center bg-color" style="width: 18%">Signal</th>
+                                    <th class="text-center bg-color" style="width: 7%">Value</th>
+                                    <th class="text-center bg-color" style="width: 18%">Signal</th>
+                                    <th class="text-center bg-color" style="width: 7%">Value</th>
+                                    <th class="text-center bg-color" style="width: 18%">Signal</th>
+                                    <th class="text-center bg-color" style="width: 7%">Value</th>
+                                    <th class="text-center bg-color" style="width: 18%">Signal</th>
+                                    <th class="text-center bg-color" style="width: 7%">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    List<tblTagPageLink> ValCtrls = DevCtrls.Where(x => x.ControlType == 1 && x.ClassName == "data").ToList();
+                                    for (int i = 0; i < ValCtrls.Count(); i = i + 4)
+                                    {
+                                        tblUOMMaster TagUnit = (ValCtrls[i].tblTagMaster.tblUOMMaster??new tblUOMMaster());
+                                        <tr>
+                                            <td>@ValCtrls[i].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "") (@((ValCtrls[i].tblTagMaster.tblUOMMaster??new tblUOMMaster()).UOM)) </td>
+                                            <td><span class="detail-tbl-val"><span class="@(ValCtrls[i].ControlName)"></span></span></td>
+                                            @if (i + 1 >= ValCtrls.Count())
+                                            {
+                                                <td></td>
+                                                <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                                            else
+                                            {
+                                                <td>@ValCtrls[i + 1].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "") (@((ValCtrls[i+1].tblTagMaster.tblUOMMaster ?? new tblUOMMaster()).UOM)) </td>
+                                                <td><span class="detail-tbl-val"><span class="@(ValCtrls[i+1].ControlName)"></span></span></td>
+                                            }
+                                            @if (i + 2 >= ValCtrls.Count())
+                                            {
+                                                <td></td>
+                                                <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                                            else
+                                            {
+                                                <td>@ValCtrls[i + 2].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "") (@((ValCtrls[i+2].tblTagMaster.tblUOMMaster ?? new tblUOMMaster()).UOM)) </td>
+                                                <td><span class="detail-tbl-val"><span class="@(ValCtrls[i+2].ControlName)"></span></span></td>
+                                            }
+                                            @if (i + 3 >= ValCtrls.Count())
+                                            {
+                                                <td></td>
+                                                <td><span class="detail-tbl-val"><span class=""></span></span></td>}
+                                            else
+                                            {
+                                                <td>@ValCtrls[i + 3].tblTagMaster.TagDescShort.Replace(" : " + DevName.ToUpper(), "") (@((ValCtrls[i+3].tblTagMaster.tblUOMMaster ?? new tblUOMMaster()).UOM)) </td>
+                                                <td><span class="detail-tbl-val"><span class="@(ValCtrls[i+3].ControlName)"></span></span></td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-12 no-padd pump-run-hr-block hide">
+                        <div class="pump-timer-block">
+
+                            <div class="col-lg-5 no-padd-left">
+                                <label>Run Hours: &nbsp;</label>
+                                <span class="pump-timer @(DevTagPrefix + "_RUN_HRS")">
+                                    <span class="@(DevTagPrefix + "_RUN_HRS_HH")"></span>:<span class="@(DevTagPrefix + "_RUN_HRS_MM")"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <a class="push-btn pump-timer-reset-btn" href="javascript:void(0);" onclick="PumpRunHrsReset('@DevName',this, '@(DevTagPrefix + "_RESET_RUN_HRS")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')">Reset</a>
+                            </div>
+                            <div class="col-lg-5 no-padd-left">
+                                <hr class="devider vertical" />
+                                <label>Fuel Level: &nbsp;</label>
+                                <span class="pump-timer">
+                                    <span class="@(DevTagPrefix + "_FUEL_LEVEL")"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>
+
+

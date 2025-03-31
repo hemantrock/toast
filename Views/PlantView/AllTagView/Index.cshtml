@@ -1,0 +1,46 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "All Tag View";
+    Layout = null;
+}
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+@*<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">All Tag View</h3>
+        <table id="tblAllTAG" class="table">
+            <thead>
+                <tr>
+                    <th>TAG NAME</th>
+                    <th>TAG DESC</th>
+                    <th>DATA SOURCE</th>
+                    <th>UNIT</th>
+                    <th>DATATYPE</th>
+                    <th>VALUE</th>
+                    <th>NEW VALUE</th>
+                    <th>SET</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTagMaster itm in Model)
+                {
+                    <tr>
+                        <td>@itm.TagName</td>
+                        <td>@itm.TagDescription</td>
+                        <td>@(itm.DSId == null ? "" : itm.tblDataSourceMaster.DSName)</td>
+                        <td>@(itm.tblUOMMaster == null ? "" : itm.tblUOMMaster.UOM)</td>
+                        <td>@itm.tblDataTypeMaster.DataType</td>
+                        <td>@itm.Value</td>
+                        <td></td>
+                        <td class="text-center"><span id="spanSet_@itm.TagName" class="glyphicon glyphicon-ok clickable spanSet" data-id="@itm.TagName"></span></td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<script src="~/Scripts/PageJS/PlantView/AllTagView/Index.js"></script>

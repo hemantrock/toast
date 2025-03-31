@@ -1,0 +1,180 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblMFMBatch
+@{
+    ViewBag.Title = "Add MFM Batch";
+    //List<tblProduct> ddlProds = ViewBag.AllowedProds;
+    List<tblDropdownValue> ddlist = ViewBag.DropDownValues;
+    tblDropdownValue IssueReceipt = ddlist.Where(x => x.ddlType.ToUpper() == "IssueReceipt".ToUpper() && Convert.ToChar(x.ddlID).ToString() == Model.ReceiptIssue).FirstOrDefault();
+    tblDropdownValue SalePucTrfr = ddlist.Where(x => x.ddlType.ToUpper() == "SalePurTrfr".ToUpper() && Convert.ToChar(x.ddlID).ToString() == Model.StkTrOMC).FirstOrDefault();
+    bool AllowEdit = (ViewBag.AllowEdits == "Y");
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    @(AllowEdit ? "Edit" : "View") MFM Batch
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Batch No.</label>
+                    <input class="form-control" id="txtBatchID" name="BatchID" disabled value="@Model.BatchID">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Receipt / Issue</label>
+                    <input type="text" class="form-control" placeholder="Receipt / Issue" id="txtReceiptIssue" name="ReceiptIssue" autocomplete="off" value="@IssueReceipt.ddlValues" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>@(Model.ReceiptIssue == "R" ? "Issuing" : "Receiving") Plant Code</label>
+                    <input type="text" class="form-control" placeholder="@(Model.ReceiptIssue == "R" ? "Issuing" : "Receiving") Plant Code" id="txtIssuingPlantCode" name="IssuingPlantCode" autocomplete="off" value="@Model.IssuingPlantCode" @(AllowEdit ? "" : "disabled") />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>@(Model.ReceiptIssue == "R" ? "Receiving" : "Issuing") Plant Code</label>
+                    <input type="text" class="form-control" placeholder="@(Model.ReceiptIssue == "R" ? "Receiving" : "Issuing") Plant Code" id="txtReceivingPlantCode" name="ReceivingPlantCode" autocomplete="off" value="@Model.ReceivingPlantCode" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>@(Model.ReceiptIssue == "R" ? "Issuing" : "Receiving") Storage Tank</label>
+                    <input type="text" class="form-control" placeholder="@(Model.ReceiptIssue == "R" ? "Issuing" : "Receiving") Storage Tank" id="txtIssuingStorageTank" name="IssuingStorageTank" autocomplete="off" value="@Model.IssuingStorageTank" @(AllowEdit ? "" : "disabled") />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>@(Model.ReceiptIssue == "R" ? "Receiving" : "Issuing") Storage Tank</label>
+                    <input type="text" class="form-control" placeholder="Receiving Storage Tank" id="txtReceivingStorageTank" name="ReceivingStorageTank" autocomplete="off" value="@Model.tblTank.TankName (@Model.tblProduct.ProdNameShort)" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>MFM No</label>
+                    <input type="text" class="form-control" placeholder="MFM Device" id="txtMFMDevice" name="MFMDevice" autocomplete="off" value="@Model.tblDeviceMaster.DeviceName (@Model.tblDeviceMaster.DeviceDesc)" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Stock Transfer / OMC Sale Purchase</label>
+                    <input type="text" class="form-control" placeholder="Stock Transfer / OMC Sale Purchase" id="txtStkTrOMC" name="StkTrOMC" autocomplete="off" value="@SalePucTrfr.ddlValues" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Remarks</label>
+                    <input type="text" class="form-control" placeholder="Remarks" id="txtRemarks" name="Remarks" autocomplete="off" value="@Model.Remarks" @(AllowEdit ? "" : "disabled") />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Start Date Time</label>
+                    <input type="text" class="form-control" placeholder="Start Date Time" id="txtStartDateTime" name="StartDateTime" autocomplete="off" value="@Model.StartDateTime.Value.ToString("dd-MMM-yy HH:mm")" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>End Date Time</label>
+                    <input type="text" class="form-control" placeholder="End Date Time" id="txtEndDateTime" name="EndDateTime" autocomplete="off" value="@(Model.EndDateTime!=null?Model.EndDateTime.Value.ToString("dd-MMM-yy HH:mm"):"")" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>MFM Ambient Volume Totalizer Start</label>
+                    <input type="text" class="form-control" placeholder="MFM Ambient Volume Totalizer Start" id="txtMFMTotzAmbVolStart" name="MFMTotzAmbVolStart" autocomplete="off" value="@Model.MFMTotzAmbVolStart" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>MFM Ambient Volume Totalizer End</label>
+                    <input type="text" class="form-control" placeholder="MFM Ambient Volume Totalizer End" id="txtMFMTotzAmbVolEnd" name="MFMTotzAmbVolEnd" autocomplete="off" value="@Model.MFMTotzAmbVolEnd" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Observed Volume</label>
+                    <input type="text" class="form-control" placeholder="Observed Volume" id="txtVolumeObs" name="VolumeObs" autocomplete="off" value="@Model.VolumeObs" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>MFM Volume 15°C Totalizer Start</label>
+                    <input type="text" class="form-control" placeholder="MFM Totalizer 15°C Start" id="txtMFMTotz15VolStart" name="MFMTotz15VolStart" autocomplete="off" value="@Model.MFMTotz15VolStart" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>MFM Volume 15°C Totalizer End</label>
+                    <input type="text" class="form-control" placeholder="MFM Totalizer 15°C End" id="txtMFMTotz15VolEnd" name="MFMTotz15VolEnd" autocomplete="off" value="@Model.MFMTotz15VolEnd" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Volume 15°C </label>
+                    <input type="text" class="form-control" placeholder="Observed Volume" id="txtVolumeObs" name="VolumeObs" autocomplete="off" value="@Model.VolumeStd15" disabled />
+                </div>
+            </div>
+            @*<div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>MFM Volume 29.5°C Totalizer Start</label>
+                        <input type="text" class="form-control" placeholder="MFM Totalizer 29.5°C Start" id="txtMFMTotz29.5VolStart" name="MFMTotz29.5VolStart" autocomplete="off" value="@Model.MFMTotz295VolStart" disabled />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>MFM Volume 29.5°C Totalizer End</label>
+                        <input type="text" class="form-control" placeholder="MFM Totalizer 29.5°C End" id="txtMFMTotz29.5VolEnd" name="MFMTotz29.5VolEnd" autocomplete="off" value="@Model.MFMTotz295VolEnd" disabled />
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="fields form-group">
+                        <label>Volume 29.5°C </label>
+                        <input type="text" class="form-control" placeholder="Observed Volume" id="txtVolumeObs" name="VolumeObs" autocomplete="off" value="@Model.VolumeStd295" disabled />
+                    </div>
+                </div>*@
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Average Temperature</label>
+                    <input type="text" class="form-control" placeholder="Average Temperature" id="txtAvgTemp" name="AvgTemp" autocomplete="off" value="@Model.AvgTemp" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Average Density</label>
+                    <input type="text" class="form-control" placeholder="Observed Volume" id="txtVolumeObs" name="VolumeObs" autocomplete="off" value="@Model.AvgDensObs" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>Average Density 15°C</label>
+                    <input type="text" class="form-control" placeholder="Observed Volume" id="txtVolumeObs" name="VolumeObs" autocomplete="off" value="@Model.AvgDens15" disabled />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 ">
+                <div class="fields form-group">
+                    <label>SAP Response code</label>
+                    <input type="text" class="form-control" placeholder="SAP Response Code" id="txtResponseCode" name="ResponseCode" autocomplete="off" value="@Model.ResponseCode" disabled />
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 ">
+                <div class="fields form-group">
+                    <label>SAP Response Description</label>
+                    <input type="text" class="form-control" placeholder="SAP Response Desc" id="txtResponseDesc" name="ResponseDesc" autocomplete="off" value="@Model.ResponseDesc" disabled />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+            @if(AllowEdit) {
+                <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateMFMBatch();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+            }
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Transactions/MFMBatch/MFMBatch.js"></script>

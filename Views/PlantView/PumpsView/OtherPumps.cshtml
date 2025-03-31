@@ -1,0 +1,68 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblPump>
+@{
+    ViewBag.Title = "Plant View - Pumps View";
+    Layout = null;
+    //int MaxLen = Model.Where(x => x.ProductID != null).Select(x => x.tblProduct.ProdNameShort.Length).Max();
+    string TwoRowHeader = "";
+    //if (MaxLen > 8) { TwoRowHeader = "two-row-header"; }
+    List<tblPump> lstpmp = Model.ToList();
+    string stropcPages = String.Join(",", Model.Select(x => x.PageName).Distinct());
+}
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">@string.Join(", ", Model.Select(x => x.tblPumpService.Service).Distinct())  Pumps  View</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 m-t-40">
+            <div class="row">
+                <div class="tab-container pump-view-tab-container">
+                    @{
+                        foreach (tblPump pump in lstpmp)
+                        {
+                            string pumpName = pump.TagPrefix;
+                            <div class="col-lg-2 col-md-3 pump-view-wrapper pump-view-lg">
+                                <span class="pump-view-header @TwoRowHeader">
+                                    <span style="text-shadow: 0px 1px 1px #000;width: 70%;">@pump.EquipmentName</span>
+                                </span>
+                                <div class="pump-view-pump @(pump.tblPumpService.TagPrefix.ToLower())-device">
+                                    <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(pumpName+"_LOCREM")"></span>
+                                    <div title="Pump Off" data-tooltip-attr="PMP*" style="left:auto" class="tooltips pump-header @pump.tblPumpService.TagPrefix.ToLower() @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG")" onclick="OpenPumpModal(@pump.UniqueID,'@(pump.PageName)')">
+                                        <span class="maintainence-mode-icon @(pumpName+"_MAINT")"></span>
+                                    </div>
+                                    <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(pumpName+"_AUTOMAN")" onclick="OpenAutoManModal('@pump.EquipmentName', 'PUMP_AUTOMAN', '@(pumpName+"_AUTOMAN")', '@(pumpName+"_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                </div>
+
+                                <table class="pump-view-detail-tbl table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td class="pump-view-detail-tbl-lbl">Run Hrs</td>
+                                            <td class="pump-view-detail-tbl-val @(pumpName + "_RUN_HRS")">
+                                                <span class="@(pumpName + "_RUN_HRS_HH")"></span>:<span class="@(pumpName + "_RUN_HRS_MM")"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        opcPageName = '@stropcPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/PumpsView/Index.js"></script>

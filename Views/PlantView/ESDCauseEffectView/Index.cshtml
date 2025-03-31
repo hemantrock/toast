@@ -1,0 +1,222 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblTagPageLink>
+@{
+    ViewBag.Title = "Plant View - Cause and Effect View";
+    Layout = null;
+}
+<div class="row">
+    <div id="esd-cause-container">
+        <div class="cont-main-heading">
+            <h3>Cause and Effect View - ESD</h3>     
+        </div>
+
+        <div class="tbl-scrols">
+            <table class="esd-table">
+                <thead>
+                    <tr>
+                        <th class="effect-cause">
+                            <span class="right-arr"></span>
+                            <span class="eff">Effect</span>
+                            <span class="cau">Cause</span>
+                            <span class="down-arr"></span>
+                        </th>
+                        <th scope="col" abbr="Deluxe" class="SIREN01_ACTIVE">Siren Activated</th>
+                        <th scope="col" abbr="Deluxe" class="HOOTER_ACTIVATED">Dedicated Hooter Cum Strobe for ESD activatd in control room</th>
+                        <th scope="col" abbr="Deluxe" class="HOOTER_FOR_HC_CR">Dedicated Hooter Cum strobe for HC detector activated in control room</th>
+                        <th scope="col" abbr="Deluxe" class="HTR_FIELD_CMN">Dedicated Hooter Cum strobe for HC detector activated in Field</th>
+                        <th scope="col" abbr="Deluxe" class="HOOTER_FOR_FAP_DYK">Hooter for Permissive and Smoke Detector</th>
+                        <th scope="col" abbr="Medium" class="GATE_BARRIER_OPENED">Barrier Gate Opened</th>
+                        <th scope="col" abbr="Deluxe" class="ESD_STATUS_TO_PROCESS_PLC">ESD Command / Process PLC</th>
+                        <th scope="col" abbr="Deluxe" class="ALL_TANKS_IN_DORMANT">All Tanks in Dormant Mode</th>
+                        <th scope="col" abbr="Deluxe" class="ALL_DISPATCH_TANKS_IN_DORMANT">Tanks in TTL Dispatch in Dormant Mode</th>
+                        <th scope="col" abbr="Starter" class="ALL_ROSOV_CLOSED">Tank ROSOVs Closed</th>
+                        <th scope="col" abbr="Deluxe" class="ALL_MOV_CLOSED">All MOVs Closed</th>
+                        <th scope="col" abbr="Business" class="TLF_GANTRY_POWER_OFF">TLF Gantry Permissive Power Off</th>
+                        <th scope="col" abbr="Deluxe" class="ALL_TLF_PUMP_STOPPED">All Product Pumps Stopped</th>
+                        <th scope="col" abbr="Deluxe" class="ESD_RELAY_PCC_PANEL">Power ESD Activation in Main PMCC Panel after 120 sec.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        
+                    <tr class="ESD_VFS">
+                        <th scope="row">VFT Switch Activation (4H)</th>
+                        <td><i class="fa SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_TLF_PUMP_STOPPED" aria-hidden="true"></i></td>
+                        <td><i class="fa ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+                    </tr>
+
+                    <tr class="ESD_RDR_RELAY">
+                        <th scope="row">Secondary Radar Gauge Activation (4H)</th>
+                        <td><i class="fa SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_TLF_PUMP_STOPPED" aria-hidden="true"></i></td>
+                        <td><i class="fa ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+                    </tr>
+                    @*<tr>
+                        <th scope="row" class="">Rim Seal Fire Activation</th>
+                        <td><span class="check"></span></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><i class="fa" aria-hidden="true"></i></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>*@
+                    <tr class="TWO_FE_RUNNING">
+                        <th scope="row">Two Fire Engine Running status</th>
+                        <td><i class="fa X_SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa X_GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TLF_PUMP_STOPPED " aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr class="ANY_ESD_PB_ACTV">
+                        <th scope="row">ESD PB Activated in Field</th>
+                        <td><i class="fa SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa ALL_TLF_PUMP_STOPPED" aria-hidden="true"></i></td>
+                        <td><i class="fa ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr class="HCD_20LEL_TF_AREA">
+                        <th scope="row">20% LEL of Hydrocarbon Detector in Tank Farm Area</th>
+                        <td><i class="fa X_SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa X_GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TLF_PUMP_STOPPED " aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+
+                    </tr>
+                    <tr class="HCD_40LEL_TF_AREA">
+                        <th scope="row">40% LEL of Hydrocarbon Detector in Tank Farm Area</th>
+                        <td><i class="fa X_SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa X_GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TLF_PUMP_STOPPED " aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+
+                    </tr>
+                    <tr class="HCD_20LEL_PMP_AREA">
+                        <th scope="row">20% LEL of Hydrocarbon Detector in Pump House Area</th>
+                        <td><i class="fa X_SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa X_GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TLF_PUMP_STOPPED " aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr class="HCD_40LEL_PMP_AREA">
+                        <th scope="row">40% LEL of Hydrocarbon Detector in Pump House Area</th>
+                        <td><i class="fa X_SIREN01_ACTIVE" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_ACTIVATED" aria-hidden="true"></i></td>
+                        <td><i class="fa HOOTER_FOR_HC_CR" aria-hidden="true"></i></td>
+                        <td><i class="fa HTR_FIELD_CMN" aria-hidden="true"></i></td>
+                        <td><i class="fa X_HOOTER_FOR_FAP_DYK" aria-hidden="true"></i></td>
+                        <td><i class="fa X_GATE_BARRIER_OPENED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_STATUS_TO_PROCESS_PLC" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_DISPATCH_TANKS_IN_DORMANT" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_ROSOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_MOV_CLOSED" aria-hidden="true"></i></td>
+                        <td><i class="fa X_TLF_GANTRY_POWER_OFF" aria-hidden="true"></i></td>
+                        <td><i class="fa X_ALL_TLF_PUMP_STOPPED " aria-hidden="true"></i></td>
+                        <td><i class="fa X_ESD_RELAY_PCC_PANEL" aria-hidden="true"></i></td>
+                    </tr>
+                    @*<tr>
+                        <th scope="row" class="">ESD Deactivated in Pipeline Premises</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><i class="fa" aria-hidden="true"></i></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><i class="fa" aria-hidden="true"></i></td>
+                        <td></td>
+                        <td></td>
+                        <td><i class="fa" aria-hidden="true"></i></td>
+                        <td></td>
+                        <td></td>
+                    </tr>*@
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/ESDCauseEffectView/Index.js"></script>

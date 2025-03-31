@@ -1,0 +1,178 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+
+@model tblLoadingPointMaster
+@{
+    ViewBag.Title = "Plant View - Bay View";
+    Layout = null;
+    string BayId = "BAY" + Model.BayID.ToString();
+    string LPNo = "LP" + Model.BayID.ToString();
+    string HeaderId = (Model.BayID > 4) ? "02" : "01";
+    string HeaderNo = (Model.BayID > 4) ? "2" : "1";
+    string Prodcolor = "#808080";
+    if (Model != null && Model.tblLoadingPointProducts.FirstOrDefault() != null)
+    {
+        Prodcolor = Model.tblLoadingPointProducts.FirstOrDefault().tblProduct.ProductColor;
+    }
+}
+
+<div class="col-xs-12 no-padding">
+    <div class="bay-view-container">
+        <div id="mySliderTabs">
+            <!-- Unordered list representing the tabs -->
+            <ul>
+                <li><a href="#summary">Summary</a></li>
+                <li><a href="#data">Data</a></li>
+                <li><a href="#action">Action</a></li>
+            </ul>
+
+            <!-- Afterwards, include the div panels representing the panels of our slider -->
+            <div id="summary">
+                <div class="batch-controller-container">
+                    <table class="tblBayView table table-bordered table-striped dataTable">
+                        <tbody>
+                            <tr>
+                                <td class="lbl">Truck No.</td>
+                                <td class="val TRUCK_NO_@BayId">HR27B45678</td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Product</td>
+                                <td class="val PRODUCT_NAME_@BayId"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Delivered</td>
+                                <td class="val ">
+                                    <span class="flow-range QTY_BP_@BayId"></span>/<span class="flow-range QTY_PR_@BayId"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">% Delivered</td>
+                                <td class="val">
+                                    <div class="percentage bay-truck-fill" data-id="@BayId" style="background-color: @Prodcolor">
+                                        <span class="percentage" data-id="@BayId"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Accumulated</td>
+                                <td class="val flow-range QTY_ACC_@BayId"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">MFM Flow (kg/hr)</td>
+                                <td class="val MFM_MASSFLOW_@LPNo"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Density</td>
+                                <td class="val flow-range MFM_DENSITY_@LPNo"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="message">
+                        <span class="BC_MSG_@BayId"></span>
+                    </div>
+                </div>
+                <!-- rest of the panel content -->
+            </div>
+            <div id="data">
+                <div class="bay-view-data-container">
+                    <table class="tblBayViewData table table-bordered table-striped dataTable">
+                        <tbody>
+                            <tr>
+                                <td class="lbl">Mass flow</td>
+                                <td class="val FLOWRATE_BP_@BayId" data-id="@BayId"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Temperature</td>
+                                <td class="val MFM_TEMP_@LPNo"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Density</td>
+                                <td class="val MFM_DENSITY_@LPNo"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Totalizer</td>
+                                <td class="val MTR_TOT_@BayId"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">FAN No.</td>
+                                <td class="val FAN_NO_@BayId"></td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">Card No.</td>
+                                <td class="val CARD_NO_@BayId"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bay-cont interlock-box">
+                        <h3>INTERLOCK</h3>
+                        <div class="interlock-row">
+                            <div class="col-xs-4 interlock-block no-padding">
+                                <div class="inter-lock-val"><span class="PROCESS_ESD"></span></div>
+                                <div class="inter-lock-lbl">ESD</div>
+                            </div>
+                            <div class="col-xs-4 interlock-block no-padding">
+                                <div class="inter-lock-val"><span class="ER_@BayId"></span></div>
+                                <div class="inter-lock-lbl">TRUCK EARTH</div>
+                            </div>
+                            <div class="col-xs-4 interlock-block no-padding">
+                                <div class="inter-lock-val"><span class="STOP_PB_@BayId"></span></div>
+                                <div class="inter-lock-lbl">RIT STOP</div>
+                            </div>
+                        </div>
+                        <div class="interlock-row">
+                            <div class="col-xs-4 interlock-block no-padding">
+                                <div class="inter-lock-val"><span class="SAFETY_BCO_@BayId"></span></div>
+                                <div class="inter-lock-lbl">BCO</div>
+                            </div>
+                            <div class="col-xs-4 interlock-block no-padding">
+                                <div class="inter-lock-val"><span class="SAFETY_HB_@BayId"></span></div>
+                                <div class="inter-lock-lbl">HBR</div>
+                            </div>
+                            <div class="col-xs-4 interlock-block no-padding">
+                                <div class="inter-lock-val"><span class="SAFETY_FE_@BayId"></span></div>
+                                <div class="inter-lock-lbl">FE</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- rest of the panel content -->
+            </div>
+            <div id="action">
+                <div class="action-box">
+                    <div class="action-btn-row">
+                        <div class="col-xs-6">
+                            <div class="action-btn ack-alarm">
+                                <a class="push-btn ack_alarm ACK_ALARM_@BayId" href="javascript:void(0);" onclick="SendDataToOPC(this, 'ACK_ALARM_@BayId','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">ACK ALARM</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="action-btn rem-stop-btn"><a class="push-btn rem_stop_lp_false REM_STOP_LP_@BayId" href="javascript:void(0);" onclick="SendDataToOPC(this, 'REM_STOP_LP_@BayId','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">REM STOP</a>  </div>
+                        </div>
+                    </div>
+
+                    <div class="emrg-stop action-btn-row">
+                        <div class="action-btn">
+                            <a class="push-btn emrg-stop-btn emerg_stop_false SOFT_ESD" href="javascript:void(0);" onclick="SendDataToOPC(this, 'SOFT_ESD', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">EMERGENCY STOP</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- rest of the panel content -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/MobilePageJS/PlantView/BayView/BayView.js"></script>
+<script>
+    $(document).ready(function () {
+        if ($('#mySliderTabs').length > 0) {
+            var slider = $("div#mySliderTabs").sliderTabs({
+                autoplay: false,
+                mousewheel: false,
+                position: "top"
+            });
+        }
+    });
+</script>

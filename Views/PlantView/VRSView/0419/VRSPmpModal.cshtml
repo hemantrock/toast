@@ -1,0 +1,104 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+
+@{
+    ViewBag.Title = "Plant View - Pump View";
+    Layout = null;
+    string PumpName = ViewBag.Name;
+    string PmpTagPrefix = ViewBag.TagPrefix;
+    string VFDNo = "SR20";
+    if (PumpName.Contains("P11") || PumpName.Contains("P12")) { VFDNo = "SR10"; }
+    else if (PumpName.Contains("P21") || PumpName.Contains("P22")) { VFDNo = "SR20"; }
+    else if (PumpName.Contains("P41") || PumpName.Contains("P42")) { VFDNo = "SR40"; }
+    else { VFDNo = "SR"; }
+}
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 425px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@PumpName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title hide" id=""></h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row">
+                        @{
+                            if (VFDNo == "SR40")
+                            {
+                                <a style="width: 15%; left: 10%" class="push-btn-02 pump-start-btn @(PmpTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_START")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                                <a class="push-btn-02 hide pump-stop-btn @(PmpTagPrefix+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_STOP")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                                <a style="width: 15%; left:43%" class="push-btn-02 pump-start-btn @(PmpTagPrefix+"_INIT")" href="javascript:void(0);" onclick="SetProcessValue('VRS Operation','Pump: @(PumpName) Init',this, '@(PmpTagPrefix+"_INIT")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">INIT</a>
+                                <a style="width: 15%; left:80%" class="push-btn-02 pump-start-btn @(PmpTagPrefix+"_AVAIL")" href="javascript:void(0);" onclick="SetProcessValue('VRS Operation','Pump: @(PumpName) Avail',this, '@(PmpTagPrefix+"_AVAIL")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">AVAIL</a>
+                            }
+                            else
+                            {
+                                <a style="left:35%"class="push-btn-02 pump-start-btn @(PmpTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(PumpName)',this, '@(PmpTagPrefix+"_START")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                            }
+                        }
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump">
+                                <span class="maintainence-mode-icon @(PmpTagPrefix+"_MAINT")"></span>
+                                <div class="machine-wrapper pump-modal-img">
+                                    <div class="">
+                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips pmp-ctrl control-icon  @(PmpTagPrefix+"_LOCREM")"></span>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips pmp-ctrl control-icon @(PmpTagPrefix+"_AUTOMAN")"></span>
+                                        <div title="No Feedback" data-tooltip-attr="PMP*" class="tooltips pmp @(PmpTagPrefix+"_RUN_IMG") @(PmpTagPrefix+"_TRIP_IMG") @(PmpTagPrefix+"_FAIL_IMG")" style="position: relative;left:-15px;top:2px;margin: auto;">
+                                            <span class="maintainence-mode-icon @(PmpTagPrefix+"_MAINT")"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+                            <table class="table-striped app-tbl">
+                                <tbody>
+                                    <tr>
+                                        <td class="bold">Run Feedback</td>
+                                        <td class="tbl-val w-30">
+                                            <span class="circle-cont-sm">
+                                                <span class="@(PmpTagPrefix+"_RUN_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bold">
+                                            <span class="">Frequency (Hz)</span>
+                                        </td>
+                                        <td class="detail-tbl-val @(PmpTagPrefix+"_FREQ")" style="text-align: center; font-weight: bold;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bold">
+                                            <span class="">Current (A)</span>
+                                        </td>
+                                        <td class="detail-tbl-val @(PmpTagPrefix+"_CURR")" style="text-align: center; font-weight: bold;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bold">
+                                            <span class="">Run Hours (H)</span>
+                                        </td>
+                                        <td class="detail-tbl-val @(PmpTagPrefix+"_RUN_HRS")" style="text-align: center; font-weight: bold;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bold">
+                                            <span class="">@VFDNo (%)</span>
+                                        </td>
+                                        <td class="detail-tbl-val @(VFDNo +"_REG")" style="text-align: center; font-weight: bold;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>
+
+

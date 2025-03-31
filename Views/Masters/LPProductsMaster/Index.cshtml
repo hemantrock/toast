@@ -1,0 +1,58 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadingPointProduct>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddLPProductsMaster()">
+            <span class="glyphicon glyphicon-plus"></span>ADD NEW LP PRODUCT
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">LP Products Master</h3>
+        <table id="tblLoadingPointMaster" class="table">
+            <thead>
+                <tr>
+                    <th>Bay No</th>
+                    <th>LP No.</th>
+                    <th style="display:none;">ProductID</th>
+                    <th>Product Name</th>
+                    <th>Product Group</th>
+                    <th>Header No</th>
+                    <th>Recipe No</th>
+                    <th>Is Base Product</th>
+                    <th>LP Product Status</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblLoadingPointProduct prod in Model)
+                    {
+                        <tr class="clickable" onclick="EditRecord(@prod.tblLoadingPointMaster.LoadingPointNo, @prod.ProductID);">
+                            <td>@prod.tblLoadingPointMaster.BayID</td>
+                            <td>@prod.tblLoadingPointMaster.LoadingPointNo</td>
+                            <td style="display:none;">@prod.ProductID</td>
+                            <td>@prod.tblProduct.ProductName</td>
+                            <td>@prod.tblProduct.tblProductGroup.ProductGroupDesc</td>
+                            <td>@prod.tblProduct.HeaderNo</td>
+                            <td>@prod.RecipeNo</td>
+                            <td>@(prod.tblProduct.IsBaseProduct.HasValue ? (prod.tblProduct.IsBaseProduct.Value == true ? "Yes" : "No") : "No")</td>
+                            <td>@(prod.ProductStatus.HasValue ? (prod.ProductStatus.Value == true ? "Enabled" : "Disabled") : "Disabled")</td>
+                            <td class="text-center">
+                                <span id="spanDelete_@prod.tblLoadingPointMaster.BayID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@prod.tblLoadingPointMaster.LoadingPointNo" data-ProductID="@prod.ProductID"></span>
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/Masters/LPProductsMaster/Index.js"></script>

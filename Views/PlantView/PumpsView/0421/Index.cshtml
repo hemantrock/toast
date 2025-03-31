@@ -1,0 +1,128 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblPump>
+@{
+    ViewBag.Title = "Plant View - Pumps View";
+    Layout = null;
+    List<string> Groups;
+    if (clsConfig.PumpsGrouping.ToUpper() == "Service-Wise".ToUpper())
+    { Groups = Model.Where(x => x.ServiceID != null && x.tblProduct.Visible && x.tblProduct.tblProductComponents.Count() == 1).OrderBy(x => x.ServiceID).Select(x => x.tblPumpService.Service).Distinct().ToList(); }
+    else { Groups = Model.Where(x => x.tblProduct != null && x.tblProduct.Visible && x.tblProduct.tblProductComponents.Count() == 1).OrderBy(x => x.ProductID).Select(x => x.tblProduct.ProdNameShort).Distinct().ToList(); }
+}
+
+@*<div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">Pumps View</h3>
+        </div>
+    </div>*@
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black;font-size: 30px;">Pumps View</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 m-t-40">
+            <div class="tab-wrapper w-100">
+                <div class="panel with-nav-tabs panel-default">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                            @{
+                                foreach (string item in Groups)
+                                {
+                                    <li><a href="#@(item.Replace(" ","").Replace("+","-"))" data-toggle="tab" style="font-size: 23px;">@(item.Replace(" ", "-"))</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            @{
+                                foreach (string prod in Groups)
+                                {
+                                    <div class="tab-pane fade" id="@(prod.Replace(" ","").Replace("+","-"))">
+                                        <div class="row">
+                                            <div class="tab-container pump-view-tab-container">
+                                                @{
+                                                    List<tblPump> lstpmp; //= Model.Where(x => x.tblProduct != null && x.tblProduct.ProdNameShort == prod).ToList();
+                                                    if (clsConfig.PumpsGrouping == "Service-Wise".ToUpper()) { lstpmp = Model.Where(x => x.ServiceID != null && x.tblPumpService.Service == prod).ToList(); }
+                                                    else { lstpmp = Model.Where(x => x.tblProduct != null && x.tblProduct.ProdNameShort == prod).ToList(); }
+                                                    foreach (tblPump pump in lstpmp)
+                                                    {
+                                                        string pumpName = pump.TagPrefix;
+                                                        tblDeviceMaster SucPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.ToUpper().Contains("SUC")).FirstOrDefault();
+                                                        tblDeviceMaster DiscPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.ToUpper().Contains("DISC")).FirstOrDefault();
+                                                        tblDeviceMaster StrainerDPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 23).FirstOrDefault();
+                                                        <div class="col-lg-2 col-md-3 pump-view-wrapper pump-view-lg">
+                                                            <span class="pump-view-header">
+                                                                <span style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000;">@pump.EquipmentName</span>
+                                                                <span style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000;">@pump.tblProduct.ProdNameShort</span>
+                                                            </span>
+                                                            <div class="pump-view-pump @(pump.tblPumpService.TagPrefix.ToLower())-device">
+                                                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(pumpName+"_LOCREM")"></span>
+                                                                @if (SucPT != null)
+                                                                {
+                                                                    <span class="pt-val suc get-hover tooltips" title="Pump Suction Pressure" onclick="OpenChartModal('@(pumpName+"_PT_SUC_VALUE")', '@(pump.PageName)' ); cancelBubble(event);">
+                                                                        <span class="pt-pump-val @(pumpName+"_PT_SUC_VALUE") @(pumpName+"_PT")"></span><br />Kg/cm²
+                                                                    </span>
+                                                                }
+                                                                <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@pump.UniqueID,'@(pump.PageName)')" class="tooltips @pump.tblPumpService.TagPrefix.ToLower() @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG")" style="position: relative;left:10px;top:2px;margin: auto;">
+                                                                    <span class="maintainence-mode-icon @(pumpName+"_MAINT")"></span>
+                                                                </div>
+                                                                @if (DiscPT != null)
+                                                                {
+                                                                    <span class="pt-val disc get-hover tooltips" title="Pump Discharge Pressure" onclick="OpenChartModal('@(pumpName+"_PT_DISC_VALUE")', '@(pump.PageName)' ); cancelBubble(event);">
+                                                                        <span class="pt-pump-val @(pumpName+"_PT_DISC_VALUE") @(pumpName+"_PT")"></span><br />Kg/cm²
+                                                                    </span>
+                                                                }
+                                                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(pumpName+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @pump.EquipmentName', '@(pumpName+"_AUTOMAN")', '@(pumpName+"_LOCREM")', 'TAG_AUTOMAN','@pump.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                                <span class="sine-wave tooltips @(pumpName+"_ON_VFD")" title="Pump on VFD"></span>
+                                                            </div>
+
+                                                            <table class="pump-view-detail-tbl table-striped">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="pump-view-detail-tbl-lbl">Service <span style="display: none" aria-hidden="true" onclick="OpenServiceModal('@pump.UniqueID','@(pump.EquipmentName)',@(pump.tblPumpService.UniqueID),'','@Session[clsConstants.UserID]')" class="glyphicon glyphicon-pencil"></span></td>
+                                                                        <td class="pump-view-detail-tbl-val">@(pump.tblPumpService != null ? pump.tblPumpService.Service : "")</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            @{
+                                                if (clsConfig.ProjPath == "" && (prod == "MS" || prod == "HSD" || prod == "ETH" || prod == "SKO"))
+                                                {
+                                                    <div class="timer-lbl" style="margin-left: 10px;">
+                                                        Pump & Tank Mode Interlock :
+                                                        <div class="toggle-wrapper toggle-invert tooltips" onclick="cancelBubble(event);SetProcessValue('Tank Mode and Pump Interlock Bypass','@(prod)',this, '@(prod+"_PMP_TKMODE_BYPASS")', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                                            <input id="toggle-maintainence-mode" class="on-off-btn @(prod+"_PMP_TKMODE_BYPASS")" data-on="Bypassed" data-off="Enabled" checked type="checkbox" data-opcvalue="">
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs a:first').tab('show');
+        opcPageName = "PumpsView.*";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/PumpsView/Index.js"></script>

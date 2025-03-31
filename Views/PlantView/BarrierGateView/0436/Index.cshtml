@@ -1,0 +1,567 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "Plant View - Barrier Gate View";
+    Layout = null;
+    string BGPower = "hide";
+    if (clsConfig.IsBGPowerFdbkAvl)
+    {
+        BGPower = "";
+    }
+    List<int> lstSerComm = new List<int>() { 1, 2, 3 };
+    List<int> lstEthComm = new List<int>() { 11 };
+    tblBarrierGateMaster LeftBG = ViewBag.LeftBG;
+    tblBarrierGateMaster RightBG = (ViewBag.RightBG??new tblBarrierGateMaster());
+    List<tblACUMaster> lstCRs = ViewBag.BGCardReaders;
+    tblACUMaster LeftBGEntryACU = lstCRs.Where(x => x.AcuID == (LeftBG ?? new tblBarrierGateMaster()).EntryAcuID).FirstOrDefault();
+    tblACUMaster LeftBGExitACU = lstCRs.Where(x => x.AcuID == (LeftBG ?? new tblBarrierGateMaster()).ExitAcuID).FirstOrDefault();
+    tblACUMaster RightBGEntryACU = lstCRs.Where(x => x.AcuID == (RightBG ?? new tblBarrierGateMaster()).EntryAcuID).FirstOrDefault();
+    tblACUMaster RightBGExitACU = lstCRs.Where(x => x.AcuID == (RightBG ?? new tblBarrierGateMaster()).ExitAcuID).FirstOrDefault();
+    bool EntryTrafficLightsAvl = (ViewBag.EntryTrafficLightsAvl ?? false);
+    bool ExitTrafficLightsAvl = (ViewBag.ExitTrafficLightsAvl ?? false);
+    LeftBGEntryACU = (LeftBGEntryACU ?? new tblACUMaster()); LeftBGExitACU = (LeftBGExitACU ?? new tblACUMaster());
+    RightBGEntryACU = (RightBGEntryACU ?? new tblACUMaster()); RightBGExitACU = (RightBGExitACU ?? new tblACUMaster());
+    List<string> Pages = new List<string>() { (LeftBG.PageName ?? "BGView"), (RightBG.PageName ?? "BGView") };
+    Pages.AddRange(lstCRs.Select(x => x.PageName ?? ""));
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="col-lg-6 col-md-6 col-sm-6 text-center barrier-gate-wrapper">
+
+            <div class="gate-status-container">
+                <h3>@LeftBG.BGDesc</h3>
+                <table class="gate-status-tbl entry @(LeftBG.TagPrefix + "_AUTOMAN")" style="width:50%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%;">
+                                <div>
+                                    <a class="push-btn @(LeftBG.TagPrefix + "_SOFT_OPN")" onclick="SetProcessValue('Open/Close Command to BG','@LeftBG.BGDesc',this, '@(LeftBG.TagPrefix + "_SOFT_OPN")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">Open</a>
+                                    @*<a class="push-btn @(RightBG.TagPrefix+"_SOFT_OPN")" onclick="SendDataToOPC(this, '@(RightBG.TagPrefix+"_SOFT_OPN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Open</a>*@
+                                </div>
+                            </td>
+                            <td style="width: 50%;">
+                                <div>
+                                    <a class="push-btn hide @(LeftBG.TagPrefix + "_SOFT_CLS")" onclick="SetProcessValue('Open/Close Command to BG','@LeftBG.BGDesc',this, '@(LeftBG.TagPrefix + "_SOFT_CLS")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">Close</a>
+                                    @*<a class="push-btn @(LeftBG.TagPrefix+"_SOFT_CLS")" onclick="SendDataToOPC(this, '@(LeftBG.TagPrefix+"_SOFT_CLS")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Close</a>*@
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            @{
+                if (LeftBG.EntryAcuID != null)
+                {
+                    if (LeftBGEntryACU != null && LeftBGEntryACU.DisplayID != null)
+                    {
+                        <div class="barrier-gate-msg-board">
+                            <div class="board-msg @(LeftBGEntryACU.tblDisplayMaster.TagPrefix ?? (LeftBG.TagPrefix + "_ENT_SLD"))_HTML_MSG">
+                                <div class="color_green">HR12A12345 Bay:10</div>
+                                <div class="small-txt color_red">Welcome to IOCL</div>
+                            </div>
+                            <div style="position: relative;float: right;left: 25px;bottom: 22px;">
+                                <div class="circle-cont-sm tooltips" style="top: -3px;" title="Pri. Conn Status of SLD"><span class="@(LeftBGEntryACU.tblDisplayMaster.TagPrefix ?? (LeftBG.TagPrefix + "_ENT_SLD"))_CONN01"></span></div>
+                                <div class="circle-cont-sm tooltips" title="Sec. Conn Status of SLD"><span class="@(LeftBGEntryACU.tblDisplayMaster.TagPrefix ?? (LeftBG.TagPrefix + "_ENT_SLD"))_CONN02"></span></div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        <div class="barrier-main-container left text-left">
+            @if (EntryTrafficLightsAvl)
+            {
+                <div class="traffic-light">
+                    <span class="signals @(LeftBG.TagPrefix + "_TRFCLGHT_RED")  @(LeftBG.TagPrefix + "_ENT_TRFCLGHT_RED") red_1"></span>
+                    <span class="signals @(LeftBG.TagPrefix + "_TRFCLGHT_AMBER") @(LeftBG.TagPrefix + "_ENT_TRFCLGHT_AMBER") orange_1"></span>
+                    <span class="signals @(LeftBG.TagPrefix + "_TRFCLGHT_GREEN") @(LeftBG.TagPrefix + "_ENT_TRFCLGHT_GREEN") green_1"></span>
+                </div>
+            }
+
+            @if (LeftBG.ExitAcuID != null)
+            {
+                int exType = LeftBGExitACU.tblACUType.ACUTypeID;
+                string strEnxLabel = "DRIVER NAME";
+                if (lstSerComm.Contains(exType))
+                {
+                    strEnxLabel = "CARD NO.";
+                    string ShiftTop = ""; if (LeftBG.EntryAcuID != null && LeftBG.ExitAcuID != null) { ShiftTop = "left: 10px;top: -135px; position: absolute;"; }
+                    <div class="card-readers t-@exType.ToString("D2") top" style="@ShiftTop">
+                        <div class="connection-group">
+                            <div class="col-lg-6 text-right p-r-6">
+                                <label>Pri</label>
+                                <span class="circle-cont-sm">
+                                    <span class="@(LeftBGExitACU.TagPrefix ?? (LeftBG.TagPrefix+"_EXT_CR"))_CONN01"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-6 text-left no-padd-left">
+                                <label>Sec</label>
+                                <span class="circle-cont-sm">
+                                    <span class="@(LeftBGExitACU.TagPrefix ?? (LeftBG.TagPrefix+"_EXT_CR"))_CONN02"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="barrier-gate-detail-container on-entry-gate-top">
+                        <div class="gate-details-container">
+                            <div class="gate-detail-row">
+                                <div class="bay-lbl">TRUCK NO.</div>
+                                <div class="bay-val @(LeftBG.TagPrefix + "_EXT_TRUCK_NO")"></div>
+                            </div>
+                            <div class="gate-detail-row">
+                                <div class="bay-lbl">@strEnxLabel</div>
+                                <div class="bay-val @(LeftBG.TagPrefix + "_EXT_CARD_VALID") @(LeftBG.TagPrefix + "_EXT_CARD_INVALID")">
+                                    <input type="number" min=1 readonly class="editable-input @(LeftBG.TagPrefix + "_EXT_CARD_NO")" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('@(LeftBG.TagPrefix + "_EXT_CARD_NO")','@(LeftBG.TagPrefix + "_EXT_GLYPH")')" onfocus="updateGlyphButton('@(LeftBG.TagPrefix + "_EXT_CARD_NO")','@(LeftBG.TagPrefix + "_EXT_GLYPH")')"
+                                           style="border: 0px;width: 60%;" value="@(LeftBG.TagPrefix + "_EXT_CARD_NO")">
+                                    <span class="glyphicon glyphicon-upload hide" id="@(LeftBG.TagPrefix + "_EXT_GLYPH")" onclick="SetBGCardNo('Force BG Card No','Force Barrier Gate Card No at @LeftBGExitACU.ACUDesc','@(LeftBG.TagPrefix + "_EXT_CARD_NO")','@LeftBGExitACU.SlaveID','@LeftBGExitACU.DSID','@Session[clsConstants.UserID]')" aria-hidden="true"></span>
+                                    <div class="truck-status-mark-valid @(LeftBG.TagPrefix + "_EXT_CARD_VALID")">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-ok"></span>
+                                    </div>
+                                    <div class="truck-status-mark-invalid @(LeftBG.TagPrefix + "_EXT_CARD_INVALID")">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="barrier-gate-msg @(LeftBG.TagPrefix + "_EXT_MSG")">
+                        </div>
+                    </div>
+                }
+            }
+            @{string strEnnLabel = "DRIVER NAME"; }
+
+            @if (LeftBG.EntryAcuID != null)
+            {
+                byte enType = LeftBGEntryACU.tblACUType.ACUTypeID;
+                string ShiftBottom = ""; if (LeftBG.ExitAcuID != null && LeftBG.EntryAcuID != null) { ShiftBottom = "left: 10px;bottom: 55px; position: absolute;"; }
+                <div class="card-readers t-@enType.ToString("D2") bottom" style="@ShiftBottom">
+                    <div class="connection-group">
+                        @if (lstSerComm.Contains(enType))
+                        {
+                            strEnnLabel = "CARD NO.";
+                            <div class="col-lg-6 text-right p-r-6">
+                                <label>Pri</label>
+                                <span class="circle-cont-sm">
+                                    <span class="@(LeftBGEntryACU.TagPrefix ?? (LeftBG.TagPrefix+"_ENT_CR"))_CONN01"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-6 text-left no-padd-left">
+                                <label>Sec</label>
+                                <span class="circle-cont-sm">
+                                    <span class="@(LeftBGEntryACU.TagPrefix ?? (LeftBG.TagPrefix+"_ENT_CR"))_CONN02"></span>
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card-readers t-11 bottom" style="@ShiftBottom; left: 50px;">
+                    <div class="connection-group">
+                        <div class="col-lg-6 text-right p-r-6">
+                            <label>Pri</label>
+                            <span class="circle-cont-sm">
+                                <span class="ETH01_BIO_R2"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+            <div class="barrier-gate-container" style="margin-bottom: 12px;">
+                <div class="pillar barrier-gate-left">
+                    <div class="power-fail-cont @BGPower">
+                        <div class="power-fail"><span>Power</span></div>
+                        <span class="@(LeftBG.TagPrefix + "_POWER")"></span>
+                    </div>
+                </div>
+                <div class="gate-shutter @(LeftBG.TagPrefix + "_OPN_FB") @(LeftBG.TagPrefix + "_CLS_FB")" id="@(LeftBG.TagPrefix + "_ENT")"></div>
+                <div class="barrier-gate-right"></div>
+                <span class="barrier-gate-top barrier-gate-top-index" id="LeftBGTop"></span>
+
+                <div class="barrier-gate-detail-container">
+                    <span title="" data-tooltip-attr="LOCREM" class="tooltips clickable control-icon @(LeftBG.TagPrefix + "_LOCREM")"></span>
+                    <div class="gate-details-container">
+                        @if (LeftBG.EntryAcuID != null)
+                        {
+                            <div class="gate-detail-row">
+                                <div class="bay-lbl">TRUCK NO.</div>
+                                <div class="bay-val @(LeftBG.TagPrefix + "_ENT_TRUCK_NO")"></div>
+                            </div>
+                            <div class="gate-detail-row">
+                                <div class="bay-lbl">@strEnnLabel</div>
+                                <div class="bay-val @(LeftBG.TagPrefix + "_ENT_CARD_VALID") @(LeftBG.TagPrefix + "_ENT_CARD_INVALID")">
+                                    <input type="number" min=1 readonly class="editable-input @(LeftBG.TagPrefix + "_ENT_CARD_NO")" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('@(LeftBG.TagPrefix + "_ENT_CARD_NO")','@(LeftBG.TagPrefix + "_ENT_GLYPH")')" onfocus="updateGlyphButton('@(LeftBG.TagPrefix + "_ENT_CARD_NO")','@(LeftBG.TagPrefix + "_ENT_GLYPH")')"
+                                           style="border: 0px;width: 60%;" value="@(LeftBG.TagPrefix + "_ENT_CARD_NO")">
+                                    <span class="glyphicon glyphicon-upload hide" id="@(LeftBG.TagPrefix + "_ENT_GLYPH")" onclick="SetBGCardNo('Force BG Card No','Force Barrier Gate Card No at @LeftBGEntryACU.ACUDesc','@(LeftBG.TagPrefix + "_ENT_CARD_NO")','@LeftBGEntryACU.SlaveID','@LeftBGEntryACU.DSID','@Session[clsConstants.UserID]')" aria-hidden="true"></span>
+                                    <div class="truck-status-mark-valid @(LeftBG.TagPrefix + "_ENT_CARD_VALID")">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-ok"></span>
+                                    </div>
+                                    <div class="truck-status-mark-invalid @(LeftBG.TagPrefix + "_ENT_CARD_INVALID")">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(LeftBG.TagPrefix + "_AUTOMAN") clickable" onclick="OpenAutoManModal('ENTRY/CR SIDE','@(LeftBG.TagPrefix + "_AUTOMAN")', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></span>
+                    @if (LeftBG.EntryAcuID != null)
+                    {
+                        <div class="barrier-gate-msg @(LeftBG.TagPrefix + "_ENT_MSG")">
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 text-center barrier-gate-wrapper @(RightBG.BGID==0?"hide":"")">
+            <div class="gate-status-container">
+                <h3>@RightBG.BGDesc</h3>
+                <table class="gate-status-tbl exit @(RightBG.TagPrefix+"_AUTOMAN")" style="width:50%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%;">
+                                <div>
+                                    <a class="push-btn @(RightBG.TagPrefix+"_SOFT_OPN")" onclick="SetProcessValue('Open/Close Command to BG','@RightBG.BGDesc',this, '@(RightBG.TagPrefix+"_SOFT_OPN")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">Open</a>
+                                    @*<a class="push-btn @(RightBG.TagPrefix+"_SOFT_OPN")" onclick="SendDataToOPC(this, '@(RightBG.TagPrefix+"_SOFT_OPN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Open</a>*@
+                                </div>
+                            </td>
+                            <td style="width: 50%;">
+                                <div>
+                                    <a class="push-btn hide @(RightBG.TagPrefix+"_SOFT_CLS")" onclick="SetProcessValue('Open/Close Command to BG','@RightBG.BGDesc',this, '@(RightBG.TagPrefix+"_SOFT_CLS")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">Close</a>
+                                    @*<a class="push-btn @(RightBG.TagPrefix+"_SOFT_CLS")" onclick="SendDataToOPC(this, '@(RightBG.TagPrefix+"_SOFT_CLS")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Close</a>*@
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            @{
+                if (RightBGExitACU != null && RightBGExitACU.DisplayID != null)
+                {
+                        <div class="barrier-gate-msg-board">
+                            <div class="board-msg @(RightBGExitACU.tblDisplayMaster.TagPrefix??(RightBG.TagPrefix+"_ENT_SLD"))_HTML_MSG">
+                                <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="2">
+                                    <div class="color_red">INVALID CARD. CONTACT S&D</div>
+                                </marquee>
+                                <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="2">
+                                    <div class="small-txt color_red">Welcome to IOCL</div>
+                                </marquee>
+                            </div>
+                            <div style="position: relative;float: right;left: 25px;bottom: 22px;">
+                                <div class="circle-cont-sm tooltips" style="top: -3px;" title="Pri. Conn Status of SLD"><span class="@(RightBGExitACU.tblDisplayMaster.TagPrefix ?? (RightBG.TagPrefix + "_ENT_SLD"))_CONN01"></span></div>
+                                <div class="circle-cont-sm tooltips" title="Sec. Conn Status of SLD"><span class="@(RightBGExitACU.tblDisplayMaster.TagPrefix ?? (RightBG.TagPrefix + "_ENT_SLD"))_CONN02"></span></div>
+                            </div>
+                        </div>
+                }
+            }
+
+        <div class="barrier-main-container right">
+            @if (ExitTrafficLightsAvl)
+            {
+                <div class="traffic-light">
+                    <span class="signals @(RightBG.TagPrefix+"_TRFCLGHT_RED") @(RightBG.TagPrefix+"_EXT_TRFCLGHT_RED") red_1"></span>
+                    <span class="signals @(RightBG.TagPrefix+"_TRFCLGHT_AMBER") @(RightBG.TagPrefix+"_EXT_TRFCLGHT_AMBER") orange_1"></span>
+                    <span class="signals @(RightBG.TagPrefix+"_TRFCLGHT_GREEN") @(RightBG.TagPrefix+"_EXT_TRFCLGHT_GREEN") green_1"></span>
+                </div>
+            }
+            @{
+                if (RightBG.ExitAcuID != null)
+                {
+                    byte exnType = RightBGExitACU.tblACUType.ACUTypeID;
+                    string strExnLabel = "DRIVER NAME";
+                    string ShiftTop = ""; if (RightBG.EntryAcuID != null && RightBG.ExitAcuID != null) { ShiftTop = "left: 10px;top: -135px; position: absolute;"; }
+                    <div class="card-readers t-@exnType.ToString("D2") top" style="@ShiftTop">
+                        @if (lstSerComm.Contains(exnType))
+                        {
+                            strExnLabel = "CARD NO.";
+                            <div class="connection-group">
+                                <div class="col-lg-6 text-right p-r-6">
+                                    <label>Pri</label>
+                                    <span class="circle-cont-sm">
+                                        <span class="@(RightBGExitACU.TagPrefix??(RightBG.TagPrefix+"_ENT_CR"))_CONN01"></span>
+                                    </span>
+                                </div>
+                                <div class="col-lg-6 text-left no-padd-left">
+                                    <label>Sec</label>
+                                    <span class="circle-cont-sm">
+                                        <span class="@(RightBGExitACU.TagPrefix??(RightBG.TagPrefix+"_ENT_CR"))_CONN02"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-readers t-11 bottom" style="@ShiftTop; left: 50px;">
+                        <div class="connection-group">
+                            <div class="col-lg-6 text-right p-r-6">
+                                <label>Pri</label>
+                                <span class="circle-cont-sm">
+                                    <span class="ETH01_BIO_R3"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="barrier-gate-detail-container on-entry-gate-top">
+                        <div class="gate-details-container">
+                            @if (RightBG.ExitAcuID != null)
+                            {
+                                <div class="gate-detail-row">
+                                    <div class="bay-lbl">TRUCK NO.</div>
+                                    <div class="bay-val @(RightBG.TagPrefix+"_EXT_TRUCK_NO")"></div>
+                                </div>
+                                <div class="gate-detail-row">
+                                    <div class="bay-lbl">@strExnLabel</div>
+                                    <div class="bay-val @(RightBG.TagPrefix+"_EXT_CARD_VALID") @(RightBG.TagPrefix+"_EXT_CARD_INVALID")">
+                                        <input type="number" min=1 readonly class="editable-input @(RightBG.TagPrefix + "_EXT_CARD_NO")" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('@(RightBG.TagPrefix + "_EXT_CARD_NO")','@(RightBG.TagPrefix + "_EXT_GLYPH")')" onfocus="updateGlyphButton('@(RightBG.TagPrefix + "_EXT_CARD_NO")','@(RightBG.TagPrefix + "_EXT_GLYPH")')"
+                                               style="border: 0px;width: 60%;" value="@(RightBG.TagPrefix + "_EXT_CARD_NO")">
+                                        <span class="glyphicon glyphicon-upload hide" id="@(RightBG.TagPrefix + "_EXT_GLYPH")" onclick="SetBGCardNo('Force BG Card No','Force Barrier Gate Card No at @RightBGExitACU.ACUDesc','@(RightBG.TagPrefix + "_EXT_CARD_NO")','@RightBGExitACU.SlaveID','@RightBGExitACU.DSID','@Session[clsConstants.UserID]')" aria-hidden="true"></span>
+                                        <div class="truck-status-mark-valid @(RightBG.TagPrefix+"_EXT_CARD_VALID")">
+                                            <span aria-hidden="true" class="glyphicon glyphicon-ok"></span>
+                                        </div>
+                                        <div class="truck-status-mark-invalid @(RightBG.TagPrefix+"_EXT_CARD_INVALID")">
+                                            <span aria-hidden="true" class="glyphicon glyphicon-remove"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (RightBG.ExitAcuID != null)
+                        {
+                            <div class="barrier-gate-msg @(RightBG.TagPrefix + "_EXT_MSG")">
+                            </div>
+                        }
+                    </div>
+                }
+                string strExxLabel = "DRIVER NAME";
+                if (RightBG.EntryAcuID != null)
+                {
+                    byte extType = RightBGEntryACU.tblACUType.ACUTypeID;
+                    string ShiftBottom = ""; if (RightBG.EntryAcuID != null && RightBG.EntryAcuID != null) { ShiftBottom = "left: 10px;bottom: 55px; position: absolute;"; }
+                    <div class="card-readers t-@extType.ToString("D2") bottom" style="@ShiftBottom">
+                        @if (lstSerComm.Contains(extType))
+                        {
+                            strExxLabel = "CARD NO.";
+                            <div class="connection-group">
+                                <div class="col-lg-6 text-right p-r-6">
+                                    <label>Pri</label>
+                                    <span class="circle-cont-sm">
+                                        <span class="@(RightBGEntryACU.TagPrefix??(RightBG.TagPrefix+"_EXT_CR"))_CONN01"></span>
+                                    </span>
+                                </div>
+                                <div class="col-lg-6 text-left no-padd-left">
+                                    <label>Sec</label>
+                                    <span class="circle-cont-sm">
+                                        <span class="@(RightBGEntryACU.TagPrefix??(RightBG.TagPrefix+"_EXT_CR"))_CONN02"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            <div class="barrier-gate-container right" style="margin-bottom: 12px;">
+                <div class="pillar barrier-gate-left">
+                    <div class="power-fail-cont @BGPower">
+                        <div class="power-fail"><span>Power</span></div>
+                        <span class="@(RightBG.TagPrefix+"_POWER")"></span>
+                    </div>
+                </div>
+                <div class="gate-shutter @(RightBG.TagPrefix+"_OPN_FB") @(RightBG.TagPrefix+"_CLS_FB")" id="@(RightBG.TagPrefix+"_EXT")"></div>
+                <div class="barrier-gate-right"></div>
+                <span class="barrier-gate-top barrier-gate-top-index" id="RightBGTop"></span>
+                <div class="barrier-gate-detail-container">
+                    @{ string TopPos = RightBG.EntryAcuID == null ? "75px" : "0px"; }
+                    <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(RightBG.TagPrefix+"_LOCREM")" style="top:@TopPos"></span>
+                    <div class="gate-details-container">
+                        @if (RightBG.EntryAcuID != null)
+                        {
+                            <div class="gate-detail-row">
+                                <div class="bay-lbl">TRUCK NO.</div>
+                                <div class="bay-val @(RightBG.TagPrefix + "_ENT_TRUCK_NO")"></div>
+                            </div>
+                            <div class="gate-detail-row">
+                                <div class="bay-lbl">@strExxLabel</div>
+                                <div class="bay-val @(RightBG.TagPrefix + "_ENT_CARD_VALID") @(RightBG.TagPrefix + "_ENT_CARD_INVALID")">
+                                    <input type="number" min=1 readonly class="editable-input @(RightBG.TagPrefix + "_ENT_CARD_NO")" ondblclick="this.readOnly='';" onkeyup="updateGlyphButton('@(RightBG.TagPrefix + "_ENT_CARD_NO")','@(RightBG.TagPrefix + "_ENT_GLYPH")')" onfocus="updateGlyphButton('@(RightBG.TagPrefix + "_ENT_CARD_NO")','@(RightBG.TagPrefix + "_ENT_GLYPH")')"
+                                           style="border: 0px;width: 60%;" value="@(RightBG.TagPrefix + "_ENT_CARD_NO")">
+                                    <span class="glyphicon glyphicon-upload hide" id="@(RightBG.TagPrefix + "_ENT_GLYPH")" onclick="SetBGCardNo('Force BG Card No','Force Barrier Gate Card No at @RightBGEntryACU.ACUDesc','@(RightBG.TagPrefix + "_ENT_CARD_NO")','@RightBGEntryACU.SlaveID','@RightBGEntryACU.DSID','@Session[clsConstants.UserID]')" aria-hidden="true"></span>
+
+                                    <div class="truck-status-mark-valid @(RightBG.TagPrefix + "_ENT_CARD_VALID")">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-ok"></span>
+                                    </div>
+                                    <div class="truck-status-mark-invalid @(RightBG.TagPrefix + "_ENT_CARD_INVALID")">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <span title="" data-tooltip-attr="AUTOMAN" style="top:@TopPos" class="tooltips control-icon @(RightBG.TagPrefix + "_AUTOMAN") clickable" onclick="OpenAutoManModal('EXIT/ PH SIDE','@(RightBG.TagPrefix + "_AUTOMAN")', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></span>
+                    @if (RightBG.EntryAcuID != null)
+                    {
+                        <div class="barrier-gate-msg @(RightBG.TagPrefix + "_ENT_MSG")">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="LOCREMModal" tabindex="-1" role="dialog" aria-labelledby="ModeChangeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog mode-control-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="ModeChangeLabel">Change Mode</h3>
+            </div>
+            <div class="modal-body">
+                <div id="dvChangeMode" class="automanual-popup">
+                    <span id="hdnLOCREMMode" data-opcvalue="" class="" style="display:none;"></span>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Current Mode</th>
+                                <th>New Mode</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="relative">
+                                        <span class="control-icon LOCREM_BG"></span>
+                                    </div>
+                                    <div class="mode-lbl remotemode LOCREM_BG" data-opcvalue="True">
+                                        REMOTE MODE
+                                        <span class="mode-lbl-subtxt">Remote Operation from PC</span>
+                                    </div>
+                                    <div class="mode-lbl localmode LOCREM_BG" data-opcvalue="True">
+                                        LOCAL MODE
+                                        <span class="mode-lbl-subtxt">Locally operated from Equipment</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="relative">
+                                        <span class="control-icon LOCREM_BG new-mode"></span>
+                                    </div>
+                                    <div class="mode-lbl remotemode LOCREM_BG new-mode" data-opcvalue="True">
+                                        REMOTE MODE
+                                        <span class="mode-lbl-subtxt">Remote Operation from PC</span>
+                                    </div>
+                                    <div class="mode-lbl localmode LOCREM_BG new-mode" data-opcvalue="True">
+                                        LOCAL MODE
+                                        <span class="mode-lbl-subtxt">Locally operated from Equipment</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnModeChangeOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AutoManModal" tabindex="-1" role="dialog" aria-labelledby="AutoManModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog mode-control-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="AutoManLabel">Change Control</h3>
+            </div>
+            <div class="modal-body">
+                <div id="dvChangeAutoMan" class="automanual-popup">
+                    <span id="hdnAutoMan" data-opcvalue="" class="" style="display:none;"></span>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Current Control</th>
+                                <th>New Control</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="relative">
+                                        <span class="control-icon AUTOMAN_BG"></span>
+                                    </div>
+                                    <div class="mode-lbl automode AUTOMAN_BG" data-opcvalue="True">
+                                        AUTO MODE
+                                        <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                    </div>
+                                    <div class="mode-lbl manualmode AUTOMAN_BG" data-opcvalue="True">
+                                        MANUAL MODE
+                                        <span class="mode-lbl-subtxt">All Operations  (open, close etc) manually</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="relative">
+                                        <span class="control-icon new-mode AUTOMAN_BG"></span>
+                                    </div>
+                                    <div class="mode-lbl automode new-mode AUTOMAN_BG" data-opcvalue="True">
+                                        AUTO MODE
+                                        <span class="mode-lbl-subtxt">Automatic operations (open, close etc) as per logics</span>
+                                    </div>
+                                    <div class="mode-lbl manualmode new-mode AUTOMAN_BG" data-opcvalue="True">
+                                        MANUAL MODE
+                                        <span class="mode-lbl-subtxt">All Operations  (open, close etc) manually</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAutoManOK">Set</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BarrierGateTruckModel" tabindex="-1" role="dialog" aria-labelledby="BarrierGateTruckModelLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true" draggable="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="BarrierGateTruckModelLabel">Open BG and Set Truck</h3>
+            </div>
+            <div class="modal-body">
+                <p>Select a truck and proceed to simulate gate entry and open gate. If no truck is selected only BG gate will open.</p>
+                <div class="col-lg-12">
+                    <form role="form" class="form-inline">
+                        <div class="form-group">
+                            <label for="lblTruck">Select Truck:</label>
+                            <select id="ddlTruck" value="" class="form-control"></select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnServiceOK">Proceed with Selected Truck</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var BGEntryPrefix = '@LeftBG.TagPrefix';
+    var BGExitPrefix = '@RightBG.TagPrefix';
+    var BGOpenTime = '7s';
+    var BGCloseTime = '10s';
+    opcPageName = '@string.Join(",", Pages.Distinct())';
+    InitConn(opcPageName, 0);
+    opc.server.readPageTags(opcPageName);
+    createTooltip();
+    //animateShutter(".gate-shutter.bg_open_false.was-open", BGCloseTime);
+    //animateShutter(".gate-shutter.bg_close_false.was-close", BGOpenTime);
+</script>
+<script src="~/Scripts/PageJS/PlantView/BarrierGateView/Index.js"></script>

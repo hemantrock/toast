@@ -1,0 +1,84 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Dyke Valve View";
+    Layout = null;
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Dyke Valve View</h3>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="dyke-valve-container col-lg-12 m-t-10">
+        @{
+            foreach (tblDeviceMaster Device in Model)
+            {
+                <div class="device-box dyke-valve-wrapper" style="width:325px">
+                    <div class="device-header">
+                        <span class="h-col h-full" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@Device.DeviceName</span>
+                    </div>
+                    <div class="device-block">
+                        <div title="No Feedback" data-tooltip-attr="DykValve*" class="tooltips device dyke-valve @(Device.TagPrefix + "_CLS_IMG") @(Device.TagPrefix + "_OPN_IMG")">
+                            <span class="maintainence-mode-icon @(Device.TagPrefix + "_MAINT")"></span>
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                            <span class="action-icon auto-icon"></span>
+                            <span class="action-icon manual-icon"></span>
+                        </div>
+                    </div>
+
+                    <div class="device-detail">
+                        <table class="table-striped value-tbl w-100">
+                            <tbody>
+                                <tr>
+                                    <td class="tbl-lbl">Valve Desc</td>
+                                    <td class="tbl-val">
+                                        @Device.DeviceDesc
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tbl-lbl">Open Feedback</td>
+                                    <td class="tbl-val ">
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Device.TagPrefix+"_OPN_FB")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                @*<tr>
+                                    <td class="tbl-lbl">Close Feedback</td>
+                                    <td class="tbl-val">
+                                        <span class="circle-cont-sm">
+                                            <span class="@(Device.TagPrefix+"_CLS_FB")"></span>
+                                        </span>
+                                    </td>
+                                </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<div class="row hide">
+    <div class="col-lg-2">
+        <table class="table-striped app-tbl">
+            <thead>
+                <tr><th class="text-center bg-color" colspan="2">Dyke Valve Hooter</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bold">Hooter Status</td>
+                    <td width="35%"><span class="HTR08_STATUS"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/DeviceView/DykeValveView/Index.js"></script>

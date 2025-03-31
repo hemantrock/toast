@@ -1,0 +1,58 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@model List<BayQueue>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<div class="col-xs-12 bay-queue-container">
+        <div class="row">
+            <h2>Bay Queue</h2>
+        </div>
+    <div class="row">
+        <table id="tblLoadingPointMasterQueue" class="responsive">
+            <thead>
+                <tr>
+                    <th>Bay</th>
+                    <th>TT1 </th>
+                    <th>TT2</th>
+                    <th>TT3</th>
+                    <th>TT4</th>
+                    <th>TT5</th>
+                    <th>TT6</th>
+                </tr>
+            </thead>
+            <tbody id="tblLoadingPointMasterQueueBody">
+                @foreach (BayQueue itm in Model)
+                {
+                    int cnt = 0;
+                    <tr>
+                        <td style="height:63px;">@itm.BayID</td>
+                        @foreach (BayQueueTruck truck in itm.lstTruck)
+                        {
+                            <td align="center" class="clickable truckImage" style="height:63px;">
+                                <span class="truckNumber">@truck.TruckNumber.Trim()</span>
+                                <span class="truckStatus truckStatus_@truck.TruckStatusId">@truck.TruckStatus</span>
+                            </td>
+                            cnt++;
+                        }
+                        @if (cnt < 6)
+                        {
+                            for (int iCnt = cnt + 1; iCnt <= 6; iCnt++)
+                            {
+                                <td style="height:63px;">&nbsp;</td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" id="dvBayQueue">
+
+</div>
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/Transactions/BayQueue/Index.js"></script>

@@ -1,0 +1,75 @@
+file location in which code is implemented
+
+1:TOAST\Scripts\PageJS\TTRS\TTQueue\Index.js
+2:TOAST\Views\Shared\_Layout.cshtml
+3:TOAST\Views\PlantView\Wagon\ClusterPV.cshtml
+4:TOAST\Scripts\PageJS\TTRS\TTReportLPG\Index.js
+5:TOAST\Scripts\PageJS\TTRS\TTQueue\HPCL\Index.js
+6:TOAST\Scripts\PageJS\Transactions\ExitedTTs\TableVolume.js
+7:TOAST\Scripts\PageJS\Masters\Cards\Index.js
+8:TOAST\Content\css\style.css
+10: 
+
+
+$('#ddlMenuShortcut').find(':selected').each(function (index, value) {
+            console.log(index + ": " + $(value).val());
+            var obj = { *@
+                @* 'UserID': UserID, *@
+                @* 'MenuID': $(value).val(),
+                'SeqNo': index+1,
+            };
+            objShortMenu.push(obj);
+        });
+
+
+
+old  color   new color
+#3598db			#43506C
+#3D619B			#43506C
+#246eb7			#3D619B
+#31698E			#EF4B4C
+#073764			#E9E9EB
+#a4a4a4			#3D619B
+#4b4949			#E9E9EB
+#6e6d6b			#43506C
+#BBE7FF			#3D619B
+
+new 
+11: E:\TOAST\Views\PlantView\TanksPnIDView\0445\ATF_Receipt_Storage.html
+12: E:\TOAST\Views\Home\Index.cshtml
+13: E:\TOAST\Views\PlantView\Wagon\ClusterBCUs.cshtml
+14: E:\TOAST\Views\PlantView\Dashboard\Index.cshtml
+15: E:\TOAST\Views\PlantView\PumpsView\0445\PUMPModal.cshtml
+16: E:\TOAST\Views\PlantView\PumpsView\0445\Index.cshtml
+
+
+
+
+
+
+<div style="font-family: 'Orbitron', sans-serif; background-color: black; color: #0f0; padding: 10px; display: inline-block; width: 200px; height: 50px; text-align: right; border-radius: 5px; border: 2px solid #333; overflow: hidden; position: relative;">
+    <span class="@(wBCU.TagPrefix + "_MSG")" style="font-family: 'Orbitron', sans-serif; color: #0f0; padding: 10px; display: inline-block; white-space: nowrap; width: 100%; height: 100%; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px;">Your Text Here</span>
+</div>
+
+@if (ViewSteps)
+{
+    <div style="font-family: 'Orbitron', sans-serif; background-color: black; color: #0f0; padding: 10px; display: inline-block; width: 200px; height: 50px; text-align: right; border-radius: 5px; border: 2px solid #333; overflow: hidden; position: relative;">
+        <span class="@(wBCU.TagPrefix + "_STEP")" style="font-family: 'Orbitron', sans-serif; color: #0f0; padding: 10px; display: inline-block; white-space: nowrap; width: 100%; height: 100%; text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px;">Step Sequence</span>
+    </div>
+}
+
+<script>
+    function adjustFontSize(container) {
+        let span = container.querySelector("span");
+        let fontSize = 28; // Initial font size
+        span.style.fontSize = fontSize + "px";
+
+        while (span.scrollWidth > container.clientWidth - 20 || span.scrollHeight > container.clientHeight - 20) {
+            fontSize--;
+            span.style.fontSize = fontSize + "px";
+            if (fontSize <= 10) break; // Set a minimum font size limit
+        }
+    }
+
+    document.querySelectorAll("div").forEach(adjustFontSize);
+</script>

@@ -1,0 +1,49 @@
+﻿@model string
+@{
+    ViewBag.Title = "Log Weight";
+    Layout = null;
+}
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/cctv/zxml.js"></script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/cctv/xmlPrototypes.js"></script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/cctv/slider.js"></script>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/cctv/activeX.js?id=14"></script>
+
+<div class="row" id="dvVideo">
+    <form name="profileForm">
+        <input type="hidden" name="root_StreamProfile_MaxGroups" value="20"><input type="hidden" name="root_StreamProfile_S0_Name" value="Quality"><input type="hidden" name="root_StreamProfile_S0_Description" value="Best image quality and full frame rate."><input type="hidden" name="root_StreamProfile_S0_Parameters" value="videocodec=h264&amp;resolution=800x600&amp;compression=20&amp;fps=0&amp;videokeyframeinterval=8&amp;videobitrate=0"><input type="hidden" name="root_StreamProfile_S0_Default_Name" value="Quality"><input type="hidden" name="root_StreamProfile_S0_Default_Description" value="Best image quality and full frame rate."><input type="hidden" name="root_StreamProfile_S0_Default_Parameters" value="videocodec=h264&amp;resolution=800x600&amp;compression=20&amp;fps=0&amp;videokeyframeinterval=8&amp;videobitrate=0"><input type="hidden" name="root_StreamProfile_S1_Name" value="Balanced"><input type="hidden" name="root_StreamProfile_S1_Description" value="Medium image quality and frame rate."><input type="hidden" name="root_StreamProfile_S1_Parameters" value="videocodec=h264&amp;resolution=640x480&amp;compression=30&amp;fps=15&amp;videokeyframeinterval=15&amp;videobitrate=0"><input type="hidden" name="root_StreamProfile_S1_Default_Name" value="Balanced"><input type="hidden" name="root_StreamProfile_S1_Default_Description" value="Medium image quality and frame rate."><input type="hidden" name="root_StreamProfile_S1_Default_Parameters" value="videocodec=h264&amp;resolution=640x480&amp;compression=30&amp;fps=15&amp;videokeyframeinterval=15&amp;videobitrate=0"><input type="hidden" name="root_StreamProfile_S2_Name" value="Bandwidth"><input type="hidden" name="root_StreamProfile_S2_Description" value="Low bandwidth with medium image quality."><input type="hidden" name="root_StreamProfile_S2_Parameters" value="videocodec=h264&amp;resolution=640x480&amp;compression=50&amp;fps=15&amp;videokeyframeinterval=32&amp;videobitrate=250&amp;videomaxbitrate=1000&amp;videobitratepriority=framerate"><input type="hidden" name="root_StreamProfile_S2_Default_Name" value="Bandwidth"><input type="hidden" name="root_StreamProfile_S2_Default_Description" value="Low bandwidth with medium image quality."><input type="hidden" name="root_StreamProfile_S2_Default_Parameters" value="videocodec=h264&amp;resolution=640x480&amp;compression=50&amp;fps=15&amp;videokeyframeinterval=32&amp;videobitrate=250&amp;videomaxbitrate=1000&amp;videobitratepriority=framerate"><input type="hidden" name="root_StreamProfile_S3_Name" value="Mobile"><input type="hidden" name="root_StreamProfile_S3_Description" value="Mobile device settings."><input type="hidden" name="root_StreamProfile_S3_Parameters" value="videocodec=h264&amp;resolution=352x240&amp;compression=50&amp;fps=15&amp;videokeyframeinterval=32&amp;videobitrate=120&amp;videomaxbitrate=128&amp;videobitratepriority=quality&amp;audio=0"><input type="hidden" name="root_StreamProfile_S3_Default_Name" value="Mobile"><input type="hidden" name="root_StreamProfile_S3_Default_Description" value="Mobile device settings."><input type="hidden" name="root_StreamProfile_S3_Default_Parameters" value="videocodec=h264&amp;resolution=352x240&amp;compression=50&amp;fps=15&amp;videokeyframeinterval=32&amp;videobitrate=120&amp;videomaxbitrate=128&amp;videobitratepriority=quality&amp;audio=0">
+    </form>
+    <form name="listFormInt">
+        <input type="hidden" name="root_ImageSource_NbrOfSources" value="1"><input type="hidden" name="root" value=""><input type="hidden" name="root_ImageSource_I0_Name" value="Camera"><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root_ImageSource_I0_Sensor_AspectRatio" value="4:3">
+    </form>
+
+    <form name="listFormCrop">
+        <input type="hidden" name="root_Image_I0_Name" id="root_Image_I0_Name" value="View Area 1" />
+        <input type="hidden" name="root_Image_I0_Enabled" id="root_Image_I0_Enabled" value="yes" />
+        <input type="hidden" name="root_PTZ_Various_V1_Locked" id="root_PTZ_Various_V1_Locked" value="true" />
+    </form>
+    <form name="listFormExt"></form>
+    <form name="listFormPreset">
+        <input type="hidden" name="root_PTZ_Preset_P0_ImageSource" value="0"><input type="hidden" name="root_PTZ_Preset_P0_HomePosition" value="1"><input type="hidden" name="root_PTZ_Preset_P0_Position_P1_Name" value="Home"><input type="hidden" name="root_PTZ_Preset_P0_Position_P1_Data" value="tilt=0.000000:pan=0.000000:zoom=1.000000">
+    </form>
+    <form name="listFormSeq"></form>
+    <form name="lightsForm">
+        <input type="hidden" name="root_LightControl_L0_Name" value="Light"><input type="hidden" name="root_LightControl_L0_DriverType" value="pwm"><input type="hidden" name="root_LightControl_L0_SourceType" value="whiteled"><input type="hidden" name="root_LightControl_L0_Driver" value="16"><input type="hidden" name="root_LightControl_L0_Button" value="actinact"><input type="hidden" name="root_LightControl_L0_Activate" value="-100"><input type="hidden" name="root_LightControl_L0_Inactivate" value="-0"><input type="hidden" name="root_LightControl_L0_PulseTime" value="0">
+    </form>
+    <form name="formlightlevel0" 
+          id="formlightlevel0"
+          action="/axis-cgi/lightcontrol.cgi" target="Temp">
+        <input type="hidden" name="light" value="1">
+        <input type="hidden" name="level" value="0">
+    </form>
+    <form name="outputsForm">
+        <input type="hidden" name="root" value=""><input type="hidden" name="root_IOPort_I0_Direction" value="input"><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root_IOPort_I1_Direction" value="input"><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root" value=""><input type="hidden" name="root_IOPort_I2_Direction" value="output"><input type="hidden" name="root_IOPort_I2_Output_Name" value="Output 1"><input type="hidden" name="root_IOPort_I2_Output_Active" value="closed"><input type="hidden" name="root_IOPort_I2_Output_Button" value="actinact"><input type="hidden" name="root_IOPort_I2_Output_PulseTime" value="0"><input type="hidden" name="root_IOPort_I2_Output_Mode" value="1"><input type="hidden" name="root_IOPort_I2_Output_DelayTime" value="0">
+    </form>
+    <form name="UploadedFilesForm"></form>
+</div>
+<script src="~/Scripts/PageJS/Transactions/LoadSummary/LogWeightVideo.js"></script>
+<script>
+    $(document).ready(function () {
+        //video('http://' + '@Model' + '/axis-cgi/mjpg/video.mjpg');
+        video('http://' + '@Model' + '/mjpg/video.mjpg');
+    });
+</script>

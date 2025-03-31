@@ -1,0 +1,285 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - MOVs View";
+    Layout = null;
+    string strPages = String.Join(",", Model.Select(x => x.PageName));
+}
+
+<div class="mov-view-wrapper">
+    <div class="heading-container tank-view col-xs-12 no-padding">
+        <div class="col-xs-4 no-padding">
+            <h1>MOVs VIEW</h1>
+        </div>
+        <div class="col-xs-8 no-padding">
+            <div class="heading-right-container">
+                <label>GO : </label>
+                <select id='ddlMovView' onchange="ChangeMOVView()">
+                    @{
+                        int i = 0;
+                        foreach (tblMOVMaster mov in Model.Where(x => x.TankID != null).Distinct().ToList())
+                        {
+                            <option data-id="@i" value="@mov.UniqueID">@("MOV" + mov.UniqueID.ToString("0#"))</option>
+                            i = i + 1;
+                        }
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="slider-container">
+                @{
+                    foreach (tblMOVMaster mov in Model.Where(x => x.TankID != null).Distinct().ToList())
+                    {
+                        string MovName = "MOV_" + mov.UniqueID.ToString("0#");
+                        <div class="mov-container">
+                            <div class="item-number">
+                                <div class="col-xs-6 no-padding">
+                                    <label>Tank Name:</label> @mov.tblTank.TankName
+                                </div>
+                                <div class="col-xs-6">
+                                    <label>Product:</label> @mov.tblTank.tblProduct.ProdNameShort
+                                </div>
+                                <div class="col-xs-6 no-padding">
+                                    <label>Line:</label> @mov.tblMOVLine.Line
+                                </div>
+                                <div class="col-xs-6">
+                                    <label>Type:</label> @mov.tblMOVType.MOVLoc
+                                </div>
+                            </div>
+                            <div class="mySliderTabs">
+                                <ul>
+                                    <li><a href="#summary">Summary</a></li>
+                                    <li><a href="#data">Data</a></li>
+                                    <li><a href="#action">Action</a></li>
+                                </ul>
+                                <div id="summary">
+                                    <div class="mov-valve-info-container">
+                                        <div class="mov-valve IMG_GEN_ALRM_@MovName IMG_OPN_@MovName IMG_CLS_@MovName">
+                                            <span class="mov-valve-fill">
+                                                <span class="fill-front"></span>
+                                                <span class="fill-value percentage FILL_@MovName" data-id="PER_OPN_@MovName"></span>
+                                            </span>
+                                            <span class="percentage-fill-val"><span class="per_opn_mov PER_OPN_@MovName"></span>%</span>
+
+                                            <span class="mov-valve-icons local-indicator LOCREM_@MovName"></span>
+                                            <span class="mov-valve-icons remote-indicator REMOTE_IMG_@MovName"></span>
+                                            <span class="mov-valve-icons stop-indicator STOP_IMG_@MovName"></span>
+                                            <span class="mov-valve-icons auto-indicator AUTOMAN_@MovName"></span>
+                                            <span class="mov-valve-icons manual-indicator AUTOMAN_@MovName"></span>
+
+                                        </div>
+                                        <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                    </div>
+                                </div>
+                                <div id="data">
+                                    <div class="toggle-menu-container">
+                                        <div class="menu-item">
+                                            Feedback  <i class="fa fa-plus-circle"></i>
+                                        </div>
+                                        <div class="menu-content">
+                                            <table class="mov-tbl table table-bordered table-striped dataTable">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="lbl bold">Open Feedback</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="opn_fb_mov_false OPN_FB_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Close Feedback</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="cls_fb_mov_false CLS_FB_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">% Open</td>
+                                                        <td class="val per_opn_mov PER_OPN_@MovName"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">% Torque</td>
+                                                        <td class="val torque_mov TORQUE_@MovName"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="menu-item">
+                                            Valve Status  <i class="fa fa-plus-circle"></i>
+                                        </div>
+                                        <div class="menu-content">
+                                            <table class="mov-tbl table table-bordered table-striped dataTable">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="lbl bold">General Alarm</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false GEN_ALRM_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Thermostat tripped</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false THERM_TRIPPED_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Valve Obstructed</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false OBSTRUCTED_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Valve Moving by Hand</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false BYHAND_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Position Control Enabled</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false POSITION_CONTROL_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Battery Low</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false BATTERY_LOW_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Actuator Moving</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false ACT_MOVING_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Stop Select</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false STOP_SELECT_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Monitor Relay</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false MONITOR_RELAY_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Valve Jammed</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false JAMMED_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">Valve inhibited by MIT</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false INHIBITED_BY_MIT_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="lbl bold">EEPROM Checksum Fail</td>
+                                                        <td class="val">
+                                                            <span class="circle-cont">
+                                                                <span class="alert_false EEPROM_FAIL_@MovName"></span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="action">
+                                    <div class="action-box">
+                                        <div class="action-btn-row">
+                                            <div class="col-xs-6">
+                                                <div class="action-btn">
+                                                    <a class="push-btn open-mov-btn OPN_CMD_@MovName" href="javascript:void(0);" onclick="ValidateOpenClose(this, 'OPN_CMD_@MovName','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Open</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="action-btn"><a class="push-btn close-mov-btn CLS_CMD_@MovName" href="javascript:void(0);" onclick="ValidateOpenClose(this, 'CLS_CMD_@MovName','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Close</a>  </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="action-btn-row set-open-percentage">
+                                            <div class="col-xs-8 no-padding">
+                                                <span>% to open</span>
+                                                <input type="text" class="form-control" max="100" min="0" placeholder="XX.X" id="txtOpenPercent" data-opcvalue="0"></input>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="action-btn">
+                                                    <a class="push-btnhref=" javascript:void(0);" onclick="ValidateOpenPercent(this, 'SET_PER_OPEN_@MovName','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">SET</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/js/responsive-tables.js"></script>
+<script src="~/Scripts/MobilePageJS/PlantView/MOVsView/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        $('.nav-tabs a:first').tab('show');
+        createTooltip();
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        if ($('.slider-container').length > 0) {
+            $('.slider-container').slick({
+                dots: false,
+                easing: 'linear',
+                mobileFirst: true,
+                speed: 300
+            });
+        }
+        if ($('.mySliderTabs').length > 0) {
+            var slider = $("div.mySliderTabs").sliderTabs({
+                autoplay: false,
+                mousewheel: false,
+                position: "top"
+            });
+        }
+    });
+</script>

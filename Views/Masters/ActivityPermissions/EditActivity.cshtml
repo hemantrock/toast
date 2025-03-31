@@ -1,0 +1,66 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+
+@model List<ActivityPermissionCustom>
+
+@{
+    ViewBag.Title = "Edit Activity Permissions";
+    Layout = null;
+    int UserRoleID = ViewBag.UserRoleID;
+    string Designation = ViewBag.Designation;
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormActivitys" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="grid-header">Activity Permissions : @Designation</h3>
+                    <table id="tblActivity" class="table">
+                        <thead>
+                            <tr>
+                                <th style="display:none;">ActivityId</th>
+                                <th class="text-center">Permission</th>
+                                <th>Activity Group</th>
+                                <th>Activity Name</th>
+                                <th>Activity Description</th>
+                                <th>Txn Pwd</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ActivityPermissionCustom itm in Model)
+                            {
+                                <tr>
+                                    <td style="display:none;">@itm.ActivityID</td>
+                                    <td>
+                                        @if (itm.Permission == true)
+                                        {
+                                            <input type="checkbox" name="chkActivity" id="@itm.ActivityID" checked>
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="chkActivity" id="@itm.ActivityID">
+                                        }
+                                    </td>
+                                    <td>@itm.ActivityGroup</td>
+                                    <td>@itm.ActivityTitle</td>
+                                    <td>@itm.ActivityToolTip</td>
+                                    <td>@itm.ReqTxnPwd</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveActivityPermissions(@UserRoleID);"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/ActivityPermissions/EditActivity.js"></script>

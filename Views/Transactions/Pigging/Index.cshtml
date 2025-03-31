@@ -1,0 +1,166 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model tblTank
+@{
+    string PgName = "Pigging" + Model.TagPrefix;
+}
+
+<!-- Pigging page start  -->
+
+<div class="row">
+    <div class="col-lg-2">
+        <h3 class="grid-headerplant" style="color:black">Pigging View - @Model.TankName</h3>
+    </div>
+</div>
+
+<div class="accordion-panel">
+    <div class="buttons-wrapper">
+        <i class="plus-icon"></i>
+        <div class="open-btn">
+            Open all
+        </div>
+        <div class="close-btn hidden">
+            Close all
+        </div>
+    </div>
+    <dl class="accordion">
+        <dt> Filling / Dispatch Line Pigging <i class="plus-icon"></i></dt>
+        <dd>
+            <div class="content">
+                <div class="row">
+                    <div class="col-lg-12 pigging-view-wrapper">
+                        @{ 
+                            tblMOVMaster TankOutPig2TankValve = Model.tblMOVMasters.Where(x => x.MOVLine == 6 && x.MovName.Contains("OUT_PG_AIR")).FirstOrDefault();
+                            string TOAvalveView = (TankOutPig2TankValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankOutPig2TankValve.MovTypeSeqNo));
+                            tblMOVMaster TankOutProdValve = Model.tblMOVMasters.Where(x => x.MOVLine == 6 && x.MovName.Contains("OUT_PG_PROD")).FirstOrDefault();
+                            string TOPvalveView = (TankOutProdValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankOutProdValve.MovTypeSeqNo));
+                            tblMOVMaster CFAAirValve = Model.tblMOVMasters.Where(x => x.MOVLine == 6 && x.MovName.Contains("CFA_PG_AIR")).FirstOrDefault();
+                            string CFAvalveView = (CFAAirValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", CFAAirValve.MovTypeSeqNo));
+                            tblMOVMaster CFAProdValve = Model.tblMOVMasters.Where(x => x.MOVLine == 6 && x.MovName.Contains("CFA_PG_PROD")).FirstOrDefault();
+                            string CFPvalveView = (CFAProdValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", CFAProdValve.MovTypeSeqNo));
+                            string PageLink = Model.PageName;
+                            foreach (tblMOVMaster mov in Model.tblMOVMasters)
+                            { PageLink = mov.PageName + "," + PageLink;}
+
+                            foreach (tblPump pmp in Model.tblPumps)
+                            { PageLink = pmp.PageName + "," + PageLink; }
+                        }
+                        <div class="pigging-block dispatch-pigging">
+                            <div class="pigging-box left">
+                                <div class="tooltips airline-valve left @(TankOutPig2TankValve.TagPrefix+"_IMG_OPN_FB")  @(TankOutPig2TankValve.TagPrefix+"_IMG_CLS_FB")" title="@TankOutPig2TankValve.MovDescShort" onclick="OpenPValveModal('@TankOutPig2TankValve.UniqueID','@TOAvalveView')">
+                                    <span class="instrument-txt">@(TankOutPig2TankValve.MovName)</span>
+                                </div>
+                                <div class="p-box @(Model.TagPrefix+"_OUT_CFA_PIGSTN") dispatch"><span>Pigstation</span></div>
+                                <div class="tooltips airline-valve right @(TankOutProdValve.TagPrefix+"_IMG_OPN_FB")  @(TankOutProdValve.TagPrefix+"_IMG_CLS_FB")" title="@TankOutProdValve.MovDescShort" onclick="OpenPValveModal('@TankOutProdValve.UniqueID','@TOPvalveView')">
+                                    <span class="instrument-txt">@(TankOutProdValve.MovName)</span>
+                                </div>
+                                <div class="push-btn-01 start-pigging-btn @(Model.TagPrefix+"_PGSTART_DISP_TANK")" onclick="SetProcessValue('Start/Stop Pigging','Start/Stop Pigging',this, '@(Model.TagPrefix+"_PGSTART_DISP_TANK")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></div>
+                            </div>
+                            <div class="pigging-box right">
+                                <div class="tooltips airline-valve left  @(CFAProdValve.TagPrefix+"_IMG_OPN_FB")  @(CFAProdValve.TagPrefix+"_IMG_CLS_FB")" title="@CFAProdValve.MovDescShort" onclick="OpenPValveModal('@CFAProdValve.UniqueID','@CFPvalveView')">
+                                    <span class="instrument-txt">@(CFAProdValve.MovName)</span>
+                                </div>
+                                <div class="p-box @("CFA_"+ Model.TagPrefix+"_OUT_PIGSTN") receipt"><span>Pigstation</span></div>
+                                <div class="tooltips airline-valve right  @(CFAAirValve.TagPrefix+"_IMG_OPN_FB")  @(CFAAirValve.TagPrefix+"_IMG_CLS_FB")" title="@CFAAirValve.MovDescShort" onclick="OpenPValveModal('@CFAAirValve.UniqueID','@CFAvalveView')">
+                                    <span class="instrument-txt">@(CFAAirValve.MovName)</span>
+                                </div>
+                                <div class="push-btn-01 start-pigging-btn @(Model.TagPrefix+"_PGSTART_DISP_CFA")" onclick="SetProcessValue('Start/Stop Pigging','Start/Stop Pigging',this, '@(Model.TagPrefix+"_PGSTART_DISP_CFA")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></div>
+                            </div>
+                            <div class="connector-line from" onclick="OpenTankViewModal(@Model.UniqueID,'@PageLink')">
+                                <a href="javascript:void(0)"><span class="connector-txt from from-tank-txt">From Tank @Model.TankName</span></a>
+                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            </div>
+                            <div class="machine-txt">
+                                <ul>
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="OpenMachineView('06')">Machine 6</a>
+                                        <span class="machine-line"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="OpenMachineView('01')">Machine 1</a>
+                                        <span class="machine-line"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="OpenMachineView('02')">Machine 2</a>
+                                        <span class="machine-line"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="OpenMachineView('03')">Machine 3</a>
+                                        <span class="machine-line"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="OpenMachineView('05')">Machine 5,4</a>
+                                        <span class="machine-line"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    </li>
+                                        
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dd>
+        <dt>Receipt Line Pigging <i class="plus-icon"></i></dt>
+        <dd>
+            <div class="content">
+                <div class="row">
+                    <div class="col-lg-12 pigging-view-wrapper">
+                        @{
+                            tblMOVMaster TankInProd2TKValve = Model.tblMOVMasters.Where(x => x.MOVLine == 5 && x.MovName.Contains("IN_PG_AIR")).FirstOrDefault();
+                            string TIAvalveView = (TankInProd2TKValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankInProd2TKValve.MovTypeSeqNo));
+                            tblMOVMaster TankInProdValve = Model.tblMOVMasters.Where(x => x.MOVLine == 5 && x.MovName.Contains("IN_PG_PROD")).FirstOrDefault();
+                            string TIPvalveView = (TankInProdValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", TankInProdValve.MovTypeSeqNo));
+                            tblMOVMaster LOBPAirValve = Model.tblMOVMasters.Where(x => x.MOVLine == 5 && x.MovName.Contains("LOBP_PG_AIR")).FirstOrDefault();
+                            string LAvalveView = (LOBPAirValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", LOBPAirValve.MovTypeSeqNo));
+                            tblMOVMaster LOBPProdValve = Model.tblMOVMasters.Where(x => x.MOVLine == 5 && x.MovName.Contains("LOBP_PG_PROD")).FirstOrDefault();
+                            string LPvalveView = (LOBPProdValve.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", LOBPProdValve.MovTypeSeqNo));
+                        }
+                        <div class="pigging-block receipt-pigging">
+                            <div class="pigging-box left">
+                                <div class="tooltips airline-valve left @(LOBPAirValve.TagPrefix+"_IMG_OPN_FB")  @(LOBPAirValve.TagPrefix+"_IMG_CLS_FB")" title="@LOBPAirValve.MovDescShort" onclick="OpenPValveModal('@LOBPAirValve.UniqueID','@LAvalveView')">
+                                    <span class="instrument-txt">@(LOBPAirValve.MovName)</span>
+                                </div>
+                                <div class="p-box @("LOBP_"+ Model.TagPrefix+"_INL_PIGSTN") dispatch"><span>Pigstation</span></div>
+                                <div class="tooltips airline-valve right @(LOBPProdValve.TagPrefix+"_IMG_OPN_FB")  @(LOBPProdValve.TagPrefix+"_IMG_CLS_FB")" title="@LOBPProdValve.MovDescShort" onclick="OpenPValveModal('@LOBPProdValve.UniqueID','@LPvalveView')">
+                                    <span class="instrument-txt">@(LOBPProdValve.MovName)</span>
+                                </div>
+                                <div class="push-btn-01 start-pigging-btn @(Model.TagPrefix+"_PGSTART_RECP_LOBP")" onclick="SetProcessValue('Start/Stop Pigging','Start/Stop Pigging',this, '@(Model.TagPrefix+"_PGSTART_RECP_LOBP")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></div>
+                            </div>
+                            <div class="pigging-box right">
+                                <div class="tooltips airline-valve left  @(TankInProdValve.TagPrefix+"_IMG_OPN_FB")  @(TankInProdValve.TagPrefix+"_IMG_CLS_FB")" title="@TankInProdValve.MovDescShort" onclick="OpenPValveModal('@TankInProdValve.UniqueID','@TIPvalveView')">
+                                    <span class="instrument-txt">@(TankInProdValve.MovName)</span>
+                                </div>
+                                <div class="p-box @(Model.TagPrefix+"_INL_LOBP_PIGSTN") receipt"><span>Pigstation</span></div>
+                                <div class="tooltips airline-valve right @(TankInProd2TKValve.TagPrefix+"_IMG_OPN_FB")  @(TankInProd2TKValve.TagPrefix+"_IMG_CLS_FB")" title="@TankInProd2TKValve.MovDescShort" onclick="OpenPValveModal('@TankInProd2TKValve.UniqueID','@TIAvalveView')">
+                                    <span class="instrument-txt">@(TankInProd2TKValve.MovName)</span>
+                                </div>
+                                <div class="push-btn-01 start-pigging-btn @(Model.TagPrefix+"_PGSTART_RECP_TANK")" onclick="SetProcessValue('Start/Stop Pigging','Start/Stop Pigging',this, '@(Model.TagPrefix+"_PGSTART_RECP_TANK")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"></div>
+                            </div>
+                            <div class="connector-line from">
+                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                <span class="connector-txt from from-lobp-txt">From LOBP Tank</span>
+                            </div>
+                            <div class="connector-line to to-day-tank" onclick="OpenTankViewModal(@Model.UniqueID,'@PageLink')">
+                                <a href="javascript:void(0)"><span class="connector-txt to to-day-tank-txt">To Day Tank @Model.TankName</span> <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="connector-line to from-reverse">
+                                <span class="connector-txt to from-reverse-txt">From Reverse Transfer</span>
+                                <i class="fa fa-caret-up" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dd>
+    </dl>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@(PgName+ "," + TOAvalveView + ","+ TOPvalveView + "," + CFAvalveView + "," + CFPvalveView + "," + TIAvalveView + "," + TIPvalveView + "," + LAvalveView + "," + LPvalveView)';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+<script src="~/Scripts/PageJS/Transactions/Pigging/Index.js"></script>
+<script src="~/Scripts/PageJS/PlantView/TanksView/0406/Index.js"></script>

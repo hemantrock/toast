@@ -1,0 +1,314 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    ViewBag.Title = "Plant View -Fire Water System";
+    Layout = null;
+    List<tblPump> Pumps = ViewBag.Pumps;
+    List<tblPump> JockeyPump = Pumps.Where(x => x.ServiceID == 3).ToList();
+    List<tblPump> BorewellPump = Pumps.Where(x => x.ServiceID == 9).ToList();
+    List<tblPump> FirePump = Pumps.Where(x => x.ServiceID == 4).ToList();
+    List<tblDeviceMaster> HydrantPTs = ViewBag.HydrantPTs;
+    List<tblTank> WaterTanks = Model;
+    string CustName = clsConfig.CustomerName;
+    List<byte> ServiceIDs = new List<byte>() { 3, 4, 9 };
+    string TankPages = String.Join(",", WaterTanks.Select(x => x.PageName));
+    string PumpPages = String.Join(",", Pumps.Where(x => ServiceIDs.Contains(x.ServiceID ?? 0)).Select(x => x.PageName));
+    string PTPages = String.Join(",", HydrantPTs.Select(x => x.PageName));
+    string strPages = (TankPages + "," + PumpPages + "," + PTPages + ",WaterSystem");
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Fire Water System</h3>
+    </div>
+</div>
+
+<div class="fire-water-system-container m-t-40 p_@clsConfig.ProjPath">
+    <div class="row">
+        <div class="col-lg-4" style="width: fit-content;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Jocky Pump</h3>
+                        </div>
+                        <div class="panel-body" style="padding:2px">
+
+                            @{
+                                foreach (tblPump jcy in JockeyPump)
+                                {
+                                    string PumpName = jcy.TagPrefix;
+                            <div class="device-box jocky-pump-wrapper">
+                                <div class="device-header">
+                                    <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@jcy.EquipmentName</span>
+                                    <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">JOCKEY</span>
+                                </div>
+                                <div class="device-block">
+                                    <div class="device @(jcy.tblPumpService.TagPrefix.ToLower())-block">
+                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@jcy.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@jcy.UniqueID,'@jcy.PageName')" class="tooltips jocky-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                            <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                        </div>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@jcy.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    </div>
+                                </div>
+                                <div class="device-detail">
+                                    <table class="table-striped value-tbl w-100">
+                                        <tbody>
+                                            <tr>
+                                                <td class="tbl-lbl @(PumpName)_PRIORITY_DDL" style="width: 10%;" colspan="2">
+                                                    Priority: &nbsp;
+                                                    <span class="tank_mode_lbl" style="left:70px"></span>
+                                                    @*<select id="ddl@(PumpName)" class="prty_jcy @(PumpName)_PRIORITY_DDL">
+                                                            <option value=1>Main 1</option>
+                                                            <option value=2>Main 2</option>
+                                                            <option value=4>Standby 1</option>
+                                                            <option value=8>Standby 2</option>
+                                                        </select>
+                                                        <span class="glyphicon glyphicon-upload cursor-point" onclick="UpdatePumpPriorityDDL('@(PumpName +"_PRIORITY_DDL")','prty_jcy','ddl@(PumpName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                                    @*<input type="number" min=1 readonly class="editable-input @(PumpName + "_PRIORITY")" ondblclick="this.readOnly='';"
+                                                            style="border: 0px; width: 65%;">
+                                                        <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriority('@(PumpName +"_PRIORITY")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl">Fail to Start</td>
+                                                <td class="tbl-val">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_FAIL_FB")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" style="width: fit-content;">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Fire Water Pump</h3>
+                </div>
+                <div class="panel-body" style="padding:2px">
+                    @{
+                        foreach (tblPump fw in FirePump)
+                        {
+                            string PumpName = fw.TagPrefix;
+                    <div class="device-box">
+                        <div class="device-header">
+                            <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@fw.EquipmentName</span>
+                        </div>
+                        <div class="device-block">
+                            <div class="device @(fw.tblPumpService.TagPrefix.ToLower())-block">
+                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@fw.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@fw.UniqueID,'@fw.PageName')" class="tooltips fire-water-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                    <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                </div>
+                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@fw.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                <span class="machine-icon speed-icon @(PumpName + "_OVER_SPEED")"></span>
+                                <span class="machine-icon battery-icon @(PumpName + "_BATTERY_LOW")"></span>
+                                <span class="machine-icon high-temp-icon @(PumpName + "_HIGH_TEMP")"></span>
+                                <span class="machine-icon oil-pressure-icon @(PumpName + "_LUBE_PRESS_LOW")"></span>
+                            </div>
+                        </div>
+                        <div class="device-detail">
+                            <table class="table-striped value-tbl w-100">
+                                <tbody>
+                                    <tr>
+                                        <td class="tbl-lbl @(PumpName)_PRIORITY_DDL" style="width: 10%;" colspan="2">
+                                            Sequence: &nbsp;
+                                            <span class="tbl-lbl" style="left:70px"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tbl-lbl">Fail to Start</td>
+                                        <td class="detail-tbl-val tooltips" title="'Green' if no Fail Feedback received">
+                                            <span class="alert-cont-sm">
+                                                <span class="@(PumpName + "_FAIL_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" style="width: fit-content;">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Borewell Pump</h3>
+                </div>
+                <div class="panel-body" style="padding:2px">
+                    @{
+                        foreach (tblPump BW in BorewellPump)
+                        {
+                            string PumpName = BW.TagPrefix;
+                    <div class="device-box">
+                        <div class="device-header">
+                            <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@BW.EquipmentName</span>
+                        </div>
+                        <div class="device-block">
+                            <div class="device @(BW.tblPumpService.TagPrefix.ToLower())-block">
+                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@BW.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@BW.UniqueID,'@BW.PageName')" class="tooltips borewell-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                    <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                </div>
+                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@BW.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                            </div>
+                        </div>
+                        <div class="device-detail">
+                            <table class="table-striped value-tbl w-100">
+                                <tbody>
+                                    <tr>
+                                        <td class="tbl-lbl @(PumpName)_PRIORITY_DDL" style="width: 10%;" colspan="2">
+                                            Sequence: &nbsp;
+                                            <span class="tbl-lbl" style="left:70px"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="tbl-lbl">Fail to Start</td>
+                                        <td class="detail-tbl-val tooltips" title="'Green' if no Fail Feedback received">
+                                            <span class="alert-cont-sm">
+                                                <span class="@(PumpName + "_FAIL_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-5" style="width: fit-content;">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Tank</h3>
+                    </div>
+                    <div class="panel-body">
+                        @{
+                                foreach (tblTank tank in Model.Where(x => x.tblProduct.ProductName.ToUpper().Contains("WATER")))
+                                {
+                                    string TkPrefix = tank.TagPrefix;
+                                    string PageLink = tank.PageName;
+
+                                    foreach (tblMOVMaster mov in tank.tblMOVMasters)
+                                    {
+                                        string movpage = mov.PageName;
+                                        PageLink = movpage + "," + PageLink;
+                                    }
+
+                            <input type="hidden" class="hdnHeight" data-id="@TkPrefix" value="@(tank.SafeFillingCapacity??tank.DipReferenceHeight)" />
+                            <div class="hide chdnHeight @(TkPrefix)_LVL_HHH" data-id="@TkPrefix" data-sfl="@(tank.SafeFillingCapacity??tank.DipReferenceHeight)"></div>
+                            <div class="tank-container" style="min-height: 235px;">
+                                <div class="tank-number">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <span style="background-color:@tank.tblProduct.ProductColor;"><label style="color: #fff; text-shadow: 0px 1px 1px #000;">@tank.TankName </label></span>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <span style="background-color:@tank.tblProduct.ProductColor;"><label style="color: #fff; text-shadow: 0px 1px 1px #000;">@tank.tblProduct.ProdNameShort </label></span>
+                                    </div>
+
+                                </div>
+                                <div class="cursor-point" onclick="OpenTankViewModal(@tank.UniqueID,'@PageLink')">
+                                    <div class="tank-block @tank.tblTankType.TankType">
+                                        <span class="maintainence-mode-icon"></span>
+                                        <span class="stair">
+                                            <span class="app-logo @CustName"></span>
+                                        </span>
+                                        <span class="oil-tank-fill-container @(TkPrefix+"_OIL_TANK_FILL")">
+                                            <span class="oil-tank-base"></span>
+                                            <span class="oil-tank-fill  @(TkPrefix+"_PER_HGHT")" style="background-color:@tank.tblProduct.ProductColor; height: 3%"></span>
+                                        </span>
+                                    </div>
+                                    <div class="remote-auto-icon-block main-rm-block">
+
+                                    </div>
+                                    <span class="thermometer-block">
+                                        <!-- <span class="thermometer-fill"></span>-->
+                                        <span class="thermometer-lbl"></span>
+                                        <span class="thermometer-fill-percentage"><span class="@(TkPrefix+"_PER_LVL")" data-id="@TkPrefix"></span> %</span>
+                                        <span class="thermometer-fill-prod-level get-hover" title="Please click to view trend" onclick="OpenChartModal('@(TkPrefix+"_LEVEL")', '@(tank.PageName)'); cancelBubble(event);"><span class="@(TkPrefix+"_LEVEL")"></span> mm</span>
+                                    </span>
+                                </div>
+                                <table class="tank-mode-detail-tbl">
+                                    <tbody>
+                                        <tr class="odd">
+                                            <td class="tank-mode-lbl">Total Vol. (m³)</td>
+                                            <td class="tank-mode-val @(TkPrefix+"_TOV")"><span></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                                }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Hydrant Line PT</h3>
+                </div>
+                <div class="panel-body">
+                    @{
+                        foreach (tblDeviceMaster HydTxr in HydrantPTs)
+                        {
+                            string PTName = HydTxr.TagPrefix;
+                            <div class="device-box pressure-transmission-wrapper">
+                                <div class="device-header">
+                                    <span class="" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;font-weight: bold;">@HydTxr.DeviceName</span>
+                                </div>
+                                <div class="device-block">
+                                    <div class="device pt-bg">
+                                        <span class="action-icon remote-icon"></span>
+                                        <span class="action-icon local-icon"></span>
+                                    </div>
+                                </div>
+                                <div class="device-detail">
+                                    <table class="table-striped value-tbl w-100">
+                                        <tbody>
+                                            <tr>
+                                                <td class="tbl-lbl">@HydTxr.DeviceDesc.Replace("Hydrant PT - ", "")</td>
+                                                <td class="tbl-val @(PTName + "_VALUE")"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/TanksView/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        createTooltip();
+        opc.server.readPageTags(opcPageName);
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/FireWaterView/Index.js"></script>

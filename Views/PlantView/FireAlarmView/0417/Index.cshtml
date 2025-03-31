@@ -1,0 +1,263 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - Fire Alarm System View";
+    Layout = null;
+    List<tblPlantLocation> PlantLocs = ViewBag.PlantLocs;
+    List<int> lstiLocs = Model.Select(x => (x.tblPlantLocation.MasterLocID ?? x.tblPlantLocation.LocationID)).Distinct().ToList();
+    List<tblPlantLocation> lstLocs = PlantLocs.Where(x => lstiLocs.Contains(x.LocationID)).Distinct().ToList();
+    List<tblDeviceMaster> lstFAP = Model.Where(x => x.DeviceID == 15).ToList();
+    List<tblDeviceMaster> lstSensors = Model.Except(lstFAP).ToList();
+    List<tblTagMaster> FAPTags = ViewBag.FAPTags;
+    string proj = clsConfig.ProjPath;
+    List<int> CeilingDevs = new List<int>() { 12, 13 };
+    int iSens = 0; int iBasePos = -60; int Grp = 10;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Fire Alarm System</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12" style="margin-top: 60px;">
+        <div class="fire-alarm-container">
+            @for (int iLimit = 0; iLimit < lstSensors.Count(); iLimit = iLimit + Grp)
+            {
+                int Set = iLimit + Grp;
+                if (iLimit == 0) { Set = Grp*2; iLimit = Grp; }
+                if (Set > lstSensors.Count()) { Set = lstSensors.Count(); }
+                <div class="alarm-box">
+                    @if (iSens == 0)
+                    {
+                        <!-- Doing Fire Alarm Panel First -->
+                        <div class="fab-box"></div>
+                        foreach (tblDeviceMaster ofap in lstFAP)
+                        {
+                            <div class="fire-alarm-devices-box  fap_1">
+                                <span class="fire-alarm-device p-@clsConfig.ProjPath fap"></span>
+                                <span class="fire-alarm-header">
+                                    @ofap.DeviceName
+                                </span>
+                            </div>
+                        }
+                    }
+                    <!-- Doing Detectors and Beacons Now -->
+                    @for (int i = iSens; i < Set; i++)
+                    {
+
+                        int iLevel = (int)((i) / Grp);
+                        int k = i;
+                        if (iLevel == 0) { iBasePos = -70; } else { iBasePos = -10; }
+                        int itop = iBasePos + (iLevel) * 110;
+                        int Div= i/Grp;
+                        int Rem = Div % 2;
+                        if (Rem > 0)
+                        {
+                            int RedFact = i%Grp;
+                            k = (Div+1)*Grp - RedFact - 1;
+                        }
+                        string DevType = lstSensors[k].tblDeviceType.DevicePrefix.ToLower();
+                        <div class="fire-alarm-devices-box  @DevType" style="top:@(itop + "px")">
+                            <span class="fire-alarm-device p-@clsConfig.ProjPath @DevType @(lstSensors[k].TagPrefix + "_ALARM")">></span>
+                            <span class="fire-alarm-header" style="font-size: 15px;min-width: 140px">
+                                @(lstSensors[k].DeviceName)
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                            </span>
+                            <table class="detail-tbl">
+                                <tbody>
+                                    <tr>
+                                        <td class="padd-l-15">Type</td>
+                                        <td>@lstSensors[k].tblDeviceType.DeviceTypeDesc</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="padd-l-15">Loc.</td>
+                                        <td>@lstSensors[k].tblPlantLocation.LocationDesc</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    @{
+                        iSens = Set;
+                    }
+                </div>
+                        }
+            <div class="alarm-box right-b">
+                <div class="vertical-line"></div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        @{
+            <div class="col-lg-12" style="margin-bottom: 50px; display: none;">
+                <div class="fire-alarm-container">
+                    <div class="alarm-box">
+                        <div class="fab-box"></div>
+                        @{
+                            List<tblDeviceMaster>
+                                Devs = Model.OrderBy(x => x.tblPlantLocation.SeqNo ?? 100).ThenBy(x => x.TypeSeqNo).ToList();
+                                                            <!-- Doing Fire Alarm Panel First -->
+                            tblDeviceMaster FAP = Devs.Where(x => x.DeviceID == 15).FirstOrDefault();
+                            <div class="fire-alarm-devices-box  @(FAP.tblDeviceType.DevicePrefix.ToLower())_1">
+                                <span class="fire-alarm-device p-@proj @FAP.tblDeviceType.DevicePrefix.ToLower()"></span>
+                                <span class="fire-alarm-header">
+                                    @(FAP.DeviceName)
+                                </span>
+                            </div>
+
+                                                            <!-- Doing Detectors and Beacons Now -->
+                            List<tblDeviceMaster>
+                                Dets = Devs.Where(x => x.DeviceID != 15).ToList();
+                            int Max = Dets.Count(); int SeqNo = 0;
+                            for (SeqNo = 0; SeqNo < Max; SeqNo++)
+                            {
+                                int Top = -70 + (int)(SeqNo / 10) * 170;
+                                string SubLoc = "";
+                                if (CeilingDevs.Contains(Dets[SeqNo].DeviceID ?? 0)) { SubLoc = "-Ceiling"; }
+                                tblPlantLocation MastLoc = lstLocs.Where(x => x.LocationID == Dets[SeqNo].tblPlantLocation.MasterLocID).FirstOrDefault();
+                                if (MastLoc != null) { SubLoc = MastLoc.LocationDesc + "-" + Dets[SeqNo].tblPlantLocation.LocationDesc; }
+                                else { SubLoc = Dets[SeqNo].tblPlantLocation.LocationDesc + SubLoc; }
+                                <div class="fire-alarm-devices-box  @Dets[SeqNo].tblDeviceType.DevicePrefix.ToLower()" style="top:@(Top)px">
+                                    <span class="fire-alarm-device p-@proj @Dets[SeqNo].tblDeviceType.DevicePrefix.ToLower() @(Dets[SeqNo].TagPrefix)_ALARM"></span>
+                                    <span class="fire-alarm-header">
+                                        @(Dets[SeqNo].DeviceName)
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    </span>
+                                    <table class="detail-tbl">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="padd-l-15">Type</td>
+                                                <td>@(Dets[SeqNo].tblDeviceType.DeviceTypeDesc)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="padd-l-15">Location</td>
+                                                <td>@(SubLoc)</td>
+                                            </tr>
+                                            @*
+                                                <tr>
+                                                    <td class="padd-l-15">Status</td>
+                                                    <td class="fire-detector">
+                                                        <span class="p-@proj alert alert-fas">
+                                                            <span class="@(Dets[SeqNo].TagPrefix)_NORMAL_STS @(Dets[SeqNo].TagPrefix)_FAULT_STS @(Dets[SeqNo].TagPrefix)_FIRE_STS @(Dets[SeqNo].TagPrefix)_PRE_ALARM_STS @(Dets[SeqNo].TagPrefix)_DEV_MISSING_STS @(Dets[SeqNo].TagPrefix)_DUAL_ADDRESS_STS @(Dets[SeqNo].TagPrefix)_DEV_TYPE_FAULT_STS @(Dets[SeqNo].TagPrefix)_BYPASS_STS"></span>
+                                                        </span>
+                                                    </td>
+                                                </tr>*@
+                                            <tr>
+                                                <td class="padd-l-15">Remarks</td>
+                                                <td class="fire-detector">
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_NORMAL_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_BYPASS_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_DEV_TYPE_FAULT_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_DUAL_ADDRESS_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_DEV_MISSING_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_FAULT_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_PRE_ALARM_STS"></span>
+                                                    <span class="@(Dets[SeqNo].TagPrefix)_FIRE_STS"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 hide">
+                <div class="fire-alarm-container alaram-panel" style="margin-top:80px">
+                    <table class="detail-tbl">
+                        <thead>
+                            <tr><th class="fire-alarm-header" colspan="6"><span>Fire Alarm Panel</span></th></tr>
+                            <tr>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                List
+                                <tblTagMaster>
+                                    UsedTags = FAPTags.Where(x => x.TagDescription.ToUpper().Contains("LOOP") == false).ToList();
+                                int seq = 0; int max = UsedTags.Count();
+                                for (int i = 0; i < max; i = i + 3)
+                                {
+                                    <tr>
+                                        <td class="padd-l-15">@UsedTags[i].TagDescription</td>
+                                        <td>
+                                            <span class="alert-cont-sm circle-cont-sm">
+                                                <span class="@(UsedTags[i].TagName)"></span>
+                                            </span>
+                                        </td>
+                                        @if (i + 1 < max)
+                                        {
+                                            <td class="padd-l-15">@UsedTags[i + 1].TagDescription</td>
+                                            <td>
+                                                <span class="alert-cont-sm circle-cont-sm">
+                                                    <span class="@(UsedTags[i+1].TagName)"></span>
+                                                </span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="padd-l-15"></td>
+                                            <td></td>
+                                        }
+                                        @if (i + 2 < max)
+                                        {
+                                            <td class="padd-l-15">@UsedTags[i + 2].TagDescription</td>
+                                            <td>
+                                                <span class="alert-cont-sm circle-cont-sm">
+                                                    <span class="@(UsedTags[i+2].TagName)"></span>
+                                                </span>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="padd-l-15"></td>
+                                            <td></td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script src="~/Scripts/PageJS/PlantView/FireAlarmView/Index.js"></script>
+
+<script>
+    $(".fire-alarm-header .fa").click(function () {
+        var ele = $(this);
+        if ($(this).hasClass('fa-plus-circle')) {
+            $(this).removeClass('fa-plus-circle').addClass('fa-minus-circle');
+        } else {
+            $(this).removeClass('fa-minus-circle').addClass('fa-plus-circle');
+        }
+        var tsTbl = $(this).parent().next();
+        tsTbl.slideToggle("fast");
+    });
+</script>

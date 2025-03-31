@@ -1,0 +1,211 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - MOVs View";
+    Layout = null;
+    List<string> Groups;
+    bool ShowConn = clsConfig.ShowMOVConn;
+    if (clsConfig.MOVsGrouping.ToUpper() == "Type-Wise".ToUpper())
+    { Groups = Model.Where(x => x.MOVType != null && (x.TankID!=null || x.HeaderID!=null)).Select(x => x.tblMOVType.MOVType).Distinct().ToList(); }
+    else if (clsConfig.MOVsGrouping.ToUpper() == "Line-Wise".ToUpper())
+    { Groups = Model.Where(x => x.MOVLine != null && (x.TankID != null || x.HeaderID != null)).Select(x => x.tblMOVLine.Line).Distinct().ToList(); }
+    else { Groups = Model.Where(x => (x.TankID != null && x.tblTank.tblProduct.Visible)).Select(x => x.tblTank.tblProduct.ProdNameShort).Distinct().ToList();
+        Groups = Groups.Concat(Model.Where(x => (x.HeaderID != null && (x.tblHeadersMaster.tblProduct.Visible))).Select(x => x.tblHeadersMaster.tblProduct.ProdNameShort)
+            .Distinct()).ToList();
+    }
+    Groups = Groups.Distinct().ToList();
+    string strPages = String.Join(",", Model.Select(x => x.PageName));
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">MOVs View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 content-top-spacing mov-container rosov-container dbbv-container mov-sm">
+        <div class="tab-wrapper w-100">
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+                    <ul class="nav nav-tabs">
+                        @{
+                            foreach (string prod in Groups)
+                            {
+                                <li><a href="#@prod" data-toggle="tab">@prod</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        @{
+                            foreach (string prod in Groups)
+                            {
+                                List<tblMOVMaster> lstMOVs;
+                                List<tblTank> lstTanks;
+                                if (clsConfig.MOVsGrouping.ToUpper() == "Type-Wise".ToUpper())
+                                { lstMOVs = Model.Where(x => x.MOVType != null && x.tblMOVType.MOVType == prod).Distinct().ToList(); }
+                                else if (clsConfig.MOVsGrouping.ToUpper() == "Line-Wise".ToUpper())
+                                { lstMOVs = Model.Where(x => x.MOVLine != null && x.tblMOVLine.Line == prod).Distinct().ToList(); }
+                                else { lstMOVs = Model.Where(x => x.tblTank!=null && x.tblTank.ProductID != null && x.tblTank.tblProduct.ProdNameShort == prod).Distinct().ToList(); }
+                                //lstTanks = Model.Where(x => x.tblTank != null && x.tblTank.tblProduct.ProdNameShort == prod).Select(y => y.tblTank).Distinct().ToList();
+                                lstTanks = lstMOVs.Where(x => x.tblTank != null).Select(y => y.tblTank).Distinct().ToList();
+                                <div class="tab-pane fade" id="@prod">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="row">
+                                                <div class="mov-tbl-container">
+                                                    @{
+                                                        foreach (tblTank tank in lstTanks)
+                                                        {
+                                                            string TkPrefix = tank.TagPrefix + "_";
+                                                            <div class="col-lg-@Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderByDescending(x => x.tblMOVLine.Line).Count() mov-block">
+                                                                <input type="hidden" id="hdnTankAutoMan_@tank.TankName" class="@(TkPrefix+"AUTOMAN")" />
+                                                                <table class="mov-detail-tbl">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th colspan="@Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderByDescending(x => x.tblMOVLine.Line).Count()" class="text-center">
+                                                                                <span class="view-header">
+                                                                                    <span style="background-color:@tank.tblProduct.ProductColor; color: #fff; text-shadow: 0px 1px 1px #000;">@tank.TankName</span>
+                                                                                    <span style="background-color:@tank.tblProduct.ProductColor; color: #fff; text-shadow: 0px 1px 1px #000;">@tank.tblProduct.ProdNameShort</span>
+                                                                                </span>
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            @*@foreach (tblMOVMaster mov in Model.Where(x => x.TankID == tank.UniqueID).ToList().OrderByDescending(x => x.tblMOVLine.Line))*@
+                                                                            @foreach (tblMOVMaster mov in lstMOVs.Where(x=>x.TankID==tank.UniqueID))
+                                                                            {
+                                                                                string MoVPrefix = mov.TagPrefix + "_";
+                                                                                <td>
+                                                                                    <div class="mov-name"><span>@mov.tblMOVLine.Line</span> </div>
+                                                                                    <div class="@(mov.tblMOVType.MOVType.ToLower())-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@mov.PageName')">
+                                                                                        <div title="No Feedback" data-tooltip-attr="MOV*" class="tooltips @(mov.tblMOVType.MOVType.ToLower())-valve @(MoVPrefix+"GEN_ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                                                                                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                                                                        </div>
+                                                                                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon up @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                                                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(MoVPrefix+"AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode MOV', 'Device: @Model.MovName', '@(Model.TagPrefix + "_AUTOMAN")', '@(Model.TagPrefix + "_LOCREM")', 'TAG_AUTOMAN' , '@Model.PageName', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                                                        <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                                                                    </div>
+                                                                                    <table class="@(ShowConn?"":"hide") detail-tbl">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                                                                                                <td>
+                                                                                                    <span class="circle-cont-xsm">
+                                                                                                        <span class="@(MoVPrefix+"CONN01")"></span>
+                                                                                                    </span>
+                                                                                                </td>
+                                                                                                <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                                                                                                <td>
+                                                                                                    <span class="circle-cont-xsm">
+                                                                                                        <span class="@(MoVPrefix+"CONN02")"></span>
+                                                                                                    </span>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        }
+                                                    }
+
+                                                    @{
+                                                        List<tblMOVMaster> lstHeaderMovs;
+                                                        lstHeaderMovs = Model.Where(x => x.tblHeadersMaster != null && x.tblHeadersMaster.tblProduct.ProdNameShort == prod && x.Custom != null).ToList();
+                                                        if (lstHeaderMovs.Count() > 0)
+                                                        {
+                                                            List<string> strHeaders = lstHeaderMovs.Select(x => x.Custom).Distinct().ToList();
+                                                            //foreach (string custom in strHeaders)
+                                                            //{
+                                                            <div class="col-lg-@lstHeaderMovs.OrderBy(x => (x.tblMOVLine==null?"zzz":x.tblMOVLine.Line)).Count() mov-block">
+                                                                <table class="mov-detail-tbl">
+
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th colspan="@lstHeaderMovs.OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)).Count()" class="text-center">                                                                                
+                                                                                <span class="view-header">
+                                                                                    <span class="single-col" style="color: #fff; text-shadow: 0px 1px 1px #000;">@prod</span>
+                                                                                </span>
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            @foreach (tblMOVMaster mov in lstHeaderMovs.OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)))
+                                                                            {
+                                                                                string MoVPrefix = mov.TagPrefix + "_";
+                                                                                <td>
+                                                                                    <div class="mov-name" style="background-color:@mov.tblHeadersMaster.tblProduct.ProductColor; color:#fff;">
+                                                                                        <span>@mov.Custom</span>
+                                                                                    </div>
+                                                                                    <div class="@(mov.tblMOVType.MOVType.ToLower())-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@mov.PageName')">
+                                                                                        <div title="No Feedback" data-tooltip-attr="MOV*" class="tooltips @(mov.tblMOVType.MOVType.ToLower())-valve @(MoVPrefix+"ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                                                                                            <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                                                                            @*<span class="mov-valve-fill">
+                                                                                                <span class="fill-value percentage @(MoVPrefix+"_FILL")" data-id="@(MoVPrefix+"PER_OPN")"></span>
+                                                                                            </span>*@
+                                                                                        </div>
+                                                                                        <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                                                                        @*<span title="" data-tooltip-attr="REMOTE" class="tooltips control-icon @(MoVPrefix+"REMOTE_SELECT")"></span>
+                                                                                            <span title="" data-tooltip-attr="STOP" class="tooltips control-icon @(MoVPrefix+"STOP_SELECT")"></span>*@
+                                                                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon  @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, 'hdnTankAutoMan_', '@mov.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode MOV'); cancelBubble(event);"></span>
+                                                                                        <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                                                                    </div>
+                                                                                    <table class="@(ShowConn?"":"hide") detail-tbl">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri.</td>
+                                                                                                <td>
+                                                                                                    <span class="circle-cont-xsm">
+                                                                                                        <span class="@("MOV_CONN01_S"+String.Format("{0:00}",mov.SlaveID))"></span>
+                                                                                                    </span>
+                                                                                                </td>
+                                                                                                <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec.</td>
+                                                                                                <td>
+                                                                                                    <span class="circle-cont-xsm">
+                                                                                                        <span class="@("MOV_CONN02_S"+String.Format("{0:00}",mov.SlaveID))"></span>
+                                                                                                    </span>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            }
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            //}
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        $('.nav-tabs a:first').tab('show');
+        createTooltip();
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/MOVsView/Index.js"></script>

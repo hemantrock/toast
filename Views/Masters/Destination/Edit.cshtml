@@ -1,0 +1,44 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblDestination
+@{
+    ViewBag.Title = "Edit Destination";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Destination
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <input id="hdnUniqueID" type="hidden" value="@Model.UniqueID">
+                    <div class="fields form-group">
+                        <label>DESTINATION CODE</label>
+                        <input id="txtDestinationCode" name="DestinationCode" type="text" placeholder="Destination Code (numeric)" class="form-control" value="@Model.DestinationCode">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>DESTINATION NAME</label>
+                        <input id="txtDestination" name="Destination" type="text" placeholder="Destination (3-30 Chars)" class="form-control" value="@Model.DestinationDesc">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>DISTANCE (KM)</label>
+                        <input id="txtDistance" name="Distance" type="text" placeholder="Distance" class="form-control" value="@Model.Distance">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateDestination();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Destination/Destination.js"></script>

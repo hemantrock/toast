@@ -1,0 +1,242 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model TOAST.Data.Model.tblWLoadRakeDetail
+@{
+    Layout = null;
+    //float width = 94 / (Model.Count() == 0 ? 1 : Model.Count());
+    double CompWidth;
+    double total = (Model.PresetQty ?? 0);
+    int NoOfComps = 1; double PerFilled = 0;
+    double width = (99 - NoOfComps) / (total == 0 ? (99 - NoOfComps) : total);
+    tblWagonMaster mRake = Model.tblWagonMaster;
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+    double DeliveredQty = (Model.tblWLoadRakeComponents.Select(x => (x.DeliveredQtyGrs ?? 0) + (x.PrevQtyGrs ?? 0) + (x.TopUpQty ?? 0) - (x.DecantedQty ?? 0)).DefaultIfEmpty(0).Sum());
+    string sLoadSpotNo = ""; string sClusterNo = ""; string sFillStart = ""; string sFillEnd = ""; string sTankNo = "";
+    if ((Model.PresetQty ?? 0) > 0) { PerFilled = Math.Round((DeliveredQty * 100 / (Model.PresetQty ?? 0)), 2); }
+    if (Model.LoadSpotID != null && Model.tblLoadSpotMaster != null)
+    {
+        sClusterNo = String.Format("{0:00}", Model.tblLoadSpotMaster.tblWagonBCUArmBatch.tblWagonBCUMaster.tblClusterMaster.ClusterNo);
+        sLoadSpotNo = String.Format("{0:00}", Model.tblLoadSpotMaster.LoadSpotNo);
+    }
+    if (Model.FillingStartTime != null)
+    {
+        sFillStart = (Model.FillingStartTime ?? new DateTime()).ToString("HH:mm");
+    }
+    if (Model.FillingEndTime != null)
+    {
+        sFillEnd = (Model.FillingEndTime ?? new DateTime()).ToString("HH:mm");
+    }
+    if (Model.TankID != null)
+    {
+        sTankNo = (Model.tblTank.TankName);
+    }
+}
+
+@if (Model != null)
+{
+    <div class="modal-dialog" style="width: 720px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Wagon Details</h3>
+            </div>
+            <div class="modal-body" id="myModalBody">
+                <div class="relative-tank wagonPopupTank">
+                    <div class="bay-truck-fill-container">
+                        <div class="truck-fill-wrapper" id="truckFillWrapper"></div>
+                        <div class="bay-truck-fill" style="background-color: @Model.tblProduct.ProductColor ; height:@(PerFilled)%;"></div>
+                        <table class="bay-truck-fill-tbl">
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td><span>PRESET</span></td>
+                                                <td><span>@(Model.PresetQty)</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span>FILLED</span></td>
+                                                <td><span>@(DeliveredQty)</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td><span>% FILLED</span></td>
+                                                <td><span>@(PerFilled)%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span>PRODUCT</span></td>
+                                                <td><span>@Model.tblProduct.ProdNameShort</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span></span></td>
+                                                <td><span></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <img src="~/Images/amt-tank-wagon.svg" alt="Tank Wagon" />
+                </div>
+                <div class="row">
+                    <div class="m-t-10" id="WagonAssigmentOptions">
+                        @{
+                            tblTruckStatu rStatus = Model.tblTruckStatu;
+                            string ActDet = "Wagon:" + Model.tblWagonMaster.WagonNo + "; Seq:" + Model.WagonSeqNo + "; Shipment:" + Model.tblWLoadRakeMaster.SAPRakeNo + "; LoadID:" + Model.WLoadID;
+                            if (rStatus.TopUp == true) //Implemented & Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnSampleQty" role="button" class="btn btn-primary" href="#" onclick="ValidateExecute('Wagon TopUp', '@ActDet', function () { WagonTopUpView('@Model.WLoadID','@Model.WagonSeqNo','@ActDet') },'@Model.WLoadID');">
+                                        <span class="glyphicon glyphicon-plus-sign">  </span>Add TopUp Qty
+                                    </a>
+                                </div>
+                            }
+                            if (rStatus.AssignBayCard == true) //Implemented & Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnBayAssign" role="button" class="btn btn-primary" href="#" onclick="LoadSpotAssign('@Model.WLoadID','@Model.WagonSeqNo','@ActDet');">
+                                        <span class="glyphicon glyphicon-check"></span>LoadSpot Assign
+                                    </a>
+                                </div>
+                            }
+                            if (rStatus.BayReallocate == true) //Implemented & Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnBayReallocate" role="button" class="btn btn-primary" href="#" onclick="ConfirmValidateExecute('Are you sure to Reallocate LoadSpot?','LoadSpot To Be Reallocated', '@ActDet', function () { LoadSpotReallocate('@Model.WLoadID','@Model.WagonSeqNo','@ActDet') },'@Model.WLoadID');">
+                                        <span class="glyphicon glyphicon-refresh"></span>LoadSpot To Reallocate
+                                    </a>
+                                </div>
+                            }
+                            if (rStatus.TruckAbort == true)//Implemented & NOT Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnWagonAbort" role="button" class="btn btn-primary" href="#" onclick="ConfirmValidateExecute('Are you sure you want to ABORT the Load?','Wagon Abort', '@ActDet', function () { WagonAbortDo('@Model.WLoadID','@Model.WagonSeqNo','@ActDet') },'@Model.WLoadID');">
+                                        <span class="glyphicon glyphicon-remove">  </span>Abort Wagon
+                                    </a>
+                                </div>
+                            }
+                            if (rStatus.Regularize == true)//Implemented & Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnRegularize" role="button" class="btn btn-primary" href="#" onclick="ValidateExecute('Wagon Regularize', '@ActDet', function () { WagonRegularizeView('@Model.WLoadID','@Model.WagonSeqNo') },'@Model.WLoadID');">
+                                        <span class="glyphicon glyphicon-transfer"></span>Regularize
+                                    </a>
+                                </div>
+                            }
+                            if (rStatus.TruckSick == true)//Implemented & Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnWagonSick" role="button" class="btn btn-primary" href="#" onclick="ConfirmValidateExecute('Are you sure you want to set the Wagon Sick?','Wagon Sick', '@ActDet', function () { WagonSick('@Model.WLoadID','@Model.WagonSeqNo') },'@Model.WLoadID');">
+                                        <span class="glyphicon glyphicon-exclamation-sign"></span>Wagon Sick
+                                    </a>
+                                </div>
+                            }
+                            if (rStatus.TruckCancel == true)//Implemented & Tested.
+                            {
+                                <div class="text-right">
+                                    <a id="btnWagonCancel" role="button" class="btn btn-primary" href="#" onclick="ConfirmValidateExecute('Are you sure you want to CANCEL the Wagon?','Wagon Cancel', '@ActDet', function () { WagonCancel('@Model.WLoadID','@Model.WagonSeqNo') },'@Model.WLoadID');">
+                                        <span class="glyphicon glyphicon-ban-circle">  </span>Cancel Wagon
+                                    </a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row m-t-10">
+                    <div class="col-lg-5" style="padding: 0px 5px 0px 15px;">
+                        <table class="table-striped app-tbl">
+                            <tbody>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Wagon No</td>
+                                    <td>@mRake.WagonNo</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Wagon Status</td>
+                                    <td>@Model.tblTruckStatu.TruckStatusDesc</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Seq No</td>
+                                    <td>@Model.WagonSeqNo</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Cluster</td>
+                                    <td>@sClusterNo</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Load Spot</td>
+                                    <td>@sLoadSpotNo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-3" style="padding: 0px 5px 0px 5px;">
+                        <table class="table-striped app-tbl">
+                            <tbody>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Product</td>
+                                    <td>@Model.tblProduct.ProdNameShort</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Preset</td>
+                                    <td>@Model.PresetQty</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Filled</td>
+                                    <td>@DeliveredQty</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Density</td>
+                                    <td>@Model.DensityAvgObs</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Temp</td>
+                                    <td>@Model.TempAvgObs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-4" style="padding: 0px 15px 0px 5px;">
+                        <table class="table-striped app-tbl">
+                            <tbody>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Load No</td>
+                                    <td>@Model.WLoadID</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold" width="50%">Start Time</td>
+                                    <td>@(sFillStart)</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">End Time</td>
+                                    <td>@sFillEnd</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Tank</td>
+                                    <td>@sTankNo</td>
+                                </tr>
+                                <tr>
+                                    <td class="truck-detail-info-head bold">Fill Status</td>
+                                    <td>@Model.tblLoadStatu.LoadStatusDesc</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top:0px">
+                <button type="button" class="btn btn-primary" id="btnOK">OK</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/PageJS/Wagon/Summary/RakeFuncs.js"></script>

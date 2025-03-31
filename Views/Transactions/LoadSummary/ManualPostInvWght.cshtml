@@ -1,0 +1,178 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Invoice Manual Post";
+    List<tblTank> lstTanks = ViewBag.lstTanks;
+    Layout = null;
+    string Label = Model.PurposeID == 2 ? "Decanted Qty" : "Filled Qty";
+}
+<style>
+    table.dataTable tbody tr td input[type="text"], input[type="number"] {
+        font-family: Verdana;
+        font-size: 12px;
+    }
+</style>
+<div class="modal-dialog" style="width:900px">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myModalLabel">Manual Post Invoice</h3>
+        </div>
+        <div class="modal-body" id="myModalBody">
+            <div class="col-lg-12 col-md-12 form-container" style="padding: 0em 0.5em">
+                <form id="FormBU" role="form" class="form-fields">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="fields form-group">
+                                <label>Truck Number</label>
+                                <input type="text" id="txtTruck" name="TruckNumber" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table id="tblLoadDetails" class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="hidden">Select</th>
+                                        <th>Ch</th>
+                                        <th style="display:none">Component No</th>
+                                        <th>Product</th>
+                                        <th style="text-align:center">Preset</th>
+                                        <th style="text-align:center">@Label</th>
+                                        <th style="text-align:center">Tare</th>
+                                        <th style="text-align:center">Gross</th>
+                                        <th style="text-align:center">WBWght</th>
+                                        <th style="text-align:center">TopUp</th>
+                                        <th style="text-align:center">Decanted</th>
+                                        <th style="text-align:center">Tank</th>
+                                        <th style="display:none">UOM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (tblLoadDetailComponent itm in Model.tblLoadDetailComponents)
+                                        {
+                                            double DeliveredQty = (itm.DeliveredQtyGrs ?? 0); // + (itm.TopUpQty ?? 0) - (itm.DecantedQty ?? 0);
+                                            <tr id="@itm.ChamberNo">
+                                                <td class="hidden">
+                                                    <input name="chkSelect" type="checkbox" checked="checked" class="hidden" id="@itm.ChamberNo" CompID="@itm.ComponentID" onchange="EnableCols(this,'@itm.ChamberNo')" />
+                                                </td>
+                                                <td>@itm.ChamberNo</td>
+                                                <td style="display:none">@itm.ComponentID</td>
+                                                <td>@itm.tblProduct.ProductName</td>
+                                                <td id="txtPreset_@itm.ChamberNo">@itm.PresetQty</td>
+                                                <td id="txtFilled_@(itm.ChamberNo)_@(itm.ComponentID)">@(itm.DeliveredQtyGrs)</td>
+                                                <td id="txtTare_@(itm.ChamberNo)_@(itm.ComponentID)">@(itm.tblLoadMaster.WeightBeforeLoading)</td>
+                                                <td id="txtGross_@(itm.ChamberNo)_@(itm.ComponentID)">@(itm.tblLoadMaster.WeightAfterLoading)</td>
+                                                <td id="txtWBWght_@(itm.ChamberNo)_@(itm.ComponentID)">@((itm.tblLoadMaster.WeightAfterLoading??0)-(itm.tblLoadMaster.WeightBeforeLoading))</td>
+                                                <td><input name="TopUpQty" type="number" step="0.1" min="0" max="@(itm.TopUpQty)" autocomplete="off" id="txtTopUpQty_@(itm.ChamberNo)_@(itm.ComponentID)" placeholder="@(itm.TopUpQty)" class="form-control" value="@(itm.TopUpQty)" onkeypress="return isDecimalKey(event)" /></td>
+                                                <td><input name="DecantedQty" type="number" step="0.1" min="0" max="@(itm.DecantedQty)" autocomplete="off" id="txtDecantedQty_@(itm.ChamberNo)_@(itm.ComponentID)" placeholder="@(itm.DecantedQty)" class="form-control" value="@(itm.DecantedQty)" onkeypress="return isDecimalKey(event)" /></td>
+                                                <td>
+                                                    <select name="TankNo" id="ddlTankNo_@(itm.ChamberNo)_@(itm.ComponentID)" data-id="@itm.TankID" class="form-control">
+                                                        <option value="0" @((itm.TankID ?? 0) == 0 ? "selected" : "")>Tank No</option>
+                                                        @{
+                                                            foreach (tblTank tnk in lstTanks.Where(x => x.ProductID == (itm.BaseProdID??0)))
+                                                            {
+                                                                <option value="@tnk.UniqueID" @(tnk.UniqueID == (itm.TankID ?? 0) ? "selected" : "")>@tnk.TankName (@tnk.tblProduct.ProdNameShort)</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td style="display:none" id="txtUOM_@itm.ChamberNo">@itm.tblProduct.UomID</td>
+                                            </tr>
+                                                            }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row m-t-20">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="fields form-group">
+                                <label>Remarks</label>
+                                <input type="text" id="txtRemarks" name="Remarks" maxlength="50" autocomplete="off" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnDecantPost" onclick="UpdatePostManualInvoice('@Model.LoadID')"><span class="glyphicon glyphicon-saved"></span>Save & Post to SAP</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>Cancel</button>
+        </div>
+    </div>
+</div>
+<script>
+Purpose = '@Model.PurposeID';
+$(document).ready(function () {
+    $('#tblLoadDetails').dataTable({
+        "iDisplayLength": iGblNoRows - 7,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bPaginate": false,
+        "bStateSave": false,
+        "bInfo": true,
+        "bSort": false,
+        "aoColumns":
+            [
+                { sWidth: "0%" },                           //Select
+                { sWidth: "4%", 'sClass': 'text-center' },  //CompNo
+                { sWidth: "0%" },                           //ComponentNo
+                { sWidth: "18%" },                           //ProductName
+                { sWidth: "8%" },                           //PresetQty
+                { sWidth: "8%" },                           //Fill OR Decant Qty
+                { sWidth: "7%" },                           //Tare
+                { sWidth: "7%" },                           //Gross
+                { sWidth: "7%" },                           //WBWght
+                { sWidth: "8%" },                           //TopUp
+                { sWidth: "8%" },                           //Decanted
+                { sWidth: "20%" },                          //Tank
+                { sWidth: "0%" },                           //UOM
+            ],
+        "bAutoWidth": false,
+    });
+});
+
+function UpdatePostManualInvoice(LoadID) {
+    var objLoadMaster = {
+        'LoadID': LoadID,
+    };
+
+    var objLoadDetailComps = [];
+
+    $("input[name='chkSelect']").each(function () {
+        var ChamberNo = $(this).attr('id');
+        var CompID = $(this).attr('compid');
+        var obj = {
+            'LoadID': LoadID,
+            'ChamberNo': ChamberNo,
+            'ComponentID': CompID,
+            'DeliveredQtyGrs': Number($('#txtFilled_' + ChamberNo + '_' + CompID).val()),
+            'TopUpQty': Number($('#txtTopUpQty_' + ChamberNo + '_' + CompID).val()),
+            'DecantedQty': Number($('#txtDecantedQty_' + ChamberNo + '_' + CompID).val()),
+            'TankID': $('#ddlTankNo_' + ChamberNo + '_' + CompID).val(),
+        };
+        objLoadDetailComps.push(obj);
+    });
+    alertDismissable('success', 'Manual Load Data Posting, Please wait...');
+    $.ajax({
+        url: "/LoadSummary/ManualInvoicePostDo",
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ objLoadMaster: objLoadMaster, objLoadDetailComps: objLoadDetailComps, strRemarks: $('#txtRemarks').val() }),
+        cache: false,
+        success: function (result) {
+            alertDismissable(result.strType, result.strMessage);
+            if (result.blnStatus == true) {
+                $('#EmptyModal').modal('hide');
+                OpenLoadSummaryMenu();
+            }
+        }
+    });
+    ret = true;
+    return ret;
+}
+</script>
+@*<script src="~/Scripts/PageJS/Transactions/LoadSummary/TTManualComplete.js"></script>*@

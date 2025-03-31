@@ -1,0 +1,41 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblCardStatusMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddCardStatusMaster();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW CardStatusMaster
+        </a>
+
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        @*<h3 class="grid-header">CARD MASTERS</h3>*@
+        <table id="tblCardStatusMaster" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Status</th>
+                    <th>STATUS </th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblCardStatusMaster itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.Status);">
+                        <td style="display:none;">@itm.Status</td>
+                        <td>@itm.StatusDesc</td>
+                        <td class="text-center"><span id="spanDelete_@itm.Status" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.Status"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+  </div>   
+<script src="~/Scripts/PageJS/Masters/CardStatusMaster/Index.js"></script>

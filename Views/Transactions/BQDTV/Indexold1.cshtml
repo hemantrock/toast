@@ -1,0 +1,109 @@
+﻿@using TOAST.Data.ViewModels;
+@using TOAST.Data.Model;
+@using System.Linq;
+@using TOAST.Shared;
+@model oBQDTV
+@{
+    Layout = null;
+    List<TTQueueViewModel> lstMain = Model.lstTTQueue;
+    tblDisplayMaster Disp = Model.oDispMaster;
+
+    List<TTQueueViewModel> lst1 = lstMain.Take(10).ToList();
+    List<TTQueueViewModel> lst2 = lstMain.Skip(10).Take(10).ToList();
+}
+
+@if (Disp.BQDisplayMode == 1)
+{
+    if (lstMain.Count > 0)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <table id="tblBQD" class="table">
+                    <thead>
+                        <tr>
+                            @*<th>Bay No</th>*@
+                            <th>Truck Number</th>
+                            <th>Truck Status</th>
+                            @*<th>Bay No</th>*@
+                            <th>Truck Number</th>
+                            <th>Truck Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < 10; i++)
+                        {
+                            <tr class="clickable bqd-row">
+                                @*<td>@((lst1.BayID ?? 0).ToString("0#").Replace("00", "  "))</td>*@
+                                <td>@(i < lst1.Count ? lst1[i].TruckNo.ToUpper() : "")</td>
+                                <td>@(i < lst1.Count ? lst1[i].TruckStatusShort.ToUpper() : "")</td>
+                                @*<td>@((lst2.BayID ?? 0).ToString("0#").Replace("00", "  "))</td>*@
+                                <td>@(i < lst2.Count ? lst2[i].TruckNo.ToUpper() : "")</td>
+                                <td>@(i < lst2.Count ? lst2[i].TruckStatusShort.ToUpper() : "")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                var tbl = $('#tblBQD').dataTable({
+                    "iDisplayLength": 10,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bPaginate": true,
+                    "bInfo": false,
+                    "bSort": false,
+                    "aoColumns": [
+                        { sWidth: "25%", 'sClass': 'text-center' },
+                        { sWidth: "25%", 'sClass': 'text-center' },
+                        { sWidth: "25%", 'sClass': 'text-center' },
+                        { sWidth: "25%", 'sClass': 'text-center' }
+                    ],
+                    "bAutoWidth": false,
+                });
+
+                var interval = setInterval(function () {
+                    pageChange();
+                }, '@(Disp.BQDRefreshTimeInSecs * 1000)');
+
+                function pageChange() {
+                    if ($('#tblBQD_next').hasClass('disabled')) {
+                        clearInterval(interval);
+                        OpenBQDTVDirect();
+                    } else {
+                        tbl.fnPageChange('next');
+                    }
+                }
+            });
+        </script>
+    }
+    else
+    {
+        <div id="empty-msg" class="empty-msg">@Disp.EmptyTTQueueMessage</div>
+        <script>
+            $(document).ready(function () {
+                centerAlignDiv('empty-msg');
+                var interval = setInterval(function () {
+                    OpenBQDTVDirect();
+                }, '@(Disp.BQDRefreshTimeInSecs * 1000)');
+            });
+        </script>
+    }
+}
+else if (Disp.BQDisplayMode == 0)
+{
+    <div id="empty-msg" class="empty-msg">@Disp.BQDOffMessage</div>
+    <script>
+        $(document).ready(function () {
+            centerAlignDiv('empty-msg');
+            var interval = setInterval(function () {
+                OpenBQDTVDirect();
+            }, '@(Disp.BQDRefreshTimeInSecs * 1000)');
+        });
+    </script>
+}
+
+<style>
+    .dataTables_paginate { display: none; }
+</style>

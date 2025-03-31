@@ -1,0 +1,95 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@model List<TOAST.Data.ViewModels.TTQueueViewModel>
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    List<tblTTRSMaster> lstTTRSData = ViewBag.lstTTRS;
+}
+
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+    
+<div id="dvContent" class="content tt-queue-container p-400">
+     
+    <div class="row">
+        <div class="col-lg-2 ">
+            <h3 class="grid-headerplant" style="color:black">TT Reporting</h3>
+        </div>
+        <div class="col-lg-10 text-right">
+
+            <table class="app-tbl padd-t-10 hide">
+                <thead>
+                    <tr>
+                        <th width="8%">&nbsp;</th>
+                        <th width="10%">Primary Connection</th>
+                        <th width="11%">Secondary Connetion	</th>
+                        <th width="10%">Card No.</th>
+                        <th width="61%">Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (tblTTRSMaster ttrs in lstTTRSData)
+                        {
+                           <tr>
+                                <td class="val bold" style="padding-right: 10px;">@ttrs.TTRSName</td>
+                                <td class="val">
+                                    <span class="circle-cont-sm">
+                                        <span class="@("TTRS_CONN01_S"+ string.Format("{0:00}", ttrs.tblACUMaster.SlaveID))"></span>
+                                    </span>
+                                </td>
+                                <td class="val text-center">
+                                    <span class="circle-cont-sm">
+                                        <span class="@("TTRS_CONN02_S"+ string.Format("{0:00}", ttrs.tblACUMaster.SlaveID))"></span>
+                                    </span>
+                                </td>
+                                <td class="val text-left"><span class="@(ttrs.TagPrefix + "_CARD")"></span></td>
+                                <td class="val text-left"><span class="@(ttrs.TagPrefix + "_MSG")"></span></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <table class="detail-tbl padd-t-10" >
+                <tbody>
+                    @{
+                        foreach (tblTTRSMaster ttrs in lstTTRSData)
+                        {
+
+                            <tr>
+                                <td class="val bold" width="8%" style="padding-right: 10px;">@ttrs.TTRSName <i class="fa fa-caret-right" aria-hidden="true"></i></td>
+                                <td class="lbl" width="5%">Pri. Conn.</td>
+                                <td class="val" width="2%">
+                                    <span class="circle-cont-sm">
+                                        <span class="@(ttrs.TagPrefix + "_CONN01_S"+ string.Format("{0:00}", ttrs.tblACUMaster.SlaveID))"></span>
+                                    </span>
+                                </td>
+                                <td class="lbl" width="8%">Sec. Conn.</td>
+                                <td class="val text-center" width="2%">
+                                    <span class="circle-cont-sm">
+                                        <span class="@(ttrs.TagPrefix + "_CONN02_S"+ string.Format("{0:00}", ttrs.tblACUMaster.SlaveID))"></span>
+                                    </span>
+                                </td>
+                                <td class="lbl" width="5%">Card No:</td>
+                                <td class="val text-left" width="10%"><span class="@(ttrs.TagPrefix + "_CARD")"></span></td>
+                                <td class="lbl" width="5%">Msg</td>
+                                <td class="val text-left"><span class="@(ttrs.TagPrefix + "_MSG")"></span></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="jqxTTQgrid" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/TTRS/TTQueue/0400/Index.js"></script>

@@ -1,0 +1,128 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblDeviceMaster
+@{
+    ViewBag.Title = "Plant View - Pump View";
+    Layout = null;
+    string PumpName = Model.DeviceName;
+    List<tblDeviceMaster> SameGrpPumps = ViewBag.SameGrpDevices;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    string servicecls = Model.tblDeviceType.DevicePrefix.ToLower();
+    tblDeviceMaster oDevice = Model;
+    string DevTagPrefix = Model.TagPrefix;
+    List<tblPumpService> PumpsServices = ViewBag.PumpsServices;
+    List<tblPumpPriority> ddlPumpPriorities = ViewBag.PumpPriorities;
+}
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 550px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@Model.DeviceName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@Model.DeviceDesc</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row">
+                        <a class="push-btn-02 pump-start-btn @(DevTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Air Compressor: @(Model.DeviceName)',this, '@(DevTagPrefix+"_START")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                        <a class="push-btn-02 pump-stop-btn @(DevTagPrefix+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Air Compressor: @(Model.DeviceName)',this, '@(DevTagPrefix+"_STOP")', 'GENERIC', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump @(oDevice.tblDeviceType.DevicePrefix.ToLower())-device" style="padding: 0px 0px;">
+                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(DevTagPrefix+"_LOCREM")"></span>
+                                <div title="Air Comp. Off" data-tooltip-attr="AIRCOMP*" class="tooltips @oDevice.tblDeviceType.DevicePrefix.ToLower() @(DevTagPrefix+"_RUN_IMG") @(DevTagPrefix+"_TRIP_IMG") @(DevTagPrefix+"_FAIL_IMG")" style="position: relative;left:10px;top:2px;margin: auto;">
+                                    <span class="maintainence-mode-icon @(DevTagPrefix+"_MAINT")"></span>
+                                </div>
+                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(DevTagPrefix+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @oDevice.DeviceName', '@(DevTagPrefix+"_AUTOMAN")', '@(DevTagPrefix+"_LOCREM")' , 'TAG_AUTOMAN' ,'@oDevice.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' ); cancelBubble(event);"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+                            <table class="detail-tbl table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Run Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="pump-househeader-info-val @(DevTagPrefix+"_RUN_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Trip Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="circle-cont">
+                                                <span class="pump-househeader-info-val @(DevTagPrefix+"_TRIP_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Pressure (kg/cm²)</span></td>
+                                        <td class="detail-tbl-val @(DevTagPrefix+"_PT_DISC_VALUE")">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @*<div class="col-lg-12 pump-view-detail-container">
+                        <table class="table-striped app-tbl">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="background-color: #aca89f;color: #fff;font-size: 17px;" colspan="6">DG Data</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center bg-color" style="width: 35%">Signal</th>
+                                    <th class="text-center bg-color" style="width: 15%">Value</th>
+                                    <th class="text-center bg-color" style="width: 35%">Signal</th>
+                                    <th class="text-center bg-color" style="width: 15%">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Output Voltage</td>
+                                    <td><span class="detail-tbl-val"><span class="@(DevTagPrefix)_OUTPUT_VOLT"></span></span></td>
+                                    <td>Output Frequency</td>
+                                    <td><span class="detail-tbl-val"><span class="@(DevTagPrefix)_OUTPUT_FREQ"></span></span></td>
+                                </tr>
+                                <tr>
+                                    <td>RPM</td>
+                                    <td><span class="detail-tbl-val"><span class="@(DevTagPrefix)_RPM"></span></span></td>
+                                    <td>Ampere</td>
+                                    <td><span class="detail-tbl-val"><span class="@(DevTagPrefix)_AMP"></span></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-12 no-padd pump-run-hr-block">
+                        <div class="pump-timer-block">
+
+                            <div class="col-lg-5 no-padd-left">
+                                <label>Run Hours: &nbsp;</label>
+                                <span class="pump-timer @(DevTagPrefix + "_RUN_HRS")">
+                                    <span class="@(DevTagPrefix + "_RUN_HRS_HH")"></span>:<span class="@(DevTagPrefix + "_RUN_HRS_MM")"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <a class="push-btn pump-timer-reset-btn" href="javascript:void(0);" onclick="PumpRunHrsReset('@PumpName',this, '@(DevTagPrefix + "_RESET_RUN_HRS")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')">Reset</a>
+                            </div>
+                            <div class="col-lg-5 no-padd-left">
+                                <hr class="devider vertical" />
+                                <label>Fuel Level: &nbsp;</label>
+                                <span class="pump-timer">
+                                    <span class="@(DevTagPrefix + "_FUEL_LEVEL")"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>
+
+

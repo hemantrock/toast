@@ -1,0 +1,88 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblMOVMaster>
+@{
+    ViewBag.Title = "Plant View - MOVs View";
+    Layout = null;
+    List<string> lstGroup;
+    bool ShowConn = clsConfig.ShowMOVConn; //ViewBag.ShowMOVConn;
+    lstGroup = Model.Where(x => x.MOVLine != null).OrderBy(x => x.MOVLine).Select(x => x.Custom).Distinct().ToList();
+    string strPages = String.Join(",", Model.Select(x => x.PageName));
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">ROVs View</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 content-top-spacing mov-container mov-sm">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="mov-tbl-container">
+                        @{
+                            List<tblMOVMaster> lstGroupedMovs = Model.Where(x =>x.Custom != null).ToList();
+                            if (lstGroupedMovs.Count() > 0)
+                            {
+                                foreach (string custom in lstGroup)
+                                {
+                                    <div class="col-lg-@lstGroupedMovs.Where(x=>x.Custom==custom).OrderBy(x => (x.tblMOVLine==null?"zzz":x.tblMOVLine.Line)).Count() mov-block">
+                                        <table class="mov-detail-tbl">
+
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="@lstGroupedMovs.Where(x=>x.Custom==custom).OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)).Count()" class="text-center">
+                                                        <span class="view-header">
+                                                            @*<span class="single-col" style="color: #fff; text-shadow: 0px 1px 1px #000;">@lstGroupedMovs.FirstOrDefault().tblHeadersMaster.tblProduct.ProdNameShort</span>*@
+                                                            <span class="single-col" style="background-color: #e93232; color: #fff; text-shadow: 0px 1px 1px #000;">@custom</span>
+                                                        </span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    @foreach (tblMOVMaster mov in lstGroupedMovs.Where(x => x.Custom == custom).OrderBy(x => (x.tblMOVLine == null ? "zzz" : x.tblMOVLine.Line)))
+                                                    {
+                                                        string movType = mov.tblMOVType.MOVType.ToLower();
+                                                        string MoVPrefix = mov.TagPrefix + "_";
+                                                        <td>
+                                                            <div class="mov-name" style="background-color: #6241e6; color: #fff;">
+                                                                <span>@mov.tblMOVLine.Line</span>
+                                                            </div>
+                                                            <div class="@(movType)-valve-info-container" onclick="OpenMOVModal('@mov.UniqueID','@("MOVView"+ string.Format("{0:00}", mov.MovTypeSeqNo))')">
+                                                                <div title="No Feedback" data-tooltip-attr="@(movType.ToUpper())*" class="tooltips  @(movType)-valve @(MoVPrefix+"ALRM_IMG") @(MoVPrefix+"OPN_IMG") @(MoVPrefix+"CLS_IMG")">
+                                                                    <span class="maintainence-mode-icon @(MoVPrefix+ "MAINT_MODE")"></span>
+                                                                </div>
+                                                                <span title="" data-tooltip-attr="LOCREM*" class="tooltips control-icon @(MoVPrefix+"LOCREM") @(MoVPrefix+"REMOTE_SELECT") @(MoVPrefix+"STOP_SELECT")"></span>
+                                                                @*<span title="" data-tooltip-attr="REMOTE" class="tooltips control-icon @(MoVPrefix+"REMOTE_SELECT")"></span>
+                                                                    <span title="" data-tooltip-attr="STOP" class="tooltips control-icon @(MoVPrefix+"STOP_SELECT")"></span>*@
+                                                                @*<span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon  @(MoVPrefix+"AUTOMAN")" onclick="OpenValveAutoManModal(this, 'hdnTankAutoMan_', '@mov.MovName', 'VALVE_AUTOMAN', '@(MoVPrefix+"AUTOMAN")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]','Change Auto/Manual Mode MOV'); cancelBubble(event);"></span>*@
+                                                                <div class="mov-lbl"><span>@mov.MovName</span></div>
+                                                            </div>
+                                                        </td>
+                                                    }
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        $('.nav-tabs a:first').tab('show');
+        createTooltip();
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/MOVsView/Index.js"></script>

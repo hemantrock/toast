@@ -1,0 +1,104 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTagEvent
+@{
+    ViewBag.Title = "Edit Tag Event";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit TAG
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmTags" role="form" class="form-fields">
+            <input id="hdnIdKey" type="hidden" value="@Model.UniqueID">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TAG NAME</label>
+                        <select class="form-control" id="ddlTagName" name="TagName" data-placeholder="-- SELECT --" disabled></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>LIMITER</label>
+                        <input id="txtLimiter" name="Limiter" type="text" placeholder="Limiter" class="form-control" value="@Model.LimiterName" disabled>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>COMPARE VALUE</label>
+                        <input id="txtCompareValue" name="CompareValue" type="text" placeholder="Compare Value" class="form-control" value="@Model.CompareValue">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>OPERATOR</label>
+                        <select class="form-control" id="ddlOperator" name="Operator">
+                            <option value="=">=</option>
+                            <option value=">">></option>
+                            <option value="<"><</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>EVENT</label>
+                        <select class="form-control" id="ddlEvent" name="Event" data-placeholder="-- SELECT -- ">></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>EVENT TAG TO NOTIFY</label>
+                        <select class="form-control" id="ddlEventTagToNotify" name="EventTagToNotify" data-placeholder="-- SELECT -- "></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>ACK TAG TO NOTIFY</label>
+                        <select class="form-control" id="ddlAckTagToNotify" name="AckTagToNotify" data-placeholder="-- SELECT -- "></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>EVENT TAG VALUE</label>
+                        <input id="txtEventTagValue" name="EventTagValue" type="text" placeholder="Event Tag Value" class="form-control" value="@Model.EventTagValue">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>FILTER TIME IN SECS</label>
+                        <input id="txtFilterTimeInSecs" name="FilterTimeInSecs" type="text" placeholder="Filter Time In Secs" class="form-control" value="@Model.FilterTimeInSecs">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>PopUpMsg</label>
+                        <input id="txtPopUpMsg" name="PopUpMsg" type="text" placeholder="PopUp Msg" class="form-control" value="@Model.PopUpMsg">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTagEvents();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/TagEvents/TagEvents.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadDDLTags($('#ddlTagName'), '@Model.TagName', function () { $('#ddlTagName').chosen({ search_contains: true, allow_single_deselect: true }); });
+        LoadDDLTags($('#ddlEventTagToNotify'), '@Model.EventTagToNotify', function () { $('#ddlEventTagToNotify').chosen({ search_contains: true, allow_single_deselect: true }); });
+        LoadDDLTags($('#ddlAckTagToNotify'), '@Model.AckTagToNotify', function () { $('#ddlAckTagToNotify').chosen({ search_contains: true, allow_single_deselect: true }); });
+        LoadDDLEvents($('#ddlEvent'), '@Model.EventID', function () { $('#ddlEvent').chosen({ search_contains: true, allow_single_deselect: true }); });
+        $('#ddlOperator').val('@Html.Raw(Model.Operator)').attr("selected", "selected");
+    });
+</script>
+<style>
+    .chosen-container { vertical-align: baseline !important; }
+</style>

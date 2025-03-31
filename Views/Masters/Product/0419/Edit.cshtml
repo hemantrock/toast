@@ -1,0 +1,337 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model TOAST.Data.Model.tblProduct
+@{
+    ViewBag.Title = "Edit Product";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Product
+</h2>
+<div class="row">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="col-lg-12 col-md-12 form-container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <input id="hdnIdKey" type="hidden" value="@Model.ProductID">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT NAME</label>
+                    <input id="txtProductName" name="ProductName" type="text" placeholder="Product Name (3-30 Chars)" class="form-control" value="@Model.ProductName">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT CODE</label>
+                    <input id="txtProductCode" name="ProductCode" type="text" placeholder="Product Code (1-30 Chars)" class="form-control" value="@Model.ProductCode">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT DESCRIPTION</label>
+                    <input id="txtProdDescription" name="ProdDescription" type="text" placeholder="Prod Description (3-30 Chars)" class="form-control" value="@Model.ProductDescription">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT SHORT NAME</label>
+                    <input id="txtProdshortName" name="ProdshortName" type="text" placeholder="Prod Short Name (1-10 Chars)" class="form-control" value="@Model.ProdNameShort">
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT GROUP</label>
+                    <select class="form-control" id="ddlProductGroup" name="ProductGroup"></select>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="fields form-group">
+                    <label>No. Of Components</label>
+                    <input id="txtNoOfComponents" name="NoOfComponents" type="text" placeholder="No Of Components (1-4)" class="form-control" onchange="changeCompartmentNo('#tblCompDetails')" value="@Model.tblProductComponents.Count">
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>NO. Of ADDITIVE</label>
+                    <input id="txtNoOfAdditive" name="NoOfAdditive" type="text" placeholder="No Of Additive (0-6)" onchange="changeAdditive('#tblAdditiveDetails')" class="form-control" value="@Model.tblProductAdditiveMaps.Count">
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT COLOUR </label>
+                    <input id="txtProductColor" name="ProductColor" type="color" placeholder="Select Color" class="form-control" value="@Model.ProductColor">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>UOM</label>
+                    <select class="form-control" id="ddlUOM" name="UOM"></select>
+                </div>
+            </div>
+
+            @if (clsConfig.ProjPath.Contains("408"))
+            {
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Standard Density (Kg/m³)</label>
+                        <input id="txtStdDensity" name="StdDensity" type="text" placeholder="Standard Density (Numeric)" class="form-control" value="@Model.StdDensity">
+                    </div>
+                </div>
+            }
+
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>RECIPE NO.</label>
+                        <input id="txtRECIPENo" name="RECIPENo" type="text" placeholder="Recipe No (Numeric)" class="form-control" value="@Model.ReceipeNumber">
+                    </div>
+                </div>*@
+
+            <div class="col-lg-3 col-md-6 col-sm-6 ">
+                <div class="fields form-group">
+                    <label>HEADER NUMBER</label>
+                    <input id="txtHeaderNo" name="HeaderNo" type="text" placeholder="Header Number" class="form-control" value="@Model.HeaderNo">
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field" style="visibility:hidden;">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        @if (Model.IsBaseProduct == true)
+                        {
+                            <input id="chkIsBaseProduct" name="IsBaseProduct" type="checkbox" checked="checked" class="form-control">
+                        }
+                        else
+                        {
+                            <input id="chkIsBaseProduct" name="IsBaseProduct" type="checkbox" class="form-control">
+                        }
+                    </span>
+                    <input type="text" class="form-control" value="Is Base Product" disabled>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-6 form-container">
+            <table id="tblCompDetails" class="table">
+                <thead>
+                    <tr>
+                        <th style="display:none;">Id</th>
+                        <th>COMPONEMT No.</th>
+                        <th>PRODUCT</th>
+                        <th>COMPARTMENT SEQUENCE</th>
+                        <th>COMPARTMENT PERCENTAGE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 1; i <= 4; i++)
+                        {
+                            tblProductComponent obj = Model.tblProductComponents.Where(x => x.ComponentNo == i).SingleOrDefault();
+                            if (obj == null)
+                            {
+                                <tr id="rowComp_@i" style="display:none;">
+                                    <td style="display:none;">@i</td>
+                                    <td><input id="txtComponentNo_@i" name="ComponentNo" readonly type="text" placeholder="Component No" class="form-control" value="@i"></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><select id="ddlProduct_@i" name="ddlProduct" class="form-control"></select></div></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><input id="txtComponentSeq_@i" name="ComponentSeq" type="text" placeholder="Component Sequence" class="form-control"></div></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><input id="txtComponentPer_@i" name="ComponentPercentage" type="text" placeholder="Component Percentage" class="form-control"></div></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="rowComp_@i">
+                                    <td style="display:none;">@i</td>
+                                    <td><input id="txtComponentNo_@i" name="ComponentNo" readonly type="text" placeholder="Component No" class="form-control" value="@i"></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><select id="ddlProduct_@i" name="ddlProduct" class="form-control"></select></div></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><input id="txtComponentSeq_@i" name="ComponentSeq" type="text" placeholder="Component Sequence" class="form-control" value="@(obj.CompSequence??0)"></div></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><input id="txtComponentPer_@i" name="ComponentPercentage" type="text" placeholder="Component Percentage" class="form-control" value="@(obj.CompPercent??0)"></div></td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-lg-6 form-container">
+            <table id="tblAdditiveDetails" class="table">
+                <thead>
+                    <tr>
+                        <th style="display:none;">Id</th>
+                        <th>SEQUENCE NO IN LP</th>
+                        <th>ADDITIVE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 1; i <= 6; i++)
+                        {
+                            tblProductAdditiveMap obj = Model.tblProductAdditiveMaps.Where(x => x.SeqNoInLPProd == i).SingleOrDefault();
+                            if (obj == null)
+                            {
+                                <tr id="rowAdditive_@i" style="display:none;">
+                                    <td style="display:none;">@i</td>
+                                    <td><input id="txtSeqNoInLP_@i" name="SeqNoInLP" readonly type="text" class="form-control" value="@i"></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><select id="ddlAdditive_@i" name="ddlAdditive" class="form-control"></select></div></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="rowAdditive_@i">
+                                    <td style="display:none;">@i</td>
+                                    <td><input id="txtSeqNoInLP_@i" name="SeqNoInLP" readonly type="text" class="form-control" value="@(obj.SeqNoInLPProd)"></td>
+                                    <td><div class="fields form-group" style="margin: 0;"><select id="ddlAdditive_@i" name="ddlAdditive" class="form-control"></select></div></td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateProduct();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Product/Product.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadDDLProductGroup(@Model.ProdGroupID);
+        LoadDDLUOM(@Model.UomID);
+
+
+        $.ajax({
+            url: "/Product/GetBaseProducts",
+            type: "GET",
+            datatype: "json",
+            cache: false,
+            success: function (result) {
+                $('#ddlProduct_1').html('');
+                $('#ddlProduct_2').html('');
+                $('#ddlProduct_3').html('');
+                $('#ddlProduct_4').html('');
+                var r = "<option value=0 selected>Select Product</option>";
+                $('#ddlProduct_1').append(r);
+                $('#ddlProduct_2').append(r);
+                $('#ddlProduct_3').append(r);
+                $('#ddlProduct_4').append(r);
+
+                $.each(result, function (i, objProduct) {
+                    r = "<option value=" + objProduct.ProductID + ">" + objProduct.ProductName + "</option>";
+                    $('#ddlProduct_1').append(r);
+                    $('#ddlProduct_2').append(r);
+                    $('#ddlProduct_3').append(r);
+                    $('#ddlProduct_4').append(r);
+
+                });
+
+                @{
+                    for (int i = 1; i <= 4; i++)
+                    {
+
+                        tblProductComponent obj = Model.tblProductComponents.Where(x => x.ComponentNo == i).SingleOrDefault();
+                        if (obj != null)
+                        {
+                            int? iProduct = obj.BaseProductID;
+                            @: $("#ddlProduct_@i option[value='@iProduct']").attr('selected', 'selected');
+                                                                        }
+                    }
+                }
+            }
+        });
+
+        $.ajax({
+            url: "/Product/GetAdditive",
+            type: "GET",
+            datatype: "json",
+            cache: false,
+            success: function (result) {
+                $('#ddlAdditive_1').html('');
+                $('#ddlAdditive_2').html('');
+                $('#ddlAdditive_3').html('');
+                $('#ddlAdditive_4').html('');
+                $('#ddlAdditive_5').html('');
+                $('#ddlAdditive_6').html('');
+                var r = "<option value=0 selected>Select Additive</option>";
+                $('#ddlAdditive_1').append(r);
+                $('#ddlAdditive_2').append(r);
+                $('#ddlAdditive_3').append(r);
+                $('#ddlAdditive_4').append(r);
+                $('#ddlAdditive_5').append(r);
+                $('#ddlAdditive_6').append(r);
+
+                $.each(result, function (i, objAdditive) {
+                    r = "<option value=" + objAdditive.AdditiveID + ">" + objAdditive.AdditiveName + "</option>";
+                    $('#ddlAdditive_1').append(r);
+                    $('#ddlAdditive_2').append(r);
+                    $('#ddlAdditive_3').append(r);
+                    $('#ddlAdditive_4').append(r);
+                    $('#ddlAdditive_5').append(r);
+                    $('#ddlAdditive_6').append(r);
+
+                });
+
+                @{
+                    for (int i = 1; i <= 6; i++)
+                    {
+
+                        tblProductAdditiveMap obj = Model.tblProductAdditiveMaps.Where(x => x.SeqNoInLPProd == i).SingleOrDefault();
+                        if (obj != null)
+                        {
+                            int? iAdditiveId = obj.AdditiveID;
+                            @: $("#ddlAdditive_@i option[value='@iAdditiveId']").attr('selected', 'selected');
+                                        }
+                    }
+                }
+
+            }
+        });
+
+        $('#tblCompDetails').dataTable({
+            "iDisplayLength": iGblNoRows,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": true,
+            "bInfo": true,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "0%" },
+                    { sWidth: "20%" },
+                    { sWidth: "25%" },
+                    { sWidth: "25%" },
+                    { sWidth: "25%" },
+                ],
+            "bAutoWidth": false,
+            "bDestroy": true,
+        });
+
+        $('#tblAdditiveDetails').dataTable({
+            "iDisplayLength": iGblNoRows,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": true,
+            "bInfo": true,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "0%" },
+                    { sWidth: "30%" },
+                    { sWidth: "70%" },
+                ],
+            "bAutoWidth": false,
+            "bDestroy": true,
+        });
+    });
+</script>

@@ -1,0 +1,92 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    string MOVViews = "MachView01,pobvview129";
+}
+
+
+<!-- Machine 1  -->
+
+<div class="row">
+    <div class="col-lg-2">
+        <h3 class="grid-headerplant" style="color:black">Machine 01</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="machine-container col-lg-12 m-t-50">
+        <div class="machine-block">
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                string valveView = "";
+                tblMOVMaster HdrMOVs = Model[i].tblMOVMasters.Where(x => x.MOVLine == 7 && (x.MovName.Contains("M01"))).FirstOrDefault();
+                tblMOVMaster LineMOV = Model[i].tblMOVMasters.Where(x => x.MOVLine == 4 && (x.MovName.Contains("LINE_01"))).FirstOrDefault();
+                string TankPageLink = Model[i].PageName;
+                foreach (tblMOVMaster mov in Model[i].tblMOVMasters)
+                { TankPageLink = mov.PageName + "," + TankPageLink; }
+
+                foreach (tblPump pmp in Model[i].tblPumps)
+                { TankPageLink = pmp.PageName + "," + TankPageLink; }
+                <div class="machine-tank tank_@(i + 1) @(Model[i].TagPrefix+"_M01_FLOW")">
+                    <span class="machine-tank-lbl get-hover tooltips" title="Click to View Tank Details" onclick="OpenTankViewModal(@Model[i].UniqueID,'@TankPageLink')">@Model[i].TankName<span> (@Model[i].tblProduct.ProdNameShort)</span>
+                    </span>
+                    <span class="pigging-tank-lbl get-hover tooltips" title="Click to Go to Pigging View" onclick="OpenPiggingView(@(i + 1)); cancelBubble(event);">
+                        <i class="far fa-futbol"></i>
+                    </span>
+                    @{
+                        valveView = HdrMOVs.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", HdrMOVs.MovTypeSeqNo);
+                        MOVViews = MOVViews + "," + valveView;
+                    }
+                    <span class="tooltips machine-tank-valve top tank_@(i+1) mc_01_hdr @(HdrMOVs.TagPrefix+"_IMG_OPN_FB")  @(HdrMOVs.TagPrefix+"_IMG_CLS_FB")" title="@HdrMOVs.TagPrefix" onclick="OpenPValveModal('@HdrMOVs.UniqueID','@valveView')">
+                        <span class="instrument-txt">@HdrMOVs.MovDescShort</span>
+                    </span>
+                    @{
+                        valveView = (LineMOV.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:000}", LineMOV.MovTypeSeqNo));
+                        MOVViews = MOVViews + "," + valveView;
+                    }
+                   <span class="tooltips machine-tank-valve bottom tank_@(i+1) mc_01_line @(LineMOV.TagPrefix+"_IMG_OPN_FB")  @(LineMOV.TagPrefix+"_IMG_CLS_FB")" title="@LineMOV.TagPrefix" onclick="OpenPValveModal('@LineMOV.UniqueID','@valveView')">
+                       <span class="instrument-txt">@LineMOV.MovDescShort</span>
+                   </span>
+                </div>
+            }
+            <div class="machine-tank-base">
+                <span class="base-vertical-line">
+                    <span class="tooltips base-valve middle VAL_MC01_ISOL_IMG_OPN_FB VAL_MC01_ISOL_IMG_CLS_FB" title="VAL_MC01_ISOL" onclick="OpenPValveModal('129','pobvview129')"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="machine-links">
+    <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="fields form-group">
+            <a href="#" class="btn btn-primary col-lg-9" role="button" onclick="OpenMachineView('02')"><span class="glyphicon glyphicon-compressed"></span>Machine-02</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="fields form-group">
+            <a href="#" class="btn btn-primary col-lg-9" role="button" onclick="OpenMachineView('03')"><span class="glyphicon glyphicon-compressed"></span>Machine-03</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="fields form-group">
+            <a href="#" class="btn btn-primary col-lg-9" role="button" onclick="OpenMachineView('05')"><span class="glyphicon glyphicon-compressed"></span>Machine-05,04</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="fields form-group">
+            <a href="#" class="btn btn-primary col-lg-9" role="button" onclick="OpenMachineView('06')"><span class="glyphicon glyphicon-compressed"></span>Machine-06</a>
+        </div>
+    </div>
+</div>
+<!-- End Machine 1  -->
+<script src="~/Scripts/PageJS/PlantView/TanksView/0406/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        opcPageName = '@MOVViews';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+

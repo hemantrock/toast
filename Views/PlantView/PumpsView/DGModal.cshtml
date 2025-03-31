@@ -1,0 +1,112 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblPump
+@{
+    ViewBag.Title = "Plant View - DG View";
+    Layout = null;
+    string PumpName = Model.EquipmentName;
+    string PumpId = Convert.ToInt32(Model.EquipmentName.Substring(Model.EquipmentName.IndexOf("-") + 1)).ToString("0#");
+}
+<div class="modal-dialog" style="width: 480px;">
+    <div class="modal-dialog" style="width: 460px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myMOVModalLabel">@PumpName</h3>
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-btn-container" style="display:none;">
+                        <div class="col-lg-6" style="border-right: 1px solid #d1cfcf">
+                            <div class="pump-househeader-popup-btn-row">
+                                <div class="col-lg-6 no-padd">
+                                    <a class="push-btn" href="javascript:void(0);" onclick="SendDataToOPC(this, 'DG_CHNG_LOCREM_@PumpId','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Change Mode</a>
+                                </div>
+                                <div class="col-lg-6 no-padd">
+                                    <div class="remote-mode chng_locrem_true DG_CHNG_LOCREM_@PumpId">REMOTE MODE</div>
+                                    <div class="local-mode chng_locrem_false DG_CHNG_LOCREM_@PumpId">LOCAL MODE</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="change-control-btn-row">
+                                <div class="col-lg-6 no-padd">
+                                    <a class="push-btn" href="javascript:void(0);" onclick="SendDataToOPC(this, 'DG_CHNG_AUTOMAN_@PumpId','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">Change Control</a>
+                                </div>
+                                <div class="col-lg-6 no-padd">
+                                    <div class="mode-btn automode DG_CHNG_AUTOMAN_@PumpId">AUTO MODE</div>
+                                    <div class="mode-btn manualmode DG_CHNG_AUTOMAN_@PumpId">MANUAL MODE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pump-househeader-feedback-row">
+                        <a class="push-btn pump-start-btn DG_START_@PumpId" href="javascript:void(0);" onclick="SendDataToOPC(this, 'DG_START_@PumpId','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">START</a>
+                        <a class="push-btn  pump-stop-btn DG_STOP_@PumpId" href="javascript:void(0);" onclick="SendDataToOPC(this, 'DG_STOP_@PumpId','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump dg-popup">
+                                <div class="dg-stop DG_RUN_IMG_@PumpId DG_TRIP_IMG_@PumpId DG_FAIL_IMG_@PumpId">
+                                    <span class="pump-view-icons remote-icon DG_LOCREM_@PumpId" onclick="OpenLocRemModal('@PumpName', 'DG_LOCREM', 'DG_LOCREM_@PumpId','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    <span class="pump-view-icons local-icon DG_LOCREM_@PumpId" onclick="OpenLocRemModal('@PumpName', 'DG_LOCREM', 'DG_LOCREM_@PumpId','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    <span class="pump-view-icons auto-icon DG_AUTOMAN_@PumpId" onclick="OpenAutoManModal('@PumpName', 'DG_AUTOMAN', 'DG_AUTOMAN_@PumpId','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    <span class="pump-view-icons manual-icon DG_AUTOMAN_@PumpId" onclick="OpenAutoManModal('@PumpName', 'DG_AUTOMAN', 'DG_AUTOMAN_@PumpId','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+
+                            <table class="detail-tbl">
+                                <tbody>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl"><span class="">Running Feedback</span></td>
+                                        <td class="detail-tbl-val">
+                                            <span class="pump-househeader-info-val circle tick-icon DG_RUN_@PumpId"></span>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="">Trip Feedback</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="pump-househeader-info-val circle DG_TRIP_@PumpId"></span>
+                                        </td>
+                                    </tr>
+                                    <tr class="odd">
+                                        <td class="detail-tbl-lbl">
+                                            <span class="">Fail Feedback</span>
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            <span class="pump-househeader-info-val circle DG_FAIL_@PumpId"></span>
+                                        </td>
+                                    </tr>
+                                    <tr class="even">
+                                        <td class="detail-tbl-lbl">
+                                            &nbsp;
+                                            <!-- <span class="">Priority</span>-->
+                                        </td>
+                                        <td class="detail-tbl-val">
+                                            &nbsp;
+                                            <!-- <span class="pump-househeader-info-val DG_PRIORITY_@PumpId"></span>-->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>        
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="pump-timer-block">
+                                <div class=""><span class="pump-timer-heading">Run Hours</span></div>
+                                <div class=""><span class="pump-timer DG_RUN_HOURS_@PumpId"></span></div>
+                                <div class=""><a class="push-btn pump-timer-reset-btn">Reset</a></div>
+                                <div class="pump-priority-lbl">Priority</div>
+                                <span class="pump-househeader-info-val DG_PRIORITY_@PumpId"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

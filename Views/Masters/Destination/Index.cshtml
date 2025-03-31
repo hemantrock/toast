@@ -1,0 +1,46 @@
+﻿@using TOAST.Data.Model;
+@*@model List<TOAST.Data.Model.tblDestination>*@
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddDestination();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW DESTINATION
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Destination Master</h3>
+        <table id="tblDestination" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>Destination Code</th>
+                    <th>DESTINATION NAME</th>
+                    <th>Distance</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblDestination itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.UniqueID);">
+                        <td style="display:none;">@itm.UniqueID</td>
+                        <td>@itm.DestinationCode</td>
+                        <td>@itm.DestinationDesc</td>
+                        <td>@(itm.Distance)</td>
+                        <td class="text-center"><span id="spanDelete_@itm.UniqueID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.UniqueID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/Masters/Destination/Index.js"></script>

@@ -1,0 +1,109 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@model tblDeviceMaster
+@{
+    ViewBag.Title = "Plant View - Pressure Transmitter Details View";
+    Layout = null;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+}
+<div class="modal-dialog mov-modal" style="width: 475px;">
+    <div class="modal-content">
+        <div class="modal-header pump-househeader-popup-header">
+            <div><h3 class="modal-title" id="">@Model.DeviceName</h3></div>
+            <div style="border-right: 0px;"><h3 class="modal-title" id="">@Model.DeviceDesc</h3></div>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+            <div class="mov-valve-popup">
+                <div class="device-box col-lg-4 pressure-transmission-wrapper" style="width:140px">
+                    <div class="device-block">
+                        <div class="device @(Model.tblDeviceType.DevicePrefix.ToLower())-bg" style="width:140px">
+                            <span class="action-icon remote-icon"></span>
+                            <span class="action-icon local-icon"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8" style="padding: 0px 5px 0 5px">
+                    <table class="table-striped app-tbl">
+                        <thead>
+                            <tr>
+                                @{tblTagMaster ValueTag = (DeviceTags.Where(x => x.TagName == (Model.TagPrefix + "_VALUE") || (x.TagName == Model.TagPrefix)).FirstOrDefault() ?? new tblTagMaster());}
+                                <th class="text-center bg-color" style="width: 50%">Desc</th>
+                                <th colspan="2" class="text-center bg-color" style="width: 50%">Value (@ValueTag.tblUOMMaster.UOM)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                tblTagMaster MaxSPTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_MAX_SP") || (x.TagName == Model.TagPrefix + "_SP_H")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster MinSPTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_MIN_SP") || (x.TagName == Model.TagPrefix + "_SP_L")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster HH_SPTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_SP_HH")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster LL_SPTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_SP_LL")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster MaxAlrmTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_MAX_ALRM") || (x.TagName == Model.TagPrefix + "_ALRM_H")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster MinAlrmTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_MIN_ALRM") || (x.TagName == Model.TagPrefix + "_ALRM_L")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster HH_AlrmTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_ALRM_HH")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster LL_AlrmTag = (DeviceTags.Where(x => (x.TagName == Model.TagPrefix + "_ALRM_LL")).FirstOrDefault() ?? new tblTagMaster());
+                                <tr>
+                                    <td>Value</td>
+                                    <td colspan="2" class="@(ValueTag.TagName) get-hover" onclick="OpenChartModal('@(ValueTag.TagName)', '@Model.PageName'); cancelBubble(event);"></td>
+                                </tr>
+                                if (MaxSPTag.TagID > 0)
+                                {
+                                    <tr>
+                                        <td width="57%">Hi Set-Point/ Alarm</td>
+                                        <td width="30%">
+                                            <input type="number" step="0.01" min=@(MaxSPTag.MinVal ?? -999) max="@(MaxSPTag.MaxVal ?? 9999)" readonly class="editable-input @(MaxSPTag.TagName)" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 72%;" value="@(MaxSPTag.TagName)">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Max/Hi SetPoint: @(Model.DeviceName)',this, '@(MaxSPTag.TagName)', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </td>
+                                        <td width="18%"><span class="alert-cont-sm"><span class="@(MaxAlrmTag.TagName)"></span></span></td>
+                                    </tr>
+                                }
+                                if (MinSPTag.TagID > 0)
+                                {
+                                    <tr>
+                                        <td>Lo Set-Point/ Alarm</td>
+                                        <td>
+                                            <input type="number" step="0.01" min=@(MinSPTag.MinVal ?? -999) max="@(MinSPTag.MaxVal ?? 9999)" readonly class="editable-input @(MinSPTag.TagName)" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 72%;" value="@(MinSPTag.TagName)">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Min/Lo SetPoint: @(Model.DeviceName)',this, '@(MinSPTag.TagName)', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </td>
+                                        <td><span class="alert-cont-sm"><span class="@(MinAlrmTag.TagName)"></span></span></td>
+
+                                    </tr>
+                                }
+                                if (HH_SPTag.TagID > 0)
+                                {
+                                    <tr>
+                                        <td>Hi-Hi Set-Point/ Alarm</td>
+                                        <td>
+                                            <input type="number" step="0.01" min=@(HH_SPTag.MinVal ?? -999) max="@(HH_SPTag.MaxVal ?? 9999)" readonly class="editable-input @HH_SPTag.TagName)" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 72%;" value="@(HH_SPTag.TagName)">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Device Hi-Hi SetPoint: @(Model.DeviceName)',this, '@(HH_SPTag.TagName)', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </td>
+                                        <td><span class="alert-cont-sm"><span class="@(HH_AlrmTag.TagName)"></span></span></td>
+                                    </tr>
+                                }
+                                if (LL_SPTag.TagID > 0)
+                                {
+                                    <tr>
+                                        <td>Lo-Lo Set-Point/ Alarm</td>
+                                        <td>
+                                            <input type="number" step="0.01" min=@(LL_SPTag.MinVal ?? -999) max="@(LL_SPTag.MaxVal ?? 9999)" readonly class="editable-input @LL_SPTag.TagName)" ondblclick="this.readOnly='';"
+                                                   style="border: 0px;width: 72%;" value="@(LL_SPTag.TagName)">
+                                            <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Device Hi-Hi SetPoint: @(Model.DeviceName)',this, '@(LL_SPTag.TagName)', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                        </td>
+                                        <td><span class="alert-cont-sm"><span class="@(LL_AlrmTag.TagName)"></span></span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+</script>

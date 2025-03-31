@@ -1,0 +1,245 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Add Truck";
+    List<tblLoadDirection> ddlLoadDirs = ViewBag.ddlLoadDirs;
+    List<tblTransporter> ddlTransporters = ViewBag.ddlTransporters;
+    List<tblTruckTypeMaster> ddlTypes = ViewBag.ddlTypes;
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create a new Truck
+</h2>
+<div class="row">
+    <form id="FormBU" role="form" class="form-fields">
+        <div class="col-lg-12 col-md-12 form-container">
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Truck Number</label>
+                    <input type="text" name="TruckNumber" id="txtTruckNumber" placeholder="Truck number" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>No of Compartments</label>
+                    <input id="txtCompartments" name="Compartments" type="text" placeholder="No of Compartments (1-8)" class="form-control" onchange="changeCompartmentNo('#tblTruckDetails')">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Printed Tare Weight (kg)</label>
+                    <input id="txtTareWeight" name="TareWeight" type="text" placeholder="Printed Tare Weight" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Transporter</label>
+                    <select id="ddlTransporters" class="js-basic-single" data-placeholder="Select a Transporter" data-allow-clear="true">
+                        @{
+                            <option></option>
+                            foreach (tblTransporter Tptr in ddlTransporters)
+                            {
+                                <option value="@Tptr.UniqueID">@(Tptr.TransporterDesc) - @(Tptr.TransporterCode)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Loading Type</label>
+                    <select class="form-control" id="ddlLoadingType" name="LoadingType">
+                        <option value="0" selected="selected">Select Loading Type</option>
+                        @foreach (tblLoadDirection Dir in ddlLoadDirs)
+                        {
+                            <option value="@Dir.UniqueID">@Dir.LoadDirection</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Explosive License No</label>
+                        <input id="txtExplosiveLisc" name="ExplosiveLisc" type="text" placeholder="Explosive License No" class="form-control">
+                    </div>
+                </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Explosive License Exp Date</label>
+                    <input id="dtpExplosiveLiscExpDate" name="ExplosiveLiscExpDate" type="text" placeholder="License Exp Date" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Calibration Certificate No</label>
+                        <input id="txtCalibrationCertNo" name="CalibrationCertNo" type="text" placeholder="Calibration Certificate No" class="form-control">
+                    </div>
+                </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Calibration Exp Date</label>
+                    <input id="dtpCalibrationLiscExpDate" name="CalibrationLiscExpDate" type="text" placeholder="Calibration Exp Date" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>License Exp Date</label>
+                    <input id="dtpLicenseExpiryDate" name="LicenseExpiryDate" type="text" placeholder="License Exp Date" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Truck Registartion No</label>
+                        <input id="txtRegistrationNo" name="RegistrationNo" type="text" placeholder="Truck Registration No" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Truck Registartion Date</label>
+                        <input id="dtpRegistrationDate" name="RegistrationDate" type="text" placeholder="Registration Date" class="form-control">
+                    </div>
+                </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Max Weight</label>
+                    <input id="txtMaxWeight" name="MaxWeight" type="text" placeholder="Max Weight" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Max Volume</label>
+                        <input id="txtMaxVolume" name="MaxVolume" type="text" placeholder="Max Volume" class="form-control">
+                    </div>
+                </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Truck Type</label>
+                    <select class="form-control" id="ddlTruckType" name="TruckType">
+                        <option value="0" selected="selected">Select Truck Type</option>
+                        @foreach (tblTruckTypeMaster Type in ddlTypes)
+                        {
+                            <option value="@Type.TypeID">@Type.TypeDesc</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group ui-widget">
+                    <label>Card ID</label>
+                    <input id="txtCardID" name="CardID" type="text" placeholder="Card ID" data-id="" class="form-control">
+                    @*<a onclick="ReadCard();" href="#" class="btn btn-primary truck-card-edit-btn-pos" role="button" id="readButton"><span class="glyphicon glyphicon-credit-card"></span></a>*@
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group ui-widget">
+                        <label>RF ID</label>
+                        <input id="txtRFID" name="RFID" type="text" placeholder="RFID" class="form-control">
+                    </div>
+                </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>CCOE Weight (Kg)</label>
+                    <input id="txtCCOEWeight" name="CCOEWeight" type="text" placeholder="CCOE Weight" class="form-control">
+                </div>
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="input input-group">
+                    <span class="input-group-addon">
+                        <input id="chkIsBlackListed" name="IsBlackListed" type="checkbox" class="form-control">
+                    </span>
+                    <input type="text" class="form-control" value="Is BlackListed" disabled>
+                </div>
+            </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                <div class="checkbox checkbox-align">
+                    <label class="">
+                        <input id="chkIsBlackListed" name="IsBlackListed" class="check" type="checkbox"> Is BlackListed
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 form-container" style="display:none;">
+            <table id="tblTruckDetails" class="table">
+                <thead>
+                    <tr>
+                        <th style="display:none;">Id</th>
+                        <th>COMPARTMENT No.</th>
+                        <th>CAPACITY</th>
+                        @*<th>PRODUCT</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 1; i <= 8; i++)
+                        {
+                            <tr id="row_@i" style="display:none;">
+                                <td style="display:none;">@i</td>
+                                <td><input id="txtCompartmentNo_@i" name="compartmentno" readonly type="text" placeholder="Compartment No" class="form-control" value="@i"></td>
+                                <td><div class="fields form-group" style="margin: 0;"><input id="txtCapacity_@i" name="Capacity" type="text" placeholder="Capacity" class="form-control"></div></td>
+                                @*<td><div class="fields form-group" style="margin: 0;"><select id="ddlProduct_@i" name="ddlProduct" class="form-control"></select></div></td>*@
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveTruckMasters();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/TruckMasters/Trucks.js"></script>
+<script>
+    $(document).ready(function () {
+
+        AutoComplete($("#txtCardID"), "Cards", "TruckMaster");
+        //AutoComplete($("#txtRFID"), "RFID", "TruckMaster");
+
+        //LoadDDLLoadingType('1');
+        //LoadDDLTransporters();
+        //LoadDDLTruckType('4');
+
+        //$.ajax({
+        //    url: "/Product/GetProducts",
+        //    type: "GET",
+        //    datatype: "json",
+        //    cache: false,
+        //    success: function (result) {
+        //        $('#ddlProduct_1').html('');
+        //        $('#ddlProduct_2').html('');
+        //        $('#ddlProduct_3').html('');
+        //        $('#ddlProduct_4').html('');
+        //        $('#ddlProduct_5').html('');
+        //        $('#ddlProduct_6').html('');
+        //        $('#ddlProduct_7').html('');
+        //        $('#ddlProduct_8').html('');
+        //        var r = "<option value=0>Select Product</option>";
+        //        $('#ddlProduct_1').append(r);
+        //        $('#ddlProduct_2').append(r);
+        //        $('#ddlProduct_3').append(r);
+        //        $('#ddlProduct_4').append(r);
+        //        $('#ddlProduct_5').append(r);
+        //        $('#ddlProduct_6').append(r);
+        //        $('#ddlProduct_7').append(r);
+        //        $('#ddlProduct_8').append(r);
+
+        //        $.each(result, function (i, objProduct) {
+        //            r = "<option value=" + objProduct.ProductID + ">" + objProduct.ProductName + "</option>";
+        //            $('#ddlProduct_1').append(r);
+        //            $('#ddlProduct_2').append(r);
+        //            $('#ddlProduct_3').append(r);
+        //            $('#ddlProduct_4').append(r);
+        //            $('#ddlProduct_5').append(r);
+        //            $('#ddlProduct_6').append(r);
+        //            $('#ddlProduct_7').append(r);
+        //            $('#ddlProduct_8').append(r);
+        //        });
+        //    }
+        //});
+
+    });
+</script>

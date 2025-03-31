@@ -1,0 +1,125 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    ViewBag.Title = "Plant View - Tanks View";
+    Layout = null;
+    string CustName = clsConfig.CustomerName;
+    string Application = clsConfig.Application;
+    int MaxLen = Model.Select(x => x.tblProduct.ProdNameShort.Length).Max();
+    string TwoRowHeader = "";
+    if (MaxLen > 10) { TwoRowHeader = "two-row-header"; }
+    List<tblTank> lstTanks;
+    if (clsConfig.UnGroupedTanksOrdering.ToUpper() == "Product-Wise".ToUpper()) { lstTanks = Model.OrderBy(x => x.ProductID).ToList(); }
+    else if (clsConfig.UnGroupedTanksOrdering.ToUpper() == "Type-Wise".ToUpper()) { lstTanks = Model.OrderBy(x => x.TankType).ToList(); }
+    else { lstTanks = Model.ToList(); }
+}
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black">Tanks View</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 content-top-spacing ">
+                    @{
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-12 tank-row">
+                                        @{
+                                            foreach (tblTank tank in lstTanks)
+                                            {
+                                                string TkPrefix = tank.TagPrefix;
+                                                string PageLink = "TankView" + string.Format("{0:00}", tank.TankSeqNo);
+
+                                                foreach (tblMOVMaster mov in tank.tblMOVMasters)
+                                                {
+                                                    if(mov.tblMOVType!=null && mov.tblMOVType.MOVType != null)
+                                                    {
+                                                        string movpage = mov.PageName;
+                                                        PageLink = movpage + "," + PageLink;
+                                                    }
+                                                }
+
+                                                foreach (tblPump pmp in tank.tblPumps)
+                                                {
+                                                    if (pmp.PageName == null)
+                                                    {
+                                                        pmp.PageName = "Pumps" + "View" + string.Format("{0:00}", pmp.UniqueID);
+                                                    }
+                                                    PageLink = pmp.PageName + "," + PageLink;
+                                                }
+
+                                                <input type="hidden" class="hdnHeight" data-id="@TkPrefix" value="@tank.DipReferenceHeight" />
+                                                <div class="hide chdnHeight @(TkPrefix)_LVL_HHH" data-id="@TkPrefix" data-sfl="@(tank.SafeFillingCapacity??tank.DipReferenceHeight)"></div>
+                                                <div class="tank-container @TwoRowHeader">
+                                                    <div class="tank-number">
+                                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                                            <span style="background-color:@tank.tblProduct.ProductColor;"><label style="color: #fff; text-shadow: 0px 1px 1px #000;">@tank.TankName </label></span>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                                            <span style="background-color:@tank.tblProduct.ProductColor;"><label style="color: #fff; text-shadow: 0px 1px 1px #000;">@tank.tblProduct.ProdNameShort</label></span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="cursor-point" onclick="OpenTankViewModal(@tank.UniqueID,'@PageLink')">
+                                                        <div class="tank-block @tank.tblTankType.TankType">
+                                                            <span class="maintainence-mode-icon @(TkPrefix+"_MAINT")" ></span>
+                                                            <span class="stair">
+                                                                <span class="app-logo @CustName"></span>
+                                                            </span>
+                                                            <span class="oil-tank-fill-container @(TkPrefix+"_OIL_TANK_FILL")">
+                                                                <span class="oil-tank-base"></span>
+                                                                <span class="oil-tank-fill" style="background-color:@tank.tblProduct.ProductColor; height: 3%"></span>
+                                                            </span>
+                                                            <span class="@(TkPrefix)_FLW_RATE level-rate-icon"></span>
+                                                        </div>
+                                                        <div class="remote-auto-icon-block main-rm-block">
+                                                            <span class="control-icon clickable @(TkPrefix)_AUTOMAN" style="bottom: -30px; right: -20px;"></span>
+                                                        </div>
+                                                        <span class="thermometer-block" style="top: 110px;right: 20px;">
+                                                            <!-- <span class="thermometer-fill"></span>-->
+                                                            <span class="thermometer-lbl"></span>
+                                                            <span class="thermometer-fill-percentage"><span class="@(TkPrefix+"_PER_LVL")" data-id="@TkPrefix"></span> %</span>
+                                                            <span class="thermometer-fill-prod-level get-hover" title="Please click to view trend" onclick="OpenChartModal('@(TkPrefix+"_LEVEL")', '@(tank.PageName)'); cancelBubble(event);"><span class="@(TkPrefix+"_LEVEL")"></span> @clsConfig.TFMSLevelUnit</span>
+                                                            <span class="thermometer-fill-degree get-hover" title="Please click to view trend" onclick="OpenChartModal('@(TkPrefix+"_AVG_TEMP")', '@(tank.PageName)'); cancelBubble(event);"><span class="@(TkPrefix+"_AVG_TEMP")"></span> °C</span>
+                                                        </span>
+                                                    </div>
+                                                    <table class="tank-mode-detail-tbl" style="position:absolute">
+                                                        <tbody>
+                                                            <tr class="odd">
+                                                                <td class="tank-mode-lbl">Total Obs Vol. (KL)</td>
+                                                                <td class="tank-mode-val @(TkPrefix+"_TOV")"><span></span></td>
+                                                            </tr>
+                                                            <tr class="even">
+                                                                <td class="tank-mode-lbl">Tank Mode</td>
+                                                                <td class="tank-mode-val pos-rel">
+                                                                    <div class="tank_mode_cls @(TkPrefix+"_MODE_CLS")" style="display: inline;">&nbsp;</div>
+                                                                    <span class="tank_mode_lbl @(TkPrefix+"_MODE_DDL")">&nbsp;</span>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            }
+                                            }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/PlantView/TanksView/0406/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        opcPageName = "TankView.*";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>
+

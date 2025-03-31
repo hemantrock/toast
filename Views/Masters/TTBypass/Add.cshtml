@@ -1,0 +1,73 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Add TT Bypass";
+    Layout = null;
+    List<tblTruckMaster> ddlTrucks = ViewBag.ddlTrucks;
+}
+
+<h2 class="headingPage">
+    Create a TT Bypass
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="fields form-group">
+                        <label>TRUCK NUMBER</label>
+                        <select id="ddlTrucks" class="js-basic-single" data-placeholder="Select a Truck" name="TruckNumber" data-allow-clear="true" data-width="100%">
+                            @{
+                                <option></option>
+                                foreach (tblTruckMaster Trk in ddlTrucks)
+                                {
+                                    <option value="@Trk.TruckID">@(Trk.TruckNumber)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 ">
+                    <div class="fields form-group">
+                        <label>STAGE</label>
+                        <select class="form-control" id="ddlStage" name="stage" onchange="LoadBypassOptions()">
+                            <option value="">Select Stage</option>
+                            <option value="R1">R1</option>
+                            <option value="R2">R2</option>
+                            <option value="R3">R3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 ">
+                    <div class="fields form-group">
+                        <label>TYPE</label>
+                        <select class="form-control" id="ddlType" name="Type">
+                            <option value="">Select Stage First</option>
+                            <option value="Biometric">Biometric</option>
+                            <option value="VTS">VTS/Geofencing</option>
+                            <option value="EMLock">EMLock</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="fields form-group">
+                        <label>START DATE TIME</label>
+                        <input id="dtpBypassStartDate" name="BypassStartDate" type="text" placeholder="Bypass Start Date (dd-MMM-yyyy)" class="form-control" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="fields form-group">
+                        <label>END DATE TIME</label>
+                        <input id="dtpBypassEndDate" name="BypassEndDate" type="text" placeholder="Bypass End Date (dd-MMM-yyyy)" class="form-control" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveTTBypass();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/TTBypass/TTBypass.js"></script>

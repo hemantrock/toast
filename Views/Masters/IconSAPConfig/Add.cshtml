@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Add Sap Configuration";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Create new SAP Configuration
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>RECORD NO.</label>
+                        <input id="txtRecordNo" name="RecordNo" type="text" placeholder="Record No" class="form-control">
+                    </div>
+                </div>*@
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>CLIENT NAME</label>
+                        <input id="txtClientName" name="ClientName" type="text" placeholder="Client Name (1-5 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>USER NAME</label>
+                        <input id="txtUsername" name="Username" type="text" placeholder="User Name (1-20 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>PASSWORD</label>
+                        <input id="txtPassword" name="Password" type="password" placeholder="Password (1-50 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>DESTINATION</label>
+                        <input id="txtDestination" name="Destination" type="text" placeholder="Destination (1-20 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>APP SERVER HOST</label>
+                        <input id="txtHost" name="Host" type="text" placeholder="Host (1-20 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>GATEWAY HOST</label>
+                        <input id="txtGatewayHost" name="GatewayHost" type="text" placeholder="Gateway Host (1-20 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>GATEWAY SERVICE</label>
+                        <input id="txtGatewayService" name="GatewayService" type="text" placeholder="Gateway Service (1-20 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>*@
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>SYSTEM ID</label>
+                        <input id="txtSysNumber" name="SysNumber" type="text" placeholder="Sys Number (1-10 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>MS HOST</label>
+                        <input id="txtMSHost" name="MSHost" type="text" placeholder="MS Host" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>MS SERVICE</label>
+                        <input id="txtMSService" name="MSService" type="text" placeholder="MS Service" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>LANGUAGE</label>
+                        <input id="txtLanguage" name="Language" type="text" placeholder="Language (1-2 Chars)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>PLANT CODE</label>
+                        <input id="txtPlantCode" name="PlantCode" type="text" placeholder="Plant Code (1-4 Numeric)" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>LOGON GROUP</label>
+                        <input id="txtLogonGroup" name="LogonGroup" type="text" placeholder="Logon Group (1-10 Chars)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>Next DIP POST Time</label>
+                        <input id="dtpTFMSFileTime" name="TFMSFileTime" type="text" placeholder="TFMSFile Time" class="form-control" onblur="MakeConnectionString()">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>CONNECTION STRING</label>
+                        <input id="txtConnectionString" name="ConnectionString" type="text" placeholder="Connection String (1-200 Chars)" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input id="chkTFMSPostingEnabled" name="TFMSPostingEnabled" type="checkbox" class="form-control">
+                        </span>
+                        <input type="text" class="form-control" value="TFMS Posting Enabled" disabled>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveIconSapConfiguration();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>          
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/IconSAPConfig/IconSAPConfig.js"></script>

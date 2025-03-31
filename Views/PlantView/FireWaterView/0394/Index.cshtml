@@ -1,0 +1,431 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblTank>
+@{
+    ViewBag.Title = "Plant View -Fire Water System";
+    Layout = null;
+    List<tblPump> Pumps = ViewBag.Pumps;
+    List<tblPump> JockeyPump = Pumps.Where(x => x.ServiceID == 3).ToList();
+    List<tblPump> FirePump = Pumps.Where(x => x.ServiceID == 4).ToList();
+    List<tblDeviceMaster> HydrantPTs = ViewBag.HydrantPTs;
+    List<tblTank> WaterTanks = Model;
+    string CustName = clsConfig.CustomerName;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">Fire Water System</h3>
+    </div>
+</div>
+
+<div class="fire-water-system-container m-t-40">
+    <div class="row">
+        <div class="col-lg-4" style="width:30%">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Jocky Pump</h3>
+                </div>
+                <div class="panel-body" style="padding:2px">
+
+                    @{
+                        foreach (tblPump jcy in JockeyPump)
+                        {
+                            //string PumpName = jcy.tblPumpService.TagPrefix + jcy.UniqueID.ToString("0#");
+                            string PumpName = jcy.TagPrefix;
+                            <div class="device-box jocky-pump-wrapper">
+                                <div class="device-header">
+                                    <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@jcy.EquipmentName</span>
+                                    <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">JOCKEY</span>
+                                </div>
+                                <div class="device-block">
+                                    <div class="device">
+                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@jcy.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                        <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@jcy.UniqueID,'WaterSystem,PumpsView@(jcy.UniqueID.ToString("00"))')" class="tooltips jocky-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                            <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                        </div>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@jcy.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                    </div>
+                                </div>
+                                <div class="device-detail">
+                                    <table class="table-striped value-tbl w-100">
+                                        <tbody>
+                                            <tr>
+                                                <td class="tbl-lbl @(PumpName)_PRIORITY_DDL" style="width: 10%;" colspan="2">
+                                                    Priority: &nbsp;
+                                                    <span class="tank_mode_lbl" style="left:70px"></span>
+                                                    @*<select id="ddl@(PumpName)" class="prty_jcy @(PumpName)_PRIORITY_DDL">
+                                                            <option value=1>Main 1</option>
+                                                            <option value=2>Main 2</option>
+                                                            <option value=4>Standby 1</option>
+                                                            <option value=8>Standby 2</option>
+                                                        </select>
+                                                        <span class="glyphicon glyphicon-upload cursor-point" onclick="UpdatePumpPriorityDDL('@(PumpName +"_PRIORITY_DDL")','prty_jcy','ddl@(PumpName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                                    @*<input type="number" min=1 readonly class="editable-input @(PumpName + "_PRIORITY")" ondblclick="this.readOnly='';"
+                                                            style="border: 0px; width: 65%;">
+                                                        <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriority('@(PumpName +"_PRIORITY")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl">Fail to Start</td>
+                                                <td class="tbl-val">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_FAIL_FB")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl">Trip Alarm</td>
+                                                <td class="tbl-val">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_TRIP_FB")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3" style="width:25%">
+
+            <div class="interlock-container">
+                <table class="app-tbl">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" width="70%" class="bold">Water Requirement As Per OISD (KL)</td>
+                            <td width="30%" class="bold tooltips" style="text-align: center;" title="Volume (in KL) required as per PESO/OISD">3380</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="">Min Water Volume (90% OISD Limit) (KL)</td>
+                            <td class="MIN_WATER_VOL_SP tooltips" style="text-align: center;" title="Min Water Volume (90% OISD Requirement">3042</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="">Current Water Volume (KL)</td>
+                            <td class="CURR_TOT_WATER_VOL tooltips" style="text-align: center;" title="Current Water Volume"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="">Gantry Permisive Status</td>
+                            <td class="tooltips" title="Gantry Permissive State. Green if Gantry Operations are permitted">
+                                <span class="alert-cont-sm">
+                                    <span class="GAN_SHUT_STATE"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hide">
+                            <td colspan="2" class="tooltips" title="Bypass Gantry Operation when Interlocks are not met.">
+                                <span class="">Gantry Operations Bypass</span>
+                                <span class="supportive-txt">If Water Level < min requirement.</span>
+                            </td>
+                            <td>
+                                <div class="toggle-wrapper" onclick="ByPassGantryShutdown('',this, 'GAN_SHUT_BYPASS','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]', event)">
+                                @*<div class="toggle-wrapper" onclick="cancelBubble(event);">*@
+                                    <input id="toggle-gantry-operation" class="on-off-btn GAN_SHUT_BYPASS" data-on="Enabled" data-off="Disabled" checked type="checkbox" data-width="80">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg-color text-center" colspan="3">INTERLOCKS</td>
+                        </tr>
+                        <tr>
+                            <td width="60%" class="tooltips" title="Green if Min Water Level (90% OISD Limit) Requirement is met">Water Tank Level Status</td>
+                            <td width="20%">
+                                <span class="alert-cont-sm tooltips" title="Green if Min Water Level (90% OISD Limit) Requirement is met">
+                                    <span class="WATER_VOL_BELOW_MIN"></span>
+                                </span>
+                            </td>
+                            <td width="20%">
+                                <div class="toggle-wrapper toggle-invert" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Water Volume Check','Water Volume Check',this, 'WATER_VOL_BELOW_MIN_BYPASS', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                    <input id="toggle-gantry-operation" class="on-off-btn WATER_VOL_BELOW_MIN_BYPASS" data-on="Bypassed" data-off="Enabled" checked type="checkbox" data-width="90">
+                                </div>
+                                @*<input type="checkbox" class="form-control tooltips" title="checkbox" onchange="alert('Work is pending');" />*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="">Main Fire Engine In Remote & Auto</td>
+                            <td>
+                                <span class="alert-cont-sm tooltips" title="Green if Main Fire Engine is in Remote & Auto Mode">
+                                    <span class="MAIN_FE_REM_AUTO"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="toggle-wrapper toggle-invert" onclick="cancelBubble(event);SetProcessValue('Set Bypass for Main FE in Remote and Auto','Main FE Remote Auto',this, 'MAIN_FE_REM_AUTO_BYPASS', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                    <input id="toggle-gantry-operation" class="on-off-btn MAIN_FE_REM_AUTO_BYPASS" data-on="Bypassed" data-off="Enabled" checked type="checkbox" data-width="90">
+                                </div>
+                                @*<input type="checkbox" class="form-control tooltips" title="checkbox" />*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="">2 Fire Engines running</td>
+                            <td class="">
+                                <span class="alert-cont-sm tooltips" title="Red/Alert if 2 Fire Engines are running">
+                                    <span class="TWO_FE_RUNNING"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="toggle-wrapper toggle-invert" onclick="cancelBubble(event);SetProcessValue('Set Bypass for 2 Fire Engines running','2 FE Running',this, 'TWO_FE_RUNNING_BYPASS', 'TOGGLE', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')">
+                                    <input id="toggle-gantry-operation" class="on-off-btn TWO_FE_RUNNING_BYPASS" data-on="Bypassed" data-off="Enabled" checked type="checkbox" data-width="90">
+                                </div>
+                                @*<input type="checkbox" class="form-control tooltips" title="checkbox" />*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bg-color text-center" colspan="3">SET POINTS</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="">Hydrant Pump Start (kg/cm²)</td>
+                            <td class="tooltips" title="Hydrant PT Pressure at/below which the Jockey Pumps will start">
+                                <span class="HYD_PMP_START_SP?">7.5 Kg/cm²</span>
+                                @*<input type="number" min=1 readonly class="editable-input HYD_PMP_START_SP" ondblclick="this.readOnly='';"
+                                    style="border: 0px; width: 65%;">*@
+                                <span style="display:none" class="glyphicon glyphicon-upload" onclick="UpdatePumpSetPoint('HYD_PMP_START_SP','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="">Hydrant Pump Trip / Stop (kg/cm²)</td>
+                            <td class="tooltips" title="Hydrant PT Pressure at/above which the Jockey Pumps will stop">
+                                <span class="HYD_PMP_STOP_SP?">9.5 Kg/cm²</span>
+                                @*<input type="number" min=1 readonly class="editable-input HYD_PMP_STOP_SP" ondblclick="this.readOnly='';"
+                                    style="border: 0px; width: 65%;">*@
+                                <span style="display:none" class="glyphicon glyphicon-upload" onclick="UpdatePumpSetPoint('HYD_PMP_STOP_SP','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="">Subsequent FE Start Time</td>
+                            <td class="tooltips" title="Time after which the next FE will start after previous starts running">
+                                <span class="">15 sec</span>
+                                @*<input type="number" min=1 readonly class="editable-input " ondblclick="this.readOnly='';"
+                                    style="border: 0px; width: 65%;">*@
+                                <span style="display:none" class="glyphicon glyphicon-upload" onclick="" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="col-lg-5" style="width:45%">
+
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Fire Water Pump</h3>
+                </div>
+                <div class="panel-body" style="padding:2px">
+                    @{
+                        foreach (tblPump fw in FirePump)
+                        {
+                            string PumpName = fw.TagPrefix;
+                            <div class="device-box fire-water-pump-wrapper">
+                                <div class="device-header">
+                                    <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@fw.EquipmentName</span>
+                                    <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">FWP</span>
+                                </div>
+                                <div class="device-block">
+                                    <div class="device">
+                                        <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(PumpName + "_LOCREM")" onclick="OpenPumpLocRemModal('@fw.EquipmentName', 'PUMP_LOCREM', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);" style="left:-25px"></span>
+                                        <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@fw.UniqueID,'WaterSystem,PumpsView@(fw.UniqueID.ToString("00"))')" class="tooltips fire-water-pump-bg @(PumpName + "_RUN_IMG") @(PumpName + "_TRIP_IMG") @(PumpName + "_FAIL_IMG") @(PumpName + "_MAINT_IMG")">
+                                            <span class="maintainence-mode-icon @(PumpName + "_MAINT")"></span>
+                                        </div>
+                                        <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(PumpName + "_AUTOMAN")" onclick="OpenPumpAutoManModal('@fw.EquipmentName', 'PUMP_AUTOMAN', '@(PumpName + "_AUTOMAN")', '@(PumpName + "_LOCREM")','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"  style="right:-27px"></span>
+                                        <span class="machine-icon speed-icon @(PumpName + "_OVER_SPEED")"></span>
+                                        <span class="machine-icon high-temp-icon @(PumpName + "_HIGH_TEMP")"></span>
+                                        <span class="machine-icon oil-pressure-icon @(PumpName + "_LUBE_PRESS_LOW")"></span>
+                                    </div>
+                                </div>
+                                <div class="device-detail">
+                                    <table class="table-striped value-tbl w-100">
+                                        <tbody>
+                                            <tr>
+                                                <td class="tbl-lbl @(PumpName)_PRIORITY_DDL" style="width: 10%;" colspan="2">
+                                                    Priority: &nbsp;
+                                                    <span class="tbl-lbl" style="left:70px"></span>
+                                                    @*<select id="ddl@(PumpName)" class="prty_fwp @(PumpName)_PRIORITY_DDL">
+                                                                            <option value=1>Main 1</option>
+                                                                            <option value=2>Main 2</option>
+                                                                            <option value=4>Standby 1</option>
+                                                                            <option value=8>Standby 2</option>
+                                                        </select>
+                                                        <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriorityDDL('@(PumpName +"_PRIORITY_DDL")','prty_fwp','ddl@(PumpName)','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                                    @*<input type="number" min=1 readonly class="editable-input @(PumpName + "_PRIORITY")" ondblclick="this.readOnly='';"
+                                                               style="border: 0px; width: 65%;">
+                                                        <span class="glyphicon glyphicon-upload" onclick="UpdatePumpPriority('@(PumpName +"_PRIORITY")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" aria-hidden="true"></span>*@
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl">Run Test</td>
+                                                <td class="detail-tbl-val tooltips" title="Whether Engine is under Test Run">
+                                                    <div class="toggle-wrapper float-r" onclick="RunTest('@(PumpName)',this, '@(PumpName + "_TEST_RUN")','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]',event)">
+                                                        <input id="toggle-tasdol-mode" class="on-off-btn @(PumpName+"_TEST_RUN") " checked type="checkbox" data-opcvalue="">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl">Fail to Start</td>
+                                                <td class="detail-tbl-val tooltips" title="'Green' if no Fail Feedback received">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_FAIL_FB")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl tooltips" title="Engine Temperature Status">Temp</td>
+                                                <td class="detail-tbl-val tooltips" title="'Green' if Engine Termperature within range">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_HIGH_TEMP")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl tooltips" title="Engine Over speed Status">Speed</td>
+                                                <td class="detail-tbl-val  tooltips" title="'Green' if speed is within range">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_OVER_SPEED")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="tbl-lbl tooltips" title="Lube Pressure Low Status">Lube Pressure</td>
+                                                <td class="detail-tbl-val tooltips" title="'Green' if Lube Pressure is okay">
+                                                    <span class="alert-cont-sm">
+                                                        <span class="@(PumpName + "_LUBE_PRESS_LOW")"></span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Hydrant Line PT</h3>
+                </div>
+                <div class="panel-body">
+                    @{
+                        foreach (tblDeviceMaster HydTxr in HydrantPTs)
+                        {
+                            string PTName = HydTxr.TagPrefix;
+                            <div class="device-box pressure-transmission-wrapper">
+                                <div class="device-header">
+                                    <span class="h-col h-left" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">@HydTxr.DeviceName</span>
+                                    <span class="h-col h-right" style="background-color:#ff8000; text-shadow: 0px 1px 1px #000;">Hydrant PT</span>
+                                </div>
+                                <div class="device-block">
+                                    <div class="device pt-bg">
+                                        <span class="action-icon remote-icon"></span>
+                                        <span class="action-icon local-icon"></span>
+                                    </div>
+                                </div>
+                                <div class="device-detail">
+                                    <table class="table-striped value-tbl w-100">
+                                        <tbody>
+                                            <tr>
+                                                <td class="tbl-lbl">@HydTxr.DeviceDesc</td>
+                                                <td class="tbl-val @(PTName + "_PRESSURE")"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tank</h3>
+                </div>
+                <div class="panel-body">
+                    @{
+                        foreach (tblTank tank in Model.Where(x => x.tblProduct.ProductName.ToUpper().Contains("WATER")))
+                        {
+                            string TkPrefix = tank.TagPrefix;
+                            string PageLink = tank.PageName;
+
+                            foreach (tblMOVMaster mov in tank.tblMOVMasters)
+                            {
+                                string movpage = mov.tblMOVType.MOVType.ToLower() + "view" + string.Format("{0:00}", mov.MovTypeSeqNo);
+                                PageLink = movpage + "," + PageLink;
+                            }
+
+                            <input type="hidden" class="hdnHeight" data-id="@TkPrefix" value="@(tank.SafeFillingCapacity??tank.DipReferenceHeight)" />
+                            <div class="hide chdnHeight @(TkPrefix)_LVL_HHH" data-id="@TkPrefix" data-sfl="@(tank.SafeFillingCapacity??tank.DipReferenceHeight)"></div>
+                            <div class="tank-container" style="min-height: 235px;">
+                                <div class="tank-number">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <span style="background-color:@tank.tblProduct.ProductColor;"><label style="color: #fff; text-shadow: 0px 1px 1px #000;">@tank.TankName </label></span>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <span style="background-color:@tank.tblProduct.ProductColor;"><label style="color: #fff; text-shadow: 0px 1px 1px #000;">@tank.tblProduct.ProdNameShort </label></span>
+                                    </div>
+
+                                </div>
+                                <div class="cursor-point" onclick="OpenTankViewModal(@tank.UniqueID,'@PageLink')">
+                                    <div class="tank-block @tank.tblTankType.TankType">
+                                        <span class="maintainence-mode-icon"></span>
+                                        <span class="stair">
+                                            <span class="app-logo @CustName"></span>
+                                        </span>
+                                        <span class="oil-tank-fill-container @(TkPrefix+"_OIL_TANK_FILL")">
+                                            <span class="oil-tank-base"></span>
+                                            <span class="oil-tank-fill  @(TkPrefix+"_PER_HGHT")" style="background-color:@tank.tblProduct.ProductColor; height: 3%"></span>
+                                        </span>
+                                    </div>
+                                    <div class="remote-auto-icon-block main-rm-block">
+
+                                    </div>
+                                    <span class="thermometer-block">
+                                        <!-- <span class="thermometer-fill"></span>-->
+                                        <span class="thermometer-lbl"></span>
+                                        <span class="thermometer-fill-percentage"><span class="@(TkPrefix+"_PER_LVL")" data-id="@TkPrefix"></span> %</span>
+                                        <span class="thermometer-fill-prod-level get-hover" title="Please click to view trend" onclick="OpenChartModal('@(TkPrefix+"_LEVEL")', '@(tank.PageName)'); cancelBubble(event);"><span class="@(TkPrefix+"_LEVEL")"></span> mm</span>
+                                    </span>
+                                </div>
+                                <table class="tank-mode-detail-tbl">
+                                    <tbody>
+                                        <tr class="odd">
+                                            <td class="tank-mode-lbl">Total Vol. (m³)</td>
+                                            <td class="tank-mode-val @(TkPrefix+"_TOV")"><span></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="row">
+        <div class="col-lg-12 content-top-spacing tank-row">
+        </div>
+    </div>*@
+
+<script src="~/Scripts/PageJS/PlantView/TanksView/Index.js"></script>
+<script>
+    $(document).ready(function () {
+        opcPageName = "WaterSystem,TankView21,TankView22";
+        InitConn(opcPageName, 0);
+        createTooltip();
+        opc.server.readPageTags(opcPageName);
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/FireWaterView/Index.js"></script>

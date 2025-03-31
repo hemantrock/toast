@@ -1,0 +1,74 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Data.ViewModels;
+
+@model List<MenuPermissionsCustom>
+
+@{
+    ViewBag.Title = "Menu Permissions";
+    Layout = null;
+    int UserRoleID = ViewBag.UserRoleID;
+    string Designation = ViewBag.Designation;
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormMenus" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h4 class="grid-header">Menu Permissions : @Designation</h4>
+                    <table id="tblMenus" class="table">
+                        <thead>
+                            <tr>
+                                <th style="display:none;">MenuId</th>
+                                <th class="text-center">Permission</th>
+                                <th>Menu Name</th>
+                                <th>Menu Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (MenuPermissionsCustom itm in Model.Where(x=>x.Permission==true))
+                            {
+                                <tr>
+                                    <td style="display:none;">@itm.MenuID</td>
+                                    <td>
+                                        @if (itm.Permission == true)
+                                        {
+                                            <input type="checkbox" name="chkMenu" id="@itm.MenuID" checked disabled>
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="chkMenu" id="@itm.MenuID" disabled>
+                                        }
+                                    </td>
+                                    <td>@itm.MenuTitle</td>
+                                    <td>@itm.MenuToolTip</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tblMenus').dataTable({
+            "iDisplayLength": iGblNoRows-1,
+            "bLengthChange": false,
+            "bFilter": true,
+            "bPaginate": true,
+            "bInfo": true,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "0%", "sClass": "text-center" },
+                    { sWidth: "10%", "sClass": "text-center" },
+                    { sWidth: "20%" },
+                    { sWidth: "70%" },
+                ],
+            "bAutoWidth": false,
+        });
+    });
+</script>

@@ -1,0 +1,91 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - Control Valve Details View";
+    Layout = null;
+    string DeviceName = ViewBag.Name;
+    string DeviceTagPrefix = ViewBag.TagPrefix;
+}
+
+<div class="modal-dialog modal-pvalve">
+    <div class="modal-content">
+        <div class="modal-header mov-valve-popup-header" id="POVModalLabel">
+            <div><h3 class='modal-title'>@DeviceName</h3></div>
+            <div style='border:0px;'><h3 class='modal-title'></h3></div>
+            <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+        </div>
+        <div class="modal-body clearfix">
+            <div class="mov-valve-popup">
+                <div class="feedback-row">
+                    <a class="push-btn-02 open-mov-btn @(DeviceTagPrefix+"_OPN_CMD")" href="javascript:void(0);" onclick="SetProcessValue('Open/Close Command to MOV','Set Reset Open Command to Valve: @DeviceName',this, '@(DeviceTagPrefix+"_OPN_CMD")','')" data-opcvalue="">OPEN</a>
+                    @*<a class="push-btn-01 close-mov-btn @(DeviceTagPrefix+"_CLS_CMD")" href="javascript:void(0);" onclick="ValidateOpenCloseValve(this,'@(DeviceName)', '@(DeviceTagPrefix+"_CLS_CMD")','POV','@Session[clsConstants.UserID]','@Session[clsConstants.LoginID]','@Session[clsConstants.UserName]')" data-opcvalue="">CLOSE</a>*@
+                </div>
+                <div class="mov-valve-info-container">
+                    <div class="col-lg-5 no-padd">
+                        @{
+
+                        }
+                        <div class="fcv-valve @(DeviceTagPrefix+"_OPN_IMG")  @(DeviceTagPrefix+"_CLS_IMG")">
+
+                        </div>
+                        <span class="mov-valve-icons auto-indicator AUTOMAN_MOV_08 automan_mov_false" onclick="OpenAutoManModal(this, 'hdnTankAutoMan_202A', 'MOV_08', 'MOV_AUTOMAN', 'AUTOMAN_MOV_08','1', 'admin', 'Admin'); cancelBubble(event);"></span>
+                        <span class="mov-valve-icons manual-indicator AUTOMAN_MOV_08 automan_mov_true" onclick="OpenAutoManModal(this, 'hdnTankAutoMan_202A','MOV_08', 'MOV_AUTOMAN', 'AUTOMAN_MOV_08','1', 'admin', 'Admin'); cancelBubble(event);"></span>
+
+                    </div>
+
+                    <div class="col-lg-6">
+
+                        <table class="app-tbl" style="position: relative; top: 20px;">
+                            <tbody>
+                                <tr>
+                                    <td class="lbl">% Open</td>
+                                    <td>
+                                        <span class="">
+                                            <span class="@(DeviceTagPrefix+"_PER_OPN_VALUE")"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="even">
+                                    <td class="lbl">
+                                        <span class="v-align-sub">% Set Point</span>
+                                    </td>
+                                    <td class="detail-tbl-val" style="width:50%">
+                                        <input type="number" readonly class="editable-input @(DeviceTagPrefix+"_PER_OPN_SP")" ondblclick="this.readOnly='';"
+                                               style="border: 0px;width: 72%;" value="@(DeviceTagPrefix+"_PER_OPN_SP")">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update Control Valve % Open SetPoint: @(DeviceName)',this, '@(DeviceTagPrefix)_PER_OPN_SP', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')" aria-hidden="true"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="mov-valve-info-wrapper valve-info-wrapper" style="display: none;">
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Open Feedback</span>
+                                <span class="circle-cont">
+                                    <span class="@(DeviceTagPrefix+"_OPN_FB") "></span>
+                                </span>
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Close Feedback</span>
+                                <span class="circle-cont">
+                                    <span class="@(DeviceTagPrefix+"_CLS_FB") "></span>
+                                </span>
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Fail to Open</span>
+                                <span class="circle-cont">
+                                    <span class="@(DeviceTagPrefix+"_FTO_FB") "></span>
+                                </span>
+                            </div>
+                            <div class="mov-valve-info-row pvalve-value-info-wrapper">
+                                <span class="mov-valve-info-lbl">Fail to Close</span>
+                                <span class="circle-cont">
+                                    <span class="@(DeviceTagPrefix+"_FTC_FB") "></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

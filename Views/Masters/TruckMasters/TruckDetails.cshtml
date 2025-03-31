@@ -1,0 +1,34 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblTruckDetail>
+@{
+    Layout = null;
+}
+
+<div class="col-lg-12">
+    <table id="tblTruckDetails" class="table">
+        <thead>
+            <tr>
+                <th style="display:none;">Id</th>
+                <th>TRUCK NO</th>
+                <th>COMPARTMENT No.</th>
+                <th>CAPACITY</th>
+                <th>PRODUCT</th>
+                <th class="text-center" style="display:none;">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblTruckDetail itm in Model)
+            {
+                <tr class="clickable">
+                    <td style="display:none;">@itm.TruckID</td>
+                    <td>@itm.tblTruckMaster.TruckNumber</td>
+                    <td>@itm.CompNo</td>
+                    <td>@itm.Capacity</td>
+                    <td>@Convert.ToString(itm.tblProduct == null? "": itm.tblProduct.ProductDescription)</td>
+                    <td class="text-center" style="display:none;"><span id="spanDelete_@itm.TruckID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.TruckID"></span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/PageJS/Masters/TruckMasters/TruckDetails_Index.js"></script>

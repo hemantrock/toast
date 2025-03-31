@@ -1,0 +1,492 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+<style>
+    .toggle-wrapper .toggle.btn {
+        width: 50px !important;
+        height: 25px !important;
+        min-width: 50px;
+        min-height: 25px;
+    }
+
+    .toggle-wrapper .toggle-group label {
+        top: -4px;
+    }
+
+    .toggle-wrapper .btn.btn-primary {
+        left: -4px;
+    }
+</style>
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">FLOW</h3>
+        </div>
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">LEVEL</h3>
+        </div>
+    </div>
+    <div class="security-system-container m-t-40">
+        <div class="row">
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">FIT-101</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Measure Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 Measure existing',this, 'FT101_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn FT101_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">High Fault Existing</td>
+                            <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="FT101_CDH"></span></span></td></tr>
+                        <tr>
+                            <td class="bold">Low Fault Existing</td>
+                            <td class="detail-tbl-val"><span class="alert-cont-sm"><span class="FT101_CDL"></span></span></td></tr>
+                        <tr>
+                            <td class="bold">High Setting Value(m3/h)</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FT101_VSH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 High setting value (m3/h)',this, 'FT101_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Low Setting Value(m3/h)</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FT101_VSL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 Low setting value (m3/h)',this, 'FT101_VSL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time High Fault</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FT101_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 Filtering time high fault',this, 'FT101_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Low Fault</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FT101_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 Filtering time low fault',this, 'FT101_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Outlet value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FT101_MINS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 Min Outlet Value',this, 'FT101_MINS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">max Outlet value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FT101_MAXS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FIT 101 Max Outlet Value',this, 'FT101_MAXS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">FISL-411</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Available</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Available',this, 'FISL101_DSP', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn FISL101_DSP" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault High',this, 'FISL101_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        <tr>
+                            <td class="bold">Filter Time Fault Low</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault Low',this, 'FISL101_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">FISL-412</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Available</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Available',this, 'FISL101_DSP', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn FISL101_DSP" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault High',this, 'FISL101_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        <tr>
+                            <td class="bold">Filter Time Fault Low</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault Low',this, 'FISL101_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">FISL-421</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Available</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Available',this, 'FISL101_DSP', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn FISL101_DSP" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault High',this, 'FISL101_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        <tr>
+                            <td class="bold">Filter Time Fault Low</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault Low',this, 'FISL101_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">FISL-422</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Available</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Available',this, 'FISL101_DSP', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn FISL101_DSP" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault High',this, 'FISL101_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        <tr>
+                            <td class="bold">Filter Time Fault Low</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input FISL101_TDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: FISL 101 Filtering time Fault Low',this, 'FISL101_TDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">LT-311</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Measure Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 Measure existing',this, 'LT311_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn LT311_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">High High Setting value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LT311_VSHH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 High High setting value',this, 'LT311_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">High Setting Value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LT311_VSH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 High setting value',this, 'LT311_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Low Setting Value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LT311_VSL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 Low setting value',this, 'LT311_VSL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Low Low Setting Value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LT311_VSLL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 Low Low setting value (fault)',this, 'LT311_VSLL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Outlet value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LT311_MINS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 Min Outlet Value',this, 'LT311_MINS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Max Outlet value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LT311_MAXS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LT 311 Max Outlet Value',this, 'LT311_MAXS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">LSLL-312</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS312 Existing',this, 'LS312_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn LS312_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LS312_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS312 Fault existing',this, 'LS312_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">LSLL-313</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS313 Existing',this, 'LS313_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn LS313_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LS313_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS313 Fault existing',this, 'LS313_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">LSLL-601</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS601 Existing',this, 'LS601_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn LS601_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LS601_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS601 Fault existing',this, 'LS601_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">LSLL-602</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS602 Existing',this, 'LS602_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn LS602_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input LS602_TDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: LS602 Fault existing',this, 'LS602_TDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">PRESSURE</h3>
+        </div>
+    </div>
+    <div class="security-system-container m-t-40">
+        <div class="row">
+            <div class="col-lg-2">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">PT-401</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Measure Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 Measure existing',this, 'PT401_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn PT401_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">High High Setting value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input PT401_VSHH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 High High setting value',this, 'PT401_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">High Setting Value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input PT401_VSH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 High setting value',this, 'PT401_VSH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Low Setting Value (Vacuum Level Setting)</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input B50_VSPR" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 Low setting value (vaccum level setting)',this, 'B50_VSPR', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Low Low Setting Value (EV-401 Opening)</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input PT401_VSLL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 Low Low setting value (EV401 opening)',this, 'PT401_VSLL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Min Outlet value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input PT401_MINS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 Min Outlet Value',this, 'PT401_MINS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">max Outlet value</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input PT401_MAXS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 Max Outlet Value',this, 'PT401_MAXS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-2">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">PSL-801</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing</td>
+                            <td width="30%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PSL 801 existing',this, 'PS801_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn PS801_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filter Time Fault High</td>
+                            <td width="30%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input PT401_VSHH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: PT 401 High High setting value',this, 'PT401_VSHH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "VRS_SetPoints";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

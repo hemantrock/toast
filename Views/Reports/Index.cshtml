@@ -1,0 +1,186 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    string FromDate = System.DateTime.Today.AddDays(-1).ToString("dd-MMM-yyyy");
+    if (System.DateTime.Now.Hour >= 17)
+    {
+        FromDate = @System.DateTime.Today.ToString("dd-MMM-yyyy");
+    }
+    List<tblReportMaster> lstRpts = ViewBag.Data;
+}
+<style>
+    body {
+        overflow-x: hidden;
+    }
+
+    .left-nav-reports {
+        box-shadow: 2px 0 3px -2px #333;
+        height: auto;
+        padding: 0;
+        width: 100%;
+    }
+
+    .right-content-reports {
+        height: calc(100vh - 50px);
+        padding: 0 0.5em;
+        width: 100%;
+        margin-bottom:50px;
+    }
+
+    .report-content {
+        height: 100%;
+        padding: 0 0.2em;
+        width: 100%;
+    }
+</style>
+<style media="screen and (min-width: 768px)">
+    .left-nav-reports {
+        float: left;
+        height: calc(100vh - 50px);
+        width: 280px;
+    }
+
+    .right-content-reports {
+        float: left;
+        width: calc(100% - 280px);
+        margin-bottom: 0;
+    }
+</style>
+<div class="report-container row">
+    <div class="left-nav-reports">
+        <form id="formReports" role="form" class="form-fields">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 report-selection-group">
+                <fieldset>
+                    <legend><input type="checkbox" class="form-control" id="ChbxRpName" /> Select Report by Name</legend>
+                    <div id="ReportByName" class="report-group-block">
+                        @*<label class="font-normal">Select Report</label>*@
+                        @*<input id="jqxInputReportName" autocomplete="off" />*@
+                        <select class="form-control" id="ddlInputReportName" name="ReportName" data-placeholder="Select Report" data-allow-clear="true" >
+                            <option></option>
+                            @foreach (tblReportMaster rpt in lstRpts.OrderBy(x=>x.ReportTitle))
+                            {
+                                <option value="@rpt.UniqueID">@rpt.ReportTitle</option>
+                            }
+                        </select>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend><input type="checkbox" class="form-control" id="ChbxRpGroup" /> Select Report by Group</legend>
+                    <div id="ReportByGroup" class="report-group-block">
+                        <label class="font-normal">Report Group</label>
+                        <select id="ddlReportGroup" name="ReportGroup" class="form-control" autocomplete="off" onchange="LoadDDLReportsMaster()"></select>
+                        <label class="font-normal">Reports</label>
+                        <select id="ddlReports" name="Report" autocomplete="off" class="form-control"></select>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12" style="display:none;">
+                <div class="fields form-group">
+                    <label>Period</label>
+                    <select id="ddlPeriod" name="Period" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="fields form-group">
+                    <label>Shift</label>
+                    <select id="ddlShift" name="Shift" autocomplete="off" class="form-control" onchange="InitializeDTPickers();">
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-7">
+                <div class="fields form-group">
+                    <label>From Date</label>
+                    <input id="dtpFrom" name="FromDate" autocomplete="off" type="text" placeholder="From Date" class="form-control" value="@FromDate">
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5" id="dvFromTime">
+                <div class="fields form-group">
+                    <label>From Time</label>
+                    <input id="dtpFromTime" autocomplete="off" name="FromTime" type="text" placeholder="From Time" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-7">
+                <div class="fields form-group">
+                    <label>To Date</label>
+                    <input id="dtpTo" name="ToDate" autocomplete="off" type="text" placeholder="To Date" class="form-control" value="@System.DateTime.Today.ToString("dd-MMM-yyyy")">
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5" id="dvToTime">
+                <div class="fields form-group">
+                    <label>To Time</label>
+                    <input id="dtpToTime" name="ToTime" autocomplete="off" type="text" placeholder="To Time" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="ViewReports(this);"><span class="glyphicon glyphicon-print"></span>VIEW PDF</a>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <label>&nbsp;</label>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-7">
+                <div class="fields form-group">
+                    <label>Download as</label>
+                    <select id="ddlFileType" name="FileType" autocomplete="off" class="form-control"></select>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5">
+                <div class="fields form-group">
+                    <label>&nbsp;</label>
+                    <a id="viewButton" role="button" class="btn btn-primary" style="margin : -12px; padding-left: 6px !important; padding-right:6px !important;" href="#" onclick="DownloadReport(this)"><span class="glyphicon glyphicon-download-alt"></span>DOWNLOAD</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="right-content-reports">
+        <div class="report-content" id="reportData"></div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Reports/Index.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#ChbxRpName').prop('checked', true);
+        $("#ddlReportGroup, #ddlReports").attr('disabled', 'disabled');
+        //$("#jqxInputReportName, #ddlReportGroup, #ddlReports").attr('disabled', 'disabled');
+        $('.report-selection-group fieldset legend input').on('click', function () {
+            var ele = $(this).attr('id');
+            if (ele === 'ChbxRpName') {
+                var elejqxInput = $("#ddlInputReportName");//$("#jqxInputReportName");
+                if (elejqxInput.is(':disabled')) {
+                    elejqxInput.removeAttr('disabled');
+                    $('#ddlReportGroup').val(0);
+                    $('#ddlReports').val(0);
+                    $("#ddlReportGroup").attr('disabled', 'disabled');
+                    $("#ddlReports").attr('disabled', 'disabled');
+                    $('#ChbxRpGroup').prop('checked', false);
+                } else {
+                    elejqxInput.attr('disabled', 'disabled');
+                }
+            } else {
+                var eleddlReportGroup = $("#ddlReportGroup");
+                var eleddlReports = $("#ddlReports");
+
+                if (eleddlReportGroup.is(':disabled') && eleddlReports.is(':disabled')) {
+                    eleddlReportGroup.removeAttr('disabled');
+                    eleddlReports.removeAttr('disabled');
+                    $('#ddlInputReportName').select2('val', '0');
+                    //$('#ddlInputReportName').val('');
+                    $("#ddlInputReportName").attr('disabled', 'disabled');
+                    $('#ChbxRpName').prop('checked', false);
+                } else {
+                    eleddlReportGroup.attr('disabled', 'disabled');
+                    eleddlReports.attr('disabled', 'disabled');
+                }
+            }
+        })
+
+    });
+</script>

@@ -1,0 +1,123 @@
+﻿@using TOAST.Data.Model;
+@using System.Drawing;
+@model List<TOAST.Data.Model.tblLoadingPointMaster>
+@{
+    ViewBag.Title = "Plant View - Gantry View";
+    Layout = null;
+}
+
+<div class="pump-view-container">
+    <div class="heading-container col-xs-12 no-padding">
+        <div class="col-xs-6 no-padding">
+            <h1>GANTRY OVERVIEW</h1>
+        </div>
+        <div class="col-xs-6 no-padding">
+            <div class="heading-right-container">
+                <label>GO : </label>
+                <select id='ddlBayView' onchange="ChangeGantryView()">
+                    <option data-id="1" value="BAY1">Bay 1</option>
+                    <option data-id="2" value="BAY1">Bay 2</option>
+                    <option data-id="3" value="BAY1">Bay 3</option>
+                    <option data-id="4" value="BAY1">Bay 4</option>
+                    <option data-id="5" value="BAY1">Bay 5</option>
+                    <option data-id="6" value="BAY1">Bay 6</option>
+                    <option data-id="7" value="BAY1">Bay 7</option>
+                    <option data-id="8" value="BAY1">Bay 8</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="gantry-wrapper col-xs-12">
+            <div class="slider-container">
+                @foreach (int Bay in Model.Select(x => (x.BayID ?? 0)).Distinct().ToList())
+                {
+                    string bayNo = "BAY" + Bay.ToString();
+                    string LPNo = "LP" + Bay.ToString();
+                    string Prodcolor = "ffffff";
+                    if(Model.Where(x=>(x.BayID??0) == Bay).FirstOrDefault().tblLoadingPointProducts.Where(x=>x.LoadingPointNo == Bay).FirstOrDefault() !=null)
+                    {
+                        Prodcolor = Model.Where(x => (x.BayID ?? 0) == Bay).FirstOrDefault().tblLoadingPointProducts.Where(x => x.LoadingPointNo == Bay).FirstOrDefault().tblProduct.ProductColor;    
+                    }
+                    
+                    Color MyColor = Color.White;
+
+                    <div class="gantry-block">
+                        <div class="truck-header">
+                            <span>@(Bay.ToString("0#"))</span>
+                            <div class="lamp GREEN_LAMP_@bayNo"></div>
+                        </div>
+                        <div class="truck-bay">
+                            <div class="col-xs-1 no-padding">
+                                &nbsp;
+                            </div>
+                            <div class="col-xs-9 truck-bay-bg" id="dvTruckDetails_@bayNo">
+                                <div class="truck-num-plate">
+                                <span class="TRUCK_NO_@bayNo"></span>
+                                </div>
+                            </div>
+                            <div class="col-xs-2 truck-fill no-padding">
+                                <span class="fill-percentage-fill" style="background-color:@Prodcolor;">
+                                    <span class="fill-percentage-txt percentage" data-id="@bayNo"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="truck-detail">
+                            <table class="tblGantry table table-bordered table-striped dataTable">
+                                <tbody>
+                                    <tr>
+                                        <td class="lbl">Comp.</td>
+                                        <td class="val"><span class="CURRENT_COMP_@bayNo"></span>/<span class="NO_OF_COMP_@bayNo"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl">Product</td>
+                                        <td class="val PRODUCT_NAME_@bayNo" style="color:@Prodcolor; font-weight:600;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl">Preset</td>
+                                        <td class="val QTY_PR_@bayNo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl">Delivered</td>
+                                        <td class="val">
+                                            <span class="QTY_BP_@bayNo"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl">Accumulated</td>
+                                        <td class="val QTY_ACC_@bayNo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl">MFM Flow</td>
+                                        <td class="val MFM_MASSFLOW_@LPNo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl">CardNo</td>
+                                        <td class="val spnCardNo CARD_NO_@bayNo" data-id="@bayNo"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/MobilePageJS/PlantView/GantryView/Index.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // slider
+        if ($('.slider-container').length > 0) {
+            $('.slider-container').slick({
+                dots: true,
+                easing: 'linear',
+                mobileFirst: true,
+                speed: 300
+            });
+        }
+    });
+</script>

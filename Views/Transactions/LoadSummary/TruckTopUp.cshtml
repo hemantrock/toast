@@ -1,0 +1,179 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblLoadMaster
+@{
+    ViewBag.Title = "Invoice Manual Post";
+    Layout = null;
+    string strRemarks = Model.tblTruckMaster.TruckNumber 
+        + " at Bay:" + String.Join(",", Model.tblLoadDetails.Select(x => x.tblBaysMaster.BayNum).Distinct())
+        + ". Qty Short.";
+}
+<style>
+    table.dataTable tbody tr td input[type="text"], input[type="number"] {
+        font-family: Verdana;
+        font-size: 12px;
+    }
+</style>
+<div class="modal-dialog" style="width:600px">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myModalLabel">Manual FAN | Generate TopUp</h3>
+        </div>
+        <div class="modal-body" id="myModalBody">
+            <div class="col-lg-12 col-md-12 form-container" style="padding: 0em 0.5em">
+                <form id="FormBU" role="form" class="form-fields">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="fields form-group">
+                                <label>Truck Number</label>
+                                <input type="text" id="txtTruck" name="TruckNumber" value="@Model.tblTruckMaster.TruckNumber" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="fields form-group">
+                                <label>Planned TopUp Vehicle</label>
+                                <input type="text" id="txtTruck" name="TruckNumber" value="@Model.Remarks" class="form-control" disabled />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4" style="padding: 0;">
+                            <div class="fields form-group">
+                                <label>Bay Assignment For TopUp</label>
+                                <select class="form-control" id="ddlBayAssignOptns" name="BayAssignOptns">
+                                    <option value="0" selected>---Select---</option>
+                                    <option value="BAY_OLD">Same Bay as Existing</option>
+                                    <option value="BAY_NEW">Auto-Assign New Bay</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="fields form-group">
+                                <label>Remarks</label>
+                                <input type="text" id="txtRemarks" name="Remarks" autocomplete="off" class="form-control" value="@strRemarks" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table id="tblLoadDetails" class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">Select</th>
+                                        <th style="text-align:center">Chamber</th>
+                                        <th style="text-align:center">Bay</th>
+                                        <th style="text-align:center">Product</th>
+                                        <th style="text-align:center">Preset</th>
+                                        <th style="text-align:center">Filled</th>
+                                        <th style="text-align:center">TopUp Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (tblLoadDetail itm in Model.tblLoadDetails)
+                                        {
+                                            double DeliveredQty = (itm.BaseProdQtyGrs ?? 0) + (itm.EthBlendingQtyGrs ?? 0) + (itm.PrevBaseQty ?? 0) + (itm.PrevBlendQty ?? 0) + (itm.TopUpQty ?? 0) - (itm.DecantedQty ?? 0); // + (itm.TopUpQty ?? 0) - (itm.DecantedQty ?? 0);
+                                            <tr id="@itm.CompNo">
+                                                <td>
+                                                    <input name="chkSelect" type="checkbox" id="@itm.CompNo" lpid="@itm.LoadingPointNo" onchange="EnableCols(this,'@itm.CompNo')" />
+                                                </td>
+                                                <td>@itm.CompNo</td>
+                                                <td>@itm.tblBaysMaster.BayNum</td>
+                                                <td id="txtProdID_@itm.CompNo" ProdID="@itm.ProductID">@itm.tblProduct.ProductName</td>
+                                                <td id="txtPreset_@itm.CompNo">@itm.PresetQty</td>
+                                                <td id="txtFilled_@(itm.CompNo)">@DeliveredQty</td>
+                                                <td><input name="TopUpQty" type="number" step="0.1" min="0" max="@(itm.PresetQty)" autocomplete="off" id="txtTopUpQty_@(itm.CompNo)" placeholder="" class="form-control" value="0" onkeypress="return isNumber(event)" disabled /></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnGenerateTopUp" onclick="GenerateTopUp('@Model.LoadID')"><span class="glyphicon glyphicon-ok-sign"></span>Generate TopUp</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>Cancel</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#tblLoadDetails').dataTable({
+            "iDisplayLength": iGblNoRows - 7,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bPaginate": false,
+            "bStateSave": false,
+            "bInfo": true,
+            "bSort": false,
+            "aoColumns":
+                [
+                    { sWidth: "4%", 'sClass': 'text-center' },   //Select
+                    { sWidth: "10%", 'sClass': 'text-center' },  //ChamberNo
+                    { sWidth: "10%", 'sClass': 'text-center' },  //BayNo
+                    { sWidth: "25%" },                           //ProductName
+                    { sWidth: "12%" },                           //PresetQty
+                    { sWidth: "12%" },                           //Qty
+                    { sWidth: "19%" },                           //TopUp
+                ],
+            "bAutoWidth": false,
+        });
+    });
+
+    function GenerateTopUp(LoadID) {
+
+        var BayAssgn = $('#ddlBayAssignOptns').val(); var err = false;
+        if (BayAssgn == 0) { alertDismissable('danger', 'Please select the Bay Assignment Option'); return; }
+
+        var objLoadDetails = [];
+
+        $("input[name='chkSelect']:checked").each(function () {
+            var ChamberNo = $(this).attr('id');
+            var LPNo = $(this).attr('lpid');
+            var TopUpQty = Number($('#txtTopUpQty_' + ChamberNo).val());
+            if (TopUpQty <= 0) { alertDismissable('danger', 'TopUp Qty cannot be 0 for Chamber:' + ChamberNo); err = true; return; }
+            var obj = {
+                'LoadID': LoadID,
+                'CompNo': ChamberNo,
+                'LoadingPointNo': LPNo, 
+                'ProductID': Number($('#txtProdID_' + ChamberNo).attr('ProdID')),
+                'PresetQty': Number($('#txtPreset_' + ChamberNo).text()),
+                'TopUpQty': Number($('#txtTopUpQty_' + ChamberNo).val()),
+            };
+            objLoadDetails.push(obj);
+        });
+        if (err == true) { return;}
+        if (objLoadDetails.length == 0) { alertDismissable('danger', 'Please select ateast 1 Compartment for TopUp'); return; }
+
+        $.ajax({
+            url: "/LoadSummary/TruckTopUpDo",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ objLoadDetails: objLoadDetails, strComments: $('#txtRemarks').val(), BayAssignOptn: $('#ddlBayAssignOptns').val() }),
+            cache: false,
+            success: function (result) {
+                alertDismissable(result.strType, result.strMessage);
+                if (result.blnStatus == true) {
+                    $('#EmptyModal').modal('hide');
+                    OpenLoadSummaryMenu();
+                }
+            }
+        });
+        ret = true;
+        return ret;
+    }
+
+
+    function EnableCols(ctrl, CompNo) {
+        if ($(ctrl).is(':checked')) {
+            $('#txtTopUpQty_' + CompNo).removeAttr('disabled');
+        }
+        else {
+            $('#txtTopUpQty_' + CompNo).attr('disabled', 'disabled');
+        }
+    }
+
+</script>

@@ -1,0 +1,78 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblBaysMaster
+@{
+    ViewBag.Title = "Edit Bays";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit Bays Master
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Gantry No.</label>
+                    <input type="text" name="GantryNo" placeholder="Enter Gantry No (1-9)" id="txtGantryNo" value="@Model.GantryNo" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Bay Name</label>
+                    <input type="text" class="form-control" id="txtBayName" name="BayName" value="@Model.BayName">
+                    <input type="hidden" value="@Model.BayID" id="txtBayNo" />
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="fields form-group">
+                    <label>Bay Priority</label>
+                    <input type="text" class="form-control" id="txtBayPriority" name="BayPriority" value="@Model.BayPriority" readonly>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row" style="margin-left: 30px;">
+        <div class="col-lg-2 col-md-2 col-sm-2 checkbox-field">
+            <div class="input-group fields form-group">
+                <span class="input-group-addon">
+                    <input id="chkEarthBypass" name="EarthBypass" type="checkbox" checked="@(Model.IsEarthingBypassed)" class="form-control">
+                </span>
+                <input type="text" class="form-control" value="Earth Check Bypass" disabled>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 checkbox-field">
+            <div class="input-group fields form-group">
+                <span class="input-group-addon">
+                    <input id="chkOVSPBypass" name="OVSPBypass" type="checkbox" checked="@(Model.IsOverspillBypassed)" class="form-control">
+                </span>
+                <input type="text" class="form-control" value="Overspill Check Bypass" disabled>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-2 col-sm-2 checkbox-field">
+            <div class="input-group fields form-group">
+                <span class="input-group-addon">
+                    <input id="chkVRUBypass" name="VRUBypass" type="checkbox" checked="@(Model.IsVRUArmBypassed)" class="form-control">
+                </span>
+                <input type="text" class="form-control" value="VRU Arm Bypass" disabled>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-2 col-sm-2 checkbox-field">
+            <div class="input-group fields form-group">
+                <span class="input-group-addon">
+                    <input id="chkBPBSBypass" name="BPBSBypass" type="checkbox" checked="@(Model.IsBPBSBypassed)" class="form-control">
+                </span>
+                <input type="text" class="form-control" value="Truck BPBS Check Bypass" disabled>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateBaysMaster();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/BaysMaster/BaysMaster.js"></script>

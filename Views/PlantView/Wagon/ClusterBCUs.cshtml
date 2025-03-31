@@ -1,0 +1,55 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Shared;
+@model List<tblClusterMaster>
+@{
+    List<tblWLoadRakeDetail> lstRakeDet = ViewBag.SpurRakes;
+}
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        @{
+            string SpurNo = String.Join(",", Model.Select(x => ((int)x.tblSpurMaster.SpurNo).ToString("D2")).Distinct());
+            <h3 class="grid-headerplant" style="color:black">Cluster / Battery View : Spur-@SpurNo</h3>
+        }
+    </div>
+</div>
+
+<div class="row seven-cols">
+    @{
+        <div class="col-lg-12">
+            <div class="tab-wrapper w-100">
+                <div class="panel with-nav-tabs panel-default">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                            @{
+                                foreach (tblClusterMaster oCls in Model)
+                                {
+                                    string strClsName = oCls.ClusterName; string strPageName = String.Join(",", oCls.tblWagonBCUMasters.Select(x => x.PageName).Distinct());
+                                    <li><a href="#@(strClsName.Replace(" ","").Replace("+","-"))" data-toggle="tab" style="font-size: 21px;" data-clid="@oCls.UniqueID" data-uid="@(strClsName.Replace("-", "_"))" data-pagename="@strPageName">@(strClsName.Replace(" ", "-"))</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            @{
+                                foreach (tblClusterMaster oCls in Model)
+                                {
+                                    <div class="tab-pane fade" id="@(oCls.ClusterName.Replace(" ", "").Replace("+", "-"))">
+                                        
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script src="~/Scripts/PageJS/PlantView/Wagon/ClusterBCUs.js"></script>

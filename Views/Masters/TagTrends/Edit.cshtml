@@ -1,0 +1,65 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblTagTrendMaster
+@{
+    ViewBag.Title = "Edit Tag Master";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Edit TAG
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="frmTags" role="form" class="form-fields">
+            <input id="hdnIdKey" type="hidden" value="@Model.TagName">
+            <input id="hdnIdTrendName" type="hidden" value="@Model.TrendName">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TAG NAME</label>
+                        <select class="form-control" id="ddlTagName" name="TagName"></select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>TREND NAME</label>
+                        <input id="txtTrendName" name="TrendName" type="text" placeholder="Trend Name" class="form-control" value="@Model.TrendName">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>SCAN TIME</label>
+                        <input id="txtScanTime" name="ScanTime" type="text" placeholder="Scan Time" class="form-control" value="@Model.ScanTime">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div class="fields form-group">
+                        <label>DURATION</label>
+                        <select class="form-control" id="ddlDuration" name="Duration"></select>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>COLOR </label>
+                        <input id="txtColor" name="Color" type="color" placeholder="Select Color" class="form-control" value="#@Model.Color">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateTagTrends();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/TagTrends/TagTrends.js"></script>
+<script>
+    $(document).ready(function () {
+        LoadDDLTags($('#ddlTagName'), '@Model.TagName' , function () { $('#ddlTagName').chosen({ search_contains: true }); });
+        LoadDDLDuration($('#ddlDuration'), '@Model.DurationID');
+    });
+</script>

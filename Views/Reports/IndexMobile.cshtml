@@ -1,0 +1,80 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblTTQueue>
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    string FromDate = System.DateTime.Today.AddDays(-1).ToString("dd-MMM-yyyy");
+    if (System.DateTime.Now.Hour >= 17)
+    {
+        FromDate = @System.DateTime.Today.ToString("dd-MMM-yyyy");
+    }
+}
+<style>
+    body {
+        margin-bottom: 10px;
+    }
+</style>
+<div class="col-xs-12">
+    <div class="row">
+        <h2>REPORT</h2>
+    </div>
+
+    <div class="row">
+        <div class="left-nav-reports">
+            <form id="formReports" role="form" class="form-fields">
+                <div class="col-lg-12 col-md-12 col-sm-12 report-selection-group">
+                    <div id="ReportByName" class="report-group-block">
+                        <input id="jqxInput" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12" style="display:none;">
+                    <div class="fields form-group">
+                        <label>Period</label>
+                        <select id="ddlPeriod" name="Period" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="fields form-group">
+                        <label>Shift</label>
+                        <select id="ddlShift" name="Shift" class="form-control" onchange="InitializeDTPickers();"></select>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="fields form-group">
+                        <label>From Date</label>
+                        <input id="dtpFrom" name="FromDate" type="text" placeholder="From Date" class="form-control" value="@System.DateTime.Today.AddDays(-7).ToString("dd-MMM-yyyy")" readonly>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="fields form-group">
+                        <label>To Date</label>
+                        <input id="dtpTo" name="ToDate" type="text" placeholder="To Date" class="form-control" value="@System.DateTime.Today.ToString("dd-MMM-yyyy")" readonly>
+                    </div>
+                </div>
+                <div class="col-xs-6" id="dvFromTime">
+                    <div class="fields form-group">
+                        <label>From Time</label>
+                        <input id="dtpFromTime" name="FromTime" type="text" placeholder="From Time" class="form-control" disabled readonly>
+                    </div>
+                </div>
+
+                <div class="col-xs-6" id="dvToTime">
+                    <div class="fields form-group">
+                        <label>To Time</label>
+                        <input id="dtpToTime" name="ToTime" type="text" placeholder="To Time" class="form-control" disabled readonly>
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <label>Download as</label>
+                </div>
+                <div class="col-xs-10">
+                    <select id="ddlFileType" name="FileType" class="form-control"></select>
+                    <a id="viewButton" role="button" class="btn btn-primary" href="#" onclick="DownloadReport(this)">Download <span class="glyphicon glyphicon-download-alt download-icon"></span></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Reports/Index.js"></script>

@@ -1,0 +1,36 @@
+﻿@using TOAST.Business;
+@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Plant View - Bay View";
+    Layout = null;
+    List<tblBaysMaster> Bays = clsConfig.BayViewList;
+    //int Cols = (Bays.Count()/5);
+    int Cols = Bays.Select(x=>x.GantryNo).Distinct().Count();
+}
+
+<style>
+    .waitpage {
+        display: none !important;
+    }
+</style>
+
+
+
+<form id="frmBayViewHMI" class="form-fields" role="form">
+    <div class="row col-lg-offset-0 col-lg-3 bay-select-filter cnt-@(Cols)">
+        <label>SELECT BAY : </label>
+        <select id='ddlBayView' onchange="ChangeBayView()">
+            @for (int i = 0; i < Bays.Count; i++)
+            {
+                <option pagename="BayView@(Bays[i].BayID.ToString("00"))" value="@Bays[i].BayID">@Bays[i].BayName</option>
+            }
+        </select>
+        <div class="refresh-btn-wrapper">
+            <div class="push-btn-01 center-align-h" href="javascript:void(0);"  data-opcvalue="" title="Refresh Page" onclick="ChangeBayView()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></div>
+        </div>
+    </div>
+    <div id="dvBayView">
+
+    </div>
+</form>
+<script src="~/Scripts/PageJS/PlantView/BayView/Index.js"></script>

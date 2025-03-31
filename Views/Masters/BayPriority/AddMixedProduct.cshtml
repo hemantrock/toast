@@ -1,0 +1,77 @@
+﻿@using TOAST.Data.Model;
+@{
+    ViewBag.Title = "Mixed Product Priority";
+    Layout = null;
+}
+
+<h2 class="headingPage">
+    Mixed Product Priority
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="fields form-group">
+                        <label>PRODUCT</label>
+                        <select class="form-control" id="ddlProduct" name="Product Name" onchange="LoadMixedProductTable()"></select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row" id="dvMixedProduct">
+    <div class="row button-bar">
+        <div class="col-lg-12">           
+            <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function LoadMixedProductTable() {
+        var ProductID = $('#ddlProduct option:selected').val();
+
+        $.ajax({
+            type: "GET",
+            url: "/BayPriority/GetMixedProductTable?ProductID=" + ProductID,
+            UpdateTargetId: "dvMixedProduct",
+            cache: false,
+            success: function (result) {
+                $("#dvMixedProduct").html(result);
+            }
+        });
+    }
+
+    function LoadMixedProduct() {
+        var ctrl = $('#ddlProduct');
+        $.ajax({
+            url: "/BayPriority/GetMixedProducts",
+            type: "GET",
+            datatype: "json",
+            cache: false,
+            success: function (result) {
+                ctrl.html('');
+                var r = "<option value=0>Select Product</option>";
+                ctrl.append(r);
+                $.each(result, function (i, objProduct) {
+                    r = "<option value='" + objProduct.ProductID + "'>" + objProduct.ProductName + "</option>";
+                    ctrl.append(r);
+                });
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        LoadMixedProduct();
+
+        $('#confirmOK').click(function () {
+            $(".modal-backdrop").slideUp('slow');
+            OpenBayPriorityMenu();
+            $('#cancelModal').modal('hide');
+        });
+    });
+
+</script>

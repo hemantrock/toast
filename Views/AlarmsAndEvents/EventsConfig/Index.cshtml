@@ -1,0 +1,50 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@model List<TOAST.Data.Model.tblTagEvent>
+@{
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddTagEvent();">
+            <span class="glyphicon glyphicon-plus"></span>Add a New Tag Event
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Tag Events Master</h3>
+        <table id="tblTagEvent" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th align="center">Tag Name</th>
+                    <th>Limiter Name</th>
+                    <th>Operator</th>
+                    <th>Compare Value</th>
+                    <th>Tag To Notify</th>
+                    <th>Tag Value</th>
+                    <th>EventID</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblTagEvent itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.UniqueID);">
+                        <td style="display:none;">@itm.UniqueID</td>
+                        <td>@itm.TagName</td>
+                        <td>@itm.LimiterName</td>
+                        <td>@itm.Operator</td>
+                        <td>@itm.CompareValue</td>
+                        <td>@itm.EventTagToNotify</td>
+                        <td>@itm.EventTagValue</td>
+                        <td>@itm.EventID</td>
+                        <td class="text-center"><span id="spanDelete_@itm.UniqueID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.UniqueID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/AlarmsAndEvents/EventsConfig/Index.js"></script>

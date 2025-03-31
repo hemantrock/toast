@@ -1,0 +1,639 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+<style>
+    .toggle-wrapper .toggle.btn {
+        width: 50px !important;
+        height: 25px !important;
+        min-width: 50px;
+        min-height: 25px;
+    }
+    .toggle-wrapper .toggle-group label {
+        top: -4px;
+    }
+    .toggle-wrapper .btn.btn-primary {
+        left: -4px;
+    }
+</style>
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">VALVE - B51</h3>
+        </div>
+        <div class="col-lg-6" align="center">
+            <h3 class="grid-headerplant" style="color:black">VALVE - B52</h3>
+        </div>
+    </div>
+    <div class="security-system-container m-t-20">
+        <div class="row">
+            <div class="col-lg-3" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-511</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Existing Valve',this, 'UV511_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV511_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Delay time open command',this, 'UV511_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Delay time close command',this, 'UV511_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Time close contact disappear',this, 'UV511_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Open switch appears time',this, 'UV511_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Time open contact disappear',this, 'UV511_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Close switch appears time',this, 'UV511_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV511_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV511 Filtering time fault limit switch',this, 'UV511_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-512</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Existing Valve',this, 'UV512_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV512_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Delay time open command',this, 'UV512_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Delay time close command',this, 'UV512_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Time close contact disappear',this, 'UV512_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Open switch appears time',this, 'UV512_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Time open contact disappear',this, 'UV512_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Close switch appears time',this, 'UV512_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV512_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV512 Filtering time fault limit switch',this, 'UV512_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">EV-515</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV515 Existing',this, 'UV515_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV515_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Start Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV515_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV515 Delay time start command',this, 'UV515_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Stop Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV515_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV515 Delay time stop command',this, 'UV515_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-3" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-513</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Existing Valve',this, 'UV513_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV513_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Delay time open command',this, 'UV513_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Delay time close command',this, 'UV513_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Time close contact disappear',this, 'UV513_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Open switch appears time',this, 'UV513_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Time open contact disappear',this, 'UV513_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Close switch appears time',this, 'UV513_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV513_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV513 Filtering time fault limit switch',this, 'UV513_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-514</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Existing Valve',this, 'UV514_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV514_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Delay time open command',this, 'UV514_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Delay time close command',this, 'UV514_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Time close contact disappear',this, 'UV514_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Open switch appears time',this, 'UV514_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Time open contact disappear',this, 'UV514_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Close switch appears time',this, 'UV514_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV514_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV514 Filtering time fault limit switch',this, 'UV514_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-3" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-521</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Existing Valve',this, 'UV521_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV521_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Delay time open command',this, 'UV521_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Delay time close command',this, 'UV521_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Time close contact disappear',this, 'UV521_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Open switch appears time',this, 'UV521_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Time open contact disappear',this, 'UV521_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Close switch appears time',this, 'UV521_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV521_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV521 Filtering time fault limit switch',this, 'UV521_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-522</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Existing Valve',this, 'UV522_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV522_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Delay time open command',this, 'UV522_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Delay time close command',this, 'UV522_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Time close contact disappear',this, 'UV522_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Open switch appears time',this, 'UV522_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Time open contact disappear',this, 'UV522_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Close switch appears time',this, 'UV522_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV522_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV522 Filtering time fault limit switch',this, 'UV522_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">EV-525</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV525 Existing',this, 'UV525_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV525_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Start Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV525_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV525 Delay time start command',this, 'UV525_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Stop Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV525_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV525 Delay time stop command',this, 'UV525_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-3" style="padding-left:5px; padding-right:5px">
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-523</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Existing Valve',this, 'UV523_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV523_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Delay time open command',this, 'UV523_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Delay time close command',this, 'UV523_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Time close contact disappear',this, 'UV523_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Open switch appears time',this, 'UV523_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Time open contact disappear',this, 'UV523_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Close switch appears time',this, 'UV523_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV523_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV523 Filtering time fault limit switch',this, 'UV523_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-striped app-tbl m-t-10">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="3">UV-524</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold">Existing Valve</td>
+                            <td width="20%">
+                                <div class="toggle-wrapper" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Existing Valve',this, 'UV524_EX', 'INPUT')">
+                                    <input id="toggle-tasdol-mode" class="on-off-btn UV524_EX" data-on="Yes" data-off="No" checked="" type="checkbox" data-width="80" disabled="" style="display: none;">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Open command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TRO" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Delay time open command',this, 'UV524_TRO', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Delay Time Close Command</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TRF" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Delay time close command',this, 'UV524_TRF', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Close Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TFDL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Time close contact disappear',this, 'UV524_TFDL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Open Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TFAH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Open switch appears time',this, 'UV524_TFAH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Time Open Contact Disappear</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TFDH" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Time open contact disappear',this, 'UV524_TFDH', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Close Switch Appears Time</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TFAL" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Close switch appears time',this, 'UV524_TFAL', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold">Filtering Time Fault Limit Switch</td>
+                            <td width="20%">
+                                <input type="number" step="0.01" min=0 readonly class="editable-input UV524_TFS" ondblclick="this.readOnly='';" style="border: 0px;width: 100%;" value="">
+                                <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update SetPoint: UV524 Filtering time fault limit switch',this, 'UV524_TFS', 'INPUT')" aria-hidden="true" style="position: absolute;top: 7px;right: 7px;"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        opcPageName = "VRS_SetPoints";
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+        createTooltip();
+    });
+</script>
+@*<script src="~/Scripts/PageJS/PlantView/SetPoints/Index.js"></script>*@

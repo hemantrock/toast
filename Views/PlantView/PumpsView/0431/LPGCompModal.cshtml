@@ -1,0 +1,73 @@
+﻿@using TOAST.Shared;
+@using TOAST.Data.Model;
+
+@{
+    ViewBag.Title = "Plant View - SOV Details View";
+    Layout = null;
+    string DeviceName = ViewBag.Name;
+    string DeviceTagPrefix = ViewBag.TagPrefix;
+    string DevPageName = ViewBag.DevPageName;
+    string DevDesc = ViewBag.DevDesc;
+
+    string DevType = "gen-comp";
+}
+<div class="modal-dialog pump-view-modal" style="width: 560px;">
+    <div class="modal-dialog" style="width: 550px;">
+        <div class="modal-content">
+            <div class="modal-header pump-househeader-popup-header">
+                <div><h3 class="modal-title" id="">@DeviceName</h3></div>
+                <div style="border-right: 0px;"><h3 class="modal-title" id="">@DevDesc</h3></div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            </div>
+            <div class="modal-body" id="myMOVModalBody" style="padding: 5px;">
+                <div class="pump-househeader-popup">
+                    <div class="pump-househeader-feedback-row">
+                        <a class="push-btn-02 pump-start-btn @(DeviceTagPrefix+"_START")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(DeviceName)',this, '@(DeviceTagPrefix+"_START")', 'GENERIC' , '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )" data-opcvalue="">START</a>
+                        <a class="push-btn-02 pump-stop-btn @(DeviceTagPrefix+"_STOP")" href="javascript:void(0);" onclick="SetProcessValue('Start/Stop Pump','Pump: @(DeviceName)',this, '@(DeviceTagPrefix+"_STOP")', 'GENERIC' , '@Session[clsConstants.UserID]' , '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' )" data-opcvalue="">STOP</a>
+                    </div>
+                    <div class="pump-househeader-info-container">
+                        <div class="col-lg-6">
+                            <div class="pump-view-pump @(DevType)" style="padding: 0px 0px;">
+                                <span title="" data-tooltip-attr="LOCREM" class="tooltips  @(DevType)-device control-icon @(DeviceTagPrefix+"_LOCREM")"></span>
+                                <div title="Pump Off" data-tooltip-attr="PMP*" class="tooltips @DevType @(DeviceTagPrefix+"_RUN_IMG") @(DeviceTagPrefix+"_TRIP_IMG") @(DeviceTagPrefix+"_FAIL_IMG")" style="position: relative;margin: auto;">
+                                    <span class="maintainence-mode-icon @(DeviceTagPrefix+"_MAINT")"></span>
+                                </div>
+                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(DeviceTagPrefix+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Compressor: @DeviceName', '@(DeviceTagPrefix+"_AUTOMAN")', '@(DeviceTagPrefix+"_LOCREM")' , 'TAG_AUTOMAN' ,'@DevPageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]' , '@Session[clsConstants.UserName]' ); cancelBubble(event);"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 no-padd">
+                            <table class="detail-tbl table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Run Feedback</span></td>
+                                        <td class="detail-tbl-val" colspan="2">
+                                            <span class="circle-cont">
+                                                <span class="pump-househeader-info-val @(DeviceTagPrefix+"_RUN_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-tbl-lbl"><span class="">Trip Fdbk</span></td>
+                                        <td class="detail-tbl-val" colspan="2">
+                                            <span class="circle-cont">
+                                                <span class="pump-househeader-info-val @(DeviceTagPrefix+"_TRIP_FB")"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    createTooltip();
+
+</script>
+
+

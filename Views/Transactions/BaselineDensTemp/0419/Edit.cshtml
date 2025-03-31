@@ -1,0 +1,51 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblBaseDensityTemp
+@{
+    ViewBag.Title = "Edit Bays";
+    Layout = null;
+    List<tblProduct> lstProd = ViewBag.Products;
+}
+
+<h2 class="headingPage">
+    Edit Baseline Temperature and Density
+</h2>
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <input id="hdnUniqueIDKey" type="hidden" value="@Model.UniqueID">
+    </div>
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Baseline DateTime</label>
+                    <input type="text" class="form-control" id="dtpBaselineDT" value="@Model.BaselineDT" name="BaselineDT" disabled/>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>PRODUCT</label>
+                    <select class="form-control" id="ddlProduct" name="Product" disabled>
+                        <option value="0" selected="selected">Please Select Product</option>
+                        @foreach (tblProduct prod in lstProd)
+                        {
+                            <option value="@prod.ProductID" @((prod.ProductID == Model.ProductID) ? "selected" : "")>@prod.ProductName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="fields form-group">
+                    <label>Density 15°C (kg/m³)</label>
+                    <input type="text" class="form-control" value="@Model.Density" id="txtDensity" name="Density" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateBaseDensTemp();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Transactions/BaseslineDensTemp/DensTemp.js"></script>

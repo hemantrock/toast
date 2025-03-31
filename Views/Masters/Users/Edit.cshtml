@@ -1,0 +1,168 @@
+﻿@using TOAST.Data.Model;
+@model TOAST.Data.Model.tblUser
+@{
+    ViewBag.Title = "Edit User";
+    Layout = null;
+    List<tblMenuConfig> ddlMenuOptions = ViewBag.ddlMenuOptions;
+}
+
+<h2 class="headingPage">
+    Edit User
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4" style="display:none;">
+                    <input id="hdnIdKey" type="hidden" value="@Model.UserID">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>LoginID</label>
+                        <input type="text" name="LoginID" id="txtLoginID" placeholder="Login-Id" value="@Model.LoginID" class="form-control" disabled>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>EmpId</label>
+                        <input id="txtEmpId" name="EmpId" type="text" placeholder="Emp-Id" value="@Model.EmpID" class="form-control" disabled>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>FirstName</label>
+                        <input id="txtUserName" name="FirstName" type="text" placeholder="User Name" class="form-control" value="@Model.UserName">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>MiddleName</label>
+                        <input id="txtMiddleName" name="MiddleName" type="text" placeholder="Middle Name" value="@Model.MiddleName" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>Surname</label>
+                        <input id="txtSurname" name="Surname" type="text" placeholder="Surname" value="@Model.Surname" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>User Role</label>
+                        <select class="form-control" id="ddlDesignation" name="Designation"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>Company</label>
+                        <input id="txtCompany" name="Company" type="text" placeholder="Company" value="@Model.Company" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>PhoneNumber</label>
+                        <input id="txtPhoneNumber" name="PhoneNumber" type="text" placeholder="Phone Number" value="@Model.PhoneNumber" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="fields form-group">
+                        <label>E-Mail</label>
+                        <input id="txtMailId" name="MailId" type="text" placeholder="Mail-Id" value="@Model.MailID" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 ">
+                    <div class="fields form-group">
+                        <label>CardNumber</label>
+                        <input id="txtCardID" name="CardNumber" type="text" placeholder="Card Number" value="@(Model.tblCard!=null?Model.tblCard.CardNumber.ToString():"")" data-key-value="@Model.CardID" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>AccountValidUpto</label>
+                        <input id="dtpAccountValidUpto" name="AccountValidUpto" type="text" placeholder="Account Valid Upto Date" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-3 checkbox-field">
+                    <div class="checkbox checkbox-align">
+                        <label>
+                            <input id="chkCurrentStatus" name="CurrentStatus" type="checkbox" @(Model.CurrentStatus == true ? "checked" : "") class="check">
+                            User Logged
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-3col-md-3 col-sm-3 checkbox-field">
+                    <div class="checkbox checkbox-align">
+                        <label>
+                            <input id="chkUserDisabled" name="UserDisable" type="checkbox" @(Model.Disabled == true ? "checked" : "") class="check">
+                            User Disabled
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-3col-md-3 col-sm-3 checkbox-field">
+                    <div class="checkbox checkbox-align">
+                        <label>
+                            <input id="chkUserArchive" name="UserArchive" type="checkbox" @(Model.Visible == false ? "checked" : "") class="check">
+                            Archive User (CANNOT UNDO)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-10 form-container" id="divReset">
+        <div class="text-left">
+            <a id="btnResetPassword" role="button" class="btn btn-primary" href="#" onclick="ShowPasswordDiv();"><span class="glyphicon glyphicon-refresh"></span>Reset Password</a>
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12 form-container" id="divPassword" style="display:none;">
+        <form id="formPassword" role="form" class="form-fields">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="fields form-group">
+                    <span class="checkbox">
+                        <label>
+                            <input type="checkbox" id="chEditLogin" />Change Login Password
+                        </label>
+                    </span>
+
+                    <input id="txtNewLoginPassword" name="ResetLoginPassword" type="password" placeholder="New Login password" value="" class="form-control" maxlength="30">
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="fields form-group">
+                    <span class="checkbox">
+                        <label>
+                            <input type="checkbox" id="chEditTxn" />Change Txn Password
+                        </label>
+                    </span>
+
+                    <input id="txtNewTxnPassword" name="ResetTxnPassword" type="password" placeholder="New Txn password" value="" class="form-control" maxlength="30">
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="fields form-group pad-top-21">
+                    <a id="btnSavePassword" role="button" class="btn btn-primary" href="#" onclick="ResetPassword(@Model.UserID);"><span class="glyphicon glyphicon-check"></span>Reset</a>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="UpdateUsers();"><span class="glyphicon glyphicon-floppy-saved"></span>UPDATE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/Users/Users.js"></script>
+<script>
+    $(document).ready(function () {
+        AutoComplete($("#txtCardID"), "Cards", "TruckMaster");
+        LoadDDLDesignation($('#ddlDesignation'),@Model.tblUserRoleMaster.UserRoleID);
+        $('.js-basic-single').select2();
+    });
+</script>

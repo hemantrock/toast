@@ -1,0 +1,622 @@
+﻿@using TOAST.Data.Model;
+@model List<tblDeviceMaster>
+@{
+    ViewBag.Title = "Plant View - UPS View";
+    Layout = null;
+    tblDeviceMaster oUPS01 = (Model.Where(x => x.DeviceName.Contains("UPS-MCR-01")).FirstOrDefault() ?? new tblDeviceMaster());
+    tblDeviceMaster oUPS02 = (Model.Where(x => x.DeviceName.Contains("UPS-MCR-02")).FirstOrDefault() ?? new tblDeviceMaster());
+    tblDeviceMaster oUPS03 = (Model.Where(x => x.DeviceName.Contains("UPS-WCR-01")).FirstOrDefault() ?? new tblDeviceMaster());
+    tblDeviceMaster oUPS04 = (Model.Where(x => x.DeviceName.Contains("UPS-WCR-02")).FirstOrDefault() ?? new tblDeviceMaster());
+    string pages = String.Join(",", Model.Select(x => x.PageName).Distinct());
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-headerplant" style="color:black">UPS View</h3>
+
+    </div>
+</div>
+<div class="row ups-status-container">
+    <div class="col-lg-12 m-t-20">
+        <div class="col-lg-2 no-padd-right">
+            <div class="ups-bg left Hitachi single">
+                <table class="detail-tbl">
+                    <thead>
+                        <tr><th style="background-color: #6e6d6b; color: #fff; font-size: 17px; text-align: center;" colspan="2">@oUPS01.DeviceName</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS01.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS01.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ups-bg right Hitachi single">
+                <table class="detail-tbl m-t-10">
+                    <thead>
+                        <tr><th style="background-color: #6e6d6b; color: #fff; font-size: 17px; text-align: center;" colspan="2">@oUPS02.DeviceName</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS02.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS02.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+        </div>
+        <div class="col-lg-4" style="padding-right: 0px; padding-left: 0px;">
+            <div class="col-lg-12" style="padding-right: 0px; padding-left: 0px;">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="9">UPS FAULTS&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;MAIN CONTROL ROOM</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 34%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 9%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right td-b-right" style="width: 9%">UPS-02</th>
+
+                            <th class="text-center" style="width: 30%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 9%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 9%">UPS-02</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Status of Maste/Slave">Master / Slave</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS01.TagPrefix+"_MASTER_SLAVE")"></span></span></td>
+                            <td class="td-b-right"><span class="circle-cont-sm"><span class="@(oUPS02.TagPrefix+"_MASTER_SLAVE")"></span></span></td>
+
+                            <td class="tooltips" title="Alternate FailOver Transfer to other UPS">Alternate FailOver</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS01.TagPrefix+"_ALT_FO")"></span></span></td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS02.TagPrefix+"_ALT_FO")"></span></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Status of Inveter Started">Inverter Started</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS01.TagPrefix+"_INV_STARTED")"></span></span></td>
+                            <td class="td-b-right"><span class="circle-cont-sm"><span class="@(oUPS02.TagPrefix+"_INV_STARTED")"></span></span></td>
+
+                            <td class="tooltips" title="UPS Temperature High">Temp High</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_TEMP_HIGH")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_TEMP_HIGH")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Static Switch is on ALT Supply">Load on Battery</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS01.TagPrefix+"_STATIC_SW_ALT")"></span></span></td>
+                            <td class="td-b-right"><span class="circle-cont-sm"><span class="@(oUPS02.TagPrefix+"_STATIC_SW_ALT")"></span></span></td>
+
+                            <td class="tooltips" title="Inverter Over Load">Inverter Over Load</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_OVR_LOAD")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_INV_OVR_LOAD")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Static Switch is Trip.">Inverter Static Switch Trip.</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_TRIP_STATIC_SW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INV_TRIP_STATIC_SW")"></span></td>
+
+                            <td class="tooltips" title="Inverter Over Voltage">Inverter Over Voltage</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_OVR_VOLT")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_INV_OVR_VOLT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter trip due to saturation">Inverter trip (Saturation)</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_TRIP_SAT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INV_TRIP_SAT")"></span></td>
+
+                            <td class="tooltips" title="Battery Discharge Indication">Battery Discharge</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BATTERY_DISCHAGE")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_BATTERY_DISCHAGE")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage is Low">Inverter Voltage Low</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INV_VOLT_LOW")"></span></td>
+
+                            <td class="tooltips" title="DC Under Voltage">DC Under Voltage</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_DC_UNDR_VOLT")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_DC_UNDR_VOLT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage is High">Inverter Voltage High</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INV_VOLT_HIGH")"></span></td>
+
+                            <td class="tooltips" title="DC Over Voltage">DC Over Voltage</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_DC_OVR_VOLT")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_DC_OVR_VOLT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Alternate Voltage is Low">Alternate Voltage Low</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_ALT_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_ALT_VOLT_LOW")"></span></td>
+
+                            <td class="tooltips" title="Battery Low Indication">Battery Low</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BATTERY_LOW")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_BATTERY_LOW")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Alternate Voltage is High">Alternate Voltage High</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_ALT_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_ALT_VOLT_HIGH")"></span></td>
+
+                            <td class="tooltips" title="Rectifier tripped due to Saturation">Rectifier Trip Saturation</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_RECT_TRIP_SAT")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_RECT_TRIP_SAT")"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-6" style="padding-right: 0px; padding-left: 0px;">
+            <div class="col-lg-12">
+                <table class="table-striped app-tbl" style="margin-top: 5px;">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="12">UPS DATA&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;MAIN CONTROL ROOM</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 18%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 7%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 7%">UPS-02</th>
+
+                            <th class="text-center" style="width: 18%">Parameter</th>
+                            <th class="text-center tooltips" style="width:7%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 7%">UPS-02</th>
+
+                            <th class="text-center" style="width: 22%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 7%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 7%">UPS-02</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Input Voltage RY">Input Volt RY</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_VOLT_RY")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_VOLT_RY")"></span></td>
+
+                            <td class="tooltips" title="Input Current RY">Input Curr. RY</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_CURR_RY")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_CURR_RY")"></span></td>
+
+                            <td class="tooltips" title="Battery Current Charging">Battery Current Charging</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BATT_CURR_CHARGING")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_BATT_CURR_CHARGING")"></span></td>
+
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Input Voltage BR">Input Volt. BR</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_VOLT_BR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_VOLT_BR")"></span></td>
+
+                            <td class="tooltips" title="Input Current BR">Input Curr. BR</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_CURR_BR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_CURR_BR")"></span></td>
+
+                            <td class="tooltips" title="Battery Discharging Current">Battery Discharge Current</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BATT_CURR_DISCHARGING")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_BATT_CURR_DISCHARGING")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Input Voltage YB">Input Volt YB</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_VOLT_YB")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_VOLT_YB")"></span></td>
+
+                            <td class="tooltips" title="Input Current YB">Input Curr. YB</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_CURR_YB")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_CURR_YB")"></span></td>
+
+                            <td class="tooltips" title="Total Alarms">Total Alarms</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_TOTAL_ALARMS")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_TOTAL_ALARMS")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Input Mains Frequency">Input Hz</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INP_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INP_FREQ")"></span></td>
+
+
+                            <td class="tooltips" title="Altenate Voltage">Alt. Volt</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_ALT_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_ALT_VOLT")"></span></td>
+
+                            <td class="tooltips" title="Last Alarm Address">Last Alarm Addr</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_LAST_ALRM_ADDR")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_LAST_ALRM_ADDR")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Output Current 1 Ph Phase-Neutral">Output Current</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_OUT_CURR_PN")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_OUT_CURR_PN")"></span></td>
+
+
+                            <td class="tooltips" title="Total Faults Log">Total Faults</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_TOTAL_FAULTS")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_TOTAL_FAULTS")"></span></td>
+
+                            <td class="tooltips" title="UI Alarm">UI Alarm</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_UI_ALARM")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_UI_ALARM")"></span></td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Output Frequency">Output Hz</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_OUT_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_OUT_FREQ")"></span></td>
+
+
+                            <td class="tooltips" title="Last Fault Address">Last Fault Addr</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_LAST_FLT_ADDR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_LAST_FLT_ADDR")"></span></td>
+
+                            <td class="tooltips" title="Discharge Cycles left">Discharge Cycles left</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_DISC_CYCLE_LEFT")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_DISC_CYCLE_LEFT")"></span></td>
+
+
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage">Inverter Voltage</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_INV_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_INV_VOLT")"></span></td>
+
+                            <td class="tooltips" title="Backup AH">Backup AH</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BACKUP_AH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_BACKUP_AH")"></span></td>
+
+
+                            <td class="tooltips" title="Discharge Time left">Discharge Time left</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_DISC_TIME_LEFT")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_DISC_TIME_LEFT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Battery Voltage">Battery Voltage</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BATTERY_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_BATTERY_VOLT")"></span></td>
+
+                            <td class="tooltips" title="Battery Time">Battery Time</td>
+                            <td><span class="@(oUPS01.TagPrefix+"_BATTERY_TIME")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS02.TagPrefix+"_BATTERY_TIME")"></span></td>
+
+                            <td class="tooltips" title=""></td>
+                            <td><span class="@(oUPS01.TagPrefix+"_")"></span></td>
+                            <td><span class="@(oUPS02.TagPrefix+"_")"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row ups-status-container">
+    <div class="col-lg-12 m-t-40">
+        <div class="col-lg-2 no-padd-right">
+            <div class="ups-bg left Hitachi single">
+                <table class="detail-tbl">
+                    <thead>
+                        <tr><th style="background-color: #6e6d6b; color: #fff; font-size: 17px; text-align: center;" colspan="2">@oUPS03.DeviceName</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS03.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS03.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ups-bg right Hitachi single">
+                <table class="detail-tbl m-t-20">
+                    <thead>
+                        <tr><th style="background-color: #6e6d6b; color: #fff; font-size: 17px; text-align: center;" colspan="2">@oUPS04.DeviceName</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Primary Connection">Pri. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS04.TagPrefix +"_CONN01")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="detail-tbl-lbl tooltips" title="Status of Secondary Connection">Sec. Conn</td>
+                            <td>
+                                <span class="circle-cont-sm">
+                                    <span class="@(oUPS04.TagPrefix +"_CONN02")"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+        </div>
+        <div class="col-lg-4" style="padding-right: 0px; padding-left: 0px;">
+            <div class="col-lg-12" style="padding-right: 0px; padding-left: 0px;">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="9">UPS FAULTS&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;WAGON CONTROL ROOM</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 34%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 9%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right td-b-right" style="width: 9%">UPS-02</th>
+
+                            <th class="text-center" style="width: 30%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 9%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 9%">UPS-02</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Status of Maste/Slave">Master / Slave</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS03.TagPrefix+"_MASTER_SLAVE")"></span></span></td>
+                            <td class="td-b-right"><span class="circle-cont-sm"><span class="@(oUPS04.TagPrefix+"_MASTER_SLAVE")"></span></span></td>
+
+                            <td class="tooltips" title="Alternate FailOver Transfer to other UPS">Alternate FailOver</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS03.TagPrefix+"_ALT_FO")"></span></span></td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS04.TagPrefix+"_ALT_FO")"></span></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Status of Inveter Started">Inverter Started</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS03.TagPrefix+"_INV_STARTED")"></span></span></td>
+                            <td class="td-b-right"><span class="circle-cont-sm"><span class="@(oUPS04.TagPrefix+"_INV_STARTED")"></span></span></td>
+
+                            <td class="tooltips" title="UPS Temperature High">Temp High</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_TEMP_HIGH")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_TEMP_HIGH")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Static Switch is on ALT Supply">Load on Battery</td>
+                            <td><span class="circle-cont-sm"><span class="@(oUPS03.TagPrefix+"_STATIC_SW_ALT")"></span></span></td>
+                            <td class="td-b-right"><span class="circle-cont-sm"><span class="@(oUPS04.TagPrefix+"_STATIC_SW_ALT")"></span></span></td>
+
+                            <td class="tooltips" title="Inverter Over Load">Inverter Over Load</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_OVR_LOAD")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_INV_OVR_LOAD")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Static Switch is Trip.">Inverter Static Switch Trip.</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_TRIP_STATIC_SW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INV_TRIP_STATIC_SW")"></span></td>
+
+                            <td class="tooltips" title="Inverter Over Voltage">Inverter Over Voltage</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_OVR_VOLT")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_INV_OVR_VOLT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter trip due to saturation">Inverter trip (Saturation)</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_TRIP_SAT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INV_TRIP_SAT")"></span></td>
+
+                            <td class="tooltips" title="Battery Discharge Indication">Battery Discharge</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BATTERY_DISCHAGE")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_BATTERY_DISCHAGE")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage is Low">Inverter Voltage Low</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INV_VOLT_LOW")"></span></td>
+
+                            <td class="tooltips" title="DC Under Voltage">DC Under Voltage</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_DC_UNDR_VOLT")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_DC_UNDR_VOLT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage is High">Inverter Voltage High</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INV_VOLT_HIGH")"></span></td>
+
+                            <td class="tooltips" title="DC Over Voltage">DC Over Voltage</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_DC_OVR_VOLT")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_DC_OVR_VOLT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Alternate Voltage is Low">Alternate Voltage Low</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_ALT_VOLT_LOW")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_ALT_VOLT_LOW")"></span></td>
+
+                            <td class="tooltips" title="Battery Low Indication">Battery Low</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BATTERY_LOW")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_BATTERY_LOW")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Alternate Voltage is High">Alternate Voltage High</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_ALT_VOLT_HIGH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_ALT_VOLT_HIGH")"></span></td>
+
+                            <td class="tooltips" title="Rectifier tripped due to Saturation">Rectifier Trip Saturation</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_RECT_TRIP_SAT")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_RECT_TRIP_SAT")"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-6" style="padding-right: 0px; padding-left: 0px;">
+            <div class="col-lg-12">
+                <table class="table-striped app-tbl" style="margin-top: 5px;">
+                    <thead>
+                        <tr><th class="text-center bg-color" colspan="12">UPS DATA&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;WAGON CONTROL ROOM</th></tr>
+                        <tr>
+                            <th class="text-center" style="width: 18%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 7%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 7%">UPS-02</th>
+
+                            <th class="text-center" style="width: 18%">Parameter</th>
+                            <th class="text-center tooltips" style="width:7%">UPS-01</th>
+                            <th class="text-center tooltips td-b-right" style="width: 7%">UPS-02</th>
+
+                            <th class="text-center" style="width: 22%">Parameter</th>
+                            <th class="text-center tooltips" style="width: 7%">UPS-01</th>
+                            <th class="text-center tooltips" style="width: 7%">UPS-02</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tooltips" title="Input Voltage RY">Input Volt RY</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_VOLT_RY")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_VOLT_RY")"></span></td>
+
+                            <td class="tooltips" title="Input Current RY">Input Curr. RY</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_CURR_RY")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_CURR_RY")"></span></td>
+
+                            <td class="tooltips" title="Battery Current Charging">Battery Current Charging</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BATT_CURR_CHARGING")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_BATT_CURR_CHARGING")"></span></td>
+
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Input Voltage BR">Input Volt. BR</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_VOLT_BR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_VOLT_BR")"></span></td>
+
+                            <td class="tooltips" title="Input Current BR">Input Curr. BR</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_CURR_BR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_CURR_BR")"></span></td>
+
+                            <td class="tooltips" title="Battery Discharging Current">Battery Discharge Current</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BATT_CURR_DISCHARGING")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_BATT_CURR_DISCHARGING")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Input Voltage YB">Input Volt YB</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_VOLT_YB")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_VOLT_YB")"></span></td>
+
+                            <td class="tooltips" title="Input Current YB">Input Curr. YB</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_CURR_YB")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_CURR_YB")"></span></td>
+
+                            <td class="tooltips" title="Total Alarms">Total Alarms</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_TOTAL_ALARMS")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_TOTAL_ALARMS")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Input Mains Frequency">Input Hz</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INP_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INP_FREQ")"></span></td>
+
+
+                            <td class="tooltips" title="Altenate Voltage">Alt. Volt</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_ALT_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_ALT_VOLT")"></span></td>
+
+                            <td class="tooltips" title="Last Alarm Address">Last Alarm Addr</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_LAST_ALRM_ADDR")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_LAST_ALRM_ADDR")"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Output Current 1 Ph Phase-Neutral">Output Current</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_OUT_CURR_PN")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_OUT_CURR_PN")"></span></td>
+
+
+                            <td class="tooltips" title="Total Faults Log">Total Faults</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_TOTAL_FAULTS")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_TOTAL_FAULTS")"></span></td>
+
+                            <td class="tooltips" title="UI Alarm">UI Alarm</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_UI_ALARM")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_UI_ALARM")"></span></td>
+
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Output Frequency">Output Hz</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_OUT_FREQ")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_OUT_FREQ")"></span></td>
+
+
+                            <td class="tooltips" title="Last Fault Address">Last Fault Addr</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_LAST_FLT_ADDR")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_LAST_FLT_ADDR")"></span></td>
+
+                            <td class="tooltips" title="Discharge Cycles left">Discharge Cycles left</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_DISC_CYCLE_LEFT")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_DISC_CYCLE_LEFT")"></span></td>
+
+
+                        </tr>
+
+                        <tr>
+                            <td class="tooltips" title="Inverter Voltage">Inverter Voltage</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_INV_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_INV_VOLT")"></span></td>
+
+                            <td class="tooltips" title="Backup AH">Backup AH</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BACKUP_AH")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_BACKUP_AH")"></span></td>
+
+
+                            <td class="tooltips" title="Discharge Time left">Discharge Time left</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_DISC_TIME_LEFT")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_DISC_TIME_LEFT")"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="tooltips" title="Battery Voltage">Battery Voltage</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BATTERY_VOLT")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_BATTERY_VOLT")"></span></td>
+
+                            <td class="tooltips" title="Battery Time">Battery Time</td>
+                            <td><span class="@(oUPS03.TagPrefix+"_BATTERY_TIME")"></span></td>
+                            <td class="td-b-right"><span class="@(oUPS04.TagPrefix+"_BATTERY_TIME")"></span></td>
+
+                            <td class="tooltips" title=""></td>
+                            <td><span class="@(oUPS03.TagPrefix+"_")"></span></td>
+                            <td><span class="@(oUPS04.TagPrefix+"_")"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    opcPageName='@pages'
+</script>
+<script src="~/Scripts/PageJS/PlantView/UPSView/Index.js"></script>

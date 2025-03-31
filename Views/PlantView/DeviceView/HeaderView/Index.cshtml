@@ -1,0 +1,84 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@model List<TOAST.Data.Model.tblDeviceMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    List<tblTagMaster> DeviceTags = ViewBag.DeviceTags;
+    List<int> ValidDevices = new List<int>() { 2, 3, 18 };
+    List<tblDeviceMaster> lstDevices = Model.Where(x => ValidDevices.Contains(x.DeviceID ?? 0)).ToList();
+    string strPages = String.Join(",", lstDevices.Select(x => x.PageName));
+}
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black; top: -7px;">Header Devices View</h3>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 25px;">
+        @foreach (int iType in ValidDevices)
+        {
+            List<tblDeviceMaster> lstDevs = lstDevices.Where(x => (x.DeviceID ?? 0) == iType).ToList();
+            if (lstDevs.Count() == 0) { continue; }
+            <div class="col-lg-4">
+                <table class="table-striped app-tbl">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-color" colspan="7">@lstDevs.FirstOrDefault().tblDeviceType.DeviceTypeDesc</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center bg-color" style="width: 22%">TagNo</th>
+                            <th class="text-center bg-color" style="width: 18%">Product</th>
+                            <th class="text-center bg-color" style="width: 10%">Value</th>
+                            <th class="text-center bg-color" style="width: 14%">Hi-Set Point</th>
+                            <th class="text-center bg-color" style="width: 8%">Hi Alrm</th>
+                            <th class="text-center bg-color" style="width: 14%">Lo Set-Point</th>
+                            <th class="text-center bg-color" style="width: 8%">Lo Alrm</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (tblDeviceMaster dev in lstDevs)
+                            {
+                                tblTagMaster MaxSPTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_MAX_SP") || (x.TagName == dev.TagPrefix + "_SP_H")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster MinSPTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_MIN_SP") || (x.TagName == dev.TagPrefix + "_SP_L")).FirstOrDefault() ?? new tblTagMaster());
+                                //tblTagMaster HH_SPTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_SP_HH")).FirstOrDefault() ?? new tblTagMaster());
+                                //tblTagMaster LL_SPTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_SP_LL")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster MaxAlrmTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_MAX_ALRM") || (x.TagName == dev.TagPrefix + "_ALRM_H")).FirstOrDefault() ?? new tblTagMaster());
+                                tblTagMaster MinAlrmTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_MIN_ALRM") || (x.TagName == dev.TagPrefix + "_ALRM_L")).FirstOrDefault() ?? new tblTagMaster());
+                                //tblTagMaster HH_AlrmTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_ALRM_HH")).FirstOrDefault() ?? new tblTagMaster());
+                                //tblTagMaster LL_AlrmTag = (DeviceTags.Where(x => (x.TagName == dev.TagPrefix + "_ALRM_LL")).FirstOrDefault() ?? new tblTagMaster());
+                                <tr>
+                                    <td class="get-hover"  onclick="OpenDeviceModal('@dev.UniqueID','@dev.PageName')">@dev.DeviceName</td>
+                                    <td>@(dev.tblHeadersMaster.tblProduct.ProductName)</td>
+                                    <td class="@(dev.TagPrefix)_VALUE get-hover" onclick="OpenChartModal('@(dev.TagPrefix)_VALUE', '@dev.PageName'); cancelBubble(event);"></td>
+                                    <td>
+                                        <input type="number" step="0.01" min=@(MaxSPTag.MinVal??-999) max="@(MaxSPTag.MaxVal??9999)" readonly class="editable-input @(MaxSPTag.TagName)" ondblclick="this.readOnly='';"
+                                               style="border: 0px;width: 72%;" value="@(MaxSPTag.TagName)">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update @dev.tblDeviceType.DeviceTypeDesc Max SetPoint: @(dev.DeviceName)',this, '@(MaxSPTag.TagName)', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"  aria-hidden="true"></span>
+                                    </td>
+                                    <td><span class="alert-cont-sm"><span class="@(MaxAlrmTag.TagName)"></span></span></td>
+                                    <td>
+                                        <input type="number" step="0.01" min=@(MinSPTag.MinVal??-999) max="@(MinSPTag.MaxVal??9999)" readonly class="editable-input @(MinSPTag.TagName)" ondblclick="this.readOnly='';"
+                                               style="border: 0px;width: 72%;" value="@(MinSPTag.TagName)">
+                                        <span class="glyphicon glyphicon-upload" onclick="SetProcessValue('Update SetPoints','Update @dev.tblDeviceType.DeviceTypeDesc Min SetPoint: @(dev.DeviceName)',this, '@(MaxSPTag.TagName)', 'INPUT', '@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]')"  aria-hidden="true"></span>
+                                    </td>
+                                    <td><span class="alert-cont-sm"><span class="@(MinAlrmTag.TagName)"></span></span></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+                            }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        //opcPageName = "HeaderView.*";
+        opcPageName = '@strPages';
+        InitConn(opcPageName, 0);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>

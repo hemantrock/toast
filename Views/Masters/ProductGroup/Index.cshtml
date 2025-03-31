@@ -1,0 +1,38 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblProductGroup>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddProductGroup();">
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW PRODUCT GROUP
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">Product Groups</h3>
+        <table id="tblProductGroup" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">GROUP ID</th>
+                    <th>GROUP NAME</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblProductGroup itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.ProductGroupID);">
+                        <td style="display:none;">@itm.ProductGroupID</td>
+                        <td>@itm.ProductGroupDesc</td>
+                        <td class="text-center"><span id="spanDelete_@itm.ProductGroupID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.ProductGroupID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Masters/ProductGroup/Index.js"></script>

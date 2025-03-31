@@ -1,0 +1,54 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Business;
+@using TOAST.Data.ViewModels;
+@model List<TrucksStatusViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header">Trucks Status</h3>
+        <table id="tblTrucks" class="table">
+            <thead>
+                <tr>
+                    <th class="text-center"><strong>Product Name</strong></th>
+                    <th class="text-center">Registered</th>
+                    <th class="text-center">Authorized </th>
+                    <th class="text-center">In Queue</th>
+                    <th class="text-center">Loading</th>                    
+                    <th class="text-center"><strong>Pending Tot.</strong></th>
+                    <th class="text-center">Loaded</th>
+                    <th class="text-center">Invoiced</th>
+                    <th class="text-center">Exited</th>
+                    <th class="text-center"><strong>Completed Tot.</strong></th>
+                    <th class="text-center"><strong>Net Planned</strong></th>
+                </tr>
+            </thead>
+            <tbody id="tblTrucksBody">
+                @foreach (TrucksStatusViewModel item in Model)
+                {
+                    string strClass = "";
+                    if (item.Product.ToUpper() == "GRAND TOTALS")
+                    {
+                        strClass = "highlight_row";
+                    }
+                    <tr class="@strClass">
+                        <td class="text-center"><strong>@item.Product</strong></td>
+                        <td class="text-center">@item.Registered</td>
+                        <td class="text-center">@item.Authorized </td>
+                        <td class="text-center">@item.In_Queue</td>
+                        <td class="text-center">@item.Loading</td>
+                        <td class="text-center highlight_row"><strong>@(item.Registered + item.Authorized + item.In_Queue + item.Loading)</strong></td>
+                        <td class="text-center">@item.Loaded</td>
+                        <td class="text-center">@item.Invoiced</td>
+                        <td class="text-center">@item.Exited</td>
+                        <td class="text-center highlight_row"><strong>@(item.Loaded + item.Invoiced + item.Exited)</strong></td>
+                        <td class="text-center highlight_row"><strong>@(item.Registered + item.Authorized + item.In_Queue + item.Loading + item.Loaded + item.Invoiced + item.Exited)</strong></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/Scripts/PageJS/Transactions/TrucksStatus/Index.js"></script>

@@ -1,0 +1,160 @@
+﻿@using TOAST.Data.Model;
+@using TOAST.Shared;
+@using TOAST.Business;
+@model List<tblPump>
+@{
+    ViewBag.Title = "Plant View - Pumps View";
+    Layout = null;
+    List<string> Groups;
+    if (clsConfig.PumpsGrouping.ToUpper() == "Service-Wise".ToUpper())
+    { Groups = Model.Where(x => x.ServiceID != null && x.tblProduct.Visible && x.tblProduct.tblProductComponents.Count() == 1).OrderBy(x => x.ServiceID).Select(x => x.tblPumpService.Service).Distinct().ToList(); }
+    else { Groups = Model.Where(x => x.tblProduct != null && x.tblProduct.Visible && x.tblProduct.tblProductComponents.Count() == 1).OrderBy(x => x.ProductID).Select(x => x.tblProduct.ProdNameShort).Distinct().ToList(); }
+}
+
+<div id="dvContent" class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="grid-headerplant" style="color:black;font-size: 30px;">Pumps View</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 m-t-40">
+            <div class="tab-wrapper w-100">
+                <div class="panel with-nav-tabs panel-default">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                            @{
+                                foreach (string item in Groups)
+                                {
+                                    <li><a href="#@(item.Replace(" ","").Replace("+","-"))" data-toggle="tab" style="font-size: 23px;">@(item.Replace(" ", "-"))</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            @{
+                                foreach (string prod in Groups)
+                                {
+                                    <div class="tab-pane fade" id="@(prod.Replace(" ","").Replace("+","-"))">
+                                        <div class="row">
+                                            <div class="tab-container pump-view-tab-container">
+                                                @{
+                                                    List<tblPump> lstpmp; //= Model.Where(x => x.tblProduct != null && x.tblProduct.ProdNameShort == prod).ToList();
+                                                    if (clsConfig.PumpsGrouping == "Service-Wise".ToUpper()) { lstpmp = Model.Where(x => x.ServiceID != null && x.tblPumpService.Service == prod).ToList(); }
+                                                    else { lstpmp = Model.Where(x => x.tblProduct != null && x.tblProduct.ProdNameShort == prod).ToList(); }
+                                                    foreach (tblPump pump in lstpmp)
+                                                    {
+                                                        string pumpName = pump.TagPrefix;
+                                                        string PTName = (pump.TagPrefix??"").Replace("_","");
+                                                        tblDeviceMaster SucPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.ToUpper().Contains("SUC")).FirstOrDefault();
+                                                        tblDeviceMaster DiscPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 3 && x.DeviceDesc.ToUpper().Contains("DISC")).FirstOrDefault();
+                                                        tblDeviceMaster StrainerDPT = pump.tblDeviceMasters.Where(x => x.DeviceID == 23).FirstOrDefault();
+                                                        <div class="col-lg-2 col-md-3 pump-view-wrapper pump-view-lg">
+                                                            <span class="pump-view-header">
+                                                                <span style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000;">@pump.EquipmentName</span>
+                                                                <span style="background-color:@pump.tblProduct.ProductColor; text-shadow: 0px 1px 1px #000;">@pump.tblProduct.ProdNameShort</span>
+                                                            </span>
+                                                            <div class="pump-view-pump @(pump.tblPumpService.TagPrefix.ToLower())-device">
+                                                                <span title="" data-tooltip-attr="LOCREM" class="tooltips control-icon @(pumpName+"_LOCREM")"></span>
+                                                                <div title="Pump Off" data-tooltip-attr="PMP*" onclick="OpenPumpModal(@pump.UniqueID,'@(pump.PageName)')" class="tooltips @pump.tblPumpService.TagPrefix.ToLower() @(pumpName+"_RUN_IMG") @(pumpName+"_TRIP_IMG") @(pumpName+"_FAIL_IMG")" style="position: relative;left:10px;top:2px;margin: auto;">
+                                                                    <span class="maintainence-mode-icon @(pumpName+"_MAINT")"></span>
+                                                                </div>
+                                                                <span title="" data-tooltip-attr="AUTOMAN" class="tooltips control-icon @(pumpName+"_AUTOMAN")" onclick="OpenGenericAutoManModal('Change Auto/Manual Mode Pump','Pump: @pump.EquipmentName', '@(pumpName+"_AUTOMAN")', '@(pumpName+"_LOCREM")', 'TAG_AUTOMAN','@pump.PageName','@Session[clsConstants.UserID]', '@Session[clsConstants.LoginID]', '@Session[clsConstants.UserName]'); cancelBubble(event);"></span>
+                                                            </div>
+
+                                                            <table class="detail-tbl table-striped">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="detail-tbl-lbl">Run Fdbk <span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(pumpName+"_RUN_FB")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                        <td class="detail-tbl-lbl">Trip Fdbk <span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(pumpName+"_TRIP_FB")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="detail-tbl-lbl">Suc. Press Lo<span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(pumpName+"_SUC_PRESS_LO")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                        <td class="detail-tbl-lbl">Disc Press Hi<span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(pumpName+"_DISC_PRESS_HI")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="detail-tbl-lbl">Mech Seal Fail<span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(pumpName+"_MECH_SEAL_FAIL")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                        <td class="detail-tbl-lbl">Coolant Lvl Lo<span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(pumpName+"_COOLANT_LO")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="detail-tbl-lbl">Suction Press</td>
+                                                                        <td class="@(PTName)_SUC_VALUE get-hover" onclick="OpenChartModal('@(PTName)_SUC_VALUE', ''); cancelBubble(event);"></td>
+                                                                        <td class="detail-tbl-lbl">Suc Lo Alrm<span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(PTName+"_SUC_ALRM_L")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="detail-tbl-lbl">Disc Press</td>
+                                                                        <td class="@(PTName)_DISC_VALUE get-hover" onclick="OpenChartModal('@(PTName)_DISC_VALUE', ''); cancelBubble(event);"></td>
+                                                                        <td class="detail-tbl-lbl">Disc Hi Alrm<span aria-hidden="true"></span></td>
+                                                                        <td class="detail-tbl-val">
+                                                                            <span class="circle-cont-sm">
+                                                                                <span class="pump-househeader-info-val @(PTName+"_DISC_ALRM_H")"></span>
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    @*<tr>
+                                                                        <td colspan="1" class="detail-tbl-lbl">Service</td>
+                                                                        <td colspan="3" class="detail-tbl-val">@(pump.tblPumpService != null ? pump.tblPumpService.Service : "")</td>
+                                                                    </tr>*@
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs a:first').tab('show');
+        opcPageName = "PumpsView.*,PTView2*";
+        InitConn(opcPageName, 50);
+        opc.server.readPageTags(opcPageName);
+    });
+</script>
+<script src="~/Scripts/PageJS/PlantView/PumpsView/Index.js"></script>

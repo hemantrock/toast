@@ -1,0 +1,37 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblLoadMaster>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    string strStage = ViewBag.Parameter;
+}
+<style>
+    table.dataTable thead tr th {
+        font-size: 22px;
+        word-break: break-all;
+    }
+
+    table.dataTable tbody tr td {
+        font-size: 32px;
+        word-break: break-all;
+    }
+    .waitpage {
+        display: none !important;
+    }
+</style>
+<div class="row">
+    @*<div class="col-lg-12 text-right">
+            <a id="createButton" role="button" class="btn btn-primary" href="#" onclick="OpenAddConfiguration()">
+                <span class="glyphicon glyphicon-plus"></span>NEW CONFIG VARIABLE
+            </a>
+        </div>*@
+</div>
+<div class="row">
+    <div id="SecCheckData" class="col-lg-9 col-md-9 col-sm-12">
+
+    </div>
+</div>
+<script>
+    var oStage ='@strStage';
+</script>
+<script src="~/Scripts/PageJS/Transactions/SecCheck/Index.js"></script>

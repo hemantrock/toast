@@ -1,0 +1,76 @@
+﻿@using TOAST.Data.Model
+@model TOAST.Data.Model.tblRFIDMaster
+@{
+    ViewBag.Title = "Add RFID";
+    Layout = null;
+    List<tblRFIDType> ddlRFTypes = ViewBag.ddlRFIDTypes;
+}
+
+<h2 class="headingPage">
+    Create a new RFID
+</h2>
+<div class="row">
+    <div class="col-lg-12 col-md-12 form-container">
+        <form id="FormBU" role="form" class="form-fields">
+            <div class="row">
+                @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>RF TagID</label>
+                        <input type="text" class="form-control" placeholder="RFID Tag ID" autocomplete="off" id="txtRFTagID" name="TagID" />
+                    </div>
+                </div>*@
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>EPC ID</label>
+                        <input type="text" class="form-control" placeholder="EPC ID" autocomplete="off" id="txtEPC_Code" name="EPC_Code" />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="fields form-group">
+                        <label>User Data</label>
+                        <input type="text" class="form-control" placeholder="User Data" autocomplete="off" id="txtUser_Data" name="User_Data" />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 ">
+                    <div class="fields form-group">
+                        <label>Type</label>
+                        <select class="form-control" id="ddlRFIDType" name="RFIDType">
+                            @{
+                                foreach (tblRFIDType rtyp in ddlRFTypes)
+                                {
+                                    <option value="@rtyp.TypeID">@(rtyp.TypeDesc)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                @*<div class="col-lg-3 col-md-3 col-sm-3 ">
+                    <div class="fields form-group">
+                        <label>Status</label>
+                        <select class="form-control" id="ddlRFIDStatus" name="RFIDStatus" disabled>
+                            <option value="1" selected>Available</option>
+                        </select>
+                    </div>
+                </div>*@
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row button-bar">
+    <div class="col-lg-12">
+        <a id="saveButton" role="button" class="btn btn-primary" href="#" onclick="SaveRFID();"><span class="glyphicon glyphicon-floppy-disk"></span>SAVE</a>
+        <a id="cancelButton" role="button" class="btn btn-primary" href="#" data-toggle="modal" data-target="#cancelModal"><span class="glyphicon glyphicon-remove"></span>CANCEL</a>
+    </div>
+</div>
+
+<script src="~/Scripts/PageJS/Masters/RFID/2415/RFID.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        //LoadDDLRFIDType();
+        //LoadDDLRFIDStatus();
+    });
+
+</script>

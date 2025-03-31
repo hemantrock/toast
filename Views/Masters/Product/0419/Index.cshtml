@@ -1,0 +1,70 @@
+﻿@using TOAST.Data.Model;
+@model List<TOAST.Data.Model.tblProduct>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@*<div class="row">
+    <div class="col-lg-12 text-right">
+        <a id="createButton" role="button" class="btn btn-primary" href="#" onclick='OpenAddProduct()'>
+            <span class="glyphicon glyphicon-plus"></span>CREATE NEW PRODUCT
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="grid-header" style="color:black">Products Master</h3>
+        <table id="tblProduct" class="table">
+            <thead>
+                <tr>
+                    <th style="display:none;">Id</th>
+                    <th>Code</th>
+                    <th>Product Name</th>
+                    <th>Product Color</th>
+                    <th>Product Desc</th>
+                    <th>Short Name</th>
+                    <th>Min Density</th>
+                    <th>Max Density</th>
+                    <th>Std Density</th>
+                    <th>Additive 1</th>
+                    <th>Additive 2</th>
+                    <th>Blending %</th>
+                    <th>UoM</th>
+                    <th>Header No</th>
+                    <th>Tank Availability</th>
+                    <th>Is base product</th>
+                    <th class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (tblProduct itm in Model)
+                {
+                    <tr class="clickable" onclick="EditRecord(@itm.ProductID);">
+                        <td style="display:none;">@itm.ProductID</td>
+                        <td>@itm.ProductCode</td>
+                        <td>@itm.ProductName</td>
+                        <td style="background-color:@itm.ProductColor;"></td>
+                        <td>@itm.ProductDescription</td>
+                        <td>@itm.ProdNameShort</td>
+                        <td>@itm.MinDensity</td>
+                        <td>@itm.MaxDensity</td>
+                        <td>@itm.StdDensity</td>
+                        <td>@itm.AdditiveQty1</td>
+                        <td>@itm.AdditiveQty2</td>
+                        <td>@itm.EthBlending</td>
+                        <td>@itm.tblUOMMaster.UOM</td>
+                        <td>@itm.HeaderNo</td>
+                        <td>@itm.AddToTank</td>
+                        <td>@itm.IsBaseProduct</td>
+                        <td class="text-center"><span id="spanDelete_@itm.ProductID" class="glyphicon glyphicon-remove clickable spanDelete" data-id="@itm.ProductID"></span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>*@
+
+<div id="jqxgrid" class="jqx-tbl-container">
+</div>
+
+<script src="~/Scripts/PageJS/Masters/Product/0419/Index.js"></script>
